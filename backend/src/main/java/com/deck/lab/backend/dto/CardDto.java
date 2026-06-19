@@ -2,7 +2,7 @@ package com.deck.lab.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class CardDTO {
+public class CardDto {
 
     private Long id;
 
@@ -25,10 +25,10 @@ public class CardDTO {
     private Integer linkVal;
     private Integer scale;
 
-    public CardDTO() {
+    public CardDto() {
     }
 
-    public CardDTO(Long id, String name, String type, String description, String race, String attribute,
+    public CardDto(Long id, String name, String type, String description, String race, String attribute,
             String archetype, String imageUrl, String imageUrlCropped, String frameType, Integer atk, Integer def,
             Integer level, Integer linkVal, Integer scale) {
         this.id = id;
