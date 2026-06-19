@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/api/cards/images/cropped/40941889.jpg"
+  url: "{{baseUrl}}/api/cards/images/cropped/{{imageFilename}}"
   headers:
     - name: accept
       value: image/jpeg
@@ -14,13 +14,7 @@ runtime:
   variables:
     - name: imageFilename
       value: 40941889.jpg
-      disabled: true
   scripts:
-    - type: before-request
-      code: |-
-        if (!bru.getVar("imageFilename")) {
-          bru.setVar("imageFilename", "test.jpg");
-        }
     - type: tests
       code: |-
         test("Response should be 200 OK or 404 Not Found", function() {

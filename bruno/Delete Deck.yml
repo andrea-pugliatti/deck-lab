@@ -1,0 +1,30 @@
+info:
+  name: Delete Deck
+  type: http
+  seq: 12
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/decks/{{createdDeckId}}"
+  headers:
+    - name: accept
+      value: application/json
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        if (!bru.getVar("createdDeckId")) {
+          bru.setVar("createdDeckId", 1);
+        }
+    - type: tests
+      code: |-
+        test("Response should be 204 No Content or 404 Not Found", function() {
+          expect([204, 404]).to.include(res.status);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
