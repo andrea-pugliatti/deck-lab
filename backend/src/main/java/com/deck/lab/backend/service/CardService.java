@@ -1,9 +1,10 @@
 package com.deck.lab.backend.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.domain.PredicateSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.deck.lab.backend.exception.ResourceNotFoundException;
@@ -20,14 +21,15 @@ public class CardService {
         this.cardRepository = cardRepository;
     }
 
-    public List<Card> findAllOrWithFilters(String name, String type, String attribute, String race, String archetype) {
-        return cardRepository.findAll(
-                PredicateSpecification.where(
-                        CardSpecification.hasName(name))
-                        .and(CardSpecification.hasType(type))
-                        .and(CardSpecification.hasAttribute(attribute))
-                        .and(CardSpecification.hasRace(race))
-                        .and(CardSpecification.hasArchetype(archetype)));
+    public Page<Card> findAllOrWithFilters(String name, String type, String attribute, String race, String archetype,
+            Pageable pageable) {
+        Specification<Card> spec = Specification.where(
+                CardSpecification.hasName(name))
+                .and(CardSpecification.hasType(type))
+                .and(CardSpecification.hasAttribute(attribute))
+                .and(CardSpecification.hasRace(race))
+                .and(CardSpecification.hasArchetype(archetype));
+        return cardRepository.findAll(spec, pageable);
     }
 
     public Optional<Card> findById(Long id) {

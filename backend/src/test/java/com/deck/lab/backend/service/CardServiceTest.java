@@ -1,12 +1,13 @@
 package com.deck.lab.backend.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.exception.ResourceNotFoundException;
@@ -47,10 +48,11 @@ class CardServiceTest {
 
     @Test
     void findAllOrWithFilters_returnsMatchingCards() {
-        List<Card> result = cardService.findAllOrWithFilters("ServiceTest Blue-Eyes", null, null, null, null);
+        Page<Card> result = cardService.findAllOrWithFilters("ServiceTest Blue-Eyes", null, null, null, null,
+                PageRequest.of(0, 10));
         assertNotNull(result);
-        assertTrue(result.size() >= 1);
-        assertTrue(result.stream().anyMatch(c -> c.getName().equals(testCard.getName())));
+        assertTrue(result.getTotalElements() >= 1);
+        assertTrue(result.getContent().stream().anyMatch(c -> c.getName().equals(testCard.getName())));
     }
 
     @Test

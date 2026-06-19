@@ -24,12 +24,12 @@ public class DeckController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DeckDto>> getAllDecks(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<DeckDto>> index(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(deckService.getDecksByUser(user));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeckDto> getDeckById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckDto> show(@PathVariable Long id, @AuthenticationPrincipal User user) {
         try {
             return ResponseEntity.ok(deckService.getDeckById(id, user));
         } catch (NoSuchElementException e) {
@@ -38,12 +38,12 @@ public class DeckController {
     }
 
     @PostMapping
-    public ResponseEntity<DeckDto> createDeck(@Valid @RequestBody DeckDto deckDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckDto> create(@Valid @RequestBody DeckDto deckDto, @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeckDto> updateDeck(@PathVariable Long id, @Valid @RequestBody DeckDto deckDto,
+    public ResponseEntity<DeckDto> update(@PathVariable Long id, @Valid @RequestBody DeckDto deckDto,
             @AuthenticationPrincipal User user) {
         try {
             return ResponseEntity.ok(deckService.updateDeck(id, deckDto, user));
@@ -53,7 +53,7 @@ public class DeckController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDeck(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
         try {
             deckService.deleteDeck(id, user);
             return ResponseEntity.noContent().build();

@@ -1,5 +1,8 @@
 package com.deck.lab.backend.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +21,6 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.service.CardService;
 
 import jakarta.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cards")
@@ -35,17 +37,18 @@ public class CardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CardDto>> index(
+    public ResponseEntity<Page<CardDto>> index(
             @RequestParam(value = "q", required = false) String name,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "attribute", required = false) String attribute,
             @RequestParam(value = "race", required = false) String race,
-            @RequestParam(value = "archetype", required = false) String archetype) {
-        List<CardDto> cards = service
-                .findAllOrWithFilters(name, type, attribute, race, archetype)
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+            @RequestParam(value = "archetype", required = false) String archetype,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CardDto> cards = service
+                .findAllOrWithFilters(name, type, attribute, race, archetype, pageable)
+                .map(mapper::toDto);
         return new ResponseEntity<>(cards, HttpStatus.OK);
     }
 

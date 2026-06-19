@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.PredicateSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.model.Card;
@@ -123,7 +123,7 @@ class CardSpecificationTest {
     @Test
     void combinedSpecifications_filtersCorrectly() {
         // Query for Dragon (race) + Normal Monster (type) + SpecTest (name)
-        PredicateSpecification<Card> spec = PredicateSpecification
+        Specification<Card> spec = Specification
                 .where(CardSpecification.hasName("SpecTest"))
                 .and(CardSpecification.hasRace("Dragon"))
                 .and(CardSpecification.hasType("Normal Monster"));
@@ -134,9 +134,28 @@ class CardSpecificationTest {
     }
 
     @Test
+    void caseInsensitiveFilters_matchCorrectly() {
+        // Query for "spectest blue-eyes" (lowercase) should match "SpecTest Blue-Eyes White Dragon"
+        List<Card> results = cardRepository.findAll(CardSpecification.hasName("spectest blue-eyes"));
+        assertTrue(results.size() >= 1);
+        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+
+        // Query for "normal monster" (lowercase) should match Normal Monster
+        results = cardRepository.findAll(CardSpecification.hasType("normal monster"));
+        assertTrue(results.size() >= 2);
+        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
+
+        // Query for "dark" (lowercase) should match DARK attribute
+        results = cardRepository.findAll(CardSpecification.hasAttribute("dark"));
+        assertTrue(results.size() >= 1);
+        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
+    }
+
+    @Test
     void nullOrBlankFilters_ignoredCorrectly() {
         // Blanks and nulls should result in no filter constraints (i.e. returns all cards)
-        PredicateSpecification<Card> spec = PredicateSpecification
+        Specification<Card> spec = Specification
                 .where(CardSpecification.hasName(null))
                 .and(CardSpecification.hasType(""))
                 .and(CardSpecification.hasAttribute("   "));

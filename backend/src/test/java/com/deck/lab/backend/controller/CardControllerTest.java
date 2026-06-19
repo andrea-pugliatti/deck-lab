@@ -56,7 +56,7 @@ public class CardControllerTest {
         mockMvc.perform(get("/api/cards")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
+                .andExpect(jsonPath("$.content", hasSize(greaterThanOrEqualTo(1))));
     }
 
     @Test
@@ -65,8 +65,30 @@ public class CardControllerTest {
                 .param("q", "MyUniqueCard")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is("MyUniqueCard")));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name", is("MyUniqueCard")));
+    }
+
+    @Test
+    void testGetCardsWithCaseInsensitiveFilter() throws Exception {
+        mockMvc.perform(get("/api/cards")
+                .param("q", "myuniquecard")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name", is("MyUniqueCard")));
+    }
+
+    @Test
+    void testGetCardsWithPagination() throws Exception {
+        mockMvc.perform(get("/api/cards")
+                .param("page", "0")
+                .param("size", "1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size", is(1)))
+                .andExpect(jsonPath("$.number", is(0)))
+                .andExpect(jsonPath("$.content", hasSize(1)));
     }
 
     @Test
