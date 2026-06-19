@@ -1,0 +1,49 @@
+info:
+  name: Create Card
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/cards"
+  headers:
+    - name: accept
+      value: application/json
+    - name: content-type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Dark Magician",
+        "type": "Normal Monster",
+        "description": "The ultimate wizard in terms of attack and defense.",
+        "race": "Spellcaster",
+        "attribute": "DARK",
+        "archetype": "Dark Magician",
+        "imageUrl": "dark_magician.jpg",
+        "imageUrlCropped": "dark_magician_cropped.jpg",
+        "frameType": "normal",
+        "atk": 2500,
+        "def": 2100,
+        "level": 7
+      }
+  auth:
+    type: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Response should be 201 Created", function() {
+          expect(res.status).to.equal(201);
+        });
+        test("Response should return the created card details", function() {
+          expect(res.body.name).to.equal("Dark Magician");
+          expect(res.body.id).to.exist;
+        });
+        test("Save created card ID for subsequent requests", function() {
+          if (res.status === 201 && res.body.id) {
+            bru.setVar("createdCardId", res.body.id);
+          }
+        });

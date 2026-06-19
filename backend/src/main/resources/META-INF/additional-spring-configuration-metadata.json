@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "app.seed.cards",
-  "type": "java.lang.String",
-  "description": "Switch to seed database from API"
-}]}
+{"properties": [
+  {
+    "name": "app.seed.cards",
+    "type": "java.lang.String",
+    "description": "Switch to seed database from API"
+  },
+  {
+    "name": "app.upload-dir",
+    "type": "java.lang.String",
+    "description": "Image upload directory"
+  }
+]}

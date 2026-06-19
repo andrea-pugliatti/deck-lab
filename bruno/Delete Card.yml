@@ -1,0 +1,29 @@
+info:
+  name: Delete Card
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/cards/{{createdCardId}}"
+  headers:
+    - name: accept
+      value: application/json
+  body:
+    type: none
+  auth:
+    type: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        // Fallback to cardId environment variable if createdCardId doesn't exist yet
+        if (!bru.getVar("createdCardId")) {
+          bru.setVar("createdCardId", bru.getEnvVar("cardId") || "1");
+        }
+    - type: tests
+      code: |-
+        test("Response should be 204 No Content or 404 Not Found", function() {
+          expect([204, 404]).to.include(res.status);
+        });

@@ -66,6 +66,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Value("${app.ygoprodeck.read-timeout:5000}")
     private int readTimeout;
 
+    @Value("${app.upload-dir:data/images}")
+    private String uploadDir;
+
     public DatabaseSeeder(CardRepository cardRepository,
             FormatRulesRepository formatRulesRepository,
             UserRepository userRepository,
@@ -184,8 +187,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         String archetype = (String) apiCard.get("archetype");
         String frameType = (String) apiCard.get("frameType");
 
-        String imageUrl = "/cards/images/" + apiId + ".jpg";
-        String imageUrlCropped = "/cards/images/cropped/" + apiId + ".jpg";
+        String imageUrl = "cards/images/" + apiId + ".jpg";
+        String imageUrlCropped = "cards/images/cropped/" + apiId + ".jpg";
 
         Integer atk = (Integer) apiCard.get("atk");
         Integer def = (Integer) apiCard.get("def");
@@ -215,13 +218,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void triggerImageDownloads(Long apiId, String remoteImageUrl, String remoteImageUrlCropped) {
         if (remoteImageUrl != null) {
-            Path fullPath = Paths.get("cards/images/", apiId + ".jpg");
+            Path fullPath = Paths.get(uploadDir, apiId + ".jpg");
             if (!Files.exists(fullPath)) {
                 imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrl, fullPath));
             }
         }
         if (remoteImageUrlCropped != null) {
-            Path croppedPath = Paths.get("cards/images/", "cropped", apiId + ".jpg");
+            Path croppedPath = Paths.get(uploadDir, "cropped", apiId + ".jpg");
             if (!Files.exists(croppedPath)) {
                 imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrlCropped, croppedPath));
             }
@@ -327,7 +330,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             logger.info("Card seeding complete: {} created, {} skipped (already existed)", created, skipped);
         } catch (Exception e) {
-            logger.error("Failed to seed cards from YGOProDeck API. Cards will be fetched on demand.", e);
+            logger.error("Failed to seed cards from YGOProDeck API.", e);
         }
     }
 

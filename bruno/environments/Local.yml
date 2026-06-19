@@ -1,0 +1,8 @@
+name: Local
+variables:
+  - name: baseUrl
+    value: http://localhost:8080
+  - name: cardId
+    value: "1"
+  - name: imageFilename
+    value: 40941889.jpg

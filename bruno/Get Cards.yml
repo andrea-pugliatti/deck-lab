@@ -1,0 +1,48 @@
+info:
+  name: Get Cards
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/cards?q=Dark Magician"
+  headers:
+    - name: accept
+      value: application/json
+  params:
+    - name: q
+      value: Dark Magician
+      type: query
+    - name: type
+      value: Normal Monster
+      type: query
+      disabled: true
+    - name: attribute
+      value: DARK
+      type: query
+      disabled: true
+    - name: race
+      value: Spellcaster
+      type: query
+      disabled: true
+    - name: archetype
+      value: Dark Magician
+      type: query
+      disabled: true
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Response should be 200 OK", function() {
+          expect(res.status).to.equal(200);
+        });
+        test("Response should be an array", function() {
+          expect(res.body).to.be.an('array');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

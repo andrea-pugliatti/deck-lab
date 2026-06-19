@@ -1,0 +1,34 @@
+info:
+  name: Get Cropped Image
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/cards/images/cropped/40941889.jpg"
+  headers:
+    - name: accept
+      value: image/jpeg
+
+runtime:
+  variables:
+    - name: imageFilename
+      value: 40941889.jpg
+      disabled: true
+  scripts:
+    - type: before-request
+      code: |-
+        if (!bru.getVar("imageFilename")) {
+          bru.setVar("imageFilename", "test.jpg");
+        }
+    - type: tests
+      code: |-
+        test("Response should be 200 OK or 404 Not Found", function() {
+          expect([200, 404]).to.include(res.status);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

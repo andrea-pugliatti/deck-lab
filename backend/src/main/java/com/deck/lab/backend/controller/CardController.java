@@ -1,11 +1,6 @@
 package com.deck.lab.backend.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +18,11 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.service.CardService;
 
 import jakarta.validation.Valid;
-import java.io.File;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 
     private final CardService service;
     private final CardMapper mapper;
@@ -92,27 +84,5 @@ public class CardController {
         }
         service.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/images/{filename:.+}")
-    public ResponseEntity<Resource> getFullImage(@PathVariable String filename) {
-        return serveImage(filename, "");
-    }
-
-    @GetMapping("/images/cropped/{filename:.+}")
-    public ResponseEntity<Resource> getCroppedImage(@PathVariable String filename) {
-        return serveImage(filename, "cropped/");
-    }
-
-    private ResponseEntity<Resource> serveImage(String filename, String subDir) {
-        File file = new File("cards/images/" + subDir + filename);
-        if (!file.exists()) {
-            logger.debug("Image file not found: {}", file.getAbsolutePath());
-            return ResponseEntity.notFound().build();
-        }
-        Resource resource = new FileSystemResource(file);
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(resource);
     }
 }

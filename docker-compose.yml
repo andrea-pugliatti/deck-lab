@@ -28,6 +28,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deck-lab?reWriteBatchedInserts=true
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - IMAGE_UPLOAD_DIR=/app/data/images
+    volumes:
+      - card-images:/app/data/images
     depends_on:
       db:
         condition: service_healthy
@@ -44,3 +47,4 @@ services:
 
 volumes:
   pgdata:
+  card-images:

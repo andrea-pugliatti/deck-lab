@@ -1,0 +1,51 @@
+info:
+  name: Update Card
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/cards/{{createdCardId}}"
+  headers:
+    - name: accept
+      value: application/json
+    - name: content-type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Dark Magician (Updated)",
+        "type": "Normal Monster",
+        "description": "The ultimate wizard in terms of attack and defense. Updated version.",
+        "race": "Spellcaster",
+        "attribute": "DARK",
+        "archetype": "Dark Magician",
+        "imageUrl": "dark_magician_updated.jpg",
+        "imageUrlCropped": "dark_magician_cropped_updated.jpg",
+        "frameType": "normal",
+        "atk": 2500,
+        "def": 2100,
+        "level": 7
+      }
+  auth:
+    type: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        // Fallback to cardId environment variable if createdCardId doesn't exist yet
+        if (!bru.getVar("createdCardId")) {
+          bru.setVar("createdCardId", bru.getEnvVar("cardId") || "1");
+        }
+    - type: tests
+      code: |-
+        test("Response should be 200 OK or 404 Not Found", function() {
+          expect([200, 404]).to.include(res.status);
+        });
+        if (res.status === 200) {
+          test("Response should contain updated fields", function() {
+            expect(res.body.name).to.equal("Dark Magician (Updated)");
+          });
+        }
