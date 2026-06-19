@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "app.seed.cards",
+  "type": "java.lang.String",
+  "description": "Switch to seed database from API"
+}]}

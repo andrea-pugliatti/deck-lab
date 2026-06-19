@@ -11,7 +11,7 @@
 	<groupId>com.deck.lab</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<name>deck-lab-backend</name>
 	<description/>
 	<url/>
 	<licenses>

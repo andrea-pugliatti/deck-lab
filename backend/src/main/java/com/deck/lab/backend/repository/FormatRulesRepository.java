@@ -1,0 +1,13 @@
+package com.deck.lab.backend.repository;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.deck.lab.backend.model.FormatRules;
+
+import java.util.List;
+
+public interface FormatRulesRepository extends JpaRepository<FormatRules, Long> {
+    @Cacheable(value = "formatRules", key = "#formatName")
+    List<FormatRules> findByFormatName(String formatName);
+}
