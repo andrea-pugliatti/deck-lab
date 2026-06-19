@@ -3,7 +3,7 @@ package com.deck.lab.backend.mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.CardDTO;
+import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.model.Card;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +36,7 @@ class CardMapperTest {
         card.setLinkVal(0);
         card.setScale(0);
 
-        CardDTO dto = cardMapper.toDto(card);
+        CardDto dto = cardMapper.toDto(card);
 
         assertNotNull(dto);
         assertEquals(card.getId(), dto.getId());
@@ -63,23 +63,22 @@ class CardMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsAllFields() {
-        CardDTO dto = new CardDTO(
-            15L,
-            "Dark Magician",
-            "Normal Monster",
-            "The ultimate wizard in terms of attack and defense.",
-            "Spellcaster",
-            "DARK",
-            "Dark Magician",
-            "/cards/images/2.jpg",
-            "/cards/images/cropped/2.jpg",
-            "normal",
-            2500,
-            2100,
-            7,
-            0,
-            0
-        );
+        CardDto dto = new CardDto();
+        dto.setId(15L);
+        dto.setName("Dark Magician");
+        dto.setType("Normal Monster");
+        dto.setDescription("The ultimate wizard in terms of attack and defense.");
+        dto.setRace("Spellcaster");
+        dto.setAttribute("DARK");
+        dto.setArchetype("Dark Magician");
+        dto.setImageUrl("/cards/images/2.jpg");
+        dto.setImageUrlCropped("/cards/images/cropped/2.jpg");
+        dto.setFrameType("normal");
+        dto.setAtk(2500);
+        dto.setDef(2100);
+        dto.setLevel(7);
+        dto.setLinkVal(0);
+        dto.setScale(0);
 
         Card card = cardMapper.toEntity(dto);
 
@@ -123,7 +122,7 @@ class CardMapperTest {
         card.setDef(2000);
         card.setLevel(7);
 
-        CardDTO dto = new CardDTO();
+        CardDto dto = new CardDto();
         dto.setName("Red-Eyes Black Dragon Updated");
         dto.setType("Effect Monster");
         dto.setDescription("Updated desc");
@@ -143,7 +142,7 @@ class CardMapperTest {
 
         // ID should NOT be updated by updateEntityFromDto method (remains 20L)
         assertEquals(20L, card.getId());
-        
+
         // Other fields should be updated
         assertEquals(dto.getName(), card.getName());
         assertEquals(dto.getType(), card.getType());
@@ -166,7 +165,7 @@ class CardMapperTest {
         Card card = new Card();
         // Should handle null gracefully
         cardMapper.updateEntityFromDto(null, card);
-        cardMapper.updateEntityFromDto(new CardDTO(), null);
+        cardMapper.updateEntityFromDto(new CardDto(), null);
         cardMapper.updateEntityFromDto(null, null);
     }
 }

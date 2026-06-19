@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deck.lab.backend.dto.CardDTO;
+import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.mapper.CardMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.service.CardService;
@@ -35,13 +35,13 @@ public class CardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CardDTO>> index(
+    public ResponseEntity<List<CardDto>> index(
             @RequestParam(value = "q", required = false) String name,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "attribute", required = false) String attribute,
             @RequestParam(value = "race", required = false) String race,
             @RequestParam(value = "archetype", required = false) String archetype) {
-        List<CardDTO> cards = service
+        List<CardDto> cards = service
                 .findAllOrWithFilters(name, type, attribute, race, archetype)
                 .stream()
                 .map(mapper::toDto)
@@ -50,7 +50,7 @@ public class CardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CardDTO> show(@PathVariable Long id) {
+    public ResponseEntity<CardDto> show(@PathVariable Long id) {
         if (!service.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -60,19 +60,19 @@ public class CardController {
     }
 
     @PostMapping
-    public ResponseEntity<CardDTO> create(@Valid @RequestBody CardDTO cardDTO) {
-        Card card = mapper.toEntity(cardDTO);
+    public ResponseEntity<CardDto> create(@Valid @RequestBody CardDto cardDto) {
+        Card card = mapper.toEntity(cardDto);
         Card savedCard = service.save(card);
         return new ResponseEntity<>(mapper.toDto(savedCard), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CardDTO> update(@PathVariable Long id, @Valid @RequestBody CardDTO cardDTO) {
+    public ResponseEntity<CardDto> update(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
         if (!service.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Card existingCard = service.getById(id);
-        mapper.updateEntityFromDto(cardDTO, existingCard);
+        mapper.updateEntityFromDto(cardDto, existingCard);
         Card updatedCard = service.edit(existingCard);
         return new ResponseEntity<>(mapper.toDto(updatedCard), HttpStatus.OK);
     }

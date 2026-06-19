@@ -2,17 +2,17 @@ package com.deck.lab.backend.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.CardDTO;
+import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.model.Card;
 
 @Component
 public class CardMapper {
 
-    public CardDTO toDto(Card card) {
+    public CardDto toDto(Card card) {
         if (card == null) {
             return null;
         }
-        CardDTO dto = new CardDTO();
+        CardDto dto = new CardDto();
         dto.setId(card.getId());
         dto.setName(card.getName());
         dto.setType(card.getType());
@@ -31,7 +31,7 @@ public class CardMapper {
         return dto;
     }
 
-    public Card toEntity(CardDTO dto) {
+    public Card toEntity(CardDto dto) {
         if (dto == null) {
             return null;
         }
@@ -54,7 +54,7 @@ public class CardMapper {
         return card;
     }
 
-    public void updateEntityFromDto(CardDTO dto, Card card) {
+    public void updateEntityFromDto(CardDto dto, Card card) {
         if (dto == null || card == null) {
             return;
         }
