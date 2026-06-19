@@ -215,13 +215,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void triggerImageDownloads(Long apiId, String remoteImageUrl, String remoteImageUrlCropped) {
         if (remoteImageUrl != null) {
-            Path fullPath = Paths.get("src/main/resources/static/cards/images/", apiId + ".jpg");
+            Path fullPath = Paths.get("cards/images/", apiId + ".jpg");
             if (!Files.exists(fullPath)) {
                 imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrl, fullPath));
             }
         }
         if (remoteImageUrlCropped != null) {
-            Path croppedPath = Paths.get("src/main/resources/static/cards/images/", "cropped", apiId + ".jpg");
+            Path croppedPath = Paths.get("cards/images/", "cropped", apiId + ".jpg");
             if (!Files.exists(croppedPath)) {
                 imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrlCropped, croppedPath));
             }
