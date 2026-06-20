@@ -1,5 +1,6 @@
 import DeckCard from "../components/DeckCard";
 import SearchBar from "../components/SearchBar";
+import { Link } from "react-router";
 
 interface DeckMock {
   name: string;
@@ -81,12 +82,12 @@ export default function Home() {
           <h2 className="font-display text-2xl font-bold tracking-wider text-white">
             Trending Decks
           </h2>
-          <a
-            href="#trending"
+          <Link
+            to="/decks"
             className="text-cyan-accent no-underline text-sm font-medium hover:text-cyan-hover hover:underline transition-colors duration-200"
           >
             View All Decks
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

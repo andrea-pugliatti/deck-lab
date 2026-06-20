@@ -1,4 +1,5 @@
 import { FlaskConical } from "lucide-react";
+import { Link } from "react-router";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -25,19 +26,19 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 list-none p-0 text-sm">
             <li>
-              <a href="/" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link to="/" className="hover:text-cyan-hover transition-colors duration-200">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#decks" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link to="/decks" className="hover:text-cyan-hover transition-colors duration-200">
                 Decks
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#cards" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link to="/cards" className="hover:text-cyan-hover transition-colors duration-200">
                 Cards
-              </a>
+              </Link>
             </li>
             <li>
               <a href="#simulator" className="hover:text-cyan-hover transition-colors duration-200">
