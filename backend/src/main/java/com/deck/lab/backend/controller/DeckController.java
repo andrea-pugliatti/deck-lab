@@ -42,6 +42,11 @@ public class DeckController {
         return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
     }
 
+    @PostMapping("/validate")
+    public ResponseEntity<Void> validate(@Valid @RequestBody DeckDto deckDto) {
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<DeckDto> update(@PathVariable Long id, @Valid @RequestBody DeckDto deckDto,
             @AuthenticationPrincipal User user) {

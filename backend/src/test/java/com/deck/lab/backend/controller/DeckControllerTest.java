@@ -53,6 +53,7 @@ public class DeckControllerTest {
     private User testUser;
     private User unauthorizedUser;
     private Card testCard;
+    private List<Card> testCards;
     private Deck testDeck;
     private UsernamePasswordAuthenticationToken testUserAuth;
     private UsernamePasswordAuthenticationToken unauthorizedUserAuth;
@@ -67,17 +68,22 @@ public class DeckControllerTest {
         unauthorizedUser = userRepository.save(unauthorizedUser);
         unauthorizedUserAuth = new UsernamePasswordAuthenticationToken(unauthorizedUser, null, Collections.emptyList());
 
-        testCard = new Card();
-        testCard.setName("ControllerTest Card");
-        testCard.setType("Normal Monster");
-        testCard.setFrameType("normal");
-        testCard.setDescription("A test card for controller.");
-        testCard.setRace("Dragon");
-        testCard.setAttribute("LIGHT");
-        testCard.setAtk(1000);
-        testCard.setDef(1000);
-        testCard.setLevel(4);
-        testCard = cardRepository.save(testCard);
+        testCards = new ArrayList<>();
+        for (int i = 1; i <= 15; i++) {
+            Card card = new Card();
+            card.setName("ControllerTest Card " + i);
+            card.setType("Normal Monster");
+            card.setFrameType("normal");
+            card.setDescription("A test card for controller " + i);
+            card.setRace("Dragon");
+            card.setAttribute("LIGHT");
+            card.setAtk(1000);
+            card.setDef(1000);
+            card.setLevel(4);
+            card = cardRepository.save(card);
+            testCards.add(card);
+        }
+        testCard = testCards.get(0);
 
         testDeck = new Deck("ControllerTest Deck", "A test deck for controller", "TCG", testUser);
         DeckCard dc = new DeckCard(testDeck, testCard, "MAIN", 3);
@@ -123,18 +129,25 @@ public class DeckControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    private List<DeckCardDto> createValidDeckCards() {
+        List<DeckCardDto> cardDtos = new ArrayList<>();
+        for (int i = 0; i < 14; i++) {
+            DeckCardDto cardDto = new DeckCardDto();
+            cardDto.setCardId(testCards.get(i).getId());
+            cardDto.setSection("MAIN");
+            cardDto.setQuantity(3);
+            cardDtos.add(cardDto);
+        }
+        return cardDtos;
+    }
+
     @Test
     void testCreateDeck() throws Exception {
-        DeckCardDto cardDto = new DeckCardDto();
-        cardDto.setCardId(testCard.getId());
-        cardDto.setSection("MAIN");
-        cardDto.setQuantity(3);
-
         DeckDto newDeckDto = new DeckDto();
         newDeckDto.setName("New Deck");
         newDeckDto.setFormatName("Goat");
         newDeckDto.setDescription("MockMvc test creation");
-        newDeckDto.setDeckCards(List.of(cardDto));
+        newDeckDto.setDeckCards(createValidDeckCards());
 
         mockMvc.perform(post("/api/decks")
                 .with(authentication(testUserAuth))
@@ -162,17 +175,55 @@ public class DeckControllerTest {
     }
 
     @Test
+    void testValidateDeckSuccess() throws Exception {
+        DeckDto validDto = new DeckDto();
+        validDto.setName("Valid Deck");
+        validDto.setFormatName("Goat");
+        validDto.setDescription("Validation success test");
+        validDto.setDeckCards(createValidDeckCards());
+
+        mockMvc.perform(post("/api/decks/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(validDto))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testValidateDeckFailure() throws Exception {
+        DeckDto invalidDto = new DeckDto();
+        invalidDto.setName(""); // Blank name is invalid
+        invalidDto.setFormatName("TCG");
+
+        mockMvc.perform(post("/api/decks/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidDto))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testUpdateDeckAuthorized() throws Exception {
-        DeckCardDto cardDto = new DeckCardDto();
-        cardDto.setCardId(testCard.getId());
-        cardDto.setSection("SIDE"); // Section updated
-        cardDto.setQuantity(1); // Quantity updated
+        List<DeckCardDto> cardDtos = new ArrayList<>();
+        DeckCardDto sideCard = new DeckCardDto();
+        sideCard.setCardId(testCards.get(0).getId());
+        sideCard.setSection("SIDE");
+        sideCard.setQuantity(1);
+        cardDtos.add(sideCard);
+
+        for (int i = 1; i <= 14; i++) {
+            DeckCardDto mainCard = new DeckCardDto();
+            mainCard.setCardId(testCards.get(i).getId());
+            mainCard.setSection("MAIN");
+            mainCard.setQuantity(3);
+            cardDtos.add(mainCard);
+        }
 
         DeckDto updateDto = new DeckDto();
         updateDto.setName("ControllerTest Deck Updated");
         updateDto.setFormatName("Edison");
         updateDto.setDescription("Updated desc");
-        updateDto.setDeckCards(List.of(cardDto));
+        updateDto.setDeckCards(cardDtos);
 
         mockMvc.perform(put("/api/decks/" + testDeck.getId())
                 .with(authentication(testUserAuth))
@@ -191,6 +242,7 @@ public class DeckControllerTest {
         DeckDto updateDto = new DeckDto();
         updateDto.setName("Hacked Deck");
         updateDto.setFormatName("TCG");
+        updateDto.setDeckCards(createValidDeckCards());
 
         mockMvc.perform(put("/api/decks/" + testDeck.getId())
                 .with(authentication(unauthorizedUserAuth))

@@ -1,0 +1,47 @@
+info:
+  name: Validate Deck
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/decks/validate"
+  headers:
+    - name: accept
+      value: application/json
+    - name: content-type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Validation Test Deck",
+        "description": "A test deck to validate via API",
+        "formatName": "TCG",
+        "deckCards": [
+          {
+            "cardId": {{createdCardId}},
+            "section": "MAIN",
+            "quantity": 3
+          }
+        ]
+      }
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        if (!bru.getVar("createdCardId")) {
+          bru.setVar("createdCardId", 1);
+        }
+    - type: tests
+      code: |-
+        test("Response should be 200 OK or 400 Bad Request depending on validity", function() {
+          expect([200, 400]).to.include(res.status);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

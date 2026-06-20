@@ -533,7 +533,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         cards.add(new DeckCardInfo("Ronintoadin", "MAIN", 3));
         cards.add(new DeckCardInfo("Poison Draw Frog", "MAIN", 3));
         cards.add(new DeckCardInfo("Fishborg Blaster", "MAIN", 2));
-        cards.add(new DeckCardInfo("Treeborn Frog", "MAIN", 1));
+        cards.add(new DeckCardInfo("Treeborn Frog", "MAIN", 2));
         cards.add(new DeckCardInfo("Mass Driver", "MAIN", 3));
         cards.add(new DeckCardInfo("Moray of Greed", "MAIN", 3));
         cards.add(new DeckCardInfo("Hand Destruction", "MAIN", 3));
