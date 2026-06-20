@@ -3,6 +3,7 @@ package com.deck.lab.backend.dto;
 import com.deck.lab.backend.dto.validation.ValidDeck;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class DeckDto {
 
     @Valid
     private List<DeckCardDto> deckCards = new ArrayList<>();
+
+    private LocalDateTime updatedAt;
 
     public DeckDto() {
     }
@@ -70,5 +73,13 @@ public class DeckDto {
 
     public void setDeckCards(List<DeckCardDto> deckCards) {
         this.deckCards = deckCards;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

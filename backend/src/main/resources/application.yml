@@ -16,3 +16,13 @@ spring:
 
 app.seed.cards: true
 app.upload-dir: ${IMAGE_UPLOAD_DIR:data/images}
+
+jwt:
+    secret: ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=
+    expiration: 900000
+
+refresh-token:
+    duration-days: 7
+    max-per-user: 5
+    cleanup-schedule: "0 0 3 * * *"
+

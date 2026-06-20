@@ -31,6 +31,9 @@ public class DeckMapper {
                     dc.getSection(),
                     dc.getQuantity()));
         }
-        return new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), deck.getFormatName(), cardDtos);
+        DeckDto dto = new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), deck.getFormatName(),
+                cardDtos);
+        dto.setUpdatedAt(deck.getUpdatedAt());
+        return dto;
     }
 }

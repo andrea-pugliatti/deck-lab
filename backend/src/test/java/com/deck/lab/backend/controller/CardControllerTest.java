@@ -17,6 +17,12 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.deck.lab.backend.model.User;
+import com.deck.lab.backend.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.util.Collections;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -29,12 +35,21 @@ public class CardControllerTest {
     private CardRepository cardRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private Card testCard;
+    private User testUser;
+    private UsernamePasswordAuthenticationToken testUserAuth;
 
     @BeforeEach
     void setUp() {
+        testUser = new User("card-test-user", "password", "card-test-user@example.com");
+        testUser = userRepository.save(testUser);
+        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());
+
         testCard = new Card();
         testCard.setName("MyUniqueCard");
         testCard.setType("Normal Monster");
@@ -121,6 +136,7 @@ public class CardControllerTest {
         newCard.setLevel(7);
 
         mockMvc.perform(post("/api/cards")
+                .with(authentication(testUserAuth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newCard))
                 .accept(MediaType.APPLICATION_JSON))
@@ -134,6 +150,7 @@ public class CardControllerTest {
         testCard.setName("MyUniqueCardUpdated");
 
         mockMvc.perform(put("/api/cards/" + testCard.getId())
+                .with(authentication(testUserAuth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testCard))
                 .accept(MediaType.APPLICATION_JSON))
@@ -143,7 +160,8 @@ public class CardControllerTest {
 
     @Test
     void testDeleteCard() throws Exception {
-        mockMvc.perform(delete("/api/cards/" + testCard.getId()))
+        mockMvc.perform(delete("/api/cards/" + testCard.getId())
+                .with(authentication(testUserAuth)))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/cards/" + testCard.getId()))

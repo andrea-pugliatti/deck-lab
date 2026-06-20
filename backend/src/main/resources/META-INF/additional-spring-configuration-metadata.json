@@ -1,12 +1,39 @@
-{"properties": [
-  {
-    "name": "app.seed.cards",
-    "type": "java.lang.String",
-    "description": "Switch to seed database from API"
-  },
-  {
-    "name": "app.upload-dir",
-    "type": "java.lang.String",
-    "description": "Image upload directory"
-  }
-]}
+{
+  "properties": [
+    {
+      "name": "app.seed.cards",
+      "type": "java.lang.String",
+      "description": "Switch to seed database from API"
+    },
+    {
+      "name": "app.upload-dir",
+      "type": "java.lang.String",
+      "description": "Image upload directory"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.String",
+      "description": "Access token expiration time"
+    },
+    {
+      "name": "refresh-token.duration-days",
+      "type": "java.lang.String",
+      "description": "Refresh token duration in days"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret key"
+    },
+    {
+      "name": "refresh-token.cleanup-schedule",
+      "type": "java.lang.String",
+      "description": "Cleanup schedule for old refresh tokens"
+    },
+    {
+      "name": "refresh-token.max-per-user",
+      "type": "java.lang.String",
+      "description": "Max number of refresh tokens per user"
+    }
+  ]
+}
