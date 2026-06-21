@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import CardGridItem from "../components/CardGridItem";
-import type { CardGridItemProps } from "../components/CardGridItem";
 import PageHeader from "../components/PageHeader";
 import CardFilters from "../components/CardFilters";
 import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { useFetch } from "../hooks/useFetch";
 import { useDebounce } from "../hooks/useDebounce";
+import type { Card, Page } from "../types";
 
 export default function Cards() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,13 +21,11 @@ export default function Cards() {
   const types = ["ALL", "Monster", "Spell", "Trap"];
   const attributes = ["ALL", "LIGHT", "DARK", "FIRE", "WIND"];
 
-  // Sync state if url parameters update externally
   useEffect(() => {
     const q = searchParams.get("q") || "";
     setSearchQuery(q);
   }, [searchParams]);
 
-  // Sync debounced search to URL and reset page
   useEffect(() => {
     const currentQ = searchParams.get("q") || "";
     if (debouncedQuery.trim() !== currentQ) {
@@ -50,7 +48,6 @@ export default function Cards() {
     setPage(0);
   };
 
-  // Construct query parameters for the API call
   const queryParams = new URLSearchParams();
   const qParam = searchParams.get("q") || "";
   if (qParam.trim()) {
@@ -65,13 +62,7 @@ export default function Cards() {
   queryParams.append("page", page.toString());
   queryParams.append("size", "20");
 
-  const { data, loading, error } = useFetch<{
-    content: CardGridItemProps[];
-    totalElements: number;
-    totalPages: number;
-    number: number;
-    size: number;
-  }>(`/api/cards?${queryParams.toString()}`);
+  const { data, loading, error } = useFetch<Page<Card>>(`/api/cards?${queryParams.toString()}`);
 
   const cards = data?.content || [];
   const totalElements = data?.totalElements || 0;
@@ -82,14 +73,12 @@ export default function Cards() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-      {/* Page Header */}
       <PageHeader
         title="Card Database"
         description="Browse, filter, and search the entire Yu-Gi-Oh! catalog."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Left Filter Sidebar */}
         <aside className="lg:col-span-1 space-y-6">
           <CardFilters
             selectedType={selectedType}
@@ -101,9 +90,7 @@ export default function Cards() {
           />
         </aside>
 
-        {/* Right Card Grid Area */}
         <main className="lg:col-span-3 space-y-6">
-          {/* Top Search bar */}
           <div className="group relative flex items-center bg-dark-surface border border-border-dim rounded px-4 py-2.5 transition-all duration-300 hover:border-border-glow focus-within:border-cyan-accent w-full">
             <Search className="w-5 h-5 text-slate-500 mr-2 group-focus-within:text-cyan-accent" />
             <input
@@ -115,14 +102,12 @@ export default function Cards() {
             />
           </div>
 
-          {/* Results Summary */}
           <div className="flex justify-between items-center text-xs text-slate-500">
             <span>
               Showing {totalElements > 0 ? `${startIdx}-${endIdx}` : "0"} of {totalElements} Cards
             </span>
           </div>
 
-          {/* Loading, Error, and Grid layout */}
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <div className="w-10 h-10 border-4 border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin"></div>
@@ -147,7 +132,6 @@ export default function Cards() {
                 ))}
               </div>
 
-              {/* Pagination controls */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-4 mt-12 pt-6 border-t border-border-dim/50">
                   <button

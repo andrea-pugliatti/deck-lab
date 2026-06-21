@@ -34,6 +34,9 @@ public class DeckMapper {
         DeckDto dto = new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), deck.getFormatName(),
                 cardDtos);
         dto.setUpdatedAt(deck.getUpdatedAt());
+        if (deck.getUser() != null) {
+            dto.setCreatorUsername(deck.getUser().getUsername());
+        }
         return dto;
     }
 }

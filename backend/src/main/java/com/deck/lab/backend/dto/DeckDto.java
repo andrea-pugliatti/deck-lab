@@ -24,6 +24,8 @@ public class DeckDto {
 
     private LocalDateTime updatedAt;
 
+    private String creatorUsername;
+
     public DeckDto() {
     }
 
@@ -81,5 +83,13 @@ public class DeckDto {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getCreatorUsername() {
+        return creatorUsername;
+    }
+
+    public void setCreatorUsername(String creatorUsername) {
+        this.creatorUsername = creatorUsername;
     }
 }

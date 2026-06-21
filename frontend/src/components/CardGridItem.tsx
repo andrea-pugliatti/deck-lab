@@ -1,21 +1,5 @@
 import { Star, Shield, Flame } from "lucide-react";
-
-export interface CardGridItemProps {
-  id: number;
-  name: string;
-  type: string;
-  description: string;
-  race: string;
-  attribute: string;
-  archetype?: string;
-  imageUrl?: string;
-  imageUrlCropped?: string;
-  atk?: number;
-  def?: number;
-  level?: number;
-  linkVal?: number;
-  scale?: number;
-}
+import type { Card } from "../types";
 
 export default function CardGridItem({
   name,
@@ -28,7 +12,7 @@ export default function CardGridItem({
   def,
   level,
   imageUrlCropped,
-}: CardGridItemProps) {
+}: Card) {
   const isMonster = type.toLowerCase().includes("monster");
   const isSpell = type.toLowerCase().includes("spell");
   const isTrap = type.toLowerCase().includes("trap");

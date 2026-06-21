@@ -5,20 +5,7 @@ import FormatSelector from "../components/FormatSelector";
 import { Search, Plus, Filter } from "lucide-react";
 import { useFetch } from "../hooks/useFetch";
 import { useAuth } from "../context/AuthContext";
-
-interface BackendDeck {
-  id: number;
-  name: string;
-  description: string;
-  formatName: string;
-  updatedAt?: string;
-  deckCards: Array<{
-    id: number;
-    cardId: number;
-    name: string;
-    quantity: number;
-  }>;
-}
+import type { BackendDeck } from "../types";
 
 function formatRelativeTime(dateString?: string): string {
   if (!dateString) return "some time ago";

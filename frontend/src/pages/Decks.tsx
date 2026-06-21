@@ -5,20 +5,7 @@ import FormatSelector from "../components/FormatSelector";
 import { Search, Filter } from "lucide-react";
 import { useFetch } from "../hooks/useFetch";
 import { useDebounce } from "../hooks/useDebounce";
-
-interface BackendDeck {
-  id: number;
-  name: string;
-  description: string;
-  formatName: string;
-  updatedAt?: string;
-  deckCards: Array<{
-    id: number;
-    cardId: number;
-    name: string;
-    quantity: number;
-  }>;
-}
+import type { BackendDeck } from "../types";
 
 function formatRelativeTime(dateString?: string): string {
   if (!dateString) return "some time ago";
@@ -47,7 +34,6 @@ export default function Decks() {
   const debouncedQuery = useDebounce(searchQuery, 400);
   const formats = ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
-  // Construct query parameters for the API call
   const queryParams = new URLSearchParams();
   if (debouncedQuery.trim()) {
     queryParams.append("q", debouncedQuery.trim());

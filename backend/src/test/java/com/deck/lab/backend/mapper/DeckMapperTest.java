@@ -71,6 +71,7 @@ class DeckMapperTest {
         assertEquals(deck.getName(), dto.getName());
         assertEquals(deck.getDescription(), dto.getDescription());
         assertEquals(deck.getFormatName(), dto.getFormatName());
+        assertEquals("yugi", dto.getCreatorUsername());
         
         List<DeckCardDto> cardDtos = dto.getDeckCards();
         assertNotNull(cardDtos);

@@ -1,11 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { setAccessToken } from "../services/api";
-
-interface User {
-  username: string;
-  email: string;
-}
+import type { User } from "../types";
 
 interface AuthContextType {
   user: User | null;
