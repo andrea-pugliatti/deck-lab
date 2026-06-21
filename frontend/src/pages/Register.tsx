@@ -1,17 +1,53 @@
-import { Link } from "react-router";
-import { User, Mail, Lock } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { User, Mail, Lock, AlertTriangle } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await register(username, email, password);
+      navigate("/decks");
+    } catch (err: any) {
+      setError(err.message || "Registration failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="text-center mb-6">
         <h2 className="font-display text-2xl font-bold text-white mb-1">Create Account</h2>
-        <p className="text-xs text-slate-400">
-          Register your profile to start constructing decks.
-        </p>
+        <p className="text-xs text-slate-400">Register your profile to start constructing decks.</p>
       </div>
 
-      <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+      {error && (
+        <div className="flex items-center gap-2 bg-red-900/30 border border-red-500/50 text-red-200 p-3 rounded text-xs mb-4">
+          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
             Username
@@ -22,6 +58,9 @@ export default function Register() {
               type="text"
               placeholder="e.g. SetoKaiba"
               required
+              disabled={submitting}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-600 w-full"
             />
           </div>
@@ -37,6 +76,9 @@ export default function Register() {
               type="email"
               placeholder="e.g. kaiba@corp.com"
               required
+              disabled={submitting}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-600 w-full"
             />
           </div>
@@ -52,6 +94,9 @@ export default function Register() {
               type="password"
               placeholder="••••••••"
               required
+              disabled={submitting}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-600 w-full"
             />
           </div>
@@ -67,6 +112,9 @@ export default function Register() {
               type="password"
               placeholder="••••••••"
               required
+              disabled={submitting}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-600 w-full"
             />
           </div>
@@ -74,9 +122,10 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-gold-accent hover:bg-gold-hover text-dark-bg py-2.5 rounded font-sans font-semibold text-sm cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-0.5 mt-4"
+          disabled={submitting}
+          className="w-full bg-gold-accent hover:bg-gold-hover text-dark-bg py-2.5 rounded font-sans font-semibold text-sm cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-0.5 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Account
+          {submitting ? "Registering..." : "Create Account"}
         </button>
       </form>
 

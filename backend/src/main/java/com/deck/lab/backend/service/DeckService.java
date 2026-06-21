@@ -14,6 +14,9 @@ import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.mapper.DeckMapper;
 
+import org.springframework.data.jpa.domain.Specification;
+import com.deck.lab.backend.repository.specification.DeckSpecification;
+
 import java.util.*;
 
 @Service
@@ -32,8 +35,13 @@ public class DeckService {
         this.deckMapper = deckMapper;
     }
 
-    public List<DeckDto> getDecksByUser(User user) {
-        List<Deck> decks = deckRepository.findByUserWithCards(user);
+    public List<DeckDto> findAllWithFilters(String name, String format, String username) {
+        Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
+                .and(DeckSpecification.hasName(name))
+                .and(DeckSpecification.hasFormat(format))
+                .and(DeckSpecification.hasUser(username));
+
+        List<Deck> decks = deckRepository.findAllOrderByUpdatedAt(spec);
         List<DeckDto> dtos = new ArrayList<>();
         for (Deck deck : decks) {
             dtos.add(deckMapper.toDto(deck));
@@ -41,9 +49,11 @@ public class DeckService {
         return dtos;
     }
 
-    public DeckDto getDeckById(Long id, User user) {
-        Deck deck = deckRepository.findByIdAndUserWithCards(id, user)
-                .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
+    public DeckDto getDeckById(Long id) {
+        Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
+                .and((root, query, builder) -> builder.equal(root.get("id"), id));
+        Deck deck = deckRepository.findOne(spec)
+                .orElseThrow(() -> new NoSuchElementException("Deck not found"));
         return deckMapper.toDto(deck);
     }
 

@@ -2,6 +2,7 @@ package com.deck.lab.backend.security;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -29,6 +30,9 @@ import org.springframework.http.HttpMethod;
 @EnableScheduling
 public class SecurityConfig {
 
+    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    private String allowedOrigins;
+
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
@@ -46,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/cards/images/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cards/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/decks/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/decks/validate").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -73,9 +78,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        String[] originsArray = allowedOrigins.split(",");
+        for (int i = 0; i < originsArray.length; i++) {
+            originsArray[i] = originsArray[i].trim();
+        }
+        configuration.setAllowedOrigins(Arrays.asList(originsArray));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

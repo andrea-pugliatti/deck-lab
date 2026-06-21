@@ -23,7 +23,6 @@ import jakarta.servlet.http.Cookie;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -97,16 +96,20 @@ public class AuthControllerTest {
 
         @Test
         void testAccessProtectedResourceWithAndWithoutToken() throws Exception {
-                mockMvc.perform(get("/api/decks")
+                mockMvc.perform(post("/api/decks")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{}")
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isForbidden());
 
                 String token = jwtService.generateToken(testUser.getEmail());
 
-                mockMvc.perform(get("/api/decks")
+                mockMvc.perform(post("/api/decks")
                                 .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{}")
                                 .accept(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isOk());
+                                .andExpect(status().isBadRequest());
         }
 
         @Test

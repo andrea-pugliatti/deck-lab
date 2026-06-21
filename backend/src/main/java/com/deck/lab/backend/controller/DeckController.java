@@ -24,14 +24,17 @@ public class DeckController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DeckDto>> index(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(deckService.getDecksByUser(user));
+    public ResponseEntity<List<DeckDto>> index(
+            @RequestParam(value = "q", required = false) String name,
+            @RequestParam(value = "format", required = false) String format,
+            @RequestParam(value = "username", required = false) String username) {
+        return ResponseEntity.ok(deckService.findAllWithFilters(name, format, username));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeckDto> show(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckDto> show(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(deckService.getDeckById(id, user));
+            return ResponseEntity.ok(deckService.getDeckById(id));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

@@ -34,6 +34,11 @@
       "name": "refresh-token.max-per-user",
       "type": "java.lang.String",
       "description": "Max number of refresh tokens per user"
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Allowed origins"
     }
   ]
 }

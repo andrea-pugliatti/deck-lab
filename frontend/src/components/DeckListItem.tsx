@@ -7,6 +7,7 @@ export interface DeckListItemProps {
   formatName: string;
   cardCount: number;
   updatedAt: string;
+  showActions?: boolean;
 }
 
 export default function DeckListItem({
@@ -15,6 +16,7 @@ export default function DeckListItem({
   formatName,
   cardCount,
   updatedAt,
+  showActions = true,
 }: DeckListItemProps) {
   return (
     <div className="bg-dark-surface border border-border-dim rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 hover:border-border-glow hover:shadow-md">
@@ -45,22 +47,24 @@ export default function DeckListItem({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 self-end md:self-center">
-        <button
-          className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent transition-all duration-200 cursor-pointer"
-          title="Edit Deck"
-          type="button"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-        <button
-          className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-red-400 hover:border-red-400/50 transition-all duration-200 cursor-pointer"
-          title="Delete Deck"
-          type="button"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
+      {showActions && (
+        <div className="flex items-center gap-2 self-end md:self-center">
+          <button
+            className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent transition-all duration-200 cursor-pointer"
+            title="Edit Deck"
+            type="button"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-red-400 hover:border-red-400/50 transition-all duration-200 cursor-pointer"
+            title="Delete Deck"
+            type="button"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

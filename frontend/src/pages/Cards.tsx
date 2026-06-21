@@ -3,125 +3,82 @@ import CardGridItem from "../components/CardGridItem";
 import type { CardGridItemProps } from "../components/CardGridItem";
 import PageHeader from "../components/PageHeader";
 import CardFilters from "../components/CardFilters";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearchParams } from "react-router";
-
-const MOCK_CARDS: CardGridItemProps[] = [
-  {
-    id: 1,
-    name: "Blue-Eyes White Dragon",
-    type: "Normal Monster",
-    description:
-      "This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale.",
-    race: "Dragon",
-    attribute: "LIGHT",
-    archetype: "Blue-Eyes",
-    atk: 3000,
-    def: 2500,
-    level: 8,
-  },
-  {
-    id: 2,
-    name: "Dark Magician",
-    type: "Normal Monster",
-    description: "The ultimate wizard in terms of attack and defense.",
-    race: "Spellcaster",
-    attribute: "DARK",
-    archetype: "Dark Magician",
-    atk: 2500,
-    def: 2100,
-    level: 7,
-  },
-  {
-    id: 3,
-    name: "Pot of Greed",
-    type: "Spell Card",
-    description: "Draw 2 cards.",
-    race: "Normal",
-    attribute: "SPELL",
-    atk: undefined,
-    def: undefined,
-  },
-  {
-    id: 4,
-    name: "Infinite Impermanence",
-    type: "Trap Card",
-    description:
-      "Target 1 face-up monster your opponent controls; negate its effects (until the end of this turn), then, if this card was Set before activation and is on the field at resolution, for the rest of this turn, all other Spell/Trap effects in this column are negated.",
-    race: "Normal",
-    attribute: "TRAP",
-    atk: undefined,
-    def: undefined,
-  },
-  {
-    id: 5,
-    name: "Snake-Eye Ash",
-    type: "Effect Monster",
-    description:
-      "If this card is Normal or Special Summoned: You can add 1 Level 1 FIRE monster from your Deck to your hand. You can send 2 face-up cards you control to the GY, including this card; Special Summon 1 'Snake-Eye' monster from your hand or Deck, except 'Snake-Eye Ash'.",
-    race: "Pyro",
-    attribute: "FIRE",
-    archetype: "Snake-Eye",
-    atk: 800,
-    def: 1000,
-    level: 1,
-  },
-  {
-    id: 6,
-    name: "Baronne de Fleur",
-    type: "Synchro Monster",
-    description:
-      "1 Tuner + 1+ non-Tuner monsters. Once per turn: You can target 1 card on the field; destroy it. Once while face-up on the field, when a card or effect is activated (Quick Effect): You can negate the activation, and if you do, destroy that card. Once per turn, during the Standby Phase: You can target 1 Level 9 or lower monster in your GY; return this card to the Extra Deck, and if you do, Special Summon that monster.",
-    race: "Warrior",
-    attribute: "WIND",
-    archetype: "Fleur",
-    atk: 3000,
-    def: 2400,
-    level: 10,
-  },
-];
+import { useFetch } from "../hooks/useFetch";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Cards() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const debouncedQuery = useDebounce(searchQuery, 400);
+
   const [selectedType, setSelectedType] = useState("ALL");
   const [selectedAttribute, setSelectedAttribute] = useState("ALL");
+  const [page, setPage] = useState(0);
 
   const types = ["ALL", "Monster", "Spell", "Trap"];
   const attributes = ["ALL", "LIGHT", "DARK", "FIRE", "WIND"];
 
   // Sync state if url parameters update externally
   useEffect(() => {
-    setSearchQuery(searchParams.get("q") || "");
+    const q = searchParams.get("q") || "";
+    setSearchQuery(q);
   }, [searchParams]);
 
-  const handleSearchChange = (val: string) => {
-    setSearchQuery(val);
-    if (val.trim()) {
-      setSearchParams({ q: val.trim() });
-    } else {
-      setSearchParams({});
+  // Sync debounced search to URL and reset page
+  useEffect(() => {
+    const currentQ = searchParams.get("q") || "";
+    if (debouncedQuery.trim() !== currentQ) {
+      if (debouncedQuery.trim()) {
+        setSearchParams({ q: debouncedQuery.trim() });
+      } else {
+        setSearchParams({});
+      }
+      setPage(0);
     }
+  }, [debouncedQuery, setSearchParams, searchParams]);
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    setPage(0);
   };
 
-  const filteredCards = MOCK_CARDS.filter((card) => {
-    const matchesSearch =
-      card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      card.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (card.archetype && card.archetype.toLowerCase().includes(searchQuery.toLowerCase()));
+  const handleAttributeChange = (attr: string) => {
+    setSelectedAttribute(attr);
+    setPage(0);
+  };
 
-    const matchesType =
-      selectedType === "ALL" || card.type.toLowerCase().includes(selectedType.toLowerCase());
+  // Construct query parameters for the API call
+  const queryParams = new URLSearchParams();
+  const qParam = searchParams.get("q") || "";
+  if (qParam.trim()) {
+    queryParams.append("q", qParam.trim());
+  }
+  if (selectedType !== "ALL") {
+    queryParams.append("type", selectedType);
+  }
+  if (selectedAttribute !== "ALL") {
+    queryParams.append("attribute", selectedAttribute);
+  }
+  queryParams.append("page", page.toString());
+  queryParams.append("size", "20");
 
-    const matchesAttribute =
-      selectedAttribute === "ALL" ||
-      card.attribute === selectedAttribute ||
-      (selectedAttribute === "SPELL" && card.type.includes("Spell")) ||
-      (selectedAttribute === "TRAP" && card.type.includes("Trap"));
+  const { data, loading, error } = useFetch<{
+    content: CardGridItemProps[];
+    totalElements: number;
+    totalPages: number;
+    number: number;
+    size: number;
+  }>(`/api/cards?${queryParams.toString()}`);
 
-    return matchesSearch && matchesType && matchesAttribute;
-  });
+  const cards = data?.content || [];
+  const totalElements = data?.totalElements || 0;
+  const totalPages = data?.totalPages || 0;
+
+  const startIdx = page * 20 + 1;
+  const endIdx = Math.min((page + 1) * 20, totalElements);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -136,9 +93,9 @@ export default function Cards() {
         <aside className="lg:col-span-1 space-y-6">
           <CardFilters
             selectedType={selectedType}
-            setSelectedType={setSelectedType}
+            setSelectedType={handleTypeChange}
             selectedAttribute={selectedAttribute}
-            setSelectedAttribute={setSelectedAttribute}
+            setSelectedAttribute={handleAttributeChange}
             types={types}
             attributes={attributes}
           />
@@ -153,7 +110,7 @@ export default function Cards() {
               type="text"
               placeholder="Search card name, type, description, or archetype..."
               value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-500 w-full"
             />
           </div>
@@ -161,17 +118,60 @@ export default function Cards() {
           {/* Results Summary */}
           <div className="flex justify-between items-center text-xs text-slate-500">
             <span>
-              Showing {filteredCards.length} of {MOCK_CARDS.length} Cards
+              Showing {totalElements > 0 ? `${startIdx}-${endIdx}` : "0"} of {totalElements} Cards
             </span>
           </div>
 
-          {/* Grid list */}
-          {filteredCards.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredCards.map((card) => (
-                <CardGridItem key={card.id} {...card} />
-              ))}
+          {/* Loading, Error, and Grid layout */}
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-10 h-10 border-4 border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin"></div>
             </div>
+          ) : error ? (
+            <div className="text-center py-12 bg-red-950/10 border border-red-500/20 rounded-lg p-6">
+              <p className="text-red-400 font-semibold mb-2">Failed to load cards</p>
+              <p className="text-xs text-slate-500 mb-4">{error.message}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 text-red-200 border border-red-500/50 rounded text-xs transition-colors duration-200 cursor-pointer"
+                type="button"
+              >
+                Retry
+              </button>
+            </div>
+          ) : cards.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {cards.map((card) => (
+                  <CardGridItem key={card.id} {...card} />
+                ))}
+              </div>
+
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 mt-12 pt-6 border-t border-border-dim/50">
+                  <button
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:border-border-dim transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+                    type="button"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <span className="text-sm text-slate-400 font-semibold">
+                    Page {page + 1} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                    disabled={page >= totalPages - 1}
+                    className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:border-border-dim transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+                    type="button"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-20 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
               <Filter className="w-10 h-10 text-slate-600 mx-auto mb-3" />

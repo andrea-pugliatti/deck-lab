@@ -72,18 +72,18 @@ class DeckServiceTest {
 
     @Test
     void getDecksByUser_returnsMatchingDecks() {
-        List<DeckDto> result = deckService.getDecksByUser(testUser);
+        List<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername());
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("ServiceTest Deck", result.get(0).getName());
 
-        List<DeckDto> otherResult = deckService.getDecksByUser(unauthorizedUser);
+        List<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername());
         assertTrue(otherResult.isEmpty());
     }
 
     @Test
-    void getDeckById_whenAuthorized_returnsDeckDto() {
-        DeckDto result = deckService.getDeckById(testDeck.getId(), testUser);
+    void getDeckById_returnsDeckDto() {
+        DeckDto result = deckService.getDeckById(testDeck.getId());
         assertNotNull(result);
         assertEquals(testDeck.getId(), result.getId());
         assertEquals("ServiceTest Deck", result.getName());
@@ -92,16 +92,9 @@ class DeckServiceTest {
     }
 
     @Test
-    void getDeckById_whenUnauthorized_throwsNoSuchElementException() {
-        assertThrows(NoSuchElementException.class, () -> {
-            deckService.getDeckById(testDeck.getId(), unauthorizedUser);
-        });
-    }
-
-    @Test
     void getDeckById_whenDeckDoesNotExist_throwsNoSuchElementException() {
         assertThrows(NoSuchElementException.class, () -> {
-            deckService.getDeckById(999999L, testUser);
+            deckService.getDeckById(999999L);
         });
     }
 

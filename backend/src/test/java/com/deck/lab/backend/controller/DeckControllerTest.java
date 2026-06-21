@@ -93,8 +93,7 @@ public class DeckControllerTest {
 
     @Test
     void testGetAllDecks() throws Exception {
-        mockMvc.perform(get("/api/decks")
-                .with(authentication(testUserAuth))
+        mockMvc.perform(get("/api/decks?username=" + testUser.getUsername())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -114,11 +113,12 @@ public class DeckControllerTest {
     }
 
     @Test
-    void testGetDeckByIdUnauthorized() throws Exception {
+    void testGetDeckByIdPublicly() throws Exception {
         mockMvc.perform(get("/api/decks/" + testDeck.getId())
-                .with(authentication(unauthorizedUserAuth))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("ControllerTest Deck")))
+                .andExpect(jsonPath("$.formatName", is("TCG")));
     }
 
     @Test

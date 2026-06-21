@@ -2,9 +2,9 @@ import { useState } from "react";
 import DeckListItem from "../components/DeckListItem";
 import PageHeader from "../components/PageHeader";
 import FormatSelector from "../components/FormatSelector";
-import { Search, Filter } from "lucide-react";
+import { Search, Plus, Filter } from "lucide-react";
 import { useFetch } from "../hooks/useFetch";
-import { useDebounce } from "../hooks/useDebounce";
+import { useAuth } from "../context/AuthContext";
 
 interface BackendDeck {
   id: number;
@@ -41,35 +41,47 @@ function formatRelativeTime(dateString?: string): string {
   }
 }
 
-export default function Decks() {
+export default function MyDecks() {
+  const { user } = useAuth();
   const [selectedFormat, setSelectedFormat] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const debouncedQuery = useDebounce(searchQuery, 400);
   const formats = ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
-  // Construct query parameters for the API call
-  const queryParams = new URLSearchParams();
-  if (debouncedQuery.trim()) {
-    queryParams.append("q", debouncedQuery.trim());
-  }
-  if (selectedFormat !== "ALL") {
-    queryParams.append("format", selectedFormat);
-  }
-
-  const { data, loading, error } = useFetch<BackendDeck[]>(`/api/decks?${queryParams.toString()}`);
+  const { data, loading, error } = useFetch<BackendDeck[]>(
+    user?.username ? `/api/decks?username=${encodeURIComponent(user.username)}` : null,
+  );
   const decks = data || [];
+
+  const filteredDecks = decks.filter((deck) => {
+    const matchesFormat =
+      selectedFormat === "ALL" || deck.formatName.toLowerCase() === selectedFormat.toLowerCase();
+
+    const matchesSearch =
+      deck.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (deck.description && deck.description.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return matchesFormat && matchesSearch;
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <PageHeader
-        title="Public Decks"
-        description="Browse, filter, and discover community-built Yu-Gi-Oh! decks."
-      />
+        title="My Decks"
+        description="Create, edit, and manage your deck builds and format experiments."
+      >
+        <button
+          className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg px-5 py-2.5 rounded font-sans font-semibold text-sm cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+          type="button"
+        >
+          <Plus className="w-4 h-4" />
+          Construct Deck
+        </button>
+      </PageHeader>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <FormatSelector
           selectedFormat={selectedFormat}
-          setSelectedFormat={(fmt) => setSelectedFormat(fmt)}
+          setSelectedFormat={setSelectedFormat}
           formats={formats}
         />
 
@@ -77,7 +89,7 @@ export default function Decks() {
           <Search className="w-4 h-4 text-slate-500 mr-2 group-focus-within:text-cyan-accent" />
           <input
             type="text"
-            placeholder="Search decks..."
+            placeholder="Search my decks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-500 w-full"
@@ -101,9 +113,9 @@ export default function Decks() {
             Retry
           </button>
         </div>
-      ) : decks.length > 0 ? (
+      ) : filteredDecks.length > 0 ? (
         <div className="space-y-4">
-          {decks.map((deck) => {
+          {filteredDecks.map((deck) => {
             const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
             return (
               <DeckListItem
@@ -114,7 +126,7 @@ export default function Decks() {
                 formatName={deck.formatName}
                 cardCount={cardCount}
                 updatedAt={formatRelativeTime(deck.updatedAt)}
-                showActions={false}
+                showActions={true}
               />
             );
           })}
@@ -122,11 +134,9 @@ export default function Decks() {
       ) : (
         <div className="text-center py-16 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
           <Filter className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400 text-sm mb-1">
-            No decks found matching the search criteria.
-          </p>
+          <p className="text-slate-400 text-sm mb-1">No decks found matching the filter.</p>
           <p className="text-slate-600 text-xs">
-            Try adjusting your search query or format filter.
+            Try selecting a different format or start a new build.
           </p>
         </div>
       )}

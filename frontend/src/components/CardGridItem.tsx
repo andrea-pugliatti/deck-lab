@@ -9,6 +9,7 @@ export interface CardGridItemProps {
   attribute: string;
   archetype?: string;
   imageUrl?: string;
+  imageUrlCropped?: string;
   atk?: number;
   def?: number;
   level?: number;
@@ -26,6 +27,7 @@ export default function CardGridItem({
   atk,
   def,
   level,
+  imageUrlCropped,
 }: CardGridItemProps) {
   const isMonster = type.toLowerCase().includes("monster");
   const isSpell = type.toLowerCase().includes("spell");
@@ -43,10 +45,20 @@ export default function CardGridItem({
   return (
     <div className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-border-glow hover:shadow-md group">
       <div className="relative aspect-video bg-dark-surface-elevated flex items-center justify-center border-b border-border-dim overflow-hidden">
-        <div className="absolute inset-0 bg-radial from-slate-700/10 to-transparent pointer-events-none"></div>
-        <span className="font-display text-xs text-slate-500 font-bold uppercase tracking-widest group-hover:scale-105 transition-transform duration-300">
-          [ {archetype || race || "Artwork"} ]
-        </span>
+        {imageUrlCropped ? (
+          <img
+            src={`/api/${imageUrlCropped}`}
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-radial from-slate-700/10 to-transparent pointer-events-none"></div>
+            <span className="font-display text-xs text-slate-500 font-bold uppercase tracking-widest group-hover:scale-105 transition-transform duration-300">
+              [ {archetype || race || "Artwork"} ]
+            </span>
+          </>
+        )}
         {attribute && (
           <span className="absolute top-2 right-2 text-[9px] font-bold text-white bg-slate-900/60 px-1.5 py-0.5 rounded border border-white/10 uppercase">
             {attribute}
