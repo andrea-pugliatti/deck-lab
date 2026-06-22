@@ -19,7 +19,6 @@ export default function SearchBar() {
 
   const debouncedQuery = useDebounce(query, 300);
 
-  // Fetch suggestions only if query is 2 or more characters
   const fetchUrl =
     debouncedQuery.trim().length >= 2
       ? `/api/cards?q=${encodeURIComponent(debouncedQuery.trim())}&size=5`
@@ -48,7 +47,7 @@ export default function SearchBar() {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (query.trim()) {
       setIsOpen(false);

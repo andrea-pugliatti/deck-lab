@@ -1,7 +1,9 @@
-import { Star, Shield, Flame } from "lucide-react";
+import { Flame, Shield, Star } from "lucide-react";
+import { Link } from "react-router";
 import type { Card } from "../types";
 
 export default function CardGridItem({
+  id,
   name,
   type,
   description,
@@ -27,7 +29,10 @@ export default function CardGridItem({
   }
 
   return (
-    <div className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-border-glow hover:shadow-md group">
+    <Link
+      to={`/cards/${id}`}
+      className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-border-glow hover:shadow-md group no-underline text-inherit"
+    >
       <div className="relative aspect-video bg-dark-surface-elevated flex items-center justify-center border-b border-border-dim overflow-hidden">
         {imageUrlCropped ? (
           <img
@@ -84,6 +89,6 @@ export default function CardGridItem({
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 }

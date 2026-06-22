@@ -1,9 +1,9 @@
-import { useFetch } from "../hooks/useFetch";
+import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
+import { Link } from "react-router";
+import CardGridItem from "../components/CardGridItem";
 import DeckCard from "../components/DeckCard";
 import SearchBar from "../components/SearchBar";
-import CardGridItem from "../components/CardGridItem";
-import { Link } from "react-router";
-import { Sparkles, Trophy, Layers, Flame, Compass } from "lucide-react";
+import { useFetch } from "../hooks/useFetch";
 import type { BackendDeck, Card, Page } from "../types";
 
 export default function Home() {

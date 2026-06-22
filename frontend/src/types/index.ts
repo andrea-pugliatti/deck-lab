@@ -4,10 +4,18 @@ export interface User {
 }
 
 export interface DeckCardItem {
-  id: number;
+  id?: number;
   cardId: number;
   name: string;
   quantity: number;
+  type?: string;
+  description?: string;
+  race?: string;
+  attribute?: string;
+  archetype?: string;
+  imageUrl?: string;
+  imageUrlCropped?: string;
+  section: "MAIN" | "EXTRA" | "SIDE";
 }
 
 export interface BackendDeck {
@@ -43,4 +51,10 @@ export interface Page<T> {
   totalPages: number;
   number?: number;
   size?: number;
+}
+export interface CardFiltersState {
+  type: string;
+  attribute: string;
+  race: string;
+  archetype: string;
 }

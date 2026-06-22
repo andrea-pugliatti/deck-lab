@@ -1,6 +1,6 @@
+import { AlertTriangle, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { User, Mail, Lock, AlertTriangle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Register() {

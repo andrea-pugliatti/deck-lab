@@ -1,63 +1,115 @@
-import { useState, useEffect } from "react";
-import CardGridItem from "../components/CardGridItem";
-import PageHeader from "../components/PageHeader";
-import CardFilters from "../components/CardFilters";
-import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { Filter, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import { useFetch } from "../hooks/useFetch";
+import CardFilters from "../components/CardFilters";
+import CardGridItem from "../components/CardGridItem";
+import EmptyState from "../components/EmptyState";
+import ErrorAlert from "../components/ErrorAlert";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PageHeader from "../components/PageHeader";
+import Pagination from "../components/Pagination";
 import { useDebounce } from "../hooks/useDebounce";
+import { useFetch } from "../hooks/useFetch";
 import type { Card, Page } from "../types";
 
 export default function Cards() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
+
+  const selectedType = searchParams.get("type") || "ALL";
+  const selectedAttribute = searchParams.get("attribute") || "ALL";
+  const selectedRace = searchParams.get("race") || "ALL";
+  const selectedArchetype = searchParams.get("archetype") || "ALL";
+  const page = parseInt(searchParams.get("page") || "0", 10);
+
+  const urlQuery = searchParams.get("q") || "";
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
   const debouncedQuery = useDebounce(searchQuery, 400);
 
-  const [selectedType, setSelectedType] = useState("ALL");
-  const [selectedAttribute, setSelectedAttribute] = useState("ALL");
-  const [page, setPage] = useState(0);
+  const { data: typesData } = useFetch<string[]>("/api/cards/types");
+  const { data: attributesData } = useFetch<string[]>("/api/cards/attributes");
+  const { data: racesData } = useFetch<string[]>("/api/cards/races");
+  const { data: archetypesData } = useFetch<string[]>("/api/cards/archetypes");
 
-  const types = ["ALL", "Monster", "Spell", "Trap"];
-  const attributes = ["ALL", "LIGHT", "DARK", "FIRE", "WIND"];
+  const types = typesData || ["Monster", "Spell", "Trap"];
+  const attributes = attributesData || [
+    "LIGHT",
+    "DARK",
+    "FIRE",
+    "WIND",
+    "WATER",
+    "EARTH",
+    "DIVINE",
+  ];
+  const races = racesData || [];
+  const archetypes = archetypesData || [];
 
   useEffect(() => {
-    const q = searchParams.get("q") || "";
-    setSearchQuery(q);
-  }, [searchParams]);
+    setSearchQuery((prev) => (prev !== urlQuery ? urlQuery : prev));
+  }, [urlQuery]);
 
   useEffect(() => {
-    const currentQ = searchParams.get("q") || "";
-    if (debouncedQuery.trim() !== currentQ) {
+    const currentUrlQuery = searchParams.get("q") || "";
+    if (debouncedQuery.trim() !== currentUrlQuery.trim()) {
+      const params = new URLSearchParams(searchParams);
       if (debouncedQuery.trim()) {
-        setSearchParams({ q: debouncedQuery.trim() });
+        params.set("q", debouncedQuery.trim());
       } else {
-        setSearchParams({});
+        params.delete("q");
       }
-      setPage(0);
+      params.delete("page");
+      setSearchParams(params);
     }
-  }, [debouncedQuery, setSearchParams, searchParams]);
+  }, [debouncedQuery, searchParams, setSearchParams]);
 
-  const handleTypeChange = (type: string) => {
-    setSelectedType(type);
-    setPage(0);
+  const handleFilterChange = (newFilters: {
+    type: string;
+    attribute: string;
+    race: string;
+    archetype: string;
+  }) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (newFilters.type !== "ALL") params.set("type", newFilters.type);
+    else params.delete("type");
+
+    if (newFilters.attribute !== "ALL") params.set("attribute", newFilters.attribute);
+    else params.delete("attribute");
+
+    if (newFilters.race !== "ALL") params.set("race", newFilters.race);
+    else params.delete("race");
+
+    if (newFilters.archetype !== "ALL") params.set("archetype", newFilters.archetype);
+    else params.delete("archetype");
+
+    params.delete("page");
+    setSearchParams(params);
   };
 
-  const handleAttributeChange = (attr: string) => {
-    setSelectedAttribute(attr);
-    setPage(0);
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    if (newPage > 0) {
+      params.set("page", newPage.toString());
+    } else {
+      params.delete("page");
+    }
+    setSearchParams(params);
   };
 
   const queryParams = new URLSearchParams();
-  const qParam = searchParams.get("q") || "";
-  if (qParam.trim()) {
-    queryParams.append("q", qParam.trim());
+  if (urlQuery.trim()) {
+    queryParams.append("q", urlQuery.trim());
   }
   if (selectedType !== "ALL") {
     queryParams.append("type", selectedType);
   }
   if (selectedAttribute !== "ALL") {
     queryParams.append("attribute", selectedAttribute);
+  }
+  if (selectedRace !== "ALL") {
+    queryParams.append("race", selectedRace);
+  }
+  if (selectedArchetype !== "ALL") {
+    queryParams.append("archetype", selectedArchetype);
   }
   queryParams.append("page", page.toString());
   queryParams.append("size", "20");
@@ -81,12 +133,17 @@ export default function Cards() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <aside className="lg:col-span-1 space-y-6">
           <CardFilters
-            selectedType={selectedType}
-            setSelectedType={handleTypeChange}
-            selectedAttribute={selectedAttribute}
-            setSelectedAttribute={handleAttributeChange}
+            filters={{
+              type: selectedType,
+              attribute: selectedAttribute,
+              race: selectedRace,
+              archetype: selectedArchetype,
+            }}
+            onChange={handleFilterChange}
             types={types}
             attributes={attributes}
+            races={races}
+            archetypes={archetypes}
           />
         </aside>
 
@@ -109,21 +166,13 @@ export default function Cards() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <div className="w-10 h-10 border-4 border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin"></div>
-            </div>
+            <LoadingSpinner />
           ) : error ? (
-            <div className="text-center py-12 bg-red-950/10 border border-red-500/20 rounded-lg p-6">
-              <p className="text-red-400 font-semibold mb-2">Failed to load cards</p>
-              <p className="text-xs text-slate-500 mb-4">{error.message}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 text-red-200 border border-red-500/50 rounded text-xs transition-colors duration-200 cursor-pointer"
-                type="button"
-              >
-                Retry
-              </button>
-            </div>
+            <ErrorAlert
+              title="Failed to load cards"
+              message={error.message}
+              onRetry={() => window.location.reload()}
+            />
           ) : cards.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -132,36 +181,14 @@ export default function Cards() {
                 ))}
               </div>
 
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 mt-12 pt-6 border-t border-border-dim/50">
-                  <button
-                    onClick={() => setPage((p) => Math.max(0, p - 1))}
-                    disabled={page === 0}
-                    className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:border-border-dim transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
-                    type="button"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <span className="text-sm text-slate-400 font-semibold">
-                    Page {page + 1} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                    disabled={page >= totalPages - 1}
-                    className="p-2 border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent hover:border-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:border-border-dim transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
-                    type="button"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
+              <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
             </>
           ) : (
-            <div className="text-center py-20 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
-              <Filter className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-              <h3 className="text-slate-400 font-medium mb-1">No Cards Found</h3>
-              <p className="text-slate-600 text-xs">Try adjusting your filters or search terms.</p>
-            </div>
+            <EmptyState
+              icon={Filter}
+              title="No Cards Found"
+              description="Try adjusting your filters or search terms."
+            />
           )}
         </main>
       </div>

@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import Decks from "./pages/Decks";
 import MyDecks from "./pages/MyDecks";
 import Cards from "./pages/Cards";
+import CardDetail from "./pages/CardDetail";
+import DeckDetail from "./pages/DeckDetail";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -18,7 +20,9 @@ function App() {
           <Route element={<DefaultLayout />}>
             <Route index element={<Home />} />
             <Route path="cards" element={<Cards />} />
+            <Route path="cards/:id" element={<CardDetail />} />
             <Route path="decks" element={<Decks />} />
+            <Route path="decks/:id" element={<DeckDetail />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="my-decks" element={<MyDecks />} />

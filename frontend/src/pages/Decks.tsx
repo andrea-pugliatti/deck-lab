@@ -1,38 +1,52 @@
-import { useState } from "react";
+import { Filter, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import DeckListItem from "../components/DeckListItem";
-import PageHeader from "../components/PageHeader";
+import EmptyState from "../components/EmptyState";
+import ErrorAlert from "../components/ErrorAlert";
 import FormatSelector from "../components/FormatSelector";
-import { Search, Filter } from "lucide-react";
-import { useFetch } from "../hooks/useFetch";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PageHeader from "../components/PageHeader";
 import { useDebounce } from "../hooks/useDebounce";
+import { useFetch } from "../hooks/useFetch";
 import type { BackendDeck } from "../types";
-
-function formatRelativeTime(dateString?: string): string {
-  if (!dateString) return "some time ago";
-  try {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 1) return "just now";
-    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-    if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-
-    return date.toLocaleDateString();
-  } catch {
-    return "recently";
-  }
-}
+import { formatRelativeTime } from "../utils/date";
 
 export default function Decks() {
-  const [selectedFormat, setSelectedFormat] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialFormat = searchParams.get("format") || "ALL";
+  const initialQuery = searchParams.get("q") || "";
+
+  const [selectedFormat, setSelectedFormat] = useState(initialFormat);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const debouncedQuery = useDebounce(searchQuery, 400);
   const formats = ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
+
+  useEffect(() => {
+    const format = searchParams.get("format") || "ALL";
+    const q = searchParams.get("q") || "";
+    setSelectedFormat(format);
+    setSearchQuery((prev) => (prev !== q ? q : prev));
+  }, [searchParams]);
+
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (debouncedQuery.trim()) {
+      params.q = debouncedQuery.trim();
+    }
+    if (selectedFormat !== "ALL") {
+      params.format = selectedFormat;
+    }
+
+    const currentParams = Object.fromEntries(searchParams.entries());
+    const hasChanged =
+      Object.keys(params).length !== Object.keys(currentParams).length ||
+      Object.keys(params).some((k) => params[k] !== currentParams[k]);
+
+    if (hasChanged) {
+      setSearchParams(params);
+    }
+  }, [debouncedQuery, selectedFormat, setSearchParams, searchParams]);
 
   const queryParams = new URLSearchParams();
   if (debouncedQuery.trim()) {
@@ -72,21 +86,13 @@ export default function Decks() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center py-20">
-          <div className="w-10 h-10 border-4 border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin"></div>
-        </div>
+        <LoadingSpinner />
       ) : error ? (
-        <div className="text-center py-12 bg-red-950/10 border border-red-500/20 rounded-lg p-6">
-          <p className="text-red-400 font-semibold mb-2">Failed to load decks</p>
-          <p className="text-xs text-slate-500 mb-4">{error.message}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-500/20 hover:bg-red-500/40 text-red-200 border border-red-500/50 rounded text-xs transition-colors duration-200 cursor-pointer"
-            type="button"
-          >
-            Retry
-          </button>
-        </div>
+        <ErrorAlert
+          title="Failed to load decks"
+          message={error.message}
+          onRetry={() => window.location.reload()}
+        />
       ) : decks.length > 0 ? (
         <div className="space-y-4">
           {decks.map((deck) => {
@@ -106,15 +112,11 @@ export default function Decks() {
           })}
         </div>
       ) : (
-        <div className="text-center py-16 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
-          <Filter className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400 text-sm mb-1">
-            No decks found matching the search criteria.
-          </p>
-          <p className="text-slate-600 text-xs">
-            Try adjusting your search query or format filter.
-          </p>
-        </div>
+        <EmptyState
+          icon={Filter}
+          title="No decks found matching the search criteria."
+          description="Try adjusting your search query or format filter."
+        />
       )}
     </div>
   );

@@ -40,7 +40,6 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   const response = await fetch(url, options);
 
   if (response.status === 401) {
-    // If the refresh call itself is unauthorized, fail immediately
     if (url === "/api/auth/refresh") {
       setAccessToken(null);
       throw new Error("Refresh token expired or invalid");
