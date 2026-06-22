@@ -1,5 +1,6 @@
 package com.deck.lab.backend.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,6 +20,42 @@ public class CardService {
 
     public CardService(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
+    }
+
+    public List<String> findDistinctAttributes() {
+        return cardRepository.findDistinctByAttributeNotNull().stream()
+                .map(Card::getAttribute)
+                .filter(a -> a != null && !a.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<String> findDistinctRaces() {
+        return cardRepository.findDistinctByRaceNotNull().stream()
+                .map(Card::getRace)
+                .filter(r -> r != null && !r.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<String> findDistinctArchetypes() {
+        return cardRepository.findDistinctByArchetypeNotNullAndArchetypeNot("").stream()
+                .map(Card::getArchetype)
+                .filter(a -> a != null && !a.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<String> findDistinctTypes() {
+        return cardRepository.findDistinctByTypeNotNull().stream()
+                .map(Card::getType)
+                .filter(t -> t != null && !t.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
     }
 
     public Page<Card> findAllOrWithFilters(String name, String type, String attribute, String race, String archetype,

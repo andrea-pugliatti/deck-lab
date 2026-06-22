@@ -14,6 +14,7 @@ import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.mapper.DeckMapper;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import com.deck.lab.backend.repository.specification.DeckSpecification;
 
@@ -41,7 +42,7 @@ public class DeckService {
                 .and(DeckSpecification.hasFormat(format))
                 .and(DeckSpecification.hasUser(username));
 
-        List<Deck> decks = deckRepository.findAllOrderByUpdatedAt(spec);
+        List<Deck> decks = deckRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "updatedAt"));
         List<DeckDto> dtos = new ArrayList<>();
         for (Deck deck : decks) {
             dtos.add(deckMapper.toDto(deck));

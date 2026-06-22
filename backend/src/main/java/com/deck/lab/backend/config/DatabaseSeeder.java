@@ -356,7 +356,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 List<FormatRules> existingRules = formatRulesRepository.findByFormatName(localFormat);
                 if (!existingRules.isEmpty()) {
                     logger.info("Banlist for {} already seeded ({} rules). Skipping.", localFormat,
-                             existingRules.size());
+                            existingRules.size());
                     continue;
                 }
 
@@ -507,22 +507,30 @@ public class DatabaseSeeder implements CommandLineRunner {
     // -----------------------------------------------------------------------
 
     private void seedSampleDecks() {
-        Optional<User> yugiOpt = userRepository.findByUsername("yugi");
-        if (yugiOpt.isEmpty())
-            return;
-        User yugi = yugiOpt.get();
+        userRepository.findByUsername("yugi").ifPresent(yugi -> {
+            // 1. Frog OTK Deck
+            seedFrogOtkDeck(yugi);
 
-        // 1. Frog OTK Deck
-        seedFrogOtkDeck(yugi);
+            // 2. Frog Monarch Deck
+            seedFrogMonarchDeck(yugi);
 
-        // 2. Frog Monarch Deck
-        seedFrogMonarchDeck(yugi);
+            // 3. Vayu Turbo Deck
+            seedVayuTurboDeck(yugi);
 
-        // 3. Vayu Turbo Deck
-        seedVayuTurboDeck(yugi);
+            // 4. Diva Hero Deck
+            seedDivaHeroDeck(yugi);
+        });
 
-        // 4. Diva Hero Deck
-        seedDivaHeroDeck(yugi);
+        userRepository.findByUsername("admin").ifPresent(admin -> {
+            // Clean up existing decks for admin to ensure only the new ones are seeded
+            deckRepository.findByUser(admin).forEach(deckRepository::delete);
+
+            // 1. Lightsworn Deck
+            seedLightswornDeck(admin);
+
+            // 2. Quickdraw Dandywarrior Deck
+            seedQuickdrawDandywarriorDeck(admin);
+        });
     }
 
     private void seedFrogOtkDeck(User user) {
@@ -640,7 +648,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void seedDivaHeroDeck(User user) {
         List<DeckCardInfo> cards = new ArrayList<>();
         cards.add(new DeckCardInfo("Deep Sea Diva", "MAIN", 3));
-        cards.add(new DeckCardInfo("Spiny Gillman", "MAIN", 1));
+        cards.add(new DeckCardInfo("Spiny Gillman", "MAIN", 2));
         cards.add(new DeckCardInfo("Elemental HERO Stratos", "MAIN", 1));
         cards.add(new DeckCardInfo("Destiny HERO - Malicious", "MAIN", 2));
         cards.add(new DeckCardInfo("Destiny HERO - Diamond Dude", "MAIN", 2));
@@ -677,6 +685,76 @@ public class DatabaseSeeder implements CommandLineRunner {
         cards.add(new DeckCardInfo("Tempest Magician", "EXTRA", 1));
         cards.add(new DeckCardInfo("Mist Wurm", "EXTRA", 1));
         seedDeck("Diva Hero", "HERO deck leveraging Deep Sea Diva for Synchros and Fusions.", "Edison", user, cards);
+    }
+
+    private void seedLightswornDeck(User user) {
+        List<DeckCardInfo> cards = new ArrayList<>();
+        cards.add(new DeckCardInfo("Judgment Dragon", "MAIN", 2));
+        cards.add(new DeckCardInfo("Lumina, Lightsworn Summoner", "MAIN", 3));
+        cards.add(new DeckCardInfo("Garoth, Lightsworn Warrior", "MAIN", 2));
+        cards.add(new DeckCardInfo("Wulf, Lightsworn Beast", "MAIN", 2));
+        cards.add(new DeckCardInfo("Celestia, Lightsworn Angel", "MAIN", 2));
+        cards.add(new DeckCardInfo("Lyla, Lightsworn Sorceress", "MAIN", 3));
+        cards.add(new DeckCardInfo("Ryko, Lightsworn Hunter", "MAIN", 3));
+        cards.add(new DeckCardInfo("Ehren, Lightsworn Monk", "MAIN", 1));
+        cards.add(new DeckCardInfo("Honest", "MAIN", 2));
+        cards.add(new DeckCardInfo("Necro Gardna", "MAIN", 2));
+        cards.add(new DeckCardInfo("Plaguespreader Zombie", "MAIN", 1));
+        cards.add(new DeckCardInfo("Chaos Sorcerer", "MAIN", 1));
+        cards.add(new DeckCardInfo("Charge of the Light Brigade", "MAIN", 1));
+        cards.add(new DeckCardInfo("Solar Recharge", "MAIN", 3));
+        cards.add(new DeckCardInfo("Monster Reincarnation", "MAIN", 2));
+        cards.add(new DeckCardInfo("Beckoning Light", "MAIN", 2));
+        cards.add(new DeckCardInfo("Heavy Storm", "MAIN", 1));
+        cards.add(new DeckCardInfo("Mystical Space Typhoon", "MAIN", 1));
+        cards.add(new DeckCardInfo("Brain Control", "MAIN", 1));
+        cards.add(new DeckCardInfo("Torrential Tribute", "MAIN", 1));
+        // Extra
+        cards.add(new DeckCardInfo("Goyo Guardian", "EXTRA", 1));
+        cards.add(new DeckCardInfo("Brionac, Dragon of the Ice Barrier", "EXTRA", 1));
+        cards.add(new DeckCardInfo("Stardust Dragon", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Black Rose Dragon", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Ally of Justice Catastor", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Colossal Fighter", "EXTRA", 2));
+        seedDeck("Lightsworn", "Milling strategy using Lightsworn monsters to summon Judgment Dragon.", "Edison", user,
+                cards);
+    }
+
+    private void seedQuickdrawDandywarriorDeck(User user) {
+        List<DeckCardInfo> cards = new ArrayList<>();
+        cards.add(new DeckCardInfo("Quickdraw Synchron", "MAIN", 3));
+        cards.add(new DeckCardInfo("Dandylion", "MAIN", 2));
+        cards.add(new DeckCardInfo("Ryko, Lightsworn Hunter", "MAIN", 3));
+        cards.add(new DeckCardInfo("Super-Nimble Mega Hamster", "MAIN", 2));
+        cards.add(new DeckCardInfo("Debris Dragon", "MAIN", 2));
+        cards.add(new DeckCardInfo("Spore", "MAIN", 1));
+        cards.add(new DeckCardInfo("Lonefire Blossom", "MAIN", 2));
+        cards.add(new DeckCardInfo("Caius the Shadow Monarch", "MAIN", 3));
+        cards.add(new DeckCardInfo("Sangan", "MAIN", 1));
+        cards.add(new DeckCardInfo("Card Trooper", "MAIN", 1));
+        cards.add(new DeckCardInfo("Tytannial, Princess of Camellias", "MAIN", 1));
+        cards.add(new DeckCardInfo("Pot of Avarice", "MAIN", 3));
+        cards.add(new DeckCardInfo("Book of Moon", "MAIN", 3));
+        cards.add(new DeckCardInfo("Charge of the Light Brigade", "MAIN", 1));
+        cards.add(new DeckCardInfo("Foolish Burial", "MAIN", 1));
+        cards.add(new DeckCardInfo("One for One", "MAIN", 1));
+        cards.add(new DeckCardInfo("Heavy Storm", "MAIN", 1));
+        cards.add(new DeckCardInfo("Mystical Space Typhoon", "MAIN", 1));
+        cards.add(new DeckCardInfo("Brain Control", "MAIN", 1));
+        cards.add(new DeckCardInfo("Bottomless Trap Hole", "MAIN", 2));
+        cards.add(new DeckCardInfo("Torrential Tribute", "MAIN", 1));
+        cards.add(new DeckCardInfo("Solemn Judgment", "MAIN", 1));
+        // Extra
+        cards.add(new DeckCardInfo("Drill Warrior", "EXTRA", 3));
+        cards.add(new DeckCardInfo("Junk Destroyer", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Stardust Dragon", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Black Rose Dragon", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Goyo Guardian", "EXTRA", 1));
+        cards.add(new DeckCardInfo("Brionac, Dragon of the Ice Barrier", "EXTRA", 1));
+        cards.add(new DeckCardInfo("Ally of Justice Catastor", "EXTRA", 2));
+        cards.add(new DeckCardInfo("Colossal Fighter", "EXTRA", 2));
+        seedDeck("Quickdraw Dandywarrior", "Synchro deck utilizing Dandylion tokens and Quickdraw Synchron.", "Edison",
+                user, cards);
     }
 
     // -----------------------------------------------------------------------

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.mapper.CardMapper;
 import com.deck.lab.backend.model.Card;
@@ -87,5 +88,25 @@ public class CardController {
         }
         service.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/attributes")
+    public ResponseEntity<List<String>> getAttributes() {
+        return new ResponseEntity<>(service.findDistinctAttributes(), HttpStatus.OK);
+    }
+
+    @GetMapping("/races")
+    public ResponseEntity<List<String>> getRaces() {
+        return new ResponseEntity<>(service.findDistinctRaces(), HttpStatus.OK);
+    }
+
+    @GetMapping("/archetypes")
+    public ResponseEntity<List<String>> getArchetypes() {
+        return new ResponseEntity<>(service.findDistinctArchetypes(), HttpStatus.OK);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<String>> getTypes() {
+        return new ResponseEntity<>(service.findDistinctTypes(), HttpStatus.OK);
     }
 }
