@@ -9,7 +9,7 @@ import CardDetail from "./pages/CardDetail";
 import DeckDetail from "./pages/DeckDetail";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AuthLayout from "./layouts/AuthLayout";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./layouts/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {

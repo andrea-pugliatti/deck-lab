@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-export interface DeckCardItemProps {
+export interface DeckGridItemProps {
   cardId: number;
   name: string;
   type?: string;
@@ -8,7 +8,7 @@ export interface DeckCardItemProps {
   quantity: number;
 }
 
-export default function DeckCardItem({ cardId, name, type, imageUrl, quantity }: DeckCardItemProps) {
+export default function DeckGridItem({ cardId, name, type, imageUrl, quantity }: DeckGridItemProps) {
   const isMonster = type?.toLowerCase().includes("monster") || false;
   const isSpell = type?.toLowerCase().includes("spell") || false;
   const isTrap = type?.toLowerCase().includes("trap") || false;

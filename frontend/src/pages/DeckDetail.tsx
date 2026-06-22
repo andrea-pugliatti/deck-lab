@@ -1,7 +1,7 @@
 import { ArrowLeft, Calendar, Edit, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import DeckCardItem from "../components/DeckCardItem";
+import DeckGridItem from "../components/deck/DeckGridItem";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../context/AuthContext";
@@ -278,7 +278,14 @@ export default function DeckDetail() {
             {mainCards.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {mainCards.map((dc) => (
-                  <DeckCardItem key={dc.id || dc.cardId} {...dc} />
+                  <DeckGridItem
+                    key={dc.id || dc.cardId}
+                    cardId={dc.cardId}
+                    name={dc.name}
+                    type={dc.type}
+                    imageUrl={dc.imageUrl}
+                    quantity={dc.quantity}
+                  />
                 ))}
               </div>
             ) : (
@@ -302,7 +309,14 @@ export default function DeckDetail() {
             {extraCards.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {extraCards.map((dc) => (
-                  <DeckCardItem key={dc.id || dc.cardId} {...dc} />
+                  <DeckGridItem
+                    key={dc.id || dc.cardId}
+                    cardId={dc.cardId}
+                    name={dc.name}
+                    type={dc.type}
+                    imageUrl={dc.imageUrl}
+                    quantity={dc.quantity}
+                  />
                 ))}
               </div>
             ) : (
@@ -326,7 +340,14 @@ export default function DeckDetail() {
             {sideCards.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {sideCards.map((dc) => (
-                  <DeckCardItem key={dc.id || dc.cardId} {...dc} />
+                  <DeckGridItem
+                    key={dc.id || dc.cardId}
+                    cardId={dc.cardId}
+                    name={dc.name}
+                    type={dc.type}
+                    imageUrl={dc.imageUrl}
+                    quantity={dc.quantity}
+                  />
                 ))}
               </div>
             ) : (

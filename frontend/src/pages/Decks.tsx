@@ -1,10 +1,10 @@
 import { Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import DeckListItem from "../components/DeckListItem";
+import DeckListItem from "../components/deck/DeckListItem";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
-import FormatSelector from "../components/FormatSelector";
+import FormatSelector from "../components/deck/FormatSelector";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import { useDebounce } from "../hooks/useDebounce";

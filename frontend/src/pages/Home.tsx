@@ -1,7 +1,7 @@
 import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
-import CardGridItem from "../components/CardGridItem";
-import DeckCard from "../components/DeckCard";
+import CardGridItem from "../components/card/CardGridItem";
+import DeckCard from "../components/deck/DeckCard";
 import SearchBar from "../components/SearchBar";
 import { useFetch } from "../hooks/useFetch";
 import type { BackendDeck, Card, Page } from "../types";

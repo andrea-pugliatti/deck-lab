@@ -1,8 +1,8 @@
 import { Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import CardFilters from "../components/CardFilters";
-import CardGridItem from "../components/CardGridItem";
+import CardFilters from "../components/card/CardFilters";
+import CardGridItem from "../components/card/CardGridItem";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";

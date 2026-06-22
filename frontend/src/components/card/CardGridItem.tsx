@@ -1,6 +1,6 @@
 import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
-import type { Card } from "../types";
+import type { Card } from "../../types";
 
 export default function CardGridItem({
   id,

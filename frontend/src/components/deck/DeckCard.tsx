@@ -1,6 +1,6 @@
 import { Calendar, Layers } from "lucide-react";
 import { Link } from "react-router";
-import { formatRelativeTime } from "../utils/date";
+import { formatRelativeTime } from "../../utils/date";
 
 export interface DeckCardProps {
   id: number;

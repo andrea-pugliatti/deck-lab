@@ -1,5 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
-import type { CardFiltersState } from "../types";
+import type { CardFiltersState } from "../../types";
 
 export interface CardFiltersProps {
   filters: CardFiltersState;
