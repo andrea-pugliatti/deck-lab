@@ -8,6 +8,7 @@ import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
@@ -25,6 +26,7 @@ public class DeckService {
 
     private final DeckRepository deckRepository;
     private final CardRepository cardRepository;
+    private final FormatRulesRepository formatRulesRepository;
     private final DeckMapper deckMapper;
 
     public DeckService(DeckRepository deckRepository,
@@ -33,7 +35,17 @@ public class DeckService {
             DeckMapper deckMapper) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
+        this.formatRulesRepository = formatRulesRepository;
         this.deckMapper = deckMapper;
+    }
+
+    public List<String> findDistinctFormats() {
+        return formatRulesRepository.findDistinctByFormatNameNotNull().stream()
+                .map(FormatRules::getFormatName)
+                .filter(f -> f != null && !f.isBlank())
+                .distinct()
+                .sorted()
+                .toList();
     }
 
     public List<DeckDto> findAllWithFilters(String name, String format, String username) {

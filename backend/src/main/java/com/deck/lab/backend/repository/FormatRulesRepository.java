@@ -10,4 +10,6 @@ import java.util.List;
 public interface FormatRulesRepository extends JpaRepository<FormatRules, Long> {
     @Cacheable(value = "formatRules", key = "#formatName")
     List<FormatRules> findByFormatName(String formatName);
+
+    List<FormatRules> findDistinctByFormatNameNotNull();
 }

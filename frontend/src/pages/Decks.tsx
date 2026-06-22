@@ -20,7 +20,9 @@ export default function Decks() {
   const [selectedFormat, setSelectedFormat] = useState(initialFormat);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const debouncedQuery = useDebounce(searchQuery, 400);
-  const formats = ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
+
+  const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
+  const formats = formatsData ? ["ALL", ...formatsData] : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
   useEffect(() => {
     const format = searchParams.get("format") || "ALL";

@@ -21,7 +21,9 @@ export default function MyDecks() {
 
   const [selectedFormat, setSelectedFormat] = useState(initialFormat);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const formats = ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
+
+  const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
+  const formats = formatsData ? ["ALL", ...formatsData] : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
   useEffect(() => {
     const format = searchParams.get("format") || "ALL";
@@ -88,13 +90,13 @@ export default function MyDecks() {
         title="My Decks"
         description="Create, edit, and manage your deck builds and format experiments."
       >
-        <button
-          className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg px-5 py-2.5 rounded font-sans font-semibold text-sm cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
-          type="button"
+        <Link
+          to="/decks/create"
+          className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg px-5 py-2.5 rounded font-sans font-semibold text-sm cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-0.5 no-underline"
         >
           <Plus className="w-4 h-4" />
           Construct Deck
-        </button>
+        </Link>
       </PageHeader>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">

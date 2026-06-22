@@ -69,4 +69,9 @@ public class DeckController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/formats")
+    public ResponseEntity<List<String>> getFormats() {
+        return ResponseEntity.ok(deckService.findDistinctFormats());
+    }
 }
