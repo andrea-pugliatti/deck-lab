@@ -9,6 +9,8 @@ import { useFetch } from "../hooks/useFetch";
 import { apiFetch } from "../services/api";
 import type { BackendDeck } from "../types";
 import { formatRelativeTime } from "../utils/date";
+import Button from "../components/ui/Button";
+import Badge from "../components/ui/Badge";
 
 export default function DeckDetail() {
   const { id } = useParams<{ id: string }>();
@@ -80,33 +82,37 @@ export default function DeckDetail() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex justify-between items-center mb-8">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors duration-200 cursor-pointer group"
+          className="group text-slate-400 font-normal px-2.5 py-1"
           type="button"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Back</span>
-        </button>
+        </Button>
 
         {isOwner && (
           <div className="flex items-center gap-3">
-            <Link
-              to={`/decks/${deck.id}/edit`}
-              className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <Edit className="w-3.5 h-3.5" />
-              Edit Deck
+            <Link to={`/decks/${deck.id}/edit`} className="no-underline">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-cyan-accent"
+              >
+                <Edit className="w-3.5 h-3.5" />
+                Edit Deck
+              </Button>
             </Link>
-            <button
+            <Button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 px-4 py-2 rounded-lg text-xs font-semibold shadow-md transition-all duration-200 cursor-pointer disabled:opacity-50"
+              variant="outline"
+              className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 hover:text-red-300 px-4 py-2 text-xs font-semibold shadow-md transition-all duration-200 cursor-pointer disabled:opacity-50"
               type="button"
             >
               <Trash2 className="w-3.5 h-3.5" />
               {isDeleting ? "Deleting..." : "Delete Deck"}
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -121,9 +127,7 @@ export default function DeckDetail() {
         <div className="absolute inset-0 bg-radial from-cyan-accent/5 via-transparent to-transparent pointer-events-none"></div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold text-gold-accent uppercase tracking-wider bg-gold-accent/10 px-2.5 py-0.5 rounded border border-gold-accent/20">
-              {deck.formatName}
-            </span>
+            <Badge variant="gold">{deck.formatName}</Badge>
             <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
               by {deck.creatorUsername || "Community"}
             </span>
@@ -270,9 +274,9 @@ export default function DeckDetail() {
                 <Sparkles className="w-4 h-4 text-cyan-accent" />
                 Main Deck
               </h2>
-              <span className="text-xs font-semibold text-cyan-accent bg-cyan-accent/10 px-2 py-0.5 rounded">
+              <Badge variant="cyan" className="text-xs font-semibold px-2 py-0.5 rounded">
                 {mainCount} Cards
-              </span>
+              </Badge>
             </div>
 
             {mainCards.length > 0 ? (
@@ -301,9 +305,9 @@ export default function DeckDetail() {
                 <Sparkles className="w-4 h-4 text-gold-accent" />
                 Extra Deck
               </h2>
-              <span className="text-xs font-semibold text-gold-accent bg-gold-accent/10 px-2 py-0.5 rounded">
+              <Badge variant="gold" className="text-xs font-semibold px-2 py-0.5 rounded">
                 {extraCount} Cards
-              </span>
+              </Badge>
             </div>
 
             {extraCards.length > 0 ? (
@@ -332,9 +336,9 @@ export default function DeckDetail() {
                 <Layers className="w-4 h-4 text-purple-400" />
                 Side Deck
               </h2>
-              <span className="text-xs font-semibold text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded">
+              <Badge variant="purple" className="text-xs font-semibold px-2 py-0.5 rounded">
                 {sideCount} Cards
-              </span>
+              </Badge>
             </div>
 
             {sideCards.length > 0 ? (

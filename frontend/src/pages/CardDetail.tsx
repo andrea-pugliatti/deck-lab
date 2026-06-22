@@ -4,6 +4,8 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useFetch } from "../hooks/useFetch";
 import type { Card } from "../types";
+import Button from "../components/ui/Button";
+import Badge from "../components/ui/Badge";
 
 export default function CardDetail() {
   const { id } = useParams<{ id: string }>();
@@ -32,30 +34,27 @@ export default function CardDetail() {
   const isSpell = card.type.toLowerCase().includes("spell");
   const isTrap = card.type.toLowerCase().includes("trap");
 
-  let cardThemeColor = "border-slate-500/30 text-slate-400";
   let bgGradient = "from-slate-500/5";
   if (isSpell) {
-    cardThemeColor = "border-emerald-500/30 text-emerald-400";
     bgGradient = "from-emerald-500/5";
   } else if (isTrap) {
-    cardThemeColor = "border-rose-500/30 text-rose-400";
     bgGradient = "from-rose-500/5";
   } else if (isMonster) {
-    cardThemeColor = "border-amber-500/30 text-amber-400";
     bgGradient = "from-amber-500/5";
   }
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors duration-200 cursor-pointer group"
+          className="mb-8 group text-slate-400 font-normal px-2.5 py-1"
           type="button"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Back</span>
-        </button>
+        </Button>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 bg-dark-surface border border-border-dim rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
           {/* Card Artwork */}
@@ -82,33 +81,46 @@ export default function CardDetail() {
           <div className="md:col-span-7 flex flex-col justify-between space-y-6">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <span
-                  className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border bg-dark-surface-elevated ${cardThemeColor}`}
+                <Badge
+                  variant={isSpell ? "spell" : isTrap ? "trap" : isMonster ? "monster" : "default"}
+                  className="rounded-full px-3 py-1 text-xs"
                 >
                   {card.type}
-                </span>
+                </Badge>
 
                 <div className="flex gap-3">
                   {card.attribute && (
-                    <span className="text-xs font-semibold text-white bg-slate-900 border border-border-dim px-2.5 py-1 rounded-md uppercase tracking-wide">
+                    <Badge
+                      variant="default"
+                      className="text-xs font-semibold text-white px-2.5 py-1 rounded-md"
+                    >
                       {card.attribute}
-                    </span>
+                    </Badge>
                   )}
                   {isMonster && card.level && (
-                    <div className="flex items-center gap-1 text-gold-accent bg-gold-accent/10 border border-gold-accent/20 px-2.5 py-1 rounded-md">
-                      <Star className="w-4 h-4 fill-current" />
+                    <Badge
+                      variant="gold"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-md"
+                    >
+                      <Star className="w-3.5 h-3.5 fill-current" />
                       <span className="text-xs font-bold">Level {card.level}</span>
-                    </div>
+                    </Badge>
                   )}
                   {isMonster && card.linkVal && (
-                    <div className="flex items-center gap-1 text-cyan-accent bg-cyan-accent/10 border border-cyan-accent/20 px-2.5 py-1 rounded-md">
-                      <span className="text-xs font-bold">LINK-{card.linkVal}</span>
-                    </div>
+                    <Badge
+                      variant="cyan"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold"
+                    >
+                      LINK-{card.linkVal}
+                    </Badge>
                   )}
                   {isMonster && card.scale !== undefined && card.scale !== null && (
-                    <div className="flex items-center gap-1 text-purple-400 bg-purple-400/10 border border-purple-400/20 px-2.5 py-1 rounded-md">
-                      <span className="text-xs font-bold">Scale {card.scale}</span>
-                    </div>
+                    <Badge
+                      variant="purple"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold"
+                    >
+                      Scale {card.scale}
+                    </Badge>
                   )}
                 </div>
               </div>

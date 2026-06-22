@@ -23,9 +23,7 @@ export default function Pagination({
       : "justify-center gap-4 mt-12 pt-6 border-t border-border-dim/50"
   }`;
 
-  const textClass = isCompact
-    ? "order-1 mr-auto"
-    : "order-2 text-sm text-slate-400 font-semibold";
+  const textClass = isCompact ? "order-1 mr-auto" : "order-2 text-sm text-slate-400 font-semibold";
 
   const baseButtonClass =
     "border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 cursor-pointer disabled:cursor-not-allowed";

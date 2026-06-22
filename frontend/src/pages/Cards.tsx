@@ -11,6 +11,7 @@ import Pagination from "../components/Pagination";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 import type { Card, Page } from "../types";
+import Input from "../components/ui/Input";
 
 export default function Cards() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -148,16 +149,14 @@ export default function Cards() {
         </aside>
 
         <main className="lg:col-span-3 space-y-6">
-          <div className="group relative flex items-center bg-dark-surface border border-border-dim rounded px-4 py-2.5 transition-all duration-300 hover:border-border-glow focus-within:border-cyan-accent w-full">
-            <Search className="w-5 h-5 text-slate-500 mr-2 group-focus-within:text-cyan-accent" />
-            <input
-              type="text"
-              placeholder="Search card name, type, description, or archetype..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-500 w-full"
-            />
-          </div>
+          <Input
+            type="text"
+            placeholder="Search card name, type, description, or archetype..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<Search className="w-5 h-5" />}
+            className="bg-dark-surface px-4 py-2.5"
+          />
 
           <div className="flex justify-between items-center text-xs text-slate-500">
             <span>

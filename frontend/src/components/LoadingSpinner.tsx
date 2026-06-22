@@ -13,7 +13,9 @@ export default function LoadingSpinner({ size = "md", className = "" }: LoadingS
 
   return (
     <div className={`flex justify-center items-center py-20 ${className}`}>
-      <div className={`${spinnerSize} border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin`}></div>
+      <div
+        className={`${spinnerSize} border-cyan-accent/20 border-t-cyan-accent rounded-full animate-spin`}
+      ></div>
     </div>
   );
 }

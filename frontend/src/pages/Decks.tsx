@@ -11,6 +11,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 import type { BackendDeck } from "../types";
 import { formatRelativeTime } from "../utils/date";
+import Input from "../components/ui/Input";
 
 export default function Decks() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,7 +23,9 @@ export default function Decks() {
   const debouncedQuery = useDebounce(searchQuery, 400);
 
   const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
-  const formats = formatsData ? ["ALL", ...formatsData] : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
+  const formats = formatsData
+    ? ["ALL", ...formatsData]
+    : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
   useEffect(() => {
     const format = searchParams.get("format") || "ALL";
@@ -75,16 +78,14 @@ export default function Decks() {
           formats={formats}
         />
 
-        <div className="group relative flex items-center bg-dark-surface border border-border-dim rounded px-4 py-2 w-full md:max-w-xs transition-all duration-300 hover:border-border-glow focus-within:border-cyan-accent">
-          <Search className="w-4 h-4 text-slate-500 mr-2 group-focus-within:text-cyan-accent" />
-          <input
-            type="text"
-            placeholder="Search decks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-500 w-full"
-          />
-        </div>
+        <Input
+          type="text"
+          placeholder="Search decks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          icon={<Search className="w-4 h-4" />}
+          className="bg-dark-surface px-4 py-2 md:max-w-xs"
+        />
       </div>
 
       {loading ? (

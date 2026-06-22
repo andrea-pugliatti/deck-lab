@@ -8,7 +8,13 @@ export interface DeckGridItemProps {
   quantity: number;
 }
 
-export default function DeckGridItem({ cardId, name, type, imageUrl, quantity }: DeckGridItemProps) {
+export default function DeckGridItem({
+  cardId,
+  name,
+  type,
+  imageUrl,
+  quantity,
+}: DeckGridItemProps) {
   const isMonster = type?.toLowerCase().includes("monster") || false;
   const isSpell = type?.toLowerCase().includes("spell") || false;
   const isTrap = type?.toLowerCase().includes("trap") || false;
@@ -35,7 +41,9 @@ export default function DeckGridItem({ cardId, name, type, imageUrl, quantity }:
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">[ {name.substring(0, 3)} ]</span>
+          <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">
+            [ {name.substring(0, 3)} ]
+          </span>
         )}
         <span className="absolute bottom-1 right-1 font-mono text-[10px] font-bold text-white bg-slate-900/85 px-1.5 py-0.5 rounded border border-white/10 shadow-sm">
           x{quantity}
@@ -47,7 +55,9 @@ export default function DeckGridItem({ cardId, name, type, imageUrl, quantity }:
           {name}
         </h4>
         {type && (
-          <span className={`text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded border self-start ${badgeColor}`}>
+          <span
+            className={`text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded border self-start ${badgeColor}`}
+          >
             {type.replace(" Monster", "").replace(" Card", "")}
           </span>
         )}

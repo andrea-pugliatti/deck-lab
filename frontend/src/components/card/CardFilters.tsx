@@ -1,5 +1,8 @@
 import { SlidersHorizontal } from "lucide-react";
 import type { CardFiltersState } from "../../types";
+import Select from "../ui/Select";
+import Label from "../ui/Label";
+import Button from "../ui/Button";
 
 export interface CardFiltersProps {
   filters: CardFiltersState;
@@ -54,10 +57,8 @@ export default function CardFilters({
       </div>
 
       <div>
-        <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-          Card Type
-        </label>
-        <select
+        <Label className="mb-2">Card Type</Label>
+        <Select
           value={selectedType}
           onChange={(e) => {
             onChange({
@@ -66,7 +67,7 @@ export default function CardFilters({
               race: "ALL",
             });
           }}
-          className="w-full bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 text-xs text-slate-200 outline-none focus:border-cyan-accent cursor-pointer transition-colors"
+          className="text-xs"
         >
           <option value="ALL">All Types</option>
           {types.map((type) => (
@@ -80,15 +81,13 @@ export default function CardFilters({
                     : type}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {isMonsterSelected && (
         <div>
-          <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-            Monster Attribute
-          </label>
-          <select
+          <Label className="mb-2">Monster Attribute</Label>
+          <Select
             value={selectedAttribute}
             onChange={(e) => {
               onChange({
@@ -96,7 +95,7 @@ export default function CardFilters({
                 attribute: e.target.value,
               });
             }}
-            className="w-full bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 text-xs text-slate-200 outline-none focus:border-cyan-accent cursor-pointer transition-colors"
+            className="text-xs"
           >
             <option value="ALL">All Attributes</option>
             {attributes.map((attr) => (
@@ -104,19 +103,19 @@ export default function CardFilters({
                 {attr}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       )}
 
       <div>
-        <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+        <Label className="mb-2">
           {selectedType === "Monster"
             ? "Monster Type (Race)"
             : selectedType === "Spell" || selectedType === "Trap"
               ? "Property"
               : "Type / Property"}
-        </label>
-        <select
+        </Label>
+        <Select
           value={selectedRace}
           onChange={(e) => {
             onChange({
@@ -124,7 +123,7 @@ export default function CardFilters({
               race: e.target.value,
             });
           }}
-          className="w-full bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 text-xs text-slate-200 outline-none focus:border-cyan-accent cursor-pointer transition-colors"
+          className="text-xs"
         >
           <option value="ALL">All Properties</option>
           {filteredRaces.map((race) => (
@@ -132,14 +131,12 @@ export default function CardFilters({
               {race}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div>
-        <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-          Archetype Group
-        </label>
-        <select
+        <Label className="mb-2">Archetype Group</Label>
+        <Select
           value={selectedArchetype}
           onChange={(e) => {
             onChange({
@@ -147,7 +144,7 @@ export default function CardFilters({
               archetype: e.target.value,
             });
           }}
-          className="w-full bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 text-xs text-slate-200 outline-none focus:border-cyan-accent cursor-pointer transition-colors"
+          className="text-xs"
         >
           <option value="ALL">All Archetypes</option>
           {archetypes.map((arch) => (
@@ -155,10 +152,11 @@ export default function CardFilters({
               {arch}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
-      <button
+      <Button
+        variant="outline"
         onClick={() => {
           onChange({
             type: "ALL",
@@ -171,7 +169,7 @@ export default function CardFilters({
         type="button"
       >
         Clear Filters
-      </button>
+      </Button>
     </div>
   );
 }

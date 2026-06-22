@@ -1,6 +1,7 @@
 import { Calendar, Layers } from "lucide-react";
 import { Link } from "react-router";
 import { formatRelativeTime } from "../../utils/date";
+import Badge from "../ui/Badge";
 
 export interface DeckCardProps {
   id: number;
@@ -28,9 +29,7 @@ export default function DeckCard({
     >
       <div className="mb-4">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-[10px] font-bold text-gold-accent uppercase tracking-wider bg-gold-accent/10 px-2.5 py-0.5 rounded border border-gold-accent/20">
-            {formatName}
-          </span>
+          <Badge variant="gold">{formatName}</Badge>
           <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
             by {creatorUsername || "Community"}
           </span>
