@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

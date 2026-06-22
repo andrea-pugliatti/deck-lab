@@ -8,7 +8,11 @@ import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
+import com.deck.lab.backend.model.Deck;
+import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.FormatRules;
+import com.deck.lab.backend.validation.DeckValidationEngine;
+import com.deck.lab.backend.validation.ValidationError;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 
@@ -19,10 +23,12 @@ public class DeckDtoValidator implements ConstraintValidator<ValidDeck, DeckDto>
 
     private final CardRepository cardRepository;
     private final FormatRulesRepository formatRulesRepository;
+    private final DeckValidationEngine validationEngine;
 
     public DeckDtoValidator(CardRepository cardRepository, FormatRulesRepository formatRulesRepository) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
+        this.validationEngine = new DeckValidationEngine();
     }
 
     @Override
@@ -36,7 +42,6 @@ public class DeckDtoValidator implements ConstraintValidator<ValidDeck, DeckDto>
 
         List<DeckCardDto> cardDtos = deckDto.getDeckCards();
         if (cardDtos == null || cardDtos.isEmpty()) {
-            // Check size of empty deck (Main deck must be 40-60, which 0 is not)
             context.buildConstraintViolationWithTemplate(
                     "Main Deck must contain between 40 and 60 cards. Current size: 0")
                     .addPropertyNode("deckCards")
@@ -72,140 +77,45 @@ public class DeckDtoValidator implements ConstraintValidator<ValidDeck, DeckDto>
             return false;
         }
 
-        // Initialize calculations
-        Map<Long, Integer> cardQuantities = new HashMap<>();
-        int mainDeckSize = 0;
-        int extraDeckSize = 0;
-        int sideDeckSize = 0;
-
+        // Map DTO to transient domain model Deck
+        Deck deck = new Deck();
+        deck.setName(deckDto.getName());
+        deck.setDescription(deckDto.getDescription());
+        deck.setFormatName(deckDto.getFormatName());
+        
+        List<DeckCard> deckCards = new ArrayList<>();
         for (DeckCardDto cardDto : cardDtos) {
-            Long cardId = cardDto.getCardId();
-            if (cardId == null) {
-                continue;
-            }
-            Card card = cardMap.get(cardId);
-            String section = cardDto.getSection() != null ? cardDto.getSection().toUpperCase().trim() : "";
-            int qty = cardDto.getQuantity() != null ? cardDto.getQuantity() : 0;
-
-            if (qty <= 0) {
-                continue;
-            }
-
-            cardQuantities.put(cardId, cardQuantities.getOrDefault(cardId, 0) + qty);
-
-            // Verify section placement correctness
-            boolean extraType = isExtraDeckCard(card);
-            if ("MAIN".equals(section)) {
-                mainDeckSize += qty;
-                if (extraType) {
-                    context.buildConstraintViolationWithTemplate(
-                            "Extra Deck monster '" + card.getName() + "' must be placed in the EXTRA section.")
-                            .addPropertyNode("deckCards")
-                            .addConstraintViolation();
-                    isValid = false;
-                }
-            } else if ("EXTRA".equals(section)) {
-                extraDeckSize += qty;
-                if (!extraType) {
-                    context.buildConstraintViolationWithTemplate(
-                            "Main Deck card '" + card.getName() + "' cannot be placed in the EXTRA section.")
-                            .addPropertyNode("deckCards")
-                            .addConstraintViolation();
-                    isValid = false;
-                }
-            } else if ("SIDE".equals(section)) {
-                sideDeckSize += qty;
-            } else {
-                context.buildConstraintViolationWithTemplate("Invalid section: " + cardDto.getSection())
-                        .addPropertyNode("deckCards")
-                        .addConstraintViolation();
-                isValid = false;
+            Card card = cardMap.get(cardDto.getCardId());
+            if (card != null) {
+                deckCards.add(new DeckCard(deck, card, cardDto.getSection(), cardDto.getQuantity()));
             }
         }
+        deck.setDeckCards(deckCards);
 
-        // Verify deck limits
-        if (mainDeckSize < 40 || mainDeckSize > 60) {
-            context.buildConstraintViolationWithTemplate(
-                    "Main Deck must contain between 40 and 60 cards. Current size: " + mainDeckSize)
-                    .addPropertyNode("deckCards")
-                    .addConstraintViolation();
-            isValid = false;
-        }
-
-        if (extraDeckSize > 15) {
-            context.buildConstraintViolationWithTemplate(
-                    "Extra Deck cannot exceed 15 cards. Current size: " + extraDeckSize)
-                    .addPropertyNode("deckCards")
-                    .addConstraintViolation();
-            isValid = false;
-        }
-
-        if (sideDeckSize > 15) {
-            context.buildConstraintViolationWithTemplate(
-                    "Side Deck cannot exceed 15 cards. Current size: " + sideDeckSize)
-                    .addPropertyNode("deckCards")
-                    .addConstraintViolation();
-            isValid = false;
-        }
-
-        // Verify general limit of 3 copies per card
-        for (Map.Entry<Long, Integer> entry : cardQuantities.entrySet()) {
-            Long cardId = entry.getKey();
-            int totalQty = entry.getValue();
-            Card card = cardMap.get(cardId);
-            if (totalQty > 3) {
-                context.buildConstraintViolationWithTemplate("Card '" + card.getName()
-                        + "' exceeds the limit of 3 copies across the entire deck. Total copies: " + totalQty)
-                        .addPropertyNode("deckCards")
-                        .addConstraintViolation();
-                isValid = false;
-            }
-        }
-
-        // Verify format rules if a format name is provided
+        // Fetch format rules if format name is set
         String formatName = deckDto.getFormatName();
+        Map<Long, CardStatus> formatLimits = new HashMap<>();
         if (formatName != null && !formatName.isBlank()) {
             List<FormatRules> formatRules = formatRulesRepository.findByFormatName(formatName);
-            Map<Long, CardStatus> formatLimits = new HashMap<>();
             for (FormatRules rule : formatRules) {
                 if (rule.getCard() != null) {
                     formatLimits.put(rule.getCard().getId(), rule.getStatus());
                 }
             }
-
-            for (Map.Entry<Long, Integer> entry : cardQuantities.entrySet()) {
-                Long cardId = entry.getKey();
-                int totalQty = entry.getValue();
-                Card card = cardMap.get(cardId);
-
-                CardStatus status = formatLimits.get(cardId);
-                if (status != null) {
-                    int limit = switch (status) {
-                        case FORBIDDEN -> 0;
-                        case LIMITED -> 1;
-                        case SEMI_LIMITED -> 2;
-                    };
-                    if (totalQty > limit) {
-                        String statusLabel = status.name().toLowerCase().replace('_', '-');
-                        context.buildConstraintViolationWithTemplate(
-                                "Card '" + card.getName() + "' is " + statusLabel + " in format '" + formatName
-                                        + "' (max " + limit + " copies allowed, found " + totalQty + ")")
-                                .addPropertyNode("deckCards")
-                                .addConstraintViolation();
-                        isValid = false;
-                    }
-                }
-            }
         }
 
-        return isValid;
-    }
+        // Delegate to pure DeckValidationEngine passing limits map directly
+        List<ValidationError> errors = validationEngine.validate(deck, formatLimits);
 
-    private boolean isExtraDeckCard(Card card) {
-        if (card == null || card.getType() == null) {
+        if (!errors.isEmpty()) {
+            for (ValidationError error : errors) {
+                context.buildConstraintViolationWithTemplate(error.message())
+                        .addPropertyNode(error.property())
+                        .addConstraintViolation();
+            }
             return false;
         }
-        String type = card.getType().toLowerCase();
-        return type.contains("fusion") || type.contains("synchro") || type.contains("xyz") || type.contains("link");
+
+        return true;
     }
 }

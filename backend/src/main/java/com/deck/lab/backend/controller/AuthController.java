@@ -1,9 +1,9 @@
 package com.deck.lab.backend.controller;
 
-import com.deck.lab.backend.dto.AuthResponseDto;
-import com.deck.lab.backend.dto.LoginRequestDto;
-import com.deck.lab.backend.dto.RegisterRequestDto;
-import com.deck.lab.backend.dto.TokenRefreshResponseDto;
+import com.deck.lab.backend.dto.request.LoginRequestDto;
+import com.deck.lab.backend.dto.request.RegisterRequestDto;
+import com.deck.lab.backend.dto.response.AuthResponseDto;
+import com.deck.lab.backend.dto.response.TokenRefreshResponseDto;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.model.RefreshToken;
 import com.deck.lab.backend.security.JwtService;

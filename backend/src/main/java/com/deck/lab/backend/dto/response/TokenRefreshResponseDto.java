@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 public class TokenRefreshResponseDto {
     private String accessToken;

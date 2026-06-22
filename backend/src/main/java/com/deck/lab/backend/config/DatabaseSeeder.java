@@ -1,4 +1,4 @@
-package com.deck.lab.backend;
+package com.deck.lab.backend.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -356,7 +356,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 List<FormatRules> existingRules = formatRulesRepository.findByFormatName(localFormat);
                 if (!existingRules.isEmpty()) {
                     logger.info("Banlist for {} already seeded ({} rules). Skipping.", localFormat,
-                            existingRules.size());
+                             existingRules.size());
                     continue;
                 }
 

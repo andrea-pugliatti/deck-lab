@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 public class AuthResponseDto {
 
@@ -56,4 +56,3 @@ public class AuthResponseDto {
         this.accessToken = token;
     }
 }
-
