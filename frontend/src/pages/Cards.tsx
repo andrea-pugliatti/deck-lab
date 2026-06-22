@@ -117,8 +117,8 @@ export default function Cards() {
   const { data, loading, error } = useFetch<Page<Card>>(`/api/cards?${queryParams.toString()}`);
 
   const cards = data?.content || [];
-  const totalElements = data?.totalElements || 0;
-  const totalPages = data?.totalPages || 0;
+  const totalElements = data?.page?.totalElements || 0;
+  const totalPages = data?.page?.totalPages || 0;
 
   const startIdx = page * 20 + 1;
   const endIdx = Math.min((page + 1) * 20, totalElements);

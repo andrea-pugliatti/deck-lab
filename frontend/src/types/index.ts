@@ -47,10 +47,12 @@ export interface Card {
 
 export interface Page<T> {
   content: T[];
-  totalElements: number;
-  totalPages: number;
-  number?: number;
-  size?: number;
+  page: {
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    number: number;
+  };
 }
 export interface CardFiltersState {
   type: string;
