@@ -11,7 +11,6 @@ import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.service.DeckService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/decks")
@@ -33,15 +32,17 @@ public class DeckController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DeckDto> show(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(deckService.getDeckById(id));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (!deckService.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(deckService.getDeckById(id));
     }
 
     @PostMapping
-    public ResponseEntity<DeckDto> create(@Valid @RequestBody DeckDto deckDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckDto> create(
+            @Valid @RequestBody DeckDto deckDto,
+            @AuthenticationPrincipal User user) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
     }
 
@@ -51,23 +52,26 @@ public class DeckController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeckDto> update(@PathVariable Long id, @Valid @RequestBody DeckDto deckDto,
+    public ResponseEntity<DeckDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody DeckDto deckDto,
             @AuthenticationPrincipal User user) {
-        try {
-            return ResponseEntity.ok(deckService.updateDeck(id, deckDto, user));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (!deckService.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(deckService.updateDeck(id, deckDto, user));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        try {
-            deckService.deleteDeck(id, user);
-            return ResponseEntity.noContent().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+
+        if (!deckService.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+        deckService.deleteDeck(id, user);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/formats")

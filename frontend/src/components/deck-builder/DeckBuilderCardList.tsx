@@ -5,7 +5,7 @@ import SearchCardItem from "./SearchCardItem";
 export default function DeckBuilderCardList() {
   const { libraryLoading, libraryCards, deckCards, addCard } = useDeckBuilder();
 
-  if (libraryLoading) {
+  if (libraryLoading && libraryCards.length === 0) {
     return <LoadingSpinner size="sm" className="py-16" />;
   }
 
@@ -18,7 +18,11 @@ export default function DeckBuilderCardList() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto pr-1 space-y-3 min-h-0">
+    <div
+      className={`space-y-3 transition-opacity duration-200 ${
+        libraryLoading ? "opacity-50 pointer-events-none" : "opacity-100"
+      }`}
+    >
       {libraryCards.map((card) => (
         <SearchCardItem
           key={card.id}

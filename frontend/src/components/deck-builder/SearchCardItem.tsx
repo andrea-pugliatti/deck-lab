@@ -76,33 +76,33 @@ export default function SearchCardItem({
       <div className="flex gap-1 shrink-0 flex-wrap justify-end">
         <Button
           type="button"
-          variant="outline"
+          variant="outline-cyan"
           size="sm"
           onClick={() => addCard(card, "MAIN")}
           disabled={isExtra || totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold bg-cyan-accent/15 hover:bg-cyan-accent text-cyan-accent hover:text-dark-bg border-cyan-accent/20 rounded transition-all"
+          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
           title={isExtra ? "Extra deck monsters cannot go in the Main Deck" : "Add to Main"}
         >
           + Main
         </Button>
         <Button
           type="button"
-          variant="outline"
+          variant="outline-gold"
           size="sm"
           onClick={() => addCard(card, "EXTRA")}
           disabled={!isExtra || totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold bg-gold-accent/15 hover:bg-gold-accent text-gold-accent hover:text-dark-bg border-gold-accent/20 rounded transition-all"
+          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
           title={!isExtra ? "Main deck cards cannot go in the Extra Deck" : "Add to Extra"}
         >
           + Extra
         </Button>
         <Button
           type="button"
-          variant="outline"
+          variant="outline-purple"
           size="sm"
           onClick={() => addCard(card, "SIDE")}
           disabled={totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold bg-purple-500/10 hover:bg-purple-500 text-purple-400 hover:text-white border-purple-500/20 rounded transition-all"
+          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
           title="Add to Side"
         >
           + Side

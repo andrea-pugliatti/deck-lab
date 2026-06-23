@@ -1,6 +1,5 @@
 package com.deck.lab.backend.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +24,6 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         ValidationErrorResponse response = new ValidationErrorResponse("Validation failed", errors);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(response);
     }
 }

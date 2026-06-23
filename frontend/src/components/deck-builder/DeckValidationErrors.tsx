@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle } from "lucide-react";
 import { useDeckBuilder } from "../../context/DeckBuilderContext";
 
-export default function DeckStats() {
+export default function DeckValidationErrors() {
   const { validationSuccess, validationErrors, submitError } = useDeckBuilder();
 
   if (!validationSuccess && validationErrors.length === 0 && !submitError) {
@@ -9,7 +9,7 @@ export default function DeckStats() {
   }
 
   return (
-    <div className="rounded-xl overflow-hidden shadow-md">
+    <div className="rounded-xl overflow-hidden shadow-md animate-fade-in">
       {validationSuccess && (
         <div className="bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 p-4 flex items-start gap-2.5 text-xs">
           <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />

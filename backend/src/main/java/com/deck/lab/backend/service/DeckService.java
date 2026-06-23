@@ -54,12 +54,16 @@ public class DeckService {
                 .and(DeckSpecification.hasFormat(format))
                 .and(DeckSpecification.hasUser(username));
 
-        List<Deck> decks = deckRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<Deck> decks = deckRepository.findAll(spec, Sort.by(Sort.Direction.DESC, Deck::getUpdatedAt));
         List<DeckDto> dtos = new ArrayList<>();
         for (Deck deck : decks) {
             dtos.add(deckMapper.toDto(deck));
         }
         return dtos;
+    }
+
+    public Boolean existsById(Long id) {
+        return deckRepository.existsById(id);
     }
 
     public DeckDto getDeckById(Long id) {

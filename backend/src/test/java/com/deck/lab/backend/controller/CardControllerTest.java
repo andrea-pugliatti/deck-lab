@@ -101,8 +101,8 @@ public class CardControllerTest {
                 .param("size", "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size", is(1)))
-                .andExpect(jsonPath("$.number", is(0)))
+                .andExpect(jsonPath("$.page.size", is(1)))
+                .andExpect(jsonPath("$.page.number", is(0)))
                 .andExpect(jsonPath("$.content", hasSize(1)));
     }
 

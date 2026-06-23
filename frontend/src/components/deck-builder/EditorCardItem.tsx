@@ -60,38 +60,34 @@ export default function EditorCardItem({
 
       <div className="flex items-center gap-3">
         <div className="flex items-center bg-slate-950 border border-border-dim/80 rounded-lg p-0.5">
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
             onClick={() => updateQty(cardId, section, -1)}
-            className="p-1 min-w-0 hover:text-cyan-accent text-slate-400 transition-colors"
+            className="w-6 h-6 flex items-center justify-center rounded hover:bg-dark-surface-elevated/80 text-slate-400 hover:text-cyan-accent transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
             title="Decrease Quantity"
           >
-            <Minus className="w-3 h-3" />
-          </Button>
-          <span className="text-xs font-mono font-bold text-white px-2.5 min-w-6 text-center select-none">
+            <Minus className="w-3.5 h-3.5" />
+          </button>
+          <span className="text-xs font-mono font-bold text-white px-2 min-w-6 text-center select-none">
             {quantity}
           </span>
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
             onClick={() => updateQty(cardId, section, 1)}
             disabled={quantity >= 3}
-            className="p-1 min-w-0 hover:text-cyan-accent text-slate-400 transition-colors"
+            className="w-6 h-6 flex items-center justify-center rounded hover:bg-dark-surface-elevated/80 text-slate-400 hover:text-cyan-accent transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
             title="Increase Quantity"
           >
-            <Plus className="w-3 h-3" />
-          </Button>
+            <Plus className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         <Button
           type="button"
-          variant="outline"
+          variant="outline-red"
           size="sm"
           onClick={() => remove(cardId, section)}
-          className="p-1.5 min-w-0 bg-red-950/20 hover:bg-red-950/40 border-red-500/20 hover:border-red-500/50 rounded-lg text-slate-400 hover:text-red-400 transition-all"
+          className="p-1.5 min-w-0 rounded-lg transition-all"
           title="Remove Card"
         >
           <Trash2 className="w-3.5 h-3.5" />

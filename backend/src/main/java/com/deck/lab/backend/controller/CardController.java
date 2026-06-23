@@ -50,17 +50,16 @@ public class CardController {
         Page<CardDto> cards = service
                 .findAllOrWithFilters(name, type, attribute, race, archetype, pageable)
                 .map(mapper::toDto);
-        return new ResponseEntity<>(cards, HttpStatus.OK);
+
+        return ResponseEntity.ok(cards);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CardDto> show(@PathVariable Long id) {
         if (!service.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
-        return new ResponseEntity<>(
-                mapper.toDto(service.getById(id)),
-                HttpStatus.OK);
+        return ResponseEntity.ok(mapper.toDto(service.getById(id)));
     }
 
     @PostMapping
@@ -73,40 +72,43 @@ public class CardController {
     @PutMapping("/{id}")
     public ResponseEntity<CardDto> update(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
         if (!service.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
         Card existingCard = service.getById(id);
         mapper.updateEntityFromDto(cardDto, existingCard);
         Card updatedCard = service.edit(existingCard);
-        return new ResponseEntity<>(mapper.toDto(updatedCard), HttpStatus.OK);
+        return ResponseEntity.ok(mapper.toDto(updatedCard));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (!service.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
         service.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/attributes")
     public ResponseEntity<List<String>> getAttributes() {
-        return new ResponseEntity<>(service.findDistinctAttributes(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findDistinctAttributes());
     }
 
     @GetMapping("/races")
     public ResponseEntity<List<String>> getRaces() {
-        return new ResponseEntity<>(service.findDistinctRaces(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findDistinctRaces());
+
     }
 
     @GetMapping("/archetypes")
     public ResponseEntity<List<String>> getArchetypes() {
-        return new ResponseEntity<>(service.findDistinctArchetypes(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findDistinctArchetypes());
+
     }
 
     @GetMapping("/types")
     public ResponseEntity<List<String>> getTypes() {
-        return new ResponseEntity<>(service.findDistinctTypes(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findDistinctTypes());
+
     }
 }

@@ -28,7 +28,7 @@ export default function Home() {
         <div className="absolute top-[25%] left-1/4 w-75 h-75 bg-gold-accent/5 rounded-full blur-[100px] opacity-40"></div>
       </div>
 
-      <section className="relative py-24 px-6 text-center flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative py-24 px-6 text-center flex flex-col items-center justify-center">
         <h1 className="font-display text-5xl md:text-6xl font-black mb-6 leading-tight tracking-wide text-white">
           Step Into Your Deck Lab
         </h1>
