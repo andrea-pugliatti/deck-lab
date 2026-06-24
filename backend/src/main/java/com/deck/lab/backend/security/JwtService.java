@@ -1,18 +1,22 @@
 package com.deck.lab.backend.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Date;
-
 import com.deck.lab.backend.model.User;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
@@ -52,13 +56,13 @@ public class JwtService {
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
             final String email = extractUsername(token);
-            String userEmail = userDetails instanceof User ? ((User) userDetails).getEmail() : userDetails.getUsername();
+            String userEmail = userDetails instanceof User
+                    ? ((User) userDetails).getEmail()
+                    : userDetails.getUsername();
             return (email.equals(userEmail) && !isTokenExpired(token));
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            // handle expired token
+        } catch (ExpiredJwtException e) {
             return false;
-        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
-            // handle bad token
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
@@ -67,7 +71,7 @@ public class JwtService {
         try {
             Claims claims = extractAllClaims(token);
             return claims.getExpiration().before(new Date());
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             return true;
         } catch (Exception e) {
             return true;

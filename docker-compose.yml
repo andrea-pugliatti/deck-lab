@@ -29,6 +29,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - IMAGE_UPLOAD_DIR=/app/data/images
+      - GEMINI_API_KEY=test-key
     volumes:
       - card-images:/app/data/images
     depends_on:

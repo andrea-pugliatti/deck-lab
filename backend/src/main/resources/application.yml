@@ -1,6 +1,12 @@
 spring:
     application:
         name: backend
+    ai:
+        google:
+            genai:
+                api-key: ${GEMINI_API_KEY:test-api-key}
+                chat:
+                    model: gemini-3.1-flash-lite
     datasource:
         url: jdbc:postgresql://${DB_HOST:localhost}:5432/deck-lab?reWriteBatchedInserts=true
         username: ${POSTGRES_USER:postgres}
