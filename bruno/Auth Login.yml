@@ -1,0 +1,49 @@
+info:
+  name: Auth Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/login"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "username": "admin",
+        "password": "12345678"
+      }
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+  scripts:
+    - type: after-response
+      code: |-
+        // Check if login was successful
+        if (res.getStatus() === 200 || res.getStatus() === 201) {
+          // Adjust paths based on your actual API JSON structure
+          const accessToken = res.getBody().accessToken;
+          const refreshToken = res.getBody().refreshToken;
+
+          if (accessToken) {
+            bru.setVar("accessToken", accessToken);
+          }
+          if (refreshToken) {
+            bru.setVar("refreshToken", refreshToken);
+          }
+          
+          console.log("Successfully logged in and saved tokens.");
+        } else {
+          console.error("Login failed with status: " + res.getStatus());
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

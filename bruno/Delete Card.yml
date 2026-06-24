@@ -1,7 +1,7 @@
 info:
   name: Delete Card
   type: http
-  seq: 5
+  seq: 6
 
 http:
   method: DELETE
@@ -9,12 +9,12 @@ http:
   headers:
     - name: accept
       value: application/json
-  body:
-    type: none
-  auth:
-    type: inherit
+  auth: inherit
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-
@@ -27,3 +27,9 @@ runtime:
         test("Response should be 204 No Content or 404 Not Found", function() {
           expect([204, 404]).to.include(res.status);
         });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

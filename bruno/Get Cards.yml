@@ -1,7 +1,7 @@
 info:
   name: Get Cards
   type: http
-  seq: 1
+  seq: 2
 
 http:
   method: GET
@@ -31,14 +31,18 @@ http:
       disabled: true
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: tests
       code: |-
         test("Response should be 200 OK", function() {
           expect(res.status).to.equal(200);
         });
-        test("Response should be an array", function() {
-          expect(res.body).to.be.an('array');
+        test("Response should be an object containing an array", function() {
+          expect(res.body.content).to.exist;
+          expect(res.body.content).to.be.an('array');
         });
 
 settings:

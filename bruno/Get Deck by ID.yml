@@ -1,7 +1,7 @@
 info:
   name: Get Deck by ID
   type: http
-  seq: 10
+  seq: 11
 
 http:
   method: GET
@@ -11,6 +11,9 @@ http:
       value: application/json
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-

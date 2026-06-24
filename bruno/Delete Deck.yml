@@ -1,7 +1,7 @@
 info:
   name: Delete Deck
   type: http
-  seq: 12
+  seq: 13
 
 http:
   method: DELETE
@@ -9,8 +9,12 @@ http:
   headers:
     - name: accept
       value: application/json
+  auth: inherit
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-

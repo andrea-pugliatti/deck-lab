@@ -1,7 +1,7 @@
 info:
   name: Get Card by ID
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: GET
@@ -9,12 +9,11 @@ http:
   headers:
     - name: accept
       value: application/json
-  body:
-    type: none
-  auth:
-    type: inherit
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-
@@ -30,3 +29,9 @@ runtime:
           expect(res.body).to.be.an('object');
           expect(res.body.id).to.equal(Number(bru.getVar("createdCardId")));
         });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

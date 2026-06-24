@@ -1,7 +1,7 @@
 info:
   name: Get Full Image
   type: http
-  seq: 6
+  seq: 7
 
 http:
   method: GET
@@ -14,6 +14,8 @@ runtime:
   variables:
     - name: imageFilename
       value: 40941889.jpg
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: tests
       code: |-

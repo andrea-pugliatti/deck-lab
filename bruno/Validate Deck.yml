@@ -28,6 +28,9 @@ http:
       }
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-

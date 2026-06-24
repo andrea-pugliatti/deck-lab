@@ -2,3 +2,31 @@ opencollection: 1.0.0
 
 info:
   name: Deck Lab API
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: "{{accessToken}}"
+  variables:
+    - name: accessToken
+      value: ""
+    - name: refreshToken
+      value: ""
+bundled: false
+extensions:
+  bruno:
+    presets:
+      request:
+        type: http
+        url: http://localhost:8080

@@ -1,7 +1,7 @@
 info:
   name: Update Card
   type: http
-  seq: 4
+  seq: 5
 
 http:
   method: PUT
@@ -28,10 +28,12 @@ http:
         "def": 2100,
         "level": 7
       }
-  auth:
-    type: inherit
+  auth: inherit
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-
@@ -49,3 +51,9 @@ runtime:
             expect(res.body.name).to.equal("Dark Magician (Updated)");
           });
         }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

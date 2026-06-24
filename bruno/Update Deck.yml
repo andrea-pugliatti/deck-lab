@@ -16,18 +16,87 @@ http:
     data: |-
       {
         "name": "My First Deck (Updated)",
-        "description": "An updated test deck",
+        "description": "A test deck created via API",
         "formatName": "TCG",
         "deckCards": [
           {
-            "cardId": {{createdCardId}},
+            "cardId": 100,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 2313,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 14,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 41,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 5,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 642,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 7,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 832,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 91,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 10,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 5151,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 124,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 1133,
+            "section": "MAIN",
+            "quantity": 3
+          },
+          {
+            "cardId": 1415,
             "section": "MAIN",
             "quantity": 2
           }
         ]
       }
+  auth: inherit
 
 runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
   scripts:
     - type: before-request
       code: |-
@@ -45,7 +114,7 @@ runtime:
         if (res.status === 200) {
           test("Response should return the updated deck details", function() {
             expect(res.body.name).to.equal("My First Deck (Updated)");
-            expect(res.body.deckCards[0].quantity).to.equal(2);
+            expect(res.body.deckCards[13].quantity).to.equal(2);
           });
         }
 
