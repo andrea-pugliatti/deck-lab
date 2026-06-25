@@ -1,29 +1,38 @@
 package com.deck.lab.backend.service;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
-import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 
 import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
-import com.deck.lab.backend.model.*;
+import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
-
 import com.deck.lab.backend.validation.DeckValidationEngine;
-
-import java.util.*;
 
 class DeckGenerationServiceTest {
 
@@ -41,7 +50,8 @@ class DeckGenerationServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        deckGenerationService = new DeckGenerationService(chatModel, cardRepository, formatRulesRepository, new DeckValidationEngine());
+        deckGenerationService = new DeckGenerationService(chatModel, cardRepository, formatRulesRepository,
+                new DeckValidationEngine());
     }
 
     @Test
@@ -95,7 +105,7 @@ class DeckGenerationServiceTest {
         jdCard.setName("Judgment Dragon");
         when(cardRepository.findByName(eq("Judgment Dragon"))).thenReturn(Optional.of(jdCard));
         when(cardRepository.findAllById(anyList())).thenReturn(Collections.singletonList(jdCard));
-        when(formatRulesRepository.findByFormatName(eq("Edison"))).thenReturn(new ArrayList<>());
+        when(formatRulesRepository.findByFormatName(eq(Format.EDISON))).thenReturn(new ArrayList<>());
 
         // Act
         DeckGenerationResponseDto responseDto = deckGenerationService.generateDeck(request);

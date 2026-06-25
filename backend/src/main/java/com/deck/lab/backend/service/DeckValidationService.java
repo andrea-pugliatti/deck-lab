@@ -1,22 +1,29 @@
 package com.deck.lab.backend.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.exception.DeckValidationException;
+import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
-import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 import com.deck.lab.backend.validation.ValidationError;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 public class DeckValidationService {
@@ -86,7 +93,14 @@ public class DeckValidationService {
             for (DeckCardDto cardDto : cardDtos) {
                 Card card = cardMap.get(cardDto.getCardId());
                 if (card != null) {
-                    deckCards.add(new DeckCard(deck, card, cardDto.getSection(), cardDto.getQuantity()));
+                    DeckSection sectionEnum = null;
+                    try {
+                        sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection())
+                                : null;
+                    } catch (IllegalArgumentException e) {
+                        // Ignore invalid section
+                    }
+                    deckCards.add(new DeckCard(deck, card, sectionEnum, cardDto.getQuantity()));
                 }
             }
         }
@@ -96,11 +110,16 @@ public class DeckValidationService {
         String formatName = deckDto.getFormatName();
         Map<Long, CardStatus> formatLimits = new HashMap<>();
         if (formatName != null && !formatName.isBlank()) {
-            List<FormatRules> formatRules = formatRulesRepository.findByFormatName(formatName);
-            for (FormatRules rule : formatRules) {
-                if (rule.getCard() != null) {
-                    formatLimits.put(rule.getCard().getId(), rule.getStatus());
+            try {
+                Format format = Format.fromString(formatName);
+                List<FormatRules> formatRules = formatRulesRepository.findByFormatName(format);
+                for (FormatRules rule : formatRules) {
+                    if (rule.getCard() != null) {
+                        formatLimits.put(rule.getCard().getId(), rule.getStatus());
+                    }
                 }
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid formats
             }
         }
 

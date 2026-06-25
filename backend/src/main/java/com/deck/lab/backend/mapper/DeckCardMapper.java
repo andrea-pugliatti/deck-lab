@@ -6,6 +6,7 @@ import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
 
 @Component
 public class DeckCardMapper {
@@ -26,7 +27,7 @@ public class DeckCardMapper {
                     null,
                     null,
                     null,
-                    dc.getSection(),
+                    dc.getSection() != null ? dc.getSection().getValue() : null,
                     dc.getQuantity()
             );
         }
@@ -34,13 +35,13 @@ public class DeckCardMapper {
                 dc.getId(),
                 c.getId(),
                 c.getName(),
-                c.getType(),
+                c.getType() != null ? c.getType().getValue() : null,
                 c.getDescription(),
-                c.getRace(),
-                c.getAttribute(),
+                c.getRace() != null ? c.getRace().getValue() : null,
+                c.getAttribute() != null ? c.getAttribute().getValue() : null,
                 c.getArchetype(),
                 c.getImageUrl(),
-                dc.getSection(),
+                dc.getSection() != null ? dc.getSection().getValue() : null,
                 dc.getQuantity());
     }
 
@@ -48,7 +49,13 @@ public class DeckCardMapper {
         if (dto == null) {
             return null;
         }
-        DeckCard dc = new DeckCard(deck, card, dto.getSection() != null ? dto.getSection().toUpperCase() : null, dto.getQuantity());
+        DeckSection sectionEnum = null;
+        try {
+            sectionEnum = dto.getSection() != null ? DeckSection.fromString(dto.getSection()) : null;
+        } catch (IllegalArgumentException e) {
+            // Fallback/ignore invalid section
+        }
+        DeckCard dc = new DeckCard(deck, card, sectionEnum, dto.getQuantity());
         dc.setId(dto.getId());
         return dc;
     }

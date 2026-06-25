@@ -13,11 +13,5 @@ public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificat
 
         List<Card> findByNameContainingIgnoreCase(String name);
 
-        List<Card> findDistinctByAttributeNotNull();
-
-        List<Card> findDistinctByRaceNotNull();
-
         List<Card> findDistinctByArchetypeNotNullAndArchetypeNot(String empty);
-
-        List<Card> findDistinctByTypeNotNull();
 }

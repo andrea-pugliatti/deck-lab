@@ -1,6 +1,16 @@
 package com.deck.lab.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -12,7 +22,7 @@ public class FormatRules {
     private Long id;
 
     @Column(name = "format_name", nullable = false)
-    private String formatName;
+    private Format formatName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", nullable = false)
@@ -25,7 +35,7 @@ public class FormatRules {
     public FormatRules() {
     }
 
-    public FormatRules(String formatName, Card card, CardStatus status) {
+    public FormatRules(Format formatName, Card card, CardStatus status) {
         this.formatName = formatName;
         this.card = card;
         this.status = status;
@@ -39,11 +49,11 @@ public class FormatRules {
         this.id = id;
     }
 
-    public String getFormatName() {
+    public Format getFormatName() {
         return formatName;
     }
 
-    public void setFormatName(String formatName) {
+    public void setFormatName(Format formatName) {
         this.formatName = formatName;
     }
 

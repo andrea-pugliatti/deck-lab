@@ -1,10 +1,25 @@
 package com.deck.lab.backend.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,22 +28,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.UserRepository;
+
 import tools.jackson.databind.ObjectMapper;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.Matchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,11 +85,11 @@ public class DeckControllerTest {
         for (int i = 1; i <= 15; i++) {
             Card card = new Card();
             card.setName("ControllerTest Card " + i);
-            card.setType("Normal Monster");
-            card.setFrameType("normal");
+            card.setType(CardType.NORMAL_MONSTER);
+            card.setFrameType(FrameType.NORMAL);
             card.setDescription("A test card for controller " + i);
-            card.setRace("Dragon");
-            card.setAttribute("LIGHT");
+            card.setRace(CardRace.DRAGON);
+            card.setAttribute(CardAttribute.LIGHT);
             card.setAtk(1000);
             card.setDef(1000);
             card.setLevel(4);
@@ -85,8 +98,8 @@ public class DeckControllerTest {
         }
         testCard = testCards.get(0);
 
-        testDeck = new Deck("ControllerTest Deck", "A test deck for controller", "TCG", testUser);
-        DeckCard dc = new DeckCard(testDeck, testCard, "MAIN", 3);
+        testDeck = new Deck("ControllerTest Deck", "A test deck for controller", Format.TCG, testUser);
+        DeckCard dc = new DeckCard(testDeck, testCard, DeckSection.MAIN, 3);
         testDeck.setDeckCards(new ArrayList<>(List.of(dc)));
         testDeck = deckRepository.save(testDeck);
     }

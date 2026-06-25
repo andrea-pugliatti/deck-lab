@@ -1,16 +1,24 @@
 package com.deck.lab.backend.validation;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 
 class DeckValidationEngineTest {
 
@@ -24,15 +32,15 @@ class DeckValidationEngineTest {
     private Deck createBaseDeck(int cardCount, int qtyPerCard) {
         Deck deck = new Deck();
         deck.setName("Test Deck");
-        deck.setFormatName("Goat");
+        deck.setFormatName(Format.GOAT);
 
         List<DeckCard> cards = new ArrayList<>();
         for (long i = 1; i <= cardCount; i++) {
             Card card = new Card();
             card.setId(i);
             card.setName("Card " + i);
-            card.setType("Normal Monster");
-            cards.add(new DeckCard(deck, card, "MAIN", qtyPerCard));
+            card.setType(CardType.NORMAL_MONSTER);
+            cards.add(new DeckCard(deck, card, DeckSection.MAIN, qtyPerCard));
         }
         deck.setDeckCards(cards);
         return deck;
@@ -79,8 +87,8 @@ class DeckValidationEngineTest {
         Card card14 = new Card();
         card14.setId(14L);
         card14.setName("Card 14");
-        card14.setType("Normal Monster");
-        deck.getDeckCards().add(new DeckCard(deck, card14, "MAIN", 4)); // 4 copies of Card 14
+        card14.setType(CardType.NORMAL_MONSTER);
+        deck.getDeckCards().add(new DeckCard(deck, card14, DeckSection.MAIN, 4)); // 4 copies of Card 14
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
@@ -93,8 +101,8 @@ class DeckValidationEngineTest {
         Card fusionCard = new Card();
         fusionCard.setId(14L);
         fusionCard.setName("Blue-Eyes Ultimate Dragon");
-        fusionCard.setType("Fusion Monster");
-        deck.getDeckCards().add(new DeckCard(deck, fusionCard, "MAIN", 1));
+        fusionCard.setType(CardType.FUSION_MONSTER);
+        deck.getDeckCards().add(new DeckCard(deck, fusionCard, DeckSection.MAIN, 1));
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
@@ -107,8 +115,8 @@ class DeckValidationEngineTest {
         Card normalCard = new Card();
         normalCard.setId(14L);
         normalCard.setName("Dark Magician");
-        normalCard.setType("Normal Monster");
-        deck.getDeckCards().add(new DeckCard(deck, normalCard, "EXTRA", 1));
+        normalCard.setType(CardType.NORMAL_MONSTER);
+        deck.getDeckCards().add(new DeckCard(deck, normalCard, DeckSection.EXTRA, 1));
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());

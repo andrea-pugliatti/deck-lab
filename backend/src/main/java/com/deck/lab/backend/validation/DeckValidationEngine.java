@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.deck.lab.backend.model.CardStatus;
@@ -19,7 +18,6 @@ import com.deck.lab.backend.validation.rules.QuantityLimitRule;
 public class DeckValidationEngine {
     private final List<DeckRule> rules;
 
-    @Autowired
     public DeckValidationEngine(List<DeckRule> rules) {
         this.rules = rules != null ? Collections.unmodifiableList(new ArrayList<>(rules)) : Collections.emptyList();
     }

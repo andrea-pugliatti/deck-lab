@@ -25,10 +25,16 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardStatus;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
@@ -187,6 +193,34 @@ public class DatabaseSeeder implements CommandLineRunner {
         String archetype = (String) apiCard.get("archetype");
         String frameType = (String) apiCard.get("frameType");
 
+        CardType cardType = null;
+        try {
+            cardType = CardType.fromString(type);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Unknown card type: {}", type);
+        }
+
+        FrameType frameTypeEnum = null;
+        try {
+            frameTypeEnum = FrameType.fromString(frameType);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Unknown frame type: {}", frameType);
+        }
+
+        CardRace cardRace = null;
+        try {
+            cardRace = CardRace.fromString(race);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Unknown card race: {}", race);
+        }
+
+        CardAttribute cardAttribute = null;
+        try {
+            cardAttribute = CardAttribute.fromString(attribute);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Unknown card attribute: {}", attribute);
+        }
+
         String imageUrl = "cards/images/" + apiId + ".jpg";
         String imageUrlCropped = "cards/images/cropped/" + apiId + ".jpg";
 
@@ -196,7 +230,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Integer linkVal = (Integer) apiCard.get("linkval");
         Integer scale = (Integer) apiCard.get("scale");
 
-        Card card = new Card(name, type, frameType, description, race, attribute, archetype, imageUrl, imageUrlCropped,
+        Card card = new Card(name, cardType, frameTypeEnum, description, cardRace, cardAttribute, archetype, imageUrl,
+                imageUrlCropped,
                 atk, def, level, linkVal, scale);
 
         // Extract remote URLs and trigger async download
@@ -352,8 +387,9 @@ public class DatabaseSeeder implements CommandLineRunner {
             String localFormat = entry.getValue();
 
             try {
+                Format formatEnum = Format.fromString(localFormat);
                 // Skip if we already have rules for this format
-                List<FormatRules> existingRules = formatRulesRepository.findByFormatName(localFormat);
+                List<FormatRules> existingRules = formatRulesRepository.findByFormatName(formatEnum);
                 if (!existingRules.isEmpty()) {
                     logger.info("Banlist for {} already seeded ({} rules). Skipping.", localFormat,
                             existingRules.size());
@@ -417,7 +453,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         continue;
                     }
 
-                    toSave.add(new FormatRules(localFormat, card, status));
+                    toSave.add(new FormatRules(formatEnum, card, status));
 
                     if (toSave.size() >= 500) {
                         final List<FormatRules> batch = new ArrayList<>(toSave);
@@ -472,7 +508,15 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedHistoricalFormatIfEmpty(String formatName, Map<String, CardStatus> rules) {
-        List<FormatRules> existing = formatRulesRepository.findByFormatName(formatName);
+        Format formatEnum = null;
+        try {
+            formatEnum = Format.fromString(formatName);
+        } catch (IllegalArgumentException e) {
+            logger.error("Failed to parse historical format name: {}", formatName);
+            return;
+        }
+
+        List<FormatRules> existing = formatRulesRepository.findByFormatName(formatEnum);
         if (!existing.isEmpty()) {
             logger.info("Historical banlist for {} already seeded. Skipping.", formatName);
             return;
@@ -482,7 +526,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         for (Map.Entry<String, CardStatus> entry : rules.entrySet()) {
             Optional<Card> cardOpt = cardRepository.findByName(entry.getKey());
             if (cardOpt.isPresent()) {
-                formatRulesRepository.save(new FormatRules(formatName, cardOpt.get(), entry.getValue()));
+                formatRulesRepository.save(new FormatRules(formatEnum, cardOpt.get(), entry.getValue()));
                 seeded++;
             } else {
                 logger.warn("Card '{}' not found in DB for historical banlist {}", entry.getKey(), formatName);
@@ -766,12 +810,14 @@ public class DatabaseSeeder implements CommandLineRunner {
                 .filter(d -> d.getName().equalsIgnoreCase(name))
                 .forEach(d -> deckRepository.delete(d));
 
-        Deck deck = new Deck(name, description, formatName, user);
+        Format formatEnum = Format.fromString(formatName);
+        Deck deck = new Deck(name, description, formatEnum, user);
         List<DeckCard> deckCards = new ArrayList<>();
         for (DeckCardInfo info : cardInfos) {
             Optional<Card> cardOpt = cardRepository.findByName(info.cardName);
             if (cardOpt.isPresent()) {
-                deckCards.add(new DeckCard(deck, cardOpt.get(), info.section, info.quantity));
+                DeckSection sectionEnum = DeckSection.fromString(info.section);
+                deckCards.add(new DeckCard(deck, cardOpt.get(), sectionEnum, info.quantity));
             } else {
                 logger.warn("Card '{}' not found in database. Skipping for deck '{}'.", info.cardName, name);
             }

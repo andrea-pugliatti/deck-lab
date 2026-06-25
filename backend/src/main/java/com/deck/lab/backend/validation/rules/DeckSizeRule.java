@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
@@ -17,7 +18,7 @@ public class DeckSizeRule implements DeckRule {
     @Override
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();
-        
+
         if (deck == null || deck.getDeckCards() == null || deck.getDeckCards().isEmpty()) {
             errors.add(new ValidationError("Main Deck must contain between 40 and 60 cards. Current size: 0"));
             return errors;
@@ -28,19 +29,21 @@ public class DeckSizeRule implements DeckRule {
         int sideSize = 0;
 
         for (DeckCard dc : deck.getDeckCards()) {
-            String section = dc.getSection() != null ? dc.getSection().toUpperCase().trim() : "";
+            DeckSection section = dc.getSection();
             int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
-            if (qty <= 0) continue;
+            if (qty <= 0)
+                continue;
 
             switch (section) {
-                case "MAIN" -> mainSize += qty;
-                case "EXTRA" -> extraSize += qty;
-                case "SIDE" -> sideSize += qty;
+                case DeckSection.MAIN -> mainSize += qty;
+                case DeckSection.EXTRA -> extraSize += qty;
+                case DeckSection.SIDE -> sideSize += qty;
             }
         }
 
         if (mainSize < 40 || mainSize > 60) {
-            errors.add(new ValidationError("Main Deck must contain between 40 and 60 cards. Current size: " + mainSize));
+            errors.add(
+                    new ValidationError("Main Deck must contain between 40 and 60 cards. Current size: " + mainSize));
         }
         if (extraSize > 15) {
             errors.add(new ValidationError("Extra Deck cannot exceed 15 cards. Current size: " + extraSize));

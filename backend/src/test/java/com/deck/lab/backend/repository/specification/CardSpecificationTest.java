@@ -1,5 +1,8 @@
 package com.deck.lab.backend.repository.specification;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +13,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -30,11 +35,11 @@ class CardSpecificationTest {
         // Save distinct test cards to avoid collisions with seeded database records
         card1 = new Card();
         card1.setName("SpecTest Blue-Eyes White Dragon");
-        card1.setType("Normal Monster");
-        card1.setFrameType("normal");
+        card1.setType(CardType.NORMAL_MONSTER);
+        card1.setFrameType(FrameType.NORMAL);
         card1.setDescription("Legendary dragon.");
-        card1.setRace("Dragon");
-        card1.setAttribute("LIGHT");
+        card1.setRace(CardRace.DRAGON);
+        card1.setAttribute(CardAttribute.LIGHT);
         card1.setArchetype("Blue-Eyes");
         card1.setImageUrl("/cards/images/spec1.jpg");
         card1.setImageUrlCropped("/cards/images/cropped/spec1.jpg");
@@ -45,11 +50,11 @@ class CardSpecificationTest {
 
         card2 = new Card();
         card2.setName("SpecTest Dark Magician");
-        card2.setType("Normal Monster");
-        card2.setFrameType("normal");
+        card2.setType(CardType.NORMAL_MONSTER);
+        card2.setFrameType(FrameType.NORMAL);
         card2.setDescription("Ultimate wizard.");
-        card2.setRace("Spellcaster");
-        card2.setAttribute("DARK");
+        card2.setRace(CardRace.SPELLCASTER);
+        card2.setAttribute(CardAttribute.DARK);
         card2.setArchetype("Dark Magician");
         card2.setImageUrl("/cards/images/spec2.jpg");
         card2.setImageUrlCropped("/cards/images/cropped/spec2.jpg");
@@ -60,11 +65,11 @@ class CardSpecificationTest {
 
         card3 = new Card();
         card3.setName("SpecTest Slifer the Sky Dragon");
-        card3.setType("Effect Monster");
-        card3.setFrameType("effect");
+        card3.setType(CardType.EFFECT_MONSTER);
+        card3.setFrameType(FrameType.EFFECT);
         card3.setDescription("Divine beast.");
-        card3.setRace("Divine-Beast");
-        card3.setAttribute("DIVINE");
+        card3.setRace(CardRace.DIVINE_BEAST);
+        card3.setAttribute(CardAttribute.DIVINE);
         card3.setArchetype("Slifer");
         card3.setImageUrl("/cards/images/spec3.jpg");
         card3.setImageUrlCropped("/cards/images/cropped/spec3.jpg");
@@ -135,7 +140,8 @@ class CardSpecificationTest {
 
     @Test
     void caseInsensitiveFilters_matchCorrectly() {
-        // Query for "spectest blue-eyes" (lowercase) should match "SpecTest Blue-Eyes White Dragon"
+        // Query for "spectest blue-eyes" (lowercase) should match "SpecTest Blue-Eyes
+        // White Dragon"
         List<Card> results = cardRepository.findAll(CardSpecification.hasName("spectest blue-eyes"));
         assertTrue(results.size() >= 1);
         assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
@@ -154,7 +160,8 @@ class CardSpecificationTest {
 
     @Test
     void nullOrBlankFilters_ignoredCorrectly() {
-        // Blanks and nulls should result in no filter constraints (i.e. returns all cards)
+        // Blanks and nulls should result in no filter constraints (i.e. returns all
+        // cards)
         Specification<Card> spec = Specification
                 .where(CardSpecification.hasName(null))
                 .and(CardSpecification.hasType(""))

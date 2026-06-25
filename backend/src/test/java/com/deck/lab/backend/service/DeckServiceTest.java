@@ -1,5 +1,12 @@
 package com.deck.lab.backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -13,16 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.UserRepository;
-import com.deck.lab.backend.exception.DeckValidationException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -59,11 +70,11 @@ class DeckServiceTest {
         for (int i = 1; i <= 15; i++) {
             Card card = new Card();
             card.setName("ServiceTest Card " + i);
-            card.setType("Normal Monster");
-            card.setFrameType("normal");
+            card.setType(CardType.NORMAL_MONSTER);
+            card.setFrameType(FrameType.NORMAL);
             card.setDescription("A test card " + i);
-            card.setRace("Dragon");
-            card.setAttribute("LIGHT");
+            card.setRace(CardRace.DRAGON);
+            card.setAttribute(CardAttribute.LIGHT);
             card.setAtk(1000);
             card.setDef(1000);
             card.setLevel(4);
@@ -74,18 +85,18 @@ class DeckServiceTest {
 
         testFusionCard = new Card();
         testFusionCard.setName("ServiceTest Fusion Monster");
-        testFusionCard.setType("Fusion Monster");
-        testFusionCard.setFrameType("fusion");
+        testFusionCard.setType(CardType.FUSION_MONSTER);
+        testFusionCard.setFrameType(FrameType.FUSION);
         testFusionCard.setDescription("A test fusion monster.");
-        testFusionCard.setRace("Warrior");
-        testFusionCard.setAttribute("EARTH");
+        testFusionCard.setRace(CardRace.WARRIOR);
+        testFusionCard.setAttribute(CardAttribute.EARTH);
         testFusionCard.setAtk(2000);
         testFusionCard.setDef(2000);
         testFusionCard.setLevel(6);
         testFusionCard = cardRepository.save(testFusionCard);
 
-        testDeck = new Deck("ServiceTest Deck", "A test deck", "TCG", testUser);
-        DeckCard dc = new DeckCard(testDeck, testCard, "MAIN", 3);
+        testDeck = new Deck("ServiceTest Deck", "A test deck", Format.TCG, testUser);
+        DeckCard dc = new DeckCard(testDeck, testCard, DeckSection.MAIN, 3);
         testDeck.setDeckCards(new ArrayList<>(List.of(dc)));
         testDeck = deckRepository.save(testDeck);
     }
@@ -186,7 +197,8 @@ class DeckServiceTest {
     @Test
     void updateDeck_whenAuthorized_updatesDeckFieldsAndCards() {
         List<DeckCardDto> validCards = createValidDeckCards();
-        // Modify the first card's quantity to 1 (still total = 42 - 2 = 40 cards, which is valid)
+        // Modify the first card's quantity to 1 (still total = 42 - 2 = 40 cards, which
+        // is valid)
         validCards.get(0).setQuantity(1);
 
         // Add a Fusion Monster in EXTRA section

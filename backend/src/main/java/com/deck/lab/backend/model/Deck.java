@@ -1,9 +1,22 @@
 package com.deck.lab.backend.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "decks")
@@ -19,7 +32,7 @@ public class Deck {
     private String description;
 
     @Column(name = "format_name", nullable = false)
-    private String formatName;
+    private Format formatName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -48,7 +61,7 @@ public class Deck {
     public Deck() {
     }
 
-    public Deck(String name, String description, String formatName, User user) {
+    public Deck(String name, String description, Format formatName, User user) {
         this.name = name;
         this.description = description;
         this.formatName = formatName;
@@ -80,11 +93,11 @@ public class Deck {
         this.description = description;
     }
 
-    public String getFormatName() {
+    public Format getFormatName() {
         return formatName;
     }
 
-    public void setFormatName(String formatName) {
+    public void setFormatName(Format formatName) {
         this.formatName = formatName;
     }
 

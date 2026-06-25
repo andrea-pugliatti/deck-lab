@@ -1,5 +1,11 @@
 package com.deck.lab.backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
-import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.exception.DeckValidationException;
+import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -37,11 +45,11 @@ class DeckValidationServiceTest {
         for (int i = 1; i <= 15; i++) {
             Card card = new Card();
             card.setName("ValidationTest Card " + i);
-            card.setType("Normal Monster");
-            card.setFrameType("normal");
+            card.setType(CardType.NORMAL_MONSTER);
+            card.setFrameType(FrameType.NORMAL);
             card.setDescription("A test card " + i);
-            card.setRace("Dragon");
-            card.setAttribute("LIGHT");
+            card.setRace(CardRace.DRAGON);
+            card.setAttribute(CardAttribute.LIGHT);
             card.setAtk(1000);
             card.setDef(1000);
             card.setLevel(4);

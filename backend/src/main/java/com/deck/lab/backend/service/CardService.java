@@ -2,6 +2,7 @@ package com.deck.lab.backend.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.specification.CardSpecification;
 
@@ -23,19 +27,15 @@ public class CardService {
     }
 
     public List<String> findDistinctAttributes() {
-        return cardRepository.findDistinctByAttributeNotNull().stream()
-                .map(Card::getAttribute)
-                .filter(a -> a != null && !a.isBlank())
-                .distinct()
+        return Stream.of(CardAttribute.values())
+                .map(CardAttribute::getValue)
                 .sorted()
                 .toList();
     }
 
     public List<String> findDistinctRaces() {
-        return cardRepository.findDistinctByRaceNotNull().stream()
-                .map(Card::getRace)
-                .filter(r -> r != null && !r.isBlank())
-                .distinct()
+        return Stream.of(CardRace.values())
+                .map(CardRace::getValue)
                 .sorted()
                 .toList();
     }
@@ -50,10 +50,8 @@ public class CardService {
     }
 
     public List<String> findDistinctTypes() {
-        return cardRepository.findDistinctByTypeNotNull().stream()
-                .map(Card::getType)
-                .filter(t -> t != null && !t.isBlank())
-                .distinct()
+        return Stream.of(CardType.values())
+                .map(CardType::getValue)
                 .sorted()
                 .toList();
     }

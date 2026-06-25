@@ -1,12 +1,18 @@
 package com.deck.lab.backend.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.model.Card;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
 
 class CardMapperTest {
 
@@ -22,14 +28,14 @@ class CardMapperTest {
         Card card = new Card();
         card.setId(10L);
         card.setName("Blue-Eyes White Dragon");
-        card.setType("Normal Monster");
+        card.setType(CardType.NORMAL_MONSTER);
         card.setDescription("This legendary dragon is a powerful engine of destruction.");
-        card.setRace("Dragon");
-        card.setAttribute("LIGHT");
+        card.setRace(CardRace.DRAGON);
+        card.setAttribute(CardAttribute.LIGHT);
         card.setArchetype("Blue-Eyes");
         card.setImageUrl("/cards/images/1.jpg");
         card.setImageUrlCropped("/cards/images/cropped/1.jpg");
-        card.setFrameType("normal");
+        card.setFrameType(FrameType.NORMAL);
         card.setAtk(3000);
         card.setDef(2500);
         card.setLevel(8);
@@ -41,14 +47,14 @@ class CardMapperTest {
         assertNotNull(dto);
         assertEquals(card.getId(), dto.getId());
         assertEquals(card.getName(), dto.getName());
-        assertEquals(card.getType(), dto.getType());
+        assertEquals(card.getType().getValue(), dto.getType());
         assertEquals(card.getDescription(), dto.getDescription());
-        assertEquals(card.getRace(), dto.getRace());
-        assertEquals(card.getAttribute(), dto.getAttribute());
+        assertEquals(card.getRace().getValue(), dto.getRace());
+        assertEquals(card.getAttribute().getValue(), dto.getAttribute());
         assertEquals(card.getArchetype(), dto.getArchetype());
         assertEquals(card.getImageUrl(), dto.getImageUrl());
         assertEquals(card.getImageUrlCropped(), dto.getImageUrlCropped());
-        assertEquals(card.getFrameType(), dto.getFrameType());
+        assertEquals(card.getFrameType().getValue(), dto.getFrameType());
         assertEquals(card.getAtk(), dto.getAtk());
         assertEquals(card.getDef(), dto.getDef());
         assertEquals(card.getLevel(), dto.getLevel());
@@ -85,14 +91,14 @@ class CardMapperTest {
         assertNotNull(card);
         assertEquals(dto.getId(), card.getId());
         assertEquals(dto.getName(), card.getName());
-        assertEquals(dto.getType(), card.getType());
+        assertEquals(CardType.NORMAL_MONSTER, card.getType());
         assertEquals(dto.getDescription(), card.getDescription());
-        assertEquals(dto.getRace(), card.getRace());
-        assertEquals(dto.getAttribute(), card.getAttribute());
+        assertEquals(CardRace.SPELLCASTER, card.getRace());
+        assertEquals(CardAttribute.DARK, card.getAttribute());
         assertEquals(dto.getArchetype(), card.getArchetype());
         assertEquals(dto.getImageUrl(), card.getImageUrl());
         assertEquals(dto.getImageUrlCropped(), card.getImageUrlCropped());
-        assertEquals(dto.getFrameType(), card.getFrameType());
+        assertEquals(FrameType.NORMAL, card.getFrameType());
         assertEquals(dto.getAtk(), card.getAtk());
         assertEquals(dto.getDef(), card.getDef());
         assertEquals(dto.getLevel(), card.getLevel());
@@ -110,14 +116,14 @@ class CardMapperTest {
         Card card = new Card();
         card.setId(20L);
         card.setName("Red-Eyes Black Dragon");
-        card.setType("Normal Monster");
+        card.setType(CardType.NORMAL_MONSTER);
         card.setDescription("A ferocious dragon with a deadly attack.");
-        card.setRace("Dragon");
-        card.setAttribute("DARK");
+        card.setRace(CardRace.DRAGON);
+        card.setAttribute(CardAttribute.DARK);
         card.setArchetype("Red-Eyes");
         card.setImageUrl("/cards/images/3.jpg");
         card.setImageUrlCropped("/cards/images/cropped/3.jpg");
-        card.setFrameType("normal");
+        card.setFrameType(FrameType.NORMAL);
         card.setAtk(2400);
         card.setDef(2000);
         card.setLevel(7);
@@ -126,7 +132,7 @@ class CardMapperTest {
         dto.setName("Red-Eyes Black Dragon Updated");
         dto.setType("Effect Monster");
         dto.setDescription("Updated desc");
-        dto.setRace("Dragon / Effect");
+        dto.setRace("Dragon");
         dto.setAttribute("FIRE");
         dto.setArchetype("Red-Eyes / Slash");
         dto.setImageUrl("/cards/images/3_updated.jpg");
@@ -145,14 +151,14 @@ class CardMapperTest {
 
         // Other fields should be updated
         assertEquals(dto.getName(), card.getName());
-        assertEquals(dto.getType(), card.getType());
+        assertEquals(CardType.EFFECT_MONSTER, card.getType());
         assertEquals(dto.getDescription(), card.getDescription());
-        assertEquals(dto.getRace(), card.getRace());
-        assertEquals(dto.getAttribute(), card.getAttribute());
+        assertEquals(CardRace.DRAGON, card.getRace());
+        assertEquals(CardAttribute.FIRE, card.getAttribute());
         assertEquals(dto.getArchetype(), card.getArchetype());
         assertEquals(dto.getImageUrl(), card.getImageUrl());
         assertEquals(dto.getImageUrlCropped(), card.getImageUrlCropped());
-        assertEquals(dto.getFrameType(), card.getFrameType());
+        assertEquals(FrameType.EFFECT, card.getFrameType());
         assertEquals(dto.getAtk(), card.getAtk());
         assertEquals(dto.getDef(), card.getDef());
         assertEquals(dto.getLevel(), card.getLevel());

@@ -10,6 +10,7 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
@@ -24,22 +25,26 @@ public class CardPlacementRule implements DeckRule {
 
         for (DeckCard dc : deck.getDeckCards()) {
             Card card = dc.getCard();
-            if (card == null) continue;
+            if (card == null)
+                continue;
 
-            String section = dc.getSection() != null ? dc.getSection().toUpperCase().trim() : "";
+            DeckSection section = dc.getSection();
             int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
-            if (qty <= 0) continue;
+            if (qty <= 0)
+                continue;
 
             boolean extraType = isExtraDeckCard(card);
-            if ("MAIN".equals(section)) {
+            if (section == DeckSection.MAIN) {
                 if (extraType) {
-                    errors.add(new ValidationError("Extra Deck monster '" + card.getName() + "' must be placed in the EXTRA section."));
+                    errors.add(new ValidationError(
+                            "Extra Deck monster '" + card.getName() + "' must be placed in the EXTRA section."));
                 }
-            } else if ("EXTRA".equals(section)) {
+            } else if (section == DeckSection.EXTRA) {
                 if (!extraType) {
-                    errors.add(new ValidationError("Main Deck card '" + card.getName() + "' cannot be placed in the EXTRA section."));
+                    errors.add(new ValidationError(
+                            "Main Deck card '" + card.getName() + "' cannot be placed in the EXTRA section."));
                 }
-            } else if (!"SIDE".equals(section)) {
+            } else if (section != DeckSection.SIDE) {
                 errors.add(new ValidationError("Invalid section: " + dc.getSection()));
             }
         }
@@ -51,7 +56,6 @@ public class CardPlacementRule implements DeckRule {
         if (card == null || card.getType() == null) {
             return false;
         }
-        String type = card.getType().toLowerCase();
-        return type.contains("fusion") || type.contains("synchro") || type.contains("xyz") || type.contains("link");
+        return card.getType().isExtraDeck();
     }
 }

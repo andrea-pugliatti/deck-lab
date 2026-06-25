@@ -11,6 +11,7 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
@@ -23,8 +24,8 @@ public class FormatLegalityRule implements DeckRule {
             return errors;
         }
 
-        String formatName = deck.getFormatName();
-        if (formatName == null || formatName.isBlank()) {
+        Format format = deck.getFormatName();
+        if (format == null) {
             return errors;
         }
 
@@ -37,7 +38,8 @@ public class FormatLegalityRule implements DeckRule {
             }
             Long cardId = dc.getCard().getId();
             int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
-            if (qty <= 0) continue;
+            if (qty <= 0)
+                continue;
 
             cardQuantities.put(cardId, cardQuantities.getOrDefault(cardId, 0) + qty);
             cards.put(cardId, dc.getCard());
@@ -58,8 +60,9 @@ public class FormatLegalityRule implements DeckRule {
                     Card card = cards.get(cardId);
                     String cardName = card != null ? card.getName() : "Unknown Card";
                     String statusLabel = status.name().toLowerCase().replace('_', '-');
-                    errors.add(new ValidationError("Card '" + cardName + "' is " + statusLabel + " in format '" + formatName
-                            + "' (max " + limit + " copies allowed, found " + totalQty + ")"));
+                    errors.add(new ValidationError(
+                            "Card '" + cardName + "' is " + statusLabel + " in format '" + format.getValue()
+                                    + "' (max " + limit + " copies allowed, found " + totalQty + ")"));
                 }
             }
         }

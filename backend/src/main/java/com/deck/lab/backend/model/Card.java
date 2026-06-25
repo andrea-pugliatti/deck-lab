@@ -1,7 +1,16 @@
 package com.deck.lab.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "cards")
@@ -15,15 +24,16 @@ public class Card {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String type;
+    @NotNull
+    private CardType type;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String race;
+    private CardRace race;
 
-    private String attribute;
+    @Enumerated(EnumType.STRING)
+    private CardAttribute attribute;
 
     private String archetype;
 
@@ -34,7 +44,7 @@ public class Card {
     private String imageUrlCropped;
 
     @Column(name = "frame_type")
-    private String frameType;
+    private FrameType frameType;
 
     private Integer atk;
 
@@ -50,7 +60,7 @@ public class Card {
     public Card() {
     }
 
-    public Card(String name, String type, String frameType, String description, String race, String attribute,
+    public Card(String name, CardType type, FrameType frameType, String description, CardRace race, CardAttribute attribute,
             String archetype, String imageUrl, String imageUrlCropped, Integer atk, Integer def, Integer level,
             Integer linkVal, Integer scale) {
         this.name = name;
@@ -85,11 +95,11 @@ public class Card {
         this.name = name;
     }
 
-    public String getType() {
+    public CardType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CardType type) {
         this.type = type;
     }
 
@@ -101,19 +111,19 @@ public class Card {
         this.description = description;
     }
 
-    public String getRace() {
+    public CardRace getRace() {
         return race;
     }
 
-    public void setRace(String race) {
+    public void setRace(CardRace race) {
         this.race = race;
     }
 
-    public String getAttribute() {
+    public CardAttribute getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(CardAttribute attribute) {
         this.attribute = attribute;
     }
 
@@ -141,11 +151,11 @@ public class Card {
         this.imageUrlCropped = imageUrlCropped;
     }
 
-    public String getFrameType() {
+    public FrameType getFrameType() {
         return frameType;
     }
 
-    public void setFrameType(String frameType) {
+    public void setFrameType(FrameType frameType) {
         this.frameType = frameType;
     }
 

@@ -1,27 +1,39 @@
 package com.deck.lab.backend.controller;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.model.Card;
-import com.deck.lab.backend.repository.CardRepository;
-import tools.jackson.databind.ObjectMapper;
-
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.model.User;
+import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.UserRepository;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import java.util.Collections;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+
+import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,11 +64,11 @@ public class CardControllerTest {
 
         testCard = new Card();
         testCard.setName("MyUniqueCard");
-        testCard.setType("Normal Monster");
-        testCard.setFrameType("normal");
+        testCard.setType(CardType.NORMAL_MONSTER);
+        testCard.setFrameType(FrameType.NORMAL);
         testCard.setDescription("This legendary dragon is a powerful engine of destruction.");
-        testCard.setRace("Dragon");
-        testCard.setAttribute("LIGHT");
+        testCard.setRace(CardRace.DRAGON);
+        testCard.setAttribute(CardAttribute.LIGHT);
         testCard.setArchetype("Blue-Eyes");
         testCard.setImageUrl("/cards/images/1.jpg");
         testCard.setImageUrlCropped("/cards/images/cropped/1.jpg");
@@ -126,11 +138,11 @@ public class CardControllerTest {
     void testCreateCard() throws Exception {
         Card newCard = new Card();
         newCard.setName("Dark Magician");
-        newCard.setType("Normal Monster");
-        newCard.setFrameType("normal");
+        newCard.setType(CardType.NORMAL_MONSTER);
+        newCard.setFrameType(FrameType.NORMAL);
         newCard.setDescription("The ultimate wizard.");
-        newCard.setRace("Spellcaster");
-        newCard.setAttribute("DARK");
+        newCard.setRace(CardRace.SPELLCASTER);
+        newCard.setAttribute(CardAttribute.DARK);
         newCard.setAtk(2500);
         newCard.setDef(2100);
         newCard.setLevel(7);

@@ -31,7 +31,8 @@ public class QuantityLimitRule implements DeckRule {
             }
             Long cardId = dc.getCard().getId();
             int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
-            if (qty <= 0) continue;
+            if (qty <= 0)
+                continue;
 
             cardQuantities.put(cardId, cardQuantities.getOrDefault(cardId, 0) + qty);
             cardNames.put(cardId, dc.getCard().getName());
@@ -42,7 +43,8 @@ public class QuantityLimitRule implements DeckRule {
             int totalQty = entry.getValue();
             if (totalQty > 3) {
                 String cardName = cardNames.getOrDefault(cardId, "Unknown Card");
-                errors.add(new ValidationError("Card '" + cardName + "' exceeds the limit of 3 copies across the entire deck. Total copies: " + totalQty));
+                errors.add(new ValidationError("Card '" + cardName
+                        + "' exceeds the limit of 3 copies across the entire deck. Total copies: " + totalQty));
             }
         }
 

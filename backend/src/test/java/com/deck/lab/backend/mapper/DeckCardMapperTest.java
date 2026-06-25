@@ -1,14 +1,21 @@
 package com.deck.lab.backend.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.deck.lab.backend.model.DeckSection;
 
 class DeckCardMapperTest {
 
@@ -27,14 +34,14 @@ class DeckCardMapperTest {
         Card card = new Card();
         card.setId(10L);
         card.setName("Dark Magician");
-        card.setType("Normal Monster");
+        card.setType(CardType.NORMAL_MONSTER);
         card.setDescription("The ultimate wizard.");
-        card.setRace("Spellcaster");
-        card.setAttribute("DARK");
+        card.setRace(CardRace.SPELLCASTER);
+        card.setAttribute(CardAttribute.DARK);
         card.setArchetype("Dark Magician");
         card.setImageUrl("images/10.jpg");
 
-        DeckCard deckCard = new DeckCard(deck, card, "MAIN", 3);
+        DeckCard deckCard = new DeckCard(deck, card, DeckSection.MAIN, 3);
         deckCard.setId(100L);
 
         DeckCardDto dto = deckCardMapper.toDto(deckCard);
@@ -55,7 +62,7 @@ class DeckCardMapperTest {
 
     @Test
     void toDto_withNullCard_mapsWithoutCardInfo() {
-        DeckCard deckCard = new DeckCard(null, null, "SIDE", 1);
+        DeckCard deckCard = new DeckCard(null, null, DeckSection.SIDE, 1);
         deckCard.setId(200L);
 
         DeckCardDto dto = deckCardMapper.toDto(deckCard);
@@ -77,7 +84,8 @@ class DeckCardMapperTest {
     void toEntity_withValidDto_mapsFieldsCorrectly() {
         Deck deck = new Deck();
         Card card = new Card();
-        DeckCardDto dto = new DeckCardDto(300L, 10L, "Dark Magician", "Normal Monster", "The ultimate wizard.", "Spellcaster", "DARK", "Dark Magician", "images/10.jpg", "main", 3);
+        DeckCardDto dto = new DeckCardDto(300L, 10L, "Dark Magician", "Normal Monster", "The ultimate wizard.",
+                "Spellcaster", "DARK", "Dark Magician", "images/10.jpg", "main", 3);
 
         DeckCard deckCard = deckCardMapper.toEntity(dto, deck, card);
 
@@ -85,7 +93,7 @@ class DeckCardMapperTest {
         assertEquals(300L, deckCard.getId());
         assertSame(deck, deckCard.getDeck());
         assertSame(card, deckCard.getCard());
-        assertEquals("MAIN", deckCard.getSection()); // Should be capitalized by mapper
+        assertEquals(DeckSection.MAIN, deckCard.getSection()); // Should be capitalized by mapper
         assertEquals(3, deckCard.getQuantity());
     }
 

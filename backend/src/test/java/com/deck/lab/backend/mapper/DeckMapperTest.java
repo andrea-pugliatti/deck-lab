@@ -1,19 +1,27 @@
 package com.deck.lab.backend.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.User;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class DeckMapperTest {
 
@@ -33,33 +41,33 @@ class DeckMapperTest {
         deck.setId(10L);
         deck.setName("Yugi's Starter Deck");
         deck.setDescription("A deck loaded with powerful spellcasters and dragons.");
-        deck.setFormatName("TCG");
+        deck.setFormatName(Format.TCG);
         deck.setUser(user);
 
         Card card1 = new Card();
         card1.setId(100L);
         card1.setName("Dark Magician");
-        card1.setType("Normal Monster");
+        card1.setType(CardType.NORMAL_MONSTER);
         card1.setDescription("The ultimate wizard in terms of attack and defense.");
-        card1.setRace("Spellcaster");
-        card1.setAttribute("DARK");
+        card1.setRace(CardRace.SPELLCASTER);
+        card1.setAttribute(CardAttribute.DARK);
         card1.setArchetype("Dark Magician");
         card1.setImageUrl("cards/images/100.jpg");
 
         Card card2 = new Card();
         card2.setId(101L);
         card2.setName("Blue-Eyes White Dragon");
-        card2.setType("Normal Monster");
+        card2.setType(CardType.NORMAL_MONSTER);
         card2.setDescription("This legendary dragon is a powerful engine of destruction.");
-        card2.setRace("Dragon");
-        card2.setAttribute("LIGHT");
+        card2.setRace(CardRace.DRAGON);
+        card2.setAttribute(CardAttribute.LIGHT);
         card2.setArchetype("Blue-Eyes");
         card2.setImageUrl("cards/images/101.jpg");
 
-        DeckCard dc1 = new DeckCard(deck, card1, "MAIN", 3);
+        DeckCard dc1 = new DeckCard(deck, card1, DeckSection.MAIN, 3);
         dc1.setId(500L);
 
-        DeckCard dc2 = new DeckCard(deck, card2, "SIDE", 1);
+        DeckCard dc2 = new DeckCard(deck, card2, DeckSection.SIDE, 1);
         dc2.setId(501L);
 
         deck.setDeckCards(List.of(dc1, dc2));
@@ -70,9 +78,9 @@ class DeckMapperTest {
         assertEquals(deck.getId(), dto.getId());
         assertEquals(deck.getName(), dto.getName());
         assertEquals(deck.getDescription(), dto.getDescription());
-        assertEquals(deck.getFormatName(), dto.getFormatName());
+        assertEquals(deck.getFormatName().getValue(), dto.getFormatName());
         assertEquals("yugi", dto.getCreatorUsername());
-        
+
         List<DeckCardDto> cardDtos = dto.getDeckCards();
         assertNotNull(cardDtos);
         assertEquals(2, cardDtos.size());
@@ -102,7 +110,7 @@ class DeckMapperTest {
 
     @Test
     void toDto_withEmptyDeckCards_returnsDtoWithEmptyList() {
-        Deck deck = new Deck("Empty Deck", "No cards inside", "Speed Duel", null);
+        Deck deck = new Deck("Empty Deck", "No cards inside", Format.SPEED_DUEL, null);
         deck.setId(20L);
         deck.setDeckCards(new ArrayList<>());
 
@@ -119,7 +127,7 @@ class DeckMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsFieldsCorrectly() {
-        DeckDto dto = new DeckDto(30L, "New Deck", "Some description", "Advanced", new ArrayList<>());
+        DeckDto dto = new DeckDto(30L, "New Deck", "Some description", "Goat", new ArrayList<>());
 
         Deck deck = deckMapper.toEntity(dto);
 
@@ -127,7 +135,7 @@ class DeckMapperTest {
         assertEquals(30L, deck.getId());
         assertEquals("New Deck", deck.getName());
         assertEquals("Some description", deck.getDescription());
-        assertEquals("Advanced", deck.getFormatName());
+        assertEquals(Format.GOAT, deck.getFormatName());
     }
 
     @Test
@@ -137,16 +145,16 @@ class DeckMapperTest {
 
     @Test
     void updateEntityFromDto_withValidDto_updatesFieldsCorrectly() {
-        Deck deck = new Deck("Old Name", "Old Desc", "Old Format", null);
+        Deck deck = new Deck("Old Name", "Old Desc", Format.TCG, null);
         deck.setId(40L);
 
-        DeckDto dto = new DeckDto(50L, "Updated Name", "Updated Desc", "Updated Format", new ArrayList<>());
+        DeckDto dto = new DeckDto(50L, "Updated Name", "Updated Desc", "Goat", new ArrayList<>());
 
         deckMapper.updateEntityFromDto(dto, deck);
 
         assertEquals(40L, deck.getId()); // ID should not be changed by updateEntityFromDto
         assertEquals("Updated Name", deck.getName());
         assertEquals("Updated Desc", deck.getDescription());
-        assertEquals("Updated Format", deck.getFormatName());
+        assertEquals(Format.GOAT, deck.getFormatName());
     }
 }

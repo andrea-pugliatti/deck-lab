@@ -1,8 +1,17 @@
 package com.deck.lab.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -22,8 +31,9 @@ public class DeckCard {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-    @NotBlank
-    private String section; // "MAIN", "EXTRA", "SIDE"
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private DeckSection section;
 
     @NotNull
     private Integer quantity;
@@ -31,7 +41,7 @@ public class DeckCard {
     public DeckCard() {
     }
 
-    public DeckCard(Deck deck, Card card, String section, Integer quantity) {
+    public DeckCard(Deck deck, Card card, DeckSection section, Integer quantity) {
         this.deck = deck;
         this.card = card;
         this.section = section;
@@ -62,11 +72,11 @@ public class DeckCard {
         this.card = card;
     }
 
-    public String getSection() {
+    public DeckSection getSection() {
         return section;
     }
 
-    public void setSection(String section) {
+    public void setSection(DeckSection section) {
         this.section = section;
     }
 

@@ -1,5 +1,12 @@
 package com.deck.lab.backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -32,11 +41,11 @@ class CardServiceTest {
     void setUp() {
         testCard = new Card();
         testCard.setName("ServiceTest Blue-Eyes");
-        testCard.setType("Normal Monster");
-        testCard.setFrameType("normal");
+        testCard.setType(CardType.NORMAL_MONSTER);
+        testCard.setFrameType(FrameType.NORMAL);
         testCard.setDescription("Legendary dragon.");
-        testCard.setRace("Dragon");
-        testCard.setAttribute("LIGHT");
+        testCard.setRace(CardRace.DRAGON);
+        testCard.setAttribute(CardAttribute.LIGHT);
         testCard.setArchetype("Blue-Eyes");
         testCard.setImageUrl("/cards/images/service1.jpg");
         testCard.setImageUrlCropped("/cards/images/cropped/service1.jpg");
@@ -93,11 +102,11 @@ class CardServiceTest {
     void save_savesCardSuccessfully() {
         Card newCard = new Card();
         newCard.setName("ServiceTest Dark Magician");
-        newCard.setType("Normal Monster");
-        newCard.setFrameType("normal");
+        newCard.setType(CardType.NORMAL_MONSTER);
+        newCard.setFrameType(FrameType.NORMAL);
         newCard.setDescription("Ultimate wizard.");
-        newCard.setRace("Spellcaster");
-        newCard.setAttribute("DARK");
+        newCard.setRace(CardRace.SPELLCASTER);
+        newCard.setAttribute(CardAttribute.DARK);
         newCard.setAtk(2500);
         newCard.setDef(2100);
         newCard.setLevel(7);

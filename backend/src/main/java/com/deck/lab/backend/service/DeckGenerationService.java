@@ -1,9 +1,16 @@
 package com.deck.lab.backend.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +23,17 @@ import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
-import com.deck.lab.backend.model.*;
+import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.CardStatus;
+import com.deck.lab.backend.model.Deck;
+import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 import com.deck.lab.backend.validation.ValidationError;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DeckGenerationService {
@@ -135,10 +145,10 @@ public class DeckGenerationService {
                             tempIdCounter++,
                             card.getId(),
                             card.getName(),
-                            card.getType(),
+                            card.getType() != null ? card.getType().getValue() : null,
                             card.getDescription(),
-                            card.getRace(),
-                            card.getAttribute(),
+                            card.getRace() != null ? card.getRace().getValue() : null,
+                            card.getAttribute() != null ? card.getAttribute().getValue() : null,
                             card.getArchetype(),
                             card.getImageUrl(),
                             section,
@@ -234,7 +244,7 @@ public class DeckGenerationService {
                             suggestion.getSynergyReason() != null ? suggestion.getSynergyReason()
                                     : "Provides good synergy.",
                             card.getId(),
-                            card.getType(),
+                            card.getType() != null ? card.getType().getValue() : null,
                             card.getImageUrlCropped()));
                 }
             }
@@ -347,7 +357,13 @@ public class DeckGenerationService {
     private List<String> runValidation(String deckName, String aiName, String formatName, List<DeckCardDto> cardDtos) {
         Deck deck = new Deck();
         deck.setName(aiName);
-        deck.setFormatName(formatName);
+        Format format = null;
+        try {
+            format = Format.fromString(formatName);
+            deck.setFormatName(format);
+        } catch (IllegalArgumentException e) {
+            // Ignore invalid format
+        }
 
         List<Long> cardIds = cardDtos.stream().map(DeckCardDto::getCardId).toList();
         List<Card> cards = cardRepository.findAllById(cardIds);
@@ -357,14 +373,20 @@ public class DeckGenerationService {
         for (DeckCardDto cardDto : cardDtos) {
             Card card = cardMap.get(cardDto.getCardId());
             if (card != null) {
-                deckCards.add(new DeckCard(deck, card, cardDto.getSection(), cardDto.getQuantity()));
+                DeckSection sectionEnum = null;
+                try {
+                    sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection()) : null;
+                } catch (IllegalArgumentException e) {
+                    // Ignore invalid section
+                }
+                deckCards.add(new DeckCard(deck, card, sectionEnum, cardDto.getQuantity()));
             }
         }
         deck.setDeckCards(deckCards);
 
         Map<Long, CardStatus> formatLimits = new HashMap<>();
-        if (formatName != null && !formatName.isBlank()) {
-            List<FormatRules> formatRules = formatRulesRepository.findByFormatName(formatName);
+        if (format != null) {
+            List<FormatRules> formatRules = formatRulesRepository.findByFormatName(format);
             for (FormatRules rule : formatRules) {
                 if (rule.getCard() != null) {
                     formatLimits.put(rule.getCard().getId(), rule.getStatus());

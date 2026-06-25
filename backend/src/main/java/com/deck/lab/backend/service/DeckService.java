@@ -1,52 +1,48 @@
 package com.deck.lab.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.mapper.DeckCardMapper;
+import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
-import com.deck.lab.backend.model.FormatRules;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.DeckRepository;
-import com.deck.lab.backend.repository.FormatRulesRepository;
-import com.deck.lab.backend.mapper.DeckMapper;
-import com.deck.lab.backend.mapper.DeckCardMapper;
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import com.deck.lab.backend.repository.specification.DeckSpecification;
-
-import java.util.*;
 
 @Service
 public class DeckService {
-
     private final DeckRepository deckRepository;
-    private final FormatRulesRepository formatRulesRepository;
     private final DeckMapper deckMapper;
     private final DeckCardMapper deckCardMapper;
     private final DeckValidationService deckValidationService;
 
     public DeckService(DeckRepository deckRepository,
-            FormatRulesRepository formatRulesRepository,
             DeckMapper deckMapper,
             DeckCardMapper deckCardMapper,
             DeckValidationService deckValidationService) {
         this.deckRepository = deckRepository;
-        this.formatRulesRepository = formatRulesRepository;
         this.deckMapper = deckMapper;
         this.deckCardMapper = deckCardMapper;
         this.deckValidationService = deckValidationService;
     }
 
     public List<String> findDistinctFormats() {
-        return formatRulesRepository.findDistinctByFormatNameNotNull().stream()
-                .map(FormatRules::getFormatName)
-                .filter(f -> f != null && !f.isBlank())
-                .distinct()
+        return Stream.of(Format.values())
+                .map(Format::getValue)
                 .sorted()
                 .toList();
     }
