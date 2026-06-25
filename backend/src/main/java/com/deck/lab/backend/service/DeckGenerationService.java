@@ -8,10 +8,11 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deck.lab.backend.dto.CardEntryDto;
+import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
-import com.deck.lab.backend.dto.response.CardSuggestionDto;
 import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
@@ -34,11 +35,12 @@ public class DeckGenerationService {
 
     public DeckGenerationService(ChatModel chatModel,
             CardRepository cardRepository,
-            FormatRulesRepository formatRulesRepository) {
+            FormatRulesRepository formatRulesRepository,
+            DeckValidationEngine validationEngine) {
         this.chatModel = chatModel;
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
-        this.validationEngine = new DeckValidationEngine();
+        this.validationEngine = validationEngine;
     }
 
     @Transactional(readOnly = true)
@@ -111,7 +113,7 @@ public class DeckGenerationService {
         long tempIdCounter = 1;
 
         if (aiDeck != null && aiDeck.getCards() != null) {
-            for (DeckGenerateAiResponseDto.CardEntry entry : aiDeck.getCards()) {
+            for (CardEntryDto entry : aiDeck.getCards()) {
                 if (entry.getName() == null || entry.getName().isBlank()) {
                     continue;
                 }
@@ -246,42 +248,48 @@ public class DeckGenerationService {
             formatName = "TCG";
         }
         return switch (formatName.toUpperCase()) {
-            case "GOAT" -> """
-                - Format Rules: Goat Format (2005). Only FUSION monsters are allowed in the Extra Deck. Synchro, Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
-                - Extra Deck Limit: Size is unlimited (0 to 99 cards).
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo, Snatch Steal, Heavy Storm, Premature Burial are limited to max 1 copy.
-                - Staples to consider: Torrential Tribute, Mirror Force, Ring of Destruction, Sakuretsu Armor, Mystical Space Typhoon, Dust Tornado.
-                """;
-            case "EDISON" -> """
-                - Format Rules: Edison Format (2010). Only FUSION and SYNCHRO monsters are allowed in the Extra Deck. Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
-                - Extra Deck Limit: Max 15 cards.
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo are banned (0 copies). Heavy Storm, Brain Control, Mind Control are limited to max 1 copy.
-                - Staples to consider: Torrential Tribute, Mirror Force, Book of Moon, Bottomless Trap Hole, Mystical Space Typhoon.
-                """;
-            case "TENGU PLANT", "TENGU_PLANT" -> """
-                - Format Rules: Tengu Plant Format (September 2011). Only FUSION and SYNCHRO monsters are allowed in the Extra Deck. Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
-                - Extra Deck Limit: Max 15 cards.
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo are banned (0 copies). Heavy Storm, Monster Reborn, Dark Hole are limited to max 1 copy.
-                - Staples to consider: Book of Moon, Mystical Space Typhoon, Solemn Warning, Solemn Judgment, Effect Veiler.
-                """;
-            case "HAT" -> """
-                - Format Rules: HAT Format (2014). FUSION, SYNCHRO, and XYZ monsters are allowed in the Extra Deck. Pendulum and Link monsters do not exist and are strictly FORBIDDEN.
-                - Extra Deck Limit: Max 15 cards.
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Heavy Storm, Giant Trunade are banned (0 copies).
-                - Staples to consider: Mystical Space Typhoon, Solemn Warning, Torrential Tribute, Bottomless Trap Hole, Compulsory Evacuation Device, Fiendish Chain.
-                """;
-            case "OCG" -> """
-                - Format Rules: Modern OCG rules. All monster types (Fusion, Synchro, Xyz, Pendulum, Link) are allowed.
-                - Extra Deck Limit: Max 15 cards.
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity are banned (0 copies).
-                - Staples to consider: Maxx "C", Ash Blossom & Joyous Spring, Infinite Impermanence, Called by the Grave, Crossout Designator.
-                """;
-            default -> """
-                - Format Rules: Modern TCG rules. All monster types (Fusion, Synchro, Xyz, Pendulum, Link) are allowed.
-                - Extra Deck Limit: Max 15 cards.
-                - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Heavy Storm, Giant Trunade are banned (0 copies).
-                - Staples to consider: Ash Blossom & Joyous Spring, Infinite Impermanence, Effect Veiler, Called by the Grave, Nibiru the Primal Being.
-                """;
+            case "GOAT" ->
+                """
+                        - Format Rules: Goat Format (2005). Only FUSION monsters are allowed in the Extra Deck. Synchro, Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
+                        - Extra Deck Limit: Size is unlimited (0 to 99 cards).
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo, Snatch Steal, Heavy Storm, Premature Burial are limited to max 1 copy.
+                        - Staples to consider: Torrential Tribute, Mirror Force, Ring of Destruction, Sakuretsu Armor, Mystical Space Typhoon, Dust Tornado.
+                        """;
+            case "EDISON" ->
+                """
+                        - Format Rules: Edison Format (2010). Only FUSION and SYNCHRO monsters are allowed in the Extra Deck. Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
+                        - Extra Deck Limit: Max 15 cards.
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo are banned (0 copies). Heavy Storm, Brain Control, Mind Control are limited to max 1 copy.
+                        - Staples to consider: Torrential Tribute, Mirror Force, Book of Moon, Bottomless Trap Hole, Mystical Space Typhoon.
+                        """;
+            case "TENGU PLANT", "TENGU_PLANT" ->
+                """
+                        - Format Rules: Tengu Plant Format (September 2011). Only FUSION and SYNCHRO monsters are allowed in the Extra Deck. Xyz, Pendulum, and Link monsters do not exist and are strictly FORBIDDEN.
+                        - Extra Deck Limit: Max 15 cards.
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Delinquent Duo are banned (0 copies). Heavy Storm, Monster Reborn, Dark Hole are limited to max 1 copy.
+                        - Staples to consider: Book of Moon, Mystical Space Typhoon, Solemn Warning, Solemn Judgment, Effect Veiler.
+                        """;
+            case "HAT" ->
+                """
+                        - Format Rules: HAT Format (2014). FUSION, SYNCHRO, and XYZ monsters are allowed in the Extra Deck. Pendulum and Link monsters do not exist and are strictly FORBIDDEN.
+                        - Extra Deck Limit: Max 15 cards.
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Heavy Storm, Giant Trunade are banned (0 copies).
+                        - Staples to consider: Mystical Space Typhoon, Solemn Warning, Torrential Tribute, Bottomless Trap Hole, Compulsory Evacuation Device, Fiendish Chain.
+                        """;
+            case "OCG" ->
+                """
+                        - Format Rules: Modern OCG rules. All monster types (Fusion, Synchro, Xyz, Pendulum, Link) are allowed.
+                        - Extra Deck Limit: Max 15 cards.
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity are banned (0 copies).
+                        - Staples to consider: Maxx "C", Ash Blossom & Joyous Spring, Infinite Impermanence, Called by the Grave, Crossout Designator.
+                        """;
+            default ->
+                """
+                        - Format Rules: Modern TCG rules. All monster types (Fusion, Synchro, Xyz, Pendulum, Link) are allowed.
+                        - Extra Deck Limit: Max 15 cards.
+                        - Forbidden/Limited Rules: Pot of Greed, Graceful Charity, Heavy Storm, Giant Trunade are banned (0 copies).
+                        - Staples to consider: Ash Blossom & Joyous Spring, Infinite Impermanence, Effect Veiler, Called by the Grave, Nibiru the Primal Being.
+                        """;
         };
     }
 
@@ -290,30 +298,38 @@ public class DeckGenerationService {
             strategy = "None";
         }
         return switch (strategy.trim().toLowerCase()) {
-            case "combo" -> """
-                - Playstyle Guideline: Combo / Synchro Spam. Prioritize monsters that act as starters or extenders. Focus on cards that chain special summons to build large boards. Keep trap cards to a minimum (0-4 copies) to maximize consistency.
-                """;
-            case "control" -> """
-                - Playstyle Guideline: Control / Stun. Focus on counter-traps, hand traps, negations, and resource denial. Lower monster count is common, making room for solid defense and removal spells/traps.
-                """;
-            case "aggro" -> """
-                - Playstyle Guideline: Aggro / OTK. Focus on high attack power, quick-play spells, and board wipes. Avoid slow trap cards, prioritizing speed and immediate offensive pressure to win quickly.
-                """;
-            case "midrange" -> """
-                - Playstyle Guideline: Midrange / Balanced. Aim for a balanced split of core archetype monsters, search/draw spells, and a reliable lineup of traps or hand traps for disruption. Focus on resource loops and recovery.
-                """;
-            case "going second", "going_second" -> """
-                - Playstyle Guideline: Going Second / Board Breaker. Include board-breaking cards (e.g. board wipes, spell/trap removal) and hand traps that can disrupt the opponent during their first turn. Avoid slow traps that require setting.
-                """;
-            case "stall/burn", "stall_burn" -> """
-                - Playstyle Guideline: Stall / Burn. Focus on defensive walls, negations, stalling tactics (e.g. battle protection spells/traps), and LP burn damage cards.
-                """;
-            case "pure" -> """
-                - Playstyle Guideline: Pure Archetype. Focus strictly on cards belonging directly to the chosen archetype, minimizing generic staples to keep the theme and deck engine pure.
-                """;
-            default -> """
-                - Playstyle Guideline: Standard / Balanced. Build a standard deck for this archetype, letting the archetype's native playstyle dictate card ratios.
-                """;
+            case "combo" ->
+                """
+                        - Playstyle Guideline: Combo / Synchro Spam. Prioritize monsters that act as starters or extenders. Focus on cards that chain special summons to build large boards. Keep trap cards to a minimum (0-4 copies) to maximize consistency.
+                        """;
+            case "control" ->
+                """
+                        - Playstyle Guideline: Control / Stun. Focus on counter-traps, hand traps, negations, and resource denial. Lower monster count is common, making room for solid defense and removal spells/traps.
+                        """;
+            case "aggro" ->
+                """
+                        - Playstyle Guideline: Aggro / OTK. Focus on high attack power, quick-play spells, and board wipes. Avoid slow trap cards, prioritizing speed and immediate offensive pressure to win quickly.
+                        """;
+            case "midrange" ->
+                """
+                        - Playstyle Guideline: Midrange / Balanced. Aim for a balanced split of core archetype monsters, search/draw spells, and a reliable lineup of traps or hand traps for disruption. Focus on resource loops and recovery.
+                        """;
+            case "going second", "going_second" ->
+                """
+                        - Playstyle Guideline: Going Second / Board Breaker. Include board-breaking cards (e.g. board wipes, spell/trap removal) and hand traps that can disrupt the opponent during their first turn. Avoid slow traps that require setting.
+                        """;
+            case "stall/burn", "stall_burn" ->
+                """
+                        - Playstyle Guideline: Stall / Burn. Focus on defensive walls, negations, stalling tactics (e.g. battle protection spells/traps), and LP burn damage cards.
+                        """;
+            case "pure" ->
+                """
+                        - Playstyle Guideline: Pure Archetype. Focus strictly on cards belonging directly to the chosen archetype, minimizing generic staples to keep the theme and deck engine pure.
+                        """;
+            default ->
+                """
+                        - Playstyle Guideline: Standard / Balanced. Build a standard deck for this archetype, letting the archetype's native playstyle dictate card ratios.
+                        """;
         };
     }
 

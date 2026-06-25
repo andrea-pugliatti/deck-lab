@@ -3,6 +3,8 @@ package com.deck.lab.backend.dto.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deck.lab.backend.dto.CardSuggestionDto;
+
 public class CardSuggestionsAiResponseDto {
     private List<CardSuggestionDto> suggestions = new ArrayList<>();
 

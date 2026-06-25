@@ -20,6 +20,7 @@ import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.UserRepository;
+import com.deck.lab.backend.exception.DeckValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +43,8 @@ class DeckServiceTest {
     private User testUser;
     private User unauthorizedUser;
     private Card testCard;
+    private List<Card> testCards;
+    private Card testFusionCard;
     private Deck testDeck;
 
     @BeforeEach
@@ -52,22 +55,51 @@ class DeckServiceTest {
         unauthorizedUser = new User("service-deck-user-2", "password", "deck-user-2@example.com");
         unauthorizedUser = userRepository.save(unauthorizedUser);
 
-        testCard = new Card();
-        testCard.setName("ServiceTest Card");
-        testCard.setType("Normal Monster");
-        testCard.setFrameType("normal");
-        testCard.setDescription("A test card.");
-        testCard.setRace("Dragon");
-        testCard.setAttribute("LIGHT");
-        testCard.setAtk(1000);
-        testCard.setDef(1000);
-        testCard.setLevel(4);
-        testCard = cardRepository.save(testCard);
+        testCards = new ArrayList<>();
+        for (int i = 1; i <= 15; i++) {
+            Card card = new Card();
+            card.setName("ServiceTest Card " + i);
+            card.setType("Normal Monster");
+            card.setFrameType("normal");
+            card.setDescription("A test card " + i);
+            card.setRace("Dragon");
+            card.setAttribute("LIGHT");
+            card.setAtk(1000);
+            card.setDef(1000);
+            card.setLevel(4);
+            card = cardRepository.save(card);
+            testCards.add(card);
+        }
+        testCard = testCards.get(0);
+
+        testFusionCard = new Card();
+        testFusionCard.setName("ServiceTest Fusion Monster");
+        testFusionCard.setType("Fusion Monster");
+        testFusionCard.setFrameType("fusion");
+        testFusionCard.setDescription("A test fusion monster.");
+        testFusionCard.setRace("Warrior");
+        testFusionCard.setAttribute("EARTH");
+        testFusionCard.setAtk(2000);
+        testFusionCard.setDef(2000);
+        testFusionCard.setLevel(6);
+        testFusionCard = cardRepository.save(testFusionCard);
 
         testDeck = new Deck("ServiceTest Deck", "A test deck", "TCG", testUser);
         DeckCard dc = new DeckCard(testDeck, testCard, "MAIN", 3);
         testDeck.setDeckCards(new ArrayList<>(List.of(dc)));
         testDeck = deckRepository.save(testDeck);
+    }
+
+    private List<DeckCardDto> createValidDeckCards() {
+        List<DeckCardDto> cardDtos = new ArrayList<>();
+        for (int i = 0; i < 14; i++) {
+            DeckCardDto cardDto = new DeckCardDto();
+            cardDto.setCardId(testCards.get(i).getId());
+            cardDto.setSection("MAIN");
+            cardDto.setQuantity(3);
+            cardDtos.add(cardDto);
+        }
+        return cardDtos;
     }
 
     @Test
@@ -100,23 +132,18 @@ class DeckServiceTest {
 
     @Test
     void createDeck_savesDeckAndReturnsDto() {
-        DeckCardDto cardDto = new DeckCardDto();
-        cardDto.setCardId(testCard.getId());
-        cardDto.setSection("MAIN");
-        cardDto.setQuantity(2);
-
         DeckDto requestDto = new DeckDto();
         requestDto.setName("New Created Deck");
         requestDto.setDescription("Freshly created");
         requestDto.setFormatName("Goat");
-        requestDto.setDeckCards(List.of(cardDto));
+        requestDto.setDeckCards(createValidDeckCards());
 
         DeckDto result = deckService.createDeck(requestDto, testUser);
         assertNotNull(result.getId());
         assertEquals("New Created Deck", result.getName());
         assertEquals("Goat", result.getFormatName());
-        assertEquals(1, result.getDeckCards().size());
-        assertEquals(2, result.getDeckCards().get(0).getQuantity());
+        assertEquals(14, result.getDeckCards().size());
+        assertEquals(3, result.getDeckCards().get(0).getQuantity());
 
         Optional<Deck> savedDeck = deckRepository.findById(result.getId());
         assertTrue(savedDeck.isPresent());
@@ -124,54 +151,64 @@ class DeckServiceTest {
     }
 
     @Test
-    void createDeck_whenCardNotFound_throwsIllegalArgumentException() {
-        DeckCardDto cardDto = new DeckCardDto();
-        cardDto.setCardId(999999L); // Non-existent card ID
-        cardDto.setSection("MAIN");
-        cardDto.setQuantity(2);
+    void createDeck_whenCardNotFound_throwsDeckValidationException() {
+        List<DeckCardDto> cardDtos = createValidDeckCards();
+        cardDtos.get(0).setCardId(999999L); // Replace first card with non-existent ID
 
         DeckDto requestDto = new DeckDto();
         requestDto.setName("Invalid Deck");
         requestDto.setFormatName("TCG");
+        requestDto.setDeckCards(cardDtos);
+
+        assertThrows(DeckValidationException.class, () -> {
+            deckService.createDeck(requestDto, testUser);
+        });
+    }
+
+    @Test
+    void createDeck_whenDeckSizeInvalid_throwsDeckValidationException() {
+        // Only 1 card (qty 3) = size 3, which is less than 40
+        DeckCardDto cardDto = new DeckCardDto();
+        cardDto.setCardId(testCard.getId());
+        cardDto.setSection("MAIN");
+        cardDto.setQuantity(3);
+
+        DeckDto requestDto = new DeckDto();
+        requestDto.setName("Size Invalid Deck");
+        requestDto.setFormatName("TCG");
         requestDto.setDeckCards(List.of(cardDto));
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(DeckValidationException.class, () -> {
             deckService.createDeck(requestDto, testUser);
         });
     }
 
     @Test
     void updateDeck_whenAuthorized_updatesDeckFieldsAndCards() {
-        // Create another card to add to the deck
-        Card secondCard = new Card();
-        secondCard.setName("Second Card");
-        secondCard.setType("Spell Card");
-        secondCard.setFrameType("spell");
-        secondCard.setDescription("A spell card.");
-        secondCard.setRace("Normal");
-        final Card savedSecondCard = cardRepository.save(secondCard);
+        List<DeckCardDto> validCards = createValidDeckCards();
+        // Modify the first card's quantity to 1 (still total = 42 - 2 = 40 cards, which is valid)
+        validCards.get(0).setQuantity(1);
 
-        DeckCardDto firstCardDto = new DeckCardDto();
-        firstCardDto.setCardId(testCard.getId());
-        firstCardDto.setSection("MAIN");
-        firstCardDto.setQuantity(1); // Quantity updated from 3 to 1
+        // Add a Fusion Monster in EXTRA section
+        DeckCardDto extraCardDto = new DeckCardDto();
+        extraCardDto.setCardId(testFusionCard.getId());
+        extraCardDto.setSection("EXTRA");
+        extraCardDto.setQuantity(2);
 
-        DeckCardDto secondCardDto = new DeckCardDto();
-        secondCardDto.setCardId(savedSecondCard.getId());
-        secondCardDto.setSection("EXTRA");
-        secondCardDto.setQuantity(2);
+        List<DeckCardDto> newCardsList = new ArrayList<>(validCards);
+        newCardsList.add(extraCardDto);
 
         DeckDto updateRequest = new DeckDto();
         updateRequest.setName("ServiceTest Deck Updated");
         updateRequest.setDescription("An updated description");
         updateRequest.setFormatName("Edison");
-        updateRequest.setDeckCards(List.of(firstCardDto, secondCardDto));
+        updateRequest.setDeckCards(newCardsList);
 
         DeckDto result = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
         assertEquals("ServiceTest Deck Updated", result.getName());
         assertEquals("An updated description", result.getDescription());
         assertEquals("Edison", result.getFormatName());
-        assertEquals(2, result.getDeckCards().size());
+        assertEquals(15, result.getDeckCards().size());
 
         DeckCardDto resFirst = result.getDeckCards().stream().filter(c -> c.getCardId().equals(testCard.getId()))
                 .findFirst().orElseThrow();
@@ -179,7 +216,7 @@ class DeckServiceTest {
         assertEquals("MAIN", resFirst.getSection());
 
         DeckCardDto resSecond = result.getDeckCards().stream()
-                .filter(c -> c.getCardId().equals(savedSecondCard.getId())).findFirst().orElseThrow();
+                .filter(c -> c.getCardId().equals(testFusionCard.getId())).findFirst().orElseThrow();
         assertEquals(2, resSecond.getQuantity());
         assertEquals("EXTRA", resSecond.getSection());
     }
@@ -211,5 +248,30 @@ class DeckServiceTest {
             deckService.deleteDeck(testDeck.getId(), unauthorizedUser);
         });
         assertTrue(deckRepository.existsById(testDeck.getId()));
+    }
+
+    @Test
+    void validateDeck_withValidDeck_doesNotThrow() {
+        DeckDto requestDto = new DeckDto();
+        requestDto.setName("Valid Deck");
+        requestDto.setFormatName("TCG");
+        requestDto.setDeckCards(createValidDeckCards());
+
+        assertDoesNotThrow(() -> {
+            deckService.validateDeck(requestDto);
+        });
+    }
+
+    @Test
+    void validateDeck_withInvalidDeck_throwsDeckValidationException() {
+        // Less than 40 cards
+        DeckDto requestDto = new DeckDto();
+        requestDto.setName("Too Small");
+        requestDto.setFormatName("TCG");
+        requestDto.setDeckCards(List.of());
+
+        assertThrows(DeckValidationException.class, () -> {
+            deckService.validateDeck(requestDto);
+        });
     }
 }

@@ -48,6 +48,7 @@ public class DeckController {
 
     @PostMapping("/validate")
     public ResponseEntity<Void> validate(@Valid @RequestBody DeckDto deckDto) {
+        deckService.validateDeck(deckDto);
         return ResponseEntity.ok().build();
     }
 

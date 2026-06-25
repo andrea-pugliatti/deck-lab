@@ -10,10 +10,10 @@ import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.model.User;
-import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.mapper.DeckMapper;
+import com.deck.lab.backend.mapper.DeckCardMapper;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,18 +25,21 @@ import java.util.*;
 public class DeckService {
 
     private final DeckRepository deckRepository;
-    private final CardRepository cardRepository;
     private final FormatRulesRepository formatRulesRepository;
     private final DeckMapper deckMapper;
+    private final DeckCardMapper deckCardMapper;
+    private final DeckValidationService deckValidationService;
 
     public DeckService(DeckRepository deckRepository,
-            CardRepository cardRepository,
             FormatRulesRepository formatRulesRepository,
-            DeckMapper deckMapper) {
+            DeckMapper deckMapper,
+            DeckCardMapper deckCardMapper,
+            DeckValidationService deckValidationService) {
         this.deckRepository = deckRepository;
-        this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.deckMapper = deckMapper;
+        this.deckCardMapper = deckCardMapper;
+        this.deckValidationService = deckValidationService;
     }
 
     public List<String> findDistinctFormats() {
@@ -74,15 +77,18 @@ public class DeckService {
         return deckMapper.toDto(deck);
     }
 
+    public void validateDeck(DeckDto deckDto) {
+        deckValidationService.validateDeck(deckDto);
+    }
+
     @Transactional
     public DeckDto createDeck(DeckDto deckDto, User user) {
-        Deck deck = new Deck();
-        deck.setName(deckDto.getName());
-        deck.setDescription(deckDto.getDescription());
-        deck.setFormatName(deckDto.getFormatName());
+        Map<Long, Card> cardMap = deckValidationService.validateAndGetCardMap(deckDto);
+
+        Deck deck = deckMapper.toEntity(deckDto);
         deck.setUser(user);
 
-        saveDeckCards(deck, deckDto.getDeckCards());
+        saveDeckCards(deck, deckDto.getDeckCards(), cardMap);
 
         Deck savedDeck = deckRepository.save(deck);
         return deckMapper.toDto(savedDeck);
@@ -93,31 +99,25 @@ public class DeckService {
         Deck deck = deckRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
 
-        deck.setName(deckDto.getName());
-        deck.setDescription(deckDto.getDescription());
-        deck.setFormatName(deckDto.getFormatName());
+        Map<Long, Card> cardMap = deckValidationService.validateAndGetCardMap(deckDto);
 
-        saveDeckCards(deck, deckDto.getDeckCards());
+        deckMapper.updateEntityFromDto(deckDto, deck);
+
+        saveDeckCards(deck, deckDto.getDeckCards(), cardMap);
 
         Deck savedDeck = deckRepository.save(deck);
         return deckMapper.toDto(savedDeck);
     }
 
-    private void saveDeckCards(Deck deck, List<DeckCardDto> cardDtos) {
+    public void saveDeckCards(Deck deck, List<DeckCardDto> cardDtos, Map<Long, Card> cardMap) {
         List<DeckCard> newDeckCards = new ArrayList<>();
         if (cardDtos != null && !cardDtos.isEmpty()) {
-            List<Long> cardIds = cardDtos.stream().map(DeckCardDto::getCardId).toList();
-            List<Card> cards = cardRepository.findAllById(cardIds);
-            Map<Long, Card> cardMap = new HashMap<>();
-            for (Card c : cards) {
-                cardMap.put(c.getId(), c);
-            }
             for (DeckCardDto cardDto : cardDtos) {
                 Card card = cardMap.get(cardDto.getCardId());
                 if (card == null) {
                     throw new IllegalArgumentException("Card not found with ID: " + cardDto.getCardId());
                 }
-                newDeckCards.add(new DeckCard(deck, card, cardDto.getSection().toUpperCase(), cardDto.getQuantity()));
+                newDeckCards.add(deckCardMapper.toEntity(cardDto, deck, card));
             }
         }
 

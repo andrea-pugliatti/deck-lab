@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
-import com.deck.lab.backend.dto.response.CardSuggestionDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.service.DeckGenerationService;
 

@@ -21,7 +21,7 @@ class DeckMapperTest {
 
     @BeforeEach
     void setUp() {
-        deckMapper = new DeckMapper();
+        deckMapper = new DeckMapper(new DeckCardMapper());
     }
 
     @Test
@@ -115,5 +115,38 @@ class DeckMapperTest {
         assertEquals("Speed Duel", dto.getFormatName());
         assertNotNull(dto.getDeckCards());
         assertTrue(dto.getDeckCards().isEmpty());
+    }
+
+    @Test
+    void toEntity_withValidDto_mapsFieldsCorrectly() {
+        DeckDto dto = new DeckDto(30L, "New Deck", "Some description", "Advanced", new ArrayList<>());
+
+        Deck deck = deckMapper.toEntity(dto);
+
+        assertNotNull(deck);
+        assertEquals(30L, deck.getId());
+        assertEquals("New Deck", deck.getName());
+        assertEquals("Some description", deck.getDescription());
+        assertEquals("Advanced", deck.getFormatName());
+    }
+
+    @Test
+    void toEntity_withNullDto_returnsNull() {
+        assertNull(deckMapper.toEntity(null));
+    }
+
+    @Test
+    void updateEntityFromDto_withValidDto_updatesFieldsCorrectly() {
+        Deck deck = new Deck("Old Name", "Old Desc", "Old Format", null);
+        deck.setId(40L);
+
+        DeckDto dto = new DeckDto(50L, "Updated Name", "Updated Desc", "Updated Format", new ArrayList<>());
+
+        deckMapper.updateEntityFromDto(dto, deck);
+
+        assertEquals(40L, deck.getId()); // ID should not be changed by updateEntityFromDto
+        assertEquals("Updated Name", deck.getName());
+        assertEquals("Updated Desc", deck.getDescription());
+        assertEquals("Updated Format", deck.getFormatName());
     }
 }

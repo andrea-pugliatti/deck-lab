@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto.response;
+package com.deck.lab.backend.dto;
 
 public class CardSuggestionDto {
     private String name;

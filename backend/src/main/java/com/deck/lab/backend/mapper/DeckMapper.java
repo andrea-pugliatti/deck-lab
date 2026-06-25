@@ -5,32 +5,23 @@ import java.util.List;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
-import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
-import com.deck.lab.backend.model.DeckCard;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeckMapper {
 
+    private final DeckCardMapper deckCardMapper;
+
+    public DeckMapper(DeckCardMapper deckCardMapper) {
+        this.deckCardMapper = deckCardMapper;
+    }
+
     public DeckDto toDto(Deck deck) {
-        List<DeckCardDto> cardDtos = new ArrayList<>();
-        for (DeckCard dc : deck.getDeckCards()) {
-            Card c = dc.getCard();
-            cardDtos.add(new DeckCardDto(
-                    dc.getId(),
-                    c.getId(),
-                    c.getName(),
-                    c.getType(),
-                    c.getDescription(),
-                    c.getRace(),
-                    c.getAttribute(),
-                    c.getArchetype(),
-                    c.getImageUrl(),
-                    dc.getSection(),
-                    dc.getQuantity()));
-        }
+        List<DeckCardDto> cardDtos = deck.getDeckCards() != null
+                ? deck.getDeckCards().stream().map(deckCardMapper::toDto).toList()
+                : new ArrayList<>();
         DeckDto dto = new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), deck.getFormatName(),
                 cardDtos);
         dto.setUpdatedAt(deck.getUpdatedAt());
@@ -38,5 +29,26 @@ public class DeckMapper {
             dto.setCreatorUsername(deck.getUser().getUsername());
         }
         return dto;
+    }
+
+    public Deck toEntity(DeckDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        Deck deck = new Deck();
+        deck.setId(dto.getId());
+        deck.setName(dto.getName());
+        deck.setDescription(dto.getDescription());
+        deck.setFormatName(dto.getFormatName());
+        return deck;
+    }
+
+    public void updateEntityFromDto(DeckDto dto, Deck deck) {
+        if (dto == null || deck == null) {
+            return;
+        }
+        deck.setName(dto.getName());
+        deck.setDescription(dto.getDescription());
+        deck.setFormatName(dto.getFormatName());
     }
 }

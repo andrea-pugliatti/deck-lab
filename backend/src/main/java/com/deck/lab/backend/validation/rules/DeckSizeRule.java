@@ -5,11 +5,13 @@ import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class DeckSizeRule implements DeckRule {
     @Override
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {

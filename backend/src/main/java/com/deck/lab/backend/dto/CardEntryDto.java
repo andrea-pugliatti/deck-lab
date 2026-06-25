@@ -1,14 +1,14 @@
-package com.deck.lab.backend.dto.request;
+package com.deck.lab.backend.dto;
 
-public class DeckCardItemDto {
+public class CardEntryDto {
     private String name;
     private String section;
     private Integer quantity;
 
-    public DeckCardItemDto() {
+    public CardEntryDto() {
     }
 
-    public DeckCardItemDto(String name, String section, Integer quantity) {
+    public CardEntryDto(String name, String section, Integer quantity) {
         this.name = name;
         this.section = section;
         this.quantity = quantity;

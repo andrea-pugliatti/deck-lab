@@ -13,13 +13,15 @@ import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 
+import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
-import com.deck.lab.backend.dto.response.CardSuggestionDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.*;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
+
+import com.deck.lab.backend.validation.DeckValidationEngine;
 
 import java.util.*;
 
@@ -39,7 +41,7 @@ class DeckGenerationServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        deckGenerationService = new DeckGenerationService(chatModel, cardRepository, formatRulesRepository);
+        deckGenerationService = new DeckGenerationService(chatModel, cardRepository, formatRulesRepository, new DeckValidationEngine());
     }
 
     @Test
