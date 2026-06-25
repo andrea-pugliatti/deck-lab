@@ -1,4 +1,5 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
+import type { CardSection } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
@@ -7,10 +8,10 @@ export interface EditorCardItemProps {
   name: string;
   type?: string;
   imageUrl?: string;
-  section: "MAIN" | "EXTRA" | "SIDE";
+  section: CardSection;
   quantity: number;
-  updateQty: (cardId: number, section: "MAIN" | "EXTRA" | "SIDE", delta: number) => void;
-  remove: (cardId: number, section: "MAIN" | "EXTRA" | "SIDE") => void;
+  updateQty: (cardId: number, section: CardSection, delta: number) => void;
+  remove: (cardId: number, section: CardSection) => void;
 }
 
 export default function EditorCardItem({

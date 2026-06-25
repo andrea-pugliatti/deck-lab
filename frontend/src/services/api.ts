@@ -1,12 +1,12 @@
-let accessToken: string | null = null;
+let accessToken: string | undefined = undefined;
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-export function getAccessToken(): string | null {
+export function getAccessToken(): string | undefined {
   return accessToken;
 }
 
-export function setAccessToken(token: string | null): void {
+export function setAccessToken(token?: string): void {
   accessToken = token;
 }
 
@@ -41,7 +41,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
 
   if (response.status === 401) {
     if (url === "/api/auth/refresh") {
-      setAccessToken(null);
+      setAccessToken(undefined);
       throw new Error("Refresh token expired or invalid");
     }
 
@@ -64,14 +64,14 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
           onRefreshed(newAccessToken);
         } else {
           isRefreshing = false;
-          setAccessToken(null);
+          setAccessToken(undefined);
           refreshSubscribers = [];
           window.dispatchEvent(new CustomEvent("auth-logout"));
           throw new Error("Session expired");
         }
       } catch (error) {
         isRefreshing = false;
-        setAccessToken(null);
+        setAccessToken(undefined);
         refreshSubscribers = [];
         window.dispatchEvent(new CustomEvent("auth-logout"));
         throw error;

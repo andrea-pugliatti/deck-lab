@@ -7,7 +7,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
 import { apiFetch } from "../services/api";
-import type { BackendDeck } from "../types";
+import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
 import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
@@ -19,7 +19,7 @@ export default function DeckDetail() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data: deck, loading, error } = useFetch<BackendDeck>(id ? `/api/decks/${id}` : null);
+  const { data: deck, loading, error } = useFetch<Deck>(id ? `/api/decks/${id}` : null);
 
   const handleDelete = async () => {
     if (!id || !window.confirm("Are you sure you want to delete this deck?")) return;
@@ -92,29 +92,36 @@ export default function DeckDetail() {
           <span>Back</span>
         </Button>
 
-        {isOwner && (
-          <div className="flex items-center gap-3">
-            <Link to={`/decks/${deck.id}/edit`} className="no-underline">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-cyan-accent"
+        <div className="flex items-center gap-3">
+          <Link
+            to={`/simulator?deckId=${deck.id}`}
+            className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cyan-accent" />
+            Test Hand
+          </Link>
+
+          {isOwner && (
+            <>
+              <Link
+                to={`/decks/${deck.id}/edit`}
+                className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
               >
                 <Edit className="w-3.5 h-3.5" />
                 Edit Deck
-              </Button>
-            </Link>
-            <Button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              variant="outline"
-              className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 hover:text-red-300 px-4 py-2 text-xs font-semibold shadow-md transition-all duration-200 cursor-pointer disabled:opacity-50"
-              type="button"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              {isDeleting ? "Deleting..." : "Delete Deck"}
-            </Button>
-          </div>
-        )}
+              </Link>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer disabled:opacity-50"
+                type="button"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isDeleting ? "Deleting..." : "Delete Deck"}
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {deleteError && (
@@ -267,7 +274,7 @@ export default function DeckDetail() {
           </div>
         </aside>
 
-        <main className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-8">
           <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
             <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
               <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
@@ -360,7 +367,7 @@ export default function DeckDetail() {
               </div>
             )}
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

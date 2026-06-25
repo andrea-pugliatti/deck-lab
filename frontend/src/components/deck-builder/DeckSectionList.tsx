@@ -1,8 +1,9 @@
 import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import type { CardSection } from "../../types";
 import EditorCardItem from "./EditorCardItem";
 
 export interface DeckSectionListProps {
-  section: "MAIN" | "EXTRA" | "SIDE";
+  section: CardSection;
 }
 
 export default function DeckSectionList({ section }: DeckSectionListProps) {

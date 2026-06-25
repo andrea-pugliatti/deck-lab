@@ -4,14 +4,14 @@ import CardGridItem from "../components/card/CardGridItem";
 import DeckCard from "../components/deck/DeckCard";
 import SearchBar from "../components/SearchBar";
 import { useFetch } from "../hooks/useFetch";
-import type { BackendDeck, Card, Page } from "../types";
+import type { Deck, Card, Page } from "../types";
 
 export default function Home() {
   const {
     data: decksData,
     loading: decksLoading,
     error: decksError,
-  } = useFetch<BackendDeck[]>("/api/decks");
+  } = useFetch<Deck[]>("/api/decks");
   const {
     data: cardsData,
     loading: cardsLoading,

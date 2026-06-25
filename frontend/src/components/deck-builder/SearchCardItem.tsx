@@ -1,4 +1,4 @@
-import type { Card, DeckCardItem } from "../../types";
+import type { Card, CardSection, DeckCardItem } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
@@ -9,7 +9,7 @@ export interface SearchCardItemProps {
   imageUrl?: string;
   card: Card;
   deckCards: DeckCardItem[];
-  addCard: (card: Card, section: "MAIN" | "EXTRA" | "SIDE") => void;
+  addCard: (card: Card, section: CardSection) => void;
 }
 
 export default function SearchCardItem({

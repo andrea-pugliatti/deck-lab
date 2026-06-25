@@ -148,7 +148,7 @@ export default function Cards() {
           />
         </aside>
 
-        <main className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-6">
           <Input
             type="text"
             placeholder="Search card name, type, description, or archetype..."
@@ -189,7 +189,7 @@ export default function Cards() {
               description="Try adjusting your filters or search terms."
             />
           )}
-        </main>
+        </div>
       </div>
     </div>
   );

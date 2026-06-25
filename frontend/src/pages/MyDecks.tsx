@@ -2,17 +2,17 @@ import { Filter, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import DeckListItem from "../components/deck/DeckListItem";
+import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
-import FormatSelector from "../components/deck/FormatSelector";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
+import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
 import { apiFetch } from "../services/api";
-import type { BackendDeck } from "../types";
+import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
-import Input from "../components/ui/Input";
 
 export default function MyDecks() {
   const { user } = useAuth();
@@ -54,7 +54,7 @@ export default function MyDecks() {
     }
   }, [searchQuery, selectedFormat, setSearchParams, searchParams]);
 
-  const { data, loading, error, refetch } = useFetch<BackendDeck[]>(
+  const { data, loading, error, refetch } = useFetch<Deck[]>(
     user?.username ? `/api/decks?username=${encodeURIComponent(user.username)}` : null,
   );
   const decks = data || [];

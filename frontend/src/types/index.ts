@@ -3,31 +3,6 @@ export interface User {
   email: string;
 }
 
-export interface DeckCardItem {
-  id?: number;
-  cardId: number;
-  name: string;
-  quantity: number;
-  type?: string;
-  description?: string;
-  race?: string;
-  attribute?: string;
-  archetype?: string;
-  imageUrl?: string;
-  imageUrlCropped?: string;
-  section: "MAIN" | "EXTRA" | "SIDE";
-}
-
-export interface BackendDeck {
-  id: number;
-  name: string;
-  description: string;
-  formatName: string;
-  updatedAt?: string;
-  creatorUsername?: string;
-  deckCards: DeckCardItem[];
-}
-
 export interface Card {
   id: number;
   name: string;
@@ -45,18 +20,50 @@ export interface Card {
   scale?: number;
 }
 
-export interface Page<T> {
-  content: T[];
-  page: {
-    size: number;
-    totalElements: number;
-    totalPages: number;
-    number: number;
-  };
+export interface Deck {
+  id: number;
+  name: string;
+  description: string;
+  formatName: string;
+  updatedAt?: string;
+  creatorUsername?: string;
+  deckCards: DeckCardItem[];
 }
+
+export type CardSection = "MAIN" | "EXTRA" | "SIDE";
+
+export interface DeckCardItem extends Partial<Card> {
+  id?: number;
+  cardId: number;
+  name: string;
+  quantity: number;
+  section: CardSection;
+}
+
+export interface Suggestion {
+  cardId: number;
+  name: string;
+  type: string;
+  section: CardSection;
+  imageUrl?: string;
+  synergyReason: string;
+}
+
 export interface CardFiltersState {
   type: string;
   attribute: string;
   race: string;
   archetype: string;
+}
+
+export interface PageMetadata {
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  number: number;
+}
+
+export interface Page<T> {
+  content: T[];
+  page: PageMetadata;
 }

@@ -9,7 +9,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
-import type { BackendDeck } from "../types";
+import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
 import Input from "../components/ui/Input";
 
@@ -61,7 +61,7 @@ export default function Decks() {
     queryParams.append("format", selectedFormat);
   }
 
-  const { data, loading, error } = useFetch<BackendDeck[]>(`/api/decks?${queryParams.toString()}`);
+  const { data, loading, error } = useFetch<Deck[]>(`/api/decks?${queryParams.toString()}`);
   const decks = data || [];
 
   return (

@@ -4,8 +4,8 @@ import { setAccessToken } from "../services/api";
 import type { User } from "../types";
 
 interface AuthContextType {
-  user: User | null;
-  accessToken: string | null;
+  user?: User;
+  accessToken?: string;
   isAuthenticated: boolean;
   loading: boolean;
   login: (usernameOrEmail: string, password: string) => Promise<void>;
@@ -33,8 +33,8 @@ function parseJwt(token: string) {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessTokenState] = useState<string | null>(null);
+  const [user, setUser] = useState<User>();
+  const [accessToken, setAccessTokenState] = useState<string>();
   const [loading, setLoading] = useState(true);
 
   const handleAuthSuccess = (token: string, username: string) => {
@@ -47,9 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const handleLogoutState = () => {
-    setAccessToken(null);
-    setAccessTokenState(null);
-    setUser(null);
+    setAccessToken(undefined);
+    setAccessTokenState(undefined);
+    setUser(undefined);
     localStorage.removeItem("username");
   };
 

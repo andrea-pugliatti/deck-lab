@@ -1,16 +1,24 @@
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, RotateCcw, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import AiDeckWizard from "../components/deck-builder/ai-wizard/AiDeckWizard";
+import AiSuggestionsPanel from "../components/deck-builder/AiSuggestionsPanel";
 import DeckBuilderCardList from "../components/deck-builder/DeckBuilderCardList";
 import DeckBuilderFilters from "../components/deck-builder/DeckBuilderFilters";
 import DeckFormHeader from "../components/deck-builder/DeckFormHeader";
 import DeckSectionList from "../components/deck-builder/DeckSectionList";
-import DeckStats from "../components/deck-builder/DeckStats";
+import DeckValidationErrors from "../components/deck-builder/DeckValidationErrors";
 import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
 import { DeckBuilderProvider, useDeckBuilder } from "../context/DeckBuilderContext";
 
 function DeckBuilderContent() {
   const navigate = useNavigate();
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const listContainerRef = useRef<HTMLDivElement>(null);
+  const [resetState, setResetState] = useState<"idle" | "confirming">("idle");
+  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const {
     isEditMode,
     deckCards,
@@ -21,11 +29,59 @@ function DeckBuilderContent() {
     isSaving,
     validateDeckPayload,
     saveDeck,
+    formatName,
+    setFormatName,
+    setName,
+    setDescription,
+    setDeckCards,
   } = useDeckBuilder();
 
-  const handleSave = (e: React.SubmitEvent) => {
+  useEffect(() => {
+    if (listContainerRef.current) {
+      listContainerRef.current.scrollTop = 0;
+    }
+  }, [searchPage]);
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     saveDeck();
+  };
+
+  const handleDeckGenerated = (data: {
+    name: string;
+    description: string;
+    formatName: string;
+    deckCards: any[];
+  }) => {
+    setName(data.name);
+    setDescription(data.description);
+    setFormatName(data.formatName);
+    setDeckCards(data.deckCards);
+  };
+
+  const handleReset = () => {
+    if (resetState === "idle") {
+      setResetState("confirming");
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = setTimeout(() => {
+        setResetState("idle");
+      }, 5000);
+    } else {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+      setResetState("idle");
+      setName("");
+      setDescription("");
+      setFormatName("TCG");
+      setDeckCards([]);
+    }
   };
 
   return (
@@ -45,6 +101,16 @@ function DeckBuilderContent() {
             {isEditMode ? "Edit Deck Build" : "Construct New Deck"}
           </h1>
         </div>
+
+        <Button
+          variant="outline"
+          onClick={() => setIsWizardOpen(true)}
+          className="flex items-center gap-2 border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent bg-cyan-950/20 px-4 py-2 text-xs font-semibold rounded-xl"
+          type="button"
+        >
+          <Sparkles className="w-4 h-4 text-cyan-accent" />
+          <span>AI Deck Wizard</span>
+        </Button>
       </div>
 
       <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -56,7 +122,9 @@ function DeckBuilderContent() {
 
           <DeckBuilderFilters />
 
-          <DeckBuilderCardList />
+          <div ref={listContainerRef} className="flex-1 overflow-y-auto mt-4 pr-1 min-h-0">
+            <DeckBuilderCardList />
+          </div>
 
           <Pagination
             page={searchPage}
@@ -69,7 +137,9 @@ function DeckBuilderContent() {
         <div className="lg:col-span-7 space-y-6">
           <DeckFormHeader />
 
-          <DeckStats />
+          <DeckValidationErrors />
+
+          <AiSuggestionsPanel />
 
           <div className="space-y-4">
             {(["MAIN", "EXTRA", "SIDE"] as const).map((section) => (
@@ -89,18 +159,62 @@ function DeckBuilderContent() {
               Run Validate Check
             </Button>
 
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={isSaving}
-              disabled={deckCards.length === 0}
-              className="px-6 py-2.5 font-bold"
-            >
-              {isEditMode ? "Update Deck Blueprint" : "Save Deck Blueprint"}
-            </Button>
+            <div className="flex items-center gap-3">
+              {resetState === "confirming" ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+                      setResetState("idle");
+                    }}
+                    className="px-3 py-2.5 font-semibold text-slate-400 hover:text-white"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline-red"
+                    onClick={handleReset}
+                    className="px-4 py-2.5 font-semibold flex items-center gap-1.5 bg-red-950/60 text-red-400 border-red-500 hover:bg-red-900/60"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Confirm Reset
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline-red"
+                  onClick={handleReset}
+                  className="px-4 py-2.5 font-semibold flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Reset
+                </Button>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                isLoading={isSaving}
+                disabled={deckCards.length === 0}
+                className="px-6 py-2.5 font-bold"
+              >
+                {isEditMode ? "Update Deck Blueprint" : "Save Deck Blueprint"}
+              </Button>
+            </div>
           </div>
         </div>
       </form>
+
+      <AiDeckWizard
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onDeckGenerated={handleDeckGenerated}
+        currentFormat={formatName}
+      />
     </div>
   );
 }

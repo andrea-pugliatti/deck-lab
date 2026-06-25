@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 import { apiFetch } from "../services/api";
-import type { BackendDeck, Card, CardFiltersState, DeckCardItem, Page } from "../types";
+import type { Deck, Card, CardFiltersState, DeckCardItem, Page, CardSection } from "../types";
 
 interface DeckBuilderContextType {
   // Mode info
@@ -19,6 +19,7 @@ interface DeckBuilderContextType {
   formatName: string;
   setFormatName: (formatName: string) => void;
   deckCards: DeckCardItem[];
+  setDeckCards: (cards: DeckCardItem[]) => void;
 
   // Library / Search State
   searchPage: number;
@@ -45,12 +46,12 @@ interface DeckBuilderContextType {
   validationSuccess: boolean;
   isSaving: boolean;
   isValidating: boolean;
-  submitError: string | null;
+  submitError?: string;
 
   // Modifying deck methods
-  addCard: (card: Card, section: "MAIN" | "EXTRA" | "SIDE") => void;
-  updateQuantity: (cardId: number, section: "MAIN" | "EXTRA" | "SIDE", delta: number) => void;
-  removeCard: (cardId: number, section: "MAIN" | "EXTRA" | "SIDE") => void;
+  addCard: (card: Card, section: CardSection) => void;
+  updateQuantity: (cardId: number, section: CardSection, delta: number) => void;
+  removeCard: (cardId: number, section: CardSection) => void;
   validateDeckPayload: () => Promise<boolean>;
   saveDeck: () => Promise<void>;
 }
@@ -84,7 +85,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
   const [validationSuccess, setValidationSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string>();
 
   // Fetch metadata
   const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
@@ -114,7 +115,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
         try {
           const res = await apiFetch(`/api/decks/${id}`);
           if (res.ok) {
-            const deckData: BackendDeck = await res.json();
+            const deckData: Deck = await res.json();
             setName(deckData.name);
             setDescription(deckData.description || "");
             setFormatName(deckData.formatName);
@@ -171,7 +172,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
   }, [debouncedSearch, filters]);
 
   // Operations
-  const addCard = (card: Card, section: "MAIN" | "EXTRA" | "SIDE") => {
+  const addCard = (card: Card, section: CardSection) => {
     setValidationSuccess(false);
     setValidationErrors([]);
 
@@ -208,7 +209,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateQuantity = (cardId: number, section: "MAIN" | "EXTRA" | "SIDE", delta: number) => {
+  const updateQuantity = (cardId: number, section: CardSection, delta: number) => {
     setValidationSuccess(false);
     setValidationErrors([]);
 
@@ -226,7 +227,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
     setDeckCards(updated);
   };
 
-  const removeCard = (cardId: number, section: "MAIN" | "EXTRA" | "SIDE") => {
+  const removeCard = (cardId: number, section: CardSection) => {
     setValidationSuccess(false);
     setValidationErrors([]);
     setDeckCards(deckCards.filter((c) => !(c.cardId === cardId && c.section === section)));
@@ -236,7 +237,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
     setIsValidating(true);
     setValidationErrors([]);
     setValidationSuccess(false);
-    setSubmitError(null);
+    setSubmitError(undefined);
 
     const payload = {
       name: name.trim() || "Draft Deck",
@@ -312,7 +313,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
     }
 
     setIsSaving(true);
-    setSubmitError(null);
+    setSubmitError(undefined);
 
     const isValid = await validateDeckPayload();
     if (!isValid) {
@@ -342,7 +343,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
       });
 
       if (res.ok) {
-        const savedDeck: BackendDeck = await res.json();
+        const savedDeck: Deck = await res.json();
         navigate(`/decks/${savedDeck.id}`);
       } else {
         const errText = await res.text();
@@ -366,6 +367,7 @@ export function DeckBuilderProvider({ children }: { children: ReactNode }) {
         formatName,
         setFormatName,
         deckCards,
+        setDeckCards,
         searchPage,
         setSearchPage,
         searchQuery,

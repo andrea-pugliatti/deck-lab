@@ -9,9 +9,9 @@ export default function DeckValidationErrors() {
   }
 
   return (
-    <div className="rounded-xl overflow-hidden shadow-md animate-fade-in">
+    <div className="animate-fade-in">
       {validationSuccess && (
-        <div className="bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 p-4 flex items-start gap-2.5 text-xs">
+        <div className="bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 p-4 flex items-start gap-2.5 text-xs rounded-xl shadow-md">
           <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
           <div>
             <span className="font-bold block mb-0.5">Deck is Valid!</span>
@@ -21,7 +21,7 @@ export default function DeckValidationErrors() {
       )}
 
       {(validationErrors.length > 0 || submitError) && (
-        <div className="bg-red-950/20 border border-red-500/30 text-red-400 p-4 space-y-2 text-xs">
+        <div className="bg-red-950/20 border border-red-500/30 text-red-400 p-4 space-y-2 text-xs rounded-xl shadow-md">
           <div className="flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 shrink-0 text-red-400 mt-0.5" />
             <div>
