@@ -197,6 +197,7 @@ public class AuthControllerTest {
 
         @Test
         void testTokenReuseDetection() throws Exception {
+                refreshTokenService.setGracePeriodSeconds(0);
                 LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
                 Cookie loginCookie = mockMvc.perform(post("/api/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -232,6 +233,7 @@ public class AuthControllerTest {
                                 .cookie(new Cookie("refreshToken", token2))
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isForbidden());
+                refreshTokenService.setGracePeriodSeconds(10);
         }
 
         @Test

@@ -39,6 +39,26 @@
       "name": "app.cors.allowed-origins",
       "type": "java.lang.String",
       "description": "Allowed origins"
+    },
+    {
+      "name": "refresh-token.grace-period-seconds",
+      "type": "java.lang.String",
+      "description": "Refresh token Grace Period for rotation in seconds"
+    },
+    {
+      "name": "refresh-token.rate-limit.max-attempts",
+      "type": "java.lang.String",
+      "description": "Refresh token max attempts during window before rate limit"
+    },
+    {
+      "name": "refresh-token.rate-limit.window-ms",
+      "type": "java.lang.String",
+      "description": "Refresh token rate limit window time in ms"
+    },
+    {
+      "name": "refresh-token.rate-limit.cleanup-schedule",
+      "type": "java.lang.String",
+      "description": "Cleanup schedule for refresh tokens in window map"
     }
   ]
 }

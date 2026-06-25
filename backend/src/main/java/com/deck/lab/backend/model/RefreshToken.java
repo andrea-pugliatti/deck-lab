@@ -30,6 +30,8 @@ public class RefreshToken {
     @NotNull
     private Instant createdAt;
 
+    private Instant rotatedAt;
+
     public RefreshToken() {
         this.createdAt = Instant.now();
     }
@@ -88,5 +90,13 @@ public class RefreshToken {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Instant getRotatedAt() {
+        return rotatedAt;
+    }
+
+    public void setRotatedAt(Instant rotatedAt) {
+        this.rotatedAt = rotatedAt;
     }
 }

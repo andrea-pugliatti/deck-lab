@@ -32,4 +32,9 @@ refresh-token:
     duration-days: 7
     max-per-user: 5
     cleanup-schedule: "0 0 3 * * *"
+    grace-period-seconds: 10
+    rate-limit:
+        max-attempts: 5
+        window-ms: 60000
+        cleanup-schedule: "0 */5 * * * *"
 
