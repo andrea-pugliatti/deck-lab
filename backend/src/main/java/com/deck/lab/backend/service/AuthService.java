@@ -13,12 +13,12 @@ import com.deck.lab.backend.dto.request.LoginRequestDto;
 import com.deck.lab.backend.dto.request.RegisterRequestDto;
 import com.deck.lab.backend.dto.response.AuthResponseDto;
 import com.deck.lab.backend.dto.response.TokenRefreshResponseDto;
+import com.deck.lab.backend.mapper.UserMapper;
 import com.deck.lab.backend.model.RefreshToken;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.UserRepository;
 import com.deck.lab.backend.security.JwtService;
 import com.deck.lab.backend.security.RefreshTokenService;
-import com.deck.lab.backend.mapper.UserMapper;
 
 @Service
 public class AuthService {
@@ -59,7 +59,8 @@ public class AuthService {
     }
 
     public Optional<AuthResponseDto> register(RegisterRequestDto registerRequest) {
-        if (userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail()).isPresent()) {
+        if (userRepository.findByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())
+                .isPresent()) {
             return Optional.empty();
         }
 

@@ -1,5 +1,7 @@
 package com.deck.lab.backend.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import com.deck.lab.backend.dto.CardDto;
 import com.deck.lab.backend.mapper.CardMapper;
 import com.deck.lab.backend.model.Card;

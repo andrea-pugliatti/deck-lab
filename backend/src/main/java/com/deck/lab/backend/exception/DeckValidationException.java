@@ -1,7 +1,8 @@
 package com.deck.lab.backend.exception;
 
-import com.deck.lab.backend.validation.ValidationError;
 import java.util.List;
+
+import com.deck.lab.backend.validation.ValidationError;
 
 public class DeckValidationException extends RuntimeException {
     private final List<ValidationError> errors;

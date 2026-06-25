@@ -1,12 +1,14 @@
 package com.deck.lab.backend.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.request.RegisterRequestDto;
 import com.deck.lab.backend.model.User;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest {
 

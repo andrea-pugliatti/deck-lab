@@ -1,32 +1,37 @@
 package com.deck.lab.backend.controller;
 
-import com.deck.lab.backend.model.User;
-import com.deck.lab.backend.dto.request.LoginRequestDto;
-import com.deck.lab.backend.dto.request.RegisterRequestDto;
-import com.deck.lab.backend.model.RefreshToken;
-import com.deck.lab.backend.repository.UserRepository;
-import com.deck.lab.backend.repository.RefreshTokenRepository;
-import com.deck.lab.backend.security.JwtService;
-import com.deck.lab.backend.security.RefreshTokenService;
-import tools.jackson.databind.ObjectMapper;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.Cookie;
+import com.deck.lab.backend.dto.request.LoginRequestDto;
+import com.deck.lab.backend.dto.request.RegisterRequestDto;
+import com.deck.lab.backend.model.RefreshToken;
+import com.deck.lab.backend.model.User;
+import com.deck.lab.backend.repository.RefreshTokenRepository;
+import com.deck.lab.backend.repository.UserRepository;
+import com.deck.lab.backend.security.JwtService;
+import com.deck.lab.backend.security.RefreshTokenService;
 
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import jakarta.servlet.http.Cookie;
+import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc

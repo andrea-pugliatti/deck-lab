@@ -1,8 +1,9 @@
 package com.deck.lab.backend.dto.response;
 
-import com.deck.lab.backend.dto.DeckCardDto;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.deck.lab.backend.dto.DeckCardDto;
 
 public class DeckGenerationResponseDto {
     private String name;

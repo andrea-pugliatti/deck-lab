@@ -1,10 +1,11 @@
 package com.deck.lab.backend.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 public class DeckDto {
     private Long id;

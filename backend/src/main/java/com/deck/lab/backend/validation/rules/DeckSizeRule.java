@@ -1,15 +1,16 @@
 package com.deck.lab.backend.validation.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class DeckSizeRule implements DeckRule {
