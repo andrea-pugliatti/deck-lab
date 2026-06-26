@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.deck.lab.backend.dto.response.ValidationErrorResponse;
-import com.deck.lab.backend.validation.ValidationError;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,7 +17,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ValidationErrorResponse> handleDeckValidationException(DeckValidationException ex) {
         List<String> errors = ex.getErrors()
                 .stream()
-                .map(ValidationError::message)
+                .map(error -> error.message())
                 .collect(Collectors.toList());
 
         ValidationErrorResponse response = new ValidationErrorResponse("Validation failed", errors);

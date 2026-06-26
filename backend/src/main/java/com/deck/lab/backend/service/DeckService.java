@@ -1,12 +1,12 @@
 package com.deck.lab.backend.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class DeckService {
 
     public List<String> findDistinctFormats() {
         return Stream.of(Format.values())
-                .map(Format::getValue)
+                .map(format -> format.getValue())
                 .sorted()
                 .toList();
     }
@@ -53,7 +53,12 @@ public class DeckService {
                 .and(DeckSpecification.hasFormat(format))
                 .and(DeckSpecification.hasUser(username));
 
-        List<Deck> decks = deckRepository.findAll(spec, Sort.by(Sort.Direction.DESC, Deck::getUpdatedAt));
+        List<Deck> decks = deckRepository.findAll(spec)
+                .stream()
+                .filter(deck -> deck.getUpdatedAt() != null)
+                .sorted(Comparator.comparing(d -> d.getUpdatedAt()))
+                .toList();
+
         List<DeckDto> dtos = new ArrayList<>();
         for (Deck deck : decks) {
             dtos.add(deckMapper.toDto(deck));
@@ -74,12 +79,12 @@ public class DeckService {
     }
 
     public void validateDeck(DeckDto deckDto) {
-        deckValidationService.validateDeck(deckDto);
+        deckValidationService.validate(deckDto);
     }
 
     @Transactional
     public DeckDto createDeck(DeckDto deckDto, User user) {
-        Map<Long, Card> cardMap = deckValidationService.validateAndGetCardMap(deckDto);
+        Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
 
         Deck deck = deckMapper.toEntity(deckDto);
         deck.setUser(user);
@@ -95,7 +100,7 @@ public class DeckService {
         Deck deck = deckRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
 
-        Map<Long, Card> cardMap = deckValidationService.validateAndGetCardMap(deckDto);
+        Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
 
         deckMapper.updateEntityFromDto(deckDto, deck);
 

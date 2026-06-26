@@ -30,8 +30,6 @@ public class AuthController {
     @Value("${refresh-token.duration-days:7}")
     private int durationDays;
 
-    private final long MAX_AGE = durationDays * 24 * 60 * 60L;
-
     private final AuthService service;
     private final RefreshTokenService refreshTokenService;
 
@@ -50,7 +48,7 @@ public class AuthController {
         AuthResponseDto responseDto = authResponse.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), MAX_AGE))
+                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
                 .body(responseDto);
     }
 
@@ -64,7 +62,7 @@ public class AuthController {
         AuthResponseDto responseDto = authResponse.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), MAX_AGE))
+                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
                 .body(responseDto);
     }
 
@@ -82,7 +80,7 @@ public class AuthController {
         TokenRefreshResponseDto responseDto = service.refresh(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), MAX_AGE))
+                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
                 .body(responseDto);
     }
 

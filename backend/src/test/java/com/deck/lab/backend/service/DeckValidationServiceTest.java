@@ -79,7 +79,7 @@ class DeckValidationServiceTest {
         requestDto.setDeckCards(createValidDeckCards());
 
         assertDoesNotThrow(() -> {
-            deckValidationService.validateDeck(requestDto);
+            deckValidationService.validate(requestDto);
         });
     }
 
@@ -91,7 +91,7 @@ class DeckValidationServiceTest {
         requestDto.setDeckCards(List.of()); // Empty deck
 
         assertThrows(DeckValidationException.class, () -> {
-            deckValidationService.validateDeck(requestDto);
+            deckValidationService.validate(requestDto);
         });
     }
 
@@ -102,7 +102,7 @@ class DeckValidationServiceTest {
         requestDto.setFormatName("Goat");
         requestDto.setDeckCards(createValidDeckCards());
 
-        Map<Long, Card> cardMap = deckValidationService.validateAndGetCardMap(requestDto);
+        Map<Long, Card> cardMap = deckValidationService.validate(requestDto);
         assertNotNull(cardMap);
         assertEquals(14, cardMap.size());
         assertTrue(cardMap.containsKey(testCard.getId()));

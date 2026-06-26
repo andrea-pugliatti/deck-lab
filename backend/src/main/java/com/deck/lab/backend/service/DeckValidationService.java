@@ -44,35 +44,8 @@ public class DeckValidationService {
     }
 
     @Transactional(readOnly = true)
-    public void validateDeck(DeckDto deckDto) {
+    public Map<Long, Card> validate(DeckDto deckDto) {
         Map<Long, Card> cardMap = fetchCardMap(deckDto.getDeckCards());
-        validateDeckInternal(deckDto, cardMap);
-    }
-
-    @Transactional(readOnly = true)
-    public Map<Long, Card> validateAndGetCardMap(DeckDto deckDto) {
-        Map<Long, Card> cardMap = fetchCardMap(deckDto.getDeckCards());
-        validateDeckInternal(deckDto, cardMap);
-        return cardMap;
-    }
-
-    public Map<Long, Card> fetchCardMap(List<DeckCardDto> cardDtos) {
-        List<Long> cardIds = cardDtos != null ? cardDtos.stream()
-                .map(DeckCardDto::getCardId)
-                .filter(Objects::nonNull)
-                .toList() : List.of();
-
-        Map<Long, Card> cardMap = new HashMap<>();
-        if (!cardIds.isEmpty()) {
-            List<Card> cards = cardRepository.findAllById(cardIds);
-            for (Card c : cards) {
-                cardMap.put(c.getId(), c);
-            }
-        }
-        return cardMap;
-    }
-
-    private void validateDeckInternal(DeckDto deckDto, Map<Long, Card> cardMap) {
         List<ValidationError> errors = new ArrayList<>();
 
         // Verify all card IDs exist
@@ -132,5 +105,25 @@ public class DeckValidationService {
         if (!errors.isEmpty()) {
             throw new DeckValidationException(errors);
         }
+        return cardMap;
     }
+
+    public Map<Long, Card> fetchCardMap(List<DeckCardDto> cardDtos) {
+        List<Long> cardIds = cardDtos != null
+                ? cardDtos.stream()
+                        .map(c -> c.getCardId())
+                        .filter(Objects::nonNull)
+                        .toList()
+                : List.of();
+
+        Map<Long, Card> cardMap = new HashMap<>();
+        if (!cardIds.isEmpty()) {
+            List<Card> cards = cardRepository.findAllById(cardIds);
+            for (Card c : cards) {
+                cardMap.put(c.getId(), c);
+            }
+        }
+        return cardMap;
+    }
+
 }

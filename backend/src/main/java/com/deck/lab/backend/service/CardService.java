@@ -28,21 +28,21 @@ public class CardService {
 
     public List<String> findDistinctAttributes() {
         return Stream.of(CardAttribute.values())
-                .map(CardAttribute::getValue)
+                .map(cardAttribute -> cardAttribute.getValue())
                 .sorted()
                 .toList();
     }
 
     public List<String> findDistinctRaces() {
         return Stream.of(CardRace.values())
-                .map(CardRace::getValue)
+                .map(cardRace -> cardRace.getValue())
                 .sorted()
                 .toList();
     }
 
     public List<String> findDistinctArchetypes() {
         return cardRepository.findDistinctByArchetypeNotNullAndArchetypeNot("").stream()
-                .map(Card::getArchetype)
+                .map(card -> card.getArchetype())
                 .filter(a -> a != null && !a.isBlank())
                 .distinct()
                 .sorted()
@@ -51,7 +51,7 @@ public class CardService {
 
     public List<String> findDistinctTypes() {
         return Stream.of(CardType.values())
-                .map(CardType::getValue)
+                .map(cardType -> cardType.getValue())
                 .sorted()
                 .toList();
     }

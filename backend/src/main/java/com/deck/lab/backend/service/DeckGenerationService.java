@@ -365,9 +365,9 @@ public class DeckGenerationService {
             // Ignore invalid format
         }
 
-        List<Long> cardIds = cardDtos.stream().map(DeckCardDto::getCardId).toList();
+        List<Long> cardIds = cardDtos.stream().map(card -> card.getCardId()).toList();
         List<Card> cards = cardRepository.findAllById(cardIds);
-        Map<Long, Card> cardMap = cards.stream().collect(Collectors.toMap(Card::getId, c -> c));
+        Map<Long, Card> cardMap = cards.stream().collect(Collectors.toMap(c -> c.getId(), c -> c));
 
         List<DeckCard> deckCards = new ArrayList<>();
         for (DeckCardDto cardDto : cardDtos) {
@@ -395,6 +395,6 @@ public class DeckGenerationService {
         }
 
         List<ValidationError> errors = validationEngine.validate(deck, formatLimits);
-        return errors.stream().map(ValidationError::message).collect(Collectors.toList());
+        return errors.stream().map(error -> error.message()).collect(Collectors.toList());
     }
 }
