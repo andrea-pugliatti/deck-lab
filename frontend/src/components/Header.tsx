@@ -39,12 +39,9 @@ export default function Header() {
               </NavLink>
             </li>
             <li>
-              <a
-                href="#simulator"
-                className="no-underline text-sm font-medium tracking-wide relative py-1 text-slate-400 hover:text-cyan-hover transition-all duration-200"
-              >
+              <NavLink to="/simulator" className={linkClass}>
                 Hand Simulator
-              </a>
+              </NavLink>
             </li>
           </ul>
         </nav>

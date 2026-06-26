@@ -40,6 +40,10 @@ export interface DeckCardItem extends Partial<Card> {
   section: CardSection;
 }
 
+export interface SimulatorCardInstance extends DeckCardItem {
+  uniqId: string;
+}
+
 export interface Suggestion {
   cardId: number;
   name: string;

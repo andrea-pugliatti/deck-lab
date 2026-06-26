@@ -27,8 +27,8 @@ function parseJwt(token: string) {
         .join(""),
     );
     return JSON.parse(jsonPayload);
-  } catch (e) {
-    return e;
+  } catch {
+    return null;
   }
 }
 

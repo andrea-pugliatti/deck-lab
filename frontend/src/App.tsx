@@ -8,6 +8,7 @@ import Cards from "./pages/Cards";
 import DeckBuilder from "./pages/DeckBuilder";
 import DeckDetail from "./pages/DeckDetail";
 import Decks from "./pages/Decks";
+import HandSimulator from "./pages/HandSimulator";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyDecks from "./pages/MyDecks";
@@ -24,6 +25,7 @@ function App() {
             <Route path="cards/:id" element={<CardDetail />} />
             <Route path="decks" element={<Decks />} />
             <Route path="decks/:id" element={<DeckDetail />} />
+            <Route path="simulator" element={<HandSimulator />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="my-decks" element={<MyDecks />} />
