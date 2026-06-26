@@ -4,19 +4,23 @@ import CardGridItem from "../components/card/CardGridItem";
 import DeckCard from "../components/deck/DeckCard";
 import SearchBar from "../components/SearchBar";
 import { useFetch } from "../hooks/useFetch";
-import type { Deck, Card, Page } from "../types";
+import { getCardsEndpoint } from "../services/card";
+import { getDecksEndpoint } from "../services/deck";
+import type { Card, Deck, Page } from "../types";
+
+const spotlightParams = new URLSearchParams({ size: "6" });
 
 export default function Home() {
   const {
     data: decksData,
     loading: decksLoading,
     error: decksError,
-  } = useFetch<Deck[]>("/api/decks");
+  } = useFetch<Deck[]>(getDecksEndpoint());
   const {
     data: cardsData,
     loading: cardsLoading,
     error: cardsError,
-  } = useFetch<Page<Card>>("/api/cards?size=6");
+  } = useFetch<Page<Card>>(getCardsEndpoint(spotlightParams));
 
   const decks = decksData ? decksData.slice(0, 6) : [];
   const spotlightCards = cardsData?.content || [];

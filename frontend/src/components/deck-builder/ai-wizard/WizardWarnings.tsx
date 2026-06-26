@@ -6,10 +6,7 @@ export interface WizardWarningsProps {
   onClose: () => void;
 }
 
-export default function WizardWarnings({
-  warnings,
-  onClose,
-}: WizardWarningsProps) {
+export default function WizardWarnings({ warnings, onClose }: WizardWarningsProps) {
   return (
     <div className="mb-4 p-3 bg-amber-950/40 border border-amber-800/60 rounded-xl text-amber-200 text-xs flex flex-col gap-1.5 animate-fade-in">
       <div className="flex gap-2 items-center font-bold text-amber-400">
@@ -22,8 +19,8 @@ export default function WizardWarnings({
         ))}
       </ul>
       <p className="mt-1 text-[10px] text-amber-300/80">
-        The deck has been loaded into your builder workspace, but does not satisfy format
-        legality rules. You can edit it manually before saving.
+        The deck has been loaded into your builder workspace, but does not satisfy format legality
+        rules. You can edit it manually before saving.
       </p>
       <Button
         onClick={onClose}

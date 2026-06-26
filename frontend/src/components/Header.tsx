@@ -1,5 +1,5 @@
 import { FlaskConical } from "lucide-react";
-import { NavLink, Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {

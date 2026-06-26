@@ -4,13 +4,13 @@ import { Link, useNavigate, useParams } from "react-router";
 import DeckGridItem from "../components/deck/DeckGridItem";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Badge from "../components/ui/Badge";
+import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
-import { apiFetch } from "../services/api";
+import { deleteDeck, getDeckEndpoint } from "../services/deck";
 import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
-import Button from "../components/ui/Button";
-import Badge from "../components/ui/Badge";
 
 export default function DeckDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,7 @@ export default function DeckDetail() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data: deck, loading, error } = useFetch<Deck>(id ? `/api/decks/${id}` : null);
+  const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : null);
 
   const handleDelete = async () => {
     if (!id || !window.confirm("Are you sure you want to delete this deck?")) return;
@@ -28,14 +28,7 @@ export default function DeckDetail() {
     setDeleteError(null);
 
     try {
-      const response = await apiFetch(`/api/decks/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete deck");
-      }
-
+      await deleteDeck(id);
       navigate("/my-decks");
     } catch (err: any) {
       setDeleteError(err.message || "An error occurred while deleting the deck.");

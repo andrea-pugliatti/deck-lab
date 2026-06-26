@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
 import { Move } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { SimulatorCardInstance } from "../../types";
 
 interface SimulatorCardProps {

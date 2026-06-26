@@ -2,16 +2,17 @@ import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useFetch } from "../hooks/useFetch";
-import type { Card } from "../types";
-import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
+import Button from "../components/ui/Button";
+import { useFetch } from "../hooks/useFetch";
+import { getCardEndpoint } from "../services/card";
+import type { Card } from "../types";
 
 export default function CardDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: card, loading, error } = useFetch<Card>(id ? `/api/cards/${id}` : null);
+  const { data: card, loading, error } = useFetch<Card>(id ? getCardEndpoint(id) : null);
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;

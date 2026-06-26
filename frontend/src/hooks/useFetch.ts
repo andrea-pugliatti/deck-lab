@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { apiFetch } from "../services/api";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { apiFetch, parseResponseError } from "../services/api";
 
 export interface FetchOptions extends RequestInit {
   skip?: boolean;
@@ -33,21 +33,7 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
         });
 
         if (!response.ok) {
-          let errorMessage = `Error: ${response.status} ${response.statusText}`;
-          try {
-            const errData = await response.json();
-            if (errData && errData.message) {
-              errorMessage = errData.message;
-            }
-          } catch {
-            try {
-              const errText = await response.text();
-              if (errText) errorMessage = errText;
-            } catch {
-              // ignore
-            }
-          }
-          throw new Error(errorMessage);
+          throw await parseResponseError(response);
         }
 
         let responseData: any = null;

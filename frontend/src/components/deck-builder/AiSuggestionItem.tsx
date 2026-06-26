@@ -10,11 +10,7 @@ export interface AiSuggestionItemProps {
   onAdd: (card: Suggestion) => void;
 }
 
-export default function AiSuggestionItem({
-  card,
-  deckCards,
-  onAdd,
-}: AiSuggestionItemProps) {
+export default function AiSuggestionItem({ card, deckCards, onAdd }: AiSuggestionItemProps) {
   const [imgError, setImgError] = useState(false);
   const countInDeck = deckCards
     .filter((c) => c.cardId === card.cardId)
@@ -39,24 +35,16 @@ export default function AiSuggestionItem({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-bold text-slate-200 truncate">
-            {card.name}
-          </span>
+          <span className="text-xs font-bold text-slate-200 truncate">{card.name}</span>
           <Badge
             variant={
-              card.section === "EXTRA"
-                ? "purple"
-                : card.section === "SIDE"
-                  ? "gold"
-                  : "cyan"
+              card.section === "EXTRA" ? "purple" : card.section === "SIDE" ? "gold" : "cyan"
             }
           >
             {card.section}
           </Badge>
         </div>
-        <p className="text-[10px] text-slate-400 mt-1 leading-normal">
-          {card.synergyReason}
-        </p>
+        <p className="text-[10px] text-slate-400 mt-1 leading-normal">{card.synergyReason}</p>
       </div>
 
       <Button

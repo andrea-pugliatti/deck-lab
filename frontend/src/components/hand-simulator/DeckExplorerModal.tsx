@@ -1,7 +1,7 @@
 import { Search, X } from "lucide-react";
-import Input from "../ui/Input";
-import type { SimulatorCardInstance } from "../../types";
 import { useMemo, useState } from "react";
+import type { SimulatorCardInstance } from "../../types";
+import Input from "../ui/Input";
 
 interface DeckExplorerModalProps {
   deck: SimulatorCardInstance[];

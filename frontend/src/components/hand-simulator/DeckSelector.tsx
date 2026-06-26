@@ -1,13 +1,14 @@
+import { BookOpen, Layers, Search, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Search, Layers, BookOpen, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useFetch } from "../../hooks/useFetch";
+import { getDecksEndpoint, getFormatsEndpoint } from "../../services/deck";
 import type { Deck } from "../../types";
+import ErrorAlert from "../ErrorAlert";
+import LoadingSpinner from "../LoadingSpinner";
+import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
-import Badge from "../ui/Badge";
-import LoadingSpinner from "../LoadingSpinner";
-import ErrorAlert from "../ErrorAlert";
 
 interface DeckSelectorProps {
   onSelect: (deckId: number) => void;
@@ -27,7 +28,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     }
   }, [isAuthenticated]);
 
-  const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
+  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
@@ -37,18 +38,14 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     loading: loadingMy,
     error: errorMy,
     refetch: refetchMy,
-  } = useFetch<Deck[]>(
-    isAuthenticated && user?.username
-      ? `/api/decks?username=${encodeURIComponent(user.username)}`
-      : null,
-  );
+  } = useFetch<Deck[]>(isAuthenticated && user?.username ? getDecksEndpoint(user.username) : null);
 
   const {
     data: publicDecks,
     loading: loadingPublic,
     error: errorPublic,
     refetch: refetchPublic,
-  } = useFetch<Deck[]>("/api/decks");
+  } = useFetch<Deck[]>(getDecksEndpoint());
 
   const decksToFilter = activeTab === "my-decks" ? myDecks || [] : publicDecks || [];
   const isLoading = activeTab === "my-decks" ? loadingMy : loadingPublic;

@@ -7,45 +7,47 @@ export interface StrategyOption {
 }
 
 export const strategies: StrategyOption[] = [
-  { 
-    label: "None (Standard)", 
-    value: "None", 
-    description: "Build a standard, balanced deck following the archetype's core style." 
+  {
+    label: "None (Standard)",
+    value: "None",
+    description: "Build a standard, balanced deck following the archetype's core style.",
   },
-  { 
-    label: "Combo / Synchro Spam", 
-    value: "Combo", 
-    description: "Focuses on explosive special summon chains, search effects, and boss monster boards." 
+  {
+    label: "Combo / Synchro Spam",
+    value: "Combo",
+    description:
+      "Focuses on explosive special summon chains, search effects, and boss monster boards.",
   },
-  { 
-    label: "Control / Stun", 
-    value: "Control", 
-    description: "Focuses on counter-traps, hand traps, negates, and resource denial." 
+  {
+    label: "Control / Stun",
+    value: "Control",
+    description: "Focuses on counter-traps, hand traps, negates, and resource denial.",
   },
-  { 
-    label: "Aggro / OTK", 
-    value: "Aggro", 
-    description: "Focuses on high attack stats, board wipes, and quick One-Turn Kills." 
+  {
+    label: "Aggro / OTK",
+    value: "Aggro",
+    description: "Focuses on high attack stats, board wipes, and quick One-Turn Kills.",
   },
-  { 
-    label: "Midrange", 
-    value: "Midrange", 
-    description: "A balanced hybrid focusing on recurring resource loops, consistency, and grind game." 
+  {
+    label: "Midrange",
+    value: "Midrange",
+    description:
+      "A balanced hybrid focusing on recurring resource loops, consistency, and grind game.",
   },
-  { 
-    label: "Going Second", 
-    value: "Going Second", 
-    description: "Optimized with board breakers and hand traps to break opposing setups." 
+  {
+    label: "Going Second",
+    value: "Going Second",
+    description: "Optimized with board breakers and hand traps to break opposing setups.",
   },
-  { 
-    label: "Stall / Burn", 
-    value: "Stall/Burn", 
-    description: "Uses defense, negation, stalling tactics, and direct burn damage to win." 
+  {
+    label: "Stall / Burn",
+    value: "Stall/Burn",
+    description: "Uses defense, negation, stalling tactics, and direct burn damage to win.",
   },
-  { 
-    label: "Pure Archetype", 
-    value: "Pure", 
-    description: "Stick strictly to cards of the chosen archetype for a thematic build." 
+  {
+    label: "Pure Archetype",
+    value: "Pure",
+    description: "Stick strictly to cards of the chosen archetype for a thematic build.",
   },
 ];
 

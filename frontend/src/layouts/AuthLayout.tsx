@@ -1,5 +1,5 @@
-import { Outlet, Link } from "react-router";
 import { FlaskConical } from "lucide-react";
+import { Link, Outlet } from "react-router";
 
 export default function AuthLayout() {
   return (

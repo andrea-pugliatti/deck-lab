@@ -1,14 +1,14 @@
-import { AlertCircle, Sparkles, Wand2, RotateCcw } from "lucide-react";
+import { AlertCircle, RotateCcw, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
-import { apiFetch } from "../../services/api";
+import { useDeckStateContext } from "../../context/DeckStateContext";
+import { fetchAiSuggestions } from "../../services/deck";
 import type { Suggestion } from "../../types";
 import LoadingSpinner from "../LoadingSpinner";
 import Button from "../ui/Button";
 import AiSuggestionItem from "./AiSuggestionItem";
 
 export default function AiSuggestionsPanel() {
-  const { deckCards, setDeckCards, formatName } = useDeckBuilder();
+  const { deckCards, addCard, formatName } = useDeckStateContext();
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState<string>();
@@ -18,23 +18,12 @@ export default function AiSuggestionsPanel() {
     setError(undefined);
 
     try {
-      const response = await apiFetch("/api/decks/ai/suggest", {
-        method: "POST",
-        body: JSON.stringify({
-          formatName,
-          currentCards: deckCards.map((c) => ({
-            name: c.name,
-            section: c.section,
-            quantity: c.quantity,
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch recommendations (${response.status})`);
-      }
-
-      const data = await response.json();
+      const currentCards = deckCards.map((c) => ({
+        name: c.name,
+        section: c.section,
+        quantity: c.quantity,
+      }));
+      const data = await fetchAiSuggestions(formatName, currentCards);
       setSuggestions(data || []);
     } catch (err: any) {
       setError(err.message || "Could not retrieve recommendations.");
@@ -44,36 +33,18 @@ export default function AiSuggestionsPanel() {
   };
 
   const addSuggestedCard = (suggested: Suggestion) => {
-    const totalCopies = deckCards
-      .filter((c) => c.cardId === suggested.cardId)
-      .reduce((sum, c) => sum + c.quantity, 0);
-
-    if (totalCopies >= 3) {
-      alert(`You already have 3 copies of "${suggested.name}" across your deck.`);
-      return;
-    }
-
-    const existingIdx = deckCards.findIndex(
-      (c) => c.cardId === suggested.cardId && c.section === suggested.section,
+    addCard(
+      {
+        id: suggested.cardId,
+        name: suggested.name,
+        type: suggested.type,
+        imageUrlCropped: suggested.imageUrl,
+        description: "",
+        race: "",
+        attribute: "",
+      },
+      suggested.section,
     );
-
-    if (existingIdx > -1) {
-      const updated = [...deckCards];
-      updated[existingIdx].quantity = Math.min(3, updated[existingIdx].quantity + 1);
-      setDeckCards(updated);
-    } else {
-      setDeckCards([
-        ...deckCards,
-        {
-          cardId: suggested.cardId,
-          name: suggested.name,
-          quantity: 1,
-          type: suggested.type,
-          imageUrl: suggested.imageUrl,
-          section: suggested.section,
-        },
-      ]);
-    }
   };
 
   return (

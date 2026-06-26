@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
-import { useNavigate, Link } from "react-router";
-import { useFetch } from "../hooks/useFetch";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { useDebounce } from "../hooks/useDebounce";
+import { useFetch } from "../hooks/useFetch";
+import { getCardSuggestionsEndpoint } from "../services/card";
 
 interface SuggestionCard {
   id: number;
@@ -20,9 +21,7 @@ export default function SearchBar() {
   const debouncedQuery = useDebounce(query, 300);
 
   const fetchUrl =
-    debouncedQuery.trim().length >= 2
-      ? `/api/cards?q=${encodeURIComponent(debouncedQuery.trim())}&size=5`
-      : null;
+    debouncedQuery.trim().length >= 2 ? getCardSuggestionsEndpoint(debouncedQuery.trim()) : null;
 
   const { data, loading } = useFetch<{ content: SuggestionCard[] }>(fetchUrl);
   const cardSuggestions = data?.content || [];

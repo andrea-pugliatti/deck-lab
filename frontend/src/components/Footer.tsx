@@ -41,7 +41,10 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/simulator" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link
+                to="/simulator"
+                className="hover:text-cyan-hover transition-colors duration-200"
+              >
                 Hand Simulator
               </Link>
             </li>

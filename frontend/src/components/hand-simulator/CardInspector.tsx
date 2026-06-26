@@ -1,6 +1,6 @@
 import { Eye, Flame, Shield, Star } from "lucide-react";
-import Badge from "../ui/Badge";
 import type { SimulatorCardInstance } from "../../types";
+import Badge from "../ui/Badge";
 
 interface CardInspectorProps {
   inspectedCard?: SimulatorCardInstance;

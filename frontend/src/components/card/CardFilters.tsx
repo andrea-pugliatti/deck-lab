@@ -1,8 +1,8 @@
 import { SlidersHorizontal } from "lucide-react";
 import type { CardFiltersState } from "../../types";
-import Select from "../ui/Select";
-import Label from "../ui/Label";
 import Button from "../ui/Button";
+import Label from "../ui/Label";
+import Select from "../ui/Select";
 
 export interface CardFiltersProps {
   filters: CardFiltersState;

@@ -1,6 +1,12 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { setAccessToken } from "../services/api";
+import {
+  login as apiLogin,
+  logout as apiLogout,
+  refreshToken as apiRefreshToken,
+  register as apiRegister,
+  parseJwt,
+} from "../services/auth";
 import type { User } from "../types";
 
 interface AuthContextType {
@@ -15,27 +21,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function parseJwt(token: string) {
-  try {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      window
-        .atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join(""),
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
-}
-
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>();
   const [accessToken, setAccessTokenState] = useState<string>();
   const [loading, setLoading] = useState(true);
+  const isAuthenticated = !!accessToken;
 
   const handleAuthSuccess = (token: string, username: string) => {
     setAccessToken(token);
@@ -53,87 +43,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("username");
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch("/api/auth/refresh", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          const storedUsername = localStorage.getItem("username") || "Duelist";
-          handleAuthSuccess(data.accessToken, storedUsername);
-        } else {
-          handleLogoutState();
-        }
-      } catch {
-        handleLogoutState();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-
-    const handleGlobalLogout = () => {
+  const checkAuth = async () => {
+    try {
+      const data = await apiRefreshToken();
+      const storedUsername = localStorage.getItem("username") || "";
+      handleAuthSuccess(data.accessToken, storedUsername);
+    } catch {
       handleLogoutState();
-    };
-
-    window.addEventListener("auth-logout", handleGlobalLogout);
-    return () => {
-      window.removeEventListener("auth-logout", handleGlobalLogout);
-    };
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (usernameOrEmail: string, password: string) => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: usernameOrEmail, password }),
-    });
-
-    if (!res.ok) {
-      if (res.status === 429) {
-        throw new Error("Too many login attempts. Please try again later.");
-      }
-      throw new Error("Invalid username or password");
-    }
-
-    const data = await res.json();
+    const data = await apiLogin(usernameOrEmail, password);
     handleAuthSuccess(data.accessToken, data.username || usernameOrEmail);
   };
 
   const register = async (username: string, email: string, password: string) => {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, email, password }),
-    });
-
-    if (!res.ok) {
-      const errorMsg = await res.text();
-      throw new Error(errorMsg || "Registration failed");
-    }
-
-    const data = await res.json();
+    const data = await apiRegister(username, email, password);
     handleAuthSuccess(data.accessToken, data.username || username);
   };
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "same-origin",
-      });
+      await apiLogout();
     } catch {
       // Ignore logout request errors, clear local state anyway
     } finally {
@@ -141,7 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const isAuthenticated = !!accessToken;
+  useEffect(() => {
+    checkAuth();
+    window.addEventListener("auth-logout", handleLogoutState);
+    return () => {
+      window.removeEventListener("auth-logout", handleLogoutState);
+    };
+  }, []);
 
   return (
     <AuthContext.Provider

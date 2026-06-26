@@ -1,7 +1,8 @@
 import { AlertTriangle, HelpCircle, Sparkles, Wand2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
-import { apiFetch } from "../../../services/api";
+import { getCardMetadataEndpoint } from "../../../services/card";
+import { generateAiDeck, getFormatsEndpoint } from "../../../services/deck";
 import type { DeckCardItem } from "../../../types";
 import Button from "../../ui/Button";
 import Label from "../../ui/Label";
@@ -38,8 +39,8 @@ export default function AiDeckWizard({
   const [error, setError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
 
-  const { data: archetypesData } = useFetch<string[]>("/api/cards/archetypes");
-  const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
+  const { data: archetypesData } = useFetch<string[]>(getCardMetadataEndpoint("archetypes"));
+  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData || ["TCG", "OCG", "Goat", "Edison"];
   useEffect(() => {
     if (isOpen) {
@@ -67,21 +68,12 @@ export default function AiDeckWizard({
     setWarnings([]);
 
     try {
-      const response = await apiFetch("/api/decks/ai/generate", {
-        method: "POST",
-        body: JSON.stringify({
-          archetype: archetype.trim(),
-          strategy,
-          formatName,
-          customPrompt: customPrompt.trim() || null,
-        }),
+      const result = await generateAiDeck({
+        archetype: archetype.trim(),
+        strategy,
+        formatName,
+        customPrompt: customPrompt.trim() || null,
       });
-
-      if (!response.ok) {
-        throw new Error(`Failed to generate deck (${response.status} ${response.statusText})`);
-      }
-
-      const result = await response.json();
 
       onDeckGenerated({
         name: result.name || `${archetype} Deck`,
