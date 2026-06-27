@@ -1,5 +1,5 @@
 import { AlertTriangle, HelpCircle, Sparkles, Wand2, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFetch } from "../../../hooks/useFetch";
 import { getCardMetadataEndpoint } from "../../../services/card";
 import { generateAiDeck, getFormatsEndpoint } from "../../../services/deck";
@@ -38,6 +38,7 @@ export default function AiDeckWizard({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const { data: archetypesData } = useFetch<string[]>(getCardMetadataEndpoint("archetypes"));
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
@@ -55,9 +56,36 @@ export default function AiDeckWizard({
     }
   }, [isOpen, currentFormat]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
 
-  const handleGenerate = async (e: React.SubmitEvent) => {
+    if (isOpen) {
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+    } else {
+      if (dialog.open) {
+        dialog.close();
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleClose = () => {
+      onClose();
+    };
+
+    dialog.addEventListener("close", handleClose);
+    return () => {
+      dialog.removeEventListener("close", handleClose);
+    };
+  }, [onClose]);
+
+  const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!archetype.trim()) {
       setError("Please specify an archetype first.");
@@ -87,7 +115,7 @@ export default function AiDeckWizard({
         setWarnings(result.validationWarnings);
         setLoading(false);
       } else {
-        onClose();
+        dialogRef.current?.close();
       }
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred during generation.");
@@ -96,17 +124,21 @@ export default function AiDeckWizard({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="bg-dark-surface border border-border-dim rounded-2xl p-6 max-w-lg w-full shadow-2xl relative flex flex-col max-h-[90vh] overflow-y-auto">
+    <dialog
+      ref={dialogRef}
+      className="bg-transparent text-white p-4 border-none backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none max-w-lg w-full max-h-[90vh] overflow-visible"
+    >
+      <div className="bg-dark-surface border border-border-dim rounded-2xl p-6 shadow-2xl relative flex flex-col max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-4 border-b border-border-dim mb-4">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-gold-accent animate-pulse" />
             <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
           </div>
           <button
-            onClick={onClose}
+            type="button"
             className="text-slate-400 hover:text-white transition-colors cursor-pointer"
             disabled={loading}
+            onClick={() => dialogRef.current?.close()}
           >
             <X className="w-5 h-5" />
           </button>
@@ -178,7 +210,7 @@ export default function AiDeckWizard({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={onClose}
+                  onClick={() => dialogRef.current?.close()}
                   disabled={loading}
                   className="flex-1"
                 >
@@ -193,6 +225,6 @@ export default function AiDeckWizard({
           )
         )}
       </div>
-    </div>
+    </dialog>
   );
 }

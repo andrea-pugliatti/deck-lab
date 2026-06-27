@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SimulatorCardInstance } from "../../types";
 import Input from "../ui/Input";
 
@@ -18,6 +18,23 @@ export default function DeckExplorerModal({
   handleActionFromExplorer,
 }: DeckExplorerModalProps) {
   const [deckSearchQuery, setDeckSearchQuery] = useState("");
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog) {
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+      const handleClose = () => {
+        setShowDeckExplorer(false);
+      };
+      dialog.addEventListener("close", handleClose);
+      return () => {
+        dialog.removeEventListener("close", handleClose);
+      };
+    }
+  }, [setShowDeckExplorer]);
 
   const filteredDeckExplorerCards = useMemo(() => {
     if (!deckSearchQuery.trim()) return deck;
@@ -29,9 +46,13 @@ export default function DeckExplorerModal({
   }, [deck, deckSearchQuery]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-250">
-      <div className="bg-dark-surface border border-border-dim w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh] relative overflow-hidden">
+    <dialog
+      ref={dialogRef}
+      className="bg-transparent text-white p-4 border-none backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none max-w-4xl w-full max-h-[85vh] overflow-visible"
+    >
+      <div className="bg-dark-surface border border-border-dim w-full rounded-2xl shadow-2xl flex flex-col max-h-[80vh] relative overflow-hidden">
         <div className="absolute inset-0 bg-radial from-cyan-accent/5 via-transparent to-transparent pointer-events-none"></div>
+
         <div className="p-5 border-b border-border-dim/60 flex justify-between items-center bg-dark-surface-elevated/40">
           <div>
             <h3 className="font-display text-lg font-bold text-white flex items-center gap-2">
@@ -45,7 +66,7 @@ export default function DeckExplorerModal({
           <button
             onClick={() => {
               setDeckSearchQuery("");
-              setShowDeckExplorer(false);
+              dialogRef.current?.close();
             }}
             className="text-slate-400 hover:text-white p-1 rounded-lg bg-dark-surface-elevated hover:bg-slate-800 transition-colors cursor-pointer"
             type="button"
@@ -105,7 +126,7 @@ export default function DeckExplorerModal({
                         onClick={() => {
                           handleActionFromExplorer(card, "hand");
                           setDeckSearchQuery("");
-                          setShowDeckExplorer(false);
+                          dialogRef.current?.close();
                         }}
                         className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg transition-colors cursor-pointer"
                       >
@@ -115,7 +136,7 @@ export default function DeckExplorerModal({
                         onClick={() => {
                           handleActionFromExplorer(card, "field");
                           setDeckSearchQuery("");
-                          setShowDeckExplorer(false);
+                          dialogRef.current?.close();
                         }}
                         className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg transition-colors cursor-pointer"
                       >
@@ -125,7 +146,7 @@ export default function DeckExplorerModal({
                         onClick={() => {
                           handleActionFromExplorer(card, "graveyard");
                           setDeckSearchQuery("");
-                          setShowDeckExplorer(false);
+                          dialogRef.current?.close();
                         }}
                         className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
                       >
@@ -143,6 +164,6 @@ export default function DeckExplorerModal({
           )}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
