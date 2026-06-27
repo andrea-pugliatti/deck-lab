@@ -181,7 +181,8 @@ export default function SimulatorWorkspace({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
               <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider">
+                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-slate-400" />
                   Graveyard (GY)
                 </h4>
                 <span className="text-[9px] font-bold text-slate-400 bg-slate-400/10 px-2 py-0.5 rounded">
@@ -212,7 +213,8 @@ export default function SimulatorWorkspace({
 
             <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
               <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider">
+                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-purple-400" />
                   Banished Zone
                 </h4>
                 <span className="text-[9px] font-bold text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded">

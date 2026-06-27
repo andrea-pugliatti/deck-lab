@@ -102,6 +102,7 @@ export default function Home() {
           </div>
           <Link
             to="/decks"
+            viewTransition
             className="text-cyan-accent no-underline text-sm font-semibold hover:text-cyan-hover hover:underline transition-colors duration-200"
           >
             View All Decks
@@ -172,6 +173,7 @@ export default function Home() {
           </div>
           <Link
             to="/cards"
+            viewTransition
             className="text-cyan-accent no-underline text-sm font-semibold hover:text-cyan-hover hover:underline transition-colors duration-200"
           >
             Explore Cards

@@ -92,6 +92,7 @@ export default function Login() {
           New to the Lab?{" "}
           <Link
             to="/register"
+            viewTransition
             className="text-cyan-accent hover:underline hover:text-cyan-hover font-semibold transition-all duration-200"
           >
             Create Account

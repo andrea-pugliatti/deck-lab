@@ -26,23 +26,36 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 list-none p-0 text-sm">
             <li>
-              <Link to="/" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link
+                to="/"
+                viewTransition
+                className="hover:text-cyan-hover transition-colors duration-200"
+              >
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/decks" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link
+                to="/decks"
+                viewTransition
+                className="hover:text-cyan-hover transition-colors duration-200"
+              >
                 Decks
               </Link>
             </li>
             <li>
-              <Link to="/cards" className="hover:text-cyan-hover transition-colors duration-200">
+              <Link
+                to="/cards"
+                viewTransition
+                className="hover:text-cyan-hover transition-colors duration-200"
+              >
                 Cards
               </Link>
             </li>
             <li>
               <Link
                 to="/simulator"
+                viewTransition
                 className="hover:text-cyan-hover transition-colors duration-200"
               >
                 Hand Simulator

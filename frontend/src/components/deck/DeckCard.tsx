@@ -25,6 +25,7 @@ export default function DeckCard({
   return (
     <Link
       to={`/decks/${id}`}
+      viewTransition
       className="bg-dark-surface border border-border-dim rounded-lg p-5 flex flex-col justify-between min-h-56 transition-all duration-300 cursor-pointer relative overflow-hidden hover:-translate-y-1 hover:border-border-glow hover:shadow-lg before:content-[''] before:absolute before:top-0 before:left-0 before:w-0.5 before:h-full before:bg-gold-accent before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 group no-underline text-inherit"
     >
       <div className="mb-4">

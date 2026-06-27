@@ -118,6 +118,7 @@ export default function Register() {
           Already have a profile?{" "}
           <Link
             to="/login"
+            viewTransition
             className="text-cyan-accent hover:underline hover:text-cyan-hover font-semibold transition-all duration-200"
           >
             Login

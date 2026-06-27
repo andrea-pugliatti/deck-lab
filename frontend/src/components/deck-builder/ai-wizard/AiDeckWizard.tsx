@@ -85,7 +85,7 @@ export default function AiDeckWizard({
     };
   }, [onClose]);
 
-  const handleGenerate = async (e: React.FormEvent) => {
+  const handleGenerate = async (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!archetype.trim()) {
       setError("Please specify an archetype first.");

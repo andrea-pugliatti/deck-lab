@@ -1,15 +1,23 @@
-import { useDeckStateContext } from "../../context/DeckStateContext";
 import { getFormatRules } from "../../services/validation";
-import type { CardSection } from "../../types";
+import type { CardSection, DeckCardItem } from "../../types";
+import Badge from "../ui/Badge";
 import EditorCardItem from "./EditorCardItem";
 
 export interface DeckSectionListProps {
   section: CardSection;
+  deckCards: DeckCardItem[];
+  formatName: string;
+  updateQuantity: (cardId: number, section: CardSection, delta: number) => void;
+  removeCard: (cardId: number, section: CardSection) => void;
 }
 
-export default function DeckSectionList({ section }: DeckSectionListProps) {
-  const { deckCards, updateQuantity, removeCard, formatName } = useDeckStateContext();
-
+export default function DeckSectionList({
+  section,
+  deckCards,
+  formatName,
+  updateQuantity,
+  removeCard,
+}: DeckSectionListProps) {
   const cards = deckCards.filter((c) => c.section === section);
   const count = cards.reduce((acc, c) => acc + c.quantity, 0);
 
@@ -18,29 +26,21 @@ export default function DeckSectionList({ section }: DeckSectionListProps) {
   let title = "Main Deck";
   let colorClass = "bg-cyan-accent";
   let limitText = `${count} / ${rules.maxMainSize} Cards (Min ${rules.minMainSize})`;
-  let limitClass =
-    count >= rules.minMainSize && count <= rules.maxMainSize
-      ? "bg-cyan-accent/10 text-cyan-accent"
-      : "bg-amber-500/10 text-amber-400";
+  let badgeVariant: "cyan" | "monster" | "gold" | "trap" | "purple" =
+    count >= rules.minMainSize && count <= rules.maxMainSize ? "cyan" : "monster";
   let emptyMessage = "Empty Main Deck. Add cards using the catalog search.";
 
   if (section === "EXTRA") {
     title = "Extra Deck";
     colorClass = "bg-gold-accent";
     limitText = `${count} / ${rules.maxExtraSize} Cards (Max ${rules.maxExtraSize})`;
-    limitClass =
-      count <= rules.maxExtraSize
-        ? "bg-gold-accent/10 text-gold-accent"
-        : "bg-red-500/10 text-red-400";
+    badgeVariant = count <= rules.maxExtraSize ? "gold" : "trap";
     emptyMessage = "Empty Extra Deck. Extra Deck monsters (Fusion/Synchro/Xyz/Link) will go here.";
   } else if (section === "SIDE") {
     title = "Side Deck";
     colorClass = "bg-purple-400";
     limitText = `${count} / ${rules.maxSideSize} Cards (Max ${rules.maxSideSize})`;
-    limitClass =
-      count <= rules.maxSideSize
-        ? "bg-purple-400/10 text-purple-400"
-        : "bg-red-500/10 text-red-400";
+    badgeVariant = count <= rules.maxSideSize ? "purple" : "trap";
     emptyMessage = "Empty Side Deck. Add swap options for tournament settings.";
   }
 
@@ -51,9 +51,9 @@ export default function DeckSectionList({ section }: DeckSectionListProps) {
           <span className={`w-2.5 h-2.5 rounded-full ${colorClass}`}></span>
           {title}
         </span>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded ${limitClass}`}>
+        <Badge variant={badgeVariant} className="text-xs font-semibold normal-case">
           {limitText}
-        </span>
+        </Badge>
       </div>
 
       {cards.length > 0 ? (

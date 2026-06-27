@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-dark-bg/85 backdrop-blur-md border-b border-b-border-dim transition-all duration-200">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2 no-underline text-white">
+        <Link to="/" viewTransition className="flex items-center gap-2 no-underline text-white">
           <FlaskConical className="w-6 h-6 text-gold-accent drop-shadow-[0_0_4px_rgba(212,175,55,0.25)]" />
           <span className="font-display text-2xl font-bold tracking-widest text-gold-accent">
             DECKLAB
@@ -24,22 +24,22 @@ export default function Header() {
         <nav>
           <ul className="hidden md:flex items-center gap-8 list-none m-0 p-0">
             <li>
-              <NavLink to="/" end className={linkClass}>
+              <NavLink to="/" end className={linkClass} viewTransition>
                 Home
               </NavLink>
             </li>
             <li>
-              <NavLink to="/decks" className={linkClass}>
+              <NavLink to="/decks" className={linkClass} viewTransition>
                 Decks
               </NavLink>
             </li>
             <li>
-              <NavLink to="/cards" className={linkClass}>
+              <NavLink to="/cards" className={linkClass} viewTransition>
                 Cards
               </NavLink>
             </li>
             <li>
-              <NavLink to="/simulator" className={linkClass}>
+              <NavLink to="/simulator" className={linkClass} viewTransition>
                 Hand Simulator
               </NavLink>
             </li>
@@ -49,7 +49,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           {isAuthenticated && user ? (
             <div className="flex items-center gap-4">
-              <NavLink to="/my-decks" className={linkClass}>
+              <NavLink to="/my-decks" className={linkClass} viewTransition>
                 My Decks
               </NavLink>
               <span className="w-px h-4 bg-border-dim"></span>
@@ -66,6 +66,7 @@ export default function Header() {
           ) : (
             <Link
               to="/login"
+              viewTransition
               className="inline-block bg-transparent text-gold-accent border border-gold-accent px-5 py-2 rounded font-sans font-semibold text-xs uppercase tracking-wider cursor-pointer hover:bg-gold-accent hover:text-dark-bg hover:shadow-[0_0_15px_rgba(212,175,55,0.2)] no-underline"
             >
               Login

@@ -31,6 +31,7 @@ export default function CardGridItem({
   return (
     <Link
       to={`/cards/${id}`}
+      viewTransition
       className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-border-glow hover:shadow-md group no-underline text-inherit"
     >
       <div className="relative aspect-video bg-dark-surface-elevated flex items-center justify-center border-b border-border-dim overflow-hidden">

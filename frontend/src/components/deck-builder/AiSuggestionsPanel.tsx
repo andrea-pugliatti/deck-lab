@@ -1,14 +1,22 @@
 import { AlertCircle, RotateCcw, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
-import { useDeckStateContext } from "../../context/DeckStateContext";
 import { fetchAiSuggestions } from "../../services/deck";
-import type { Suggestion } from "../../types";
+import type { Card, CardSection, DeckCardItem, Suggestion } from "../../types";
 import LoadingSpinner from "../LoadingSpinner";
 import Button from "../ui/Button";
 import AiSuggestionItem from "./AiSuggestionItem";
 
-export default function AiSuggestionsPanel() {
-  const { deckCards, addCard, formatName } = useDeckStateContext();
+export interface AiSuggestionsPanelProps {
+  deckCards: DeckCardItem[];
+  formatName: string;
+  addCard: (card: Card, section: CardSection) => void;
+}
+
+export default function AiSuggestionsPanel({
+  deckCards,
+  formatName,
+  addCard,
+}: AiSuggestionsPanelProps) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState<string>();
