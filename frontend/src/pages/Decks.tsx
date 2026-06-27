@@ -1,12 +1,13 @@
 import { Filter, Layers, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import DeckListItem from "../components/deck/DeckListItem";
 import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
 import { useDebounce } from "../hooks/useDebounce";
@@ -21,7 +22,6 @@ export interface DecksProps {
 
 export default function Decks({ initialTab = "all" }: DecksProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [tab, setTab] = useState<"all" | "user">(initialTab);
 
@@ -82,22 +82,24 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
   const { data, loading, error, refetch } = useFetch<Deck[]>(fetchUrl);
   const decks = data || [];
 
-  const handleTabChange = (targetTab: "all" | "user") => {
-    if (targetTab === "all") {
-      navigate("/decks");
-    } else {
-      navigate("/my-decks");
-    }
-  };
+  const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const handleDelete = async (deckId: number) => {
-    if (!window.confirm("Are you sure you want to delete this deck?")) return;
+  const handleDeleteModal = async () => {
+    if (!deckToDelete) return;
+    setIsDeleting(true);
+    setDeleteError(null);
     try {
-      await deleteDeck(deckId);
+      await deleteDeck(deckToDelete.id);
       refetch();
-    } catch (err) {
+      setDeckToDelete(null);
+    } catch (err: any) {
       console.error(err);
-      alert("Error deleting deck");
+      setDeleteError(err.message || "Failed to delete the deck.");
+      setDeckToDelete(null);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -111,32 +113,6 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
             : "Browse, filter, and discover community-built Yu-Gi-Oh! decks."
         }
       />
-
-      {isAuthenticated && (
-        <div className="flex border-b border-border-dim mb-6">
-          <button
-            onClick={() => handleTabChange("all")}
-            className={`px-4 py-2 border-b-2 font-display text-sm font-semibold transition-colors cursor-pointer ${
-              tab === "all"
-                ? "border-cyan-accent text-cyan-accent"
-                : "border-transparent text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            All Decks
-          </button>
-          <button
-            onClick={() => handleTabChange("user")}
-            className={`px-4 py-2 border-b-2 font-display text-sm font-semibold transition-colors cursor-pointer ${
-              tab === "user"
-                ? "border-cyan-accent text-cyan-accent"
-                : "border-transparent text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            My Decks
-          </button>
-        </div>
-      )}
-
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4 flex-wrap md:flex-nowrap w-full justify-between md:justify-start">
           <FormatSelector
@@ -167,6 +143,18 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
         )}
       </div>
 
+      {deleteError && (
+        <div className="bg-red-950/20 border border-red-500/30 text-red-400 rounded-lg p-4 mb-6 text-sm flex justify-between items-center">
+          <span>{deleteError}</span>
+          <button
+            onClick={() => setDeleteError(null)}
+            className="text-slate-400 hover:text-white text-xs cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
@@ -189,7 +177,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
                 cardCount={cardCount}
                 updatedAt={formatRelativeTime(deck.updatedAt)}
                 showActions={isAuthenticated && user?.username === deck.creatorUsername}
-                onDelete={handleDelete}
+                onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
               />
             );
           })}
@@ -216,6 +204,23 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           description="Try adjusting your search query or format filter."
         />
       )}
+
+      <ConfirmDialog
+        isOpen={deckToDelete !== null}
+        onClose={() => setDeckToDelete(null)}
+        onConfirm={handleDeleteModal}
+        title="Delete Deck Blueprint"
+        description={
+          <>
+            Are you sure you want to delete{" "}
+            <span className="font-semibold text-white">"{deckToDelete?.name || "this deck"}"</span>?
+            This action cannot be undone and will permanently remove the blueprint.
+          </>
+        }
+        confirmText="Delete Deck"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

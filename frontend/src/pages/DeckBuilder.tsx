@@ -10,6 +10,7 @@ import DeckSectionList from "../components/deck-builder/DeckSectionList";
 import DeckValidationErrors from "../components/deck-builder/DeckValidationErrors";
 import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { CatalogSearchProvider, useCatalogSearch } from "../context/CatalogSearchContext";
 import { DeckStateProvider, useDeckStateContext } from "../context/DeckStateContext";
 
@@ -17,8 +18,7 @@ function DeckBuilderContent() {
   const navigate = useNavigate();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
-  const [resetState, setResetState] = useState<"idle" | "confirming">("idle");
-  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
 
   const {
     isEditMode,
@@ -65,14 +65,6 @@ function DeckBuilderContent() {
     }
   }, [searchPage]);
 
-  useEffect(() => {
-    return () => {
-      if (resetTimerRef.current) {
-        clearTimeout(resetTimerRef.current);
-      }
-    };
-  }, []);
-
   const handleSave = (e: React.SubmitEvent) => {
     e.preventDefault();
     saveDeck();
@@ -90,21 +82,12 @@ function DeckBuilderContent() {
     setDeckCards(data.deckCards);
   };
 
-  const handleReset = () => {
-    if (resetState === "idle") {
-      setResetState("confirming");
-      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
-      resetTimerRef.current = setTimeout(() => {
-        setResetState("idle");
-      }, 5000);
-    } else {
-      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
-      setResetState("idle");
-      setName("");
-      setDescription("");
-      setFormatName("TCG");
-      setDeckCards([]);
-    }
+  const handleResetModal = () => {
+    setResetConfirmOpen(false);
+    setName("");
+    setDescription("");
+    setFormatName("TCG");
+    setDeckCards([]);
   };
 
   return (
@@ -216,40 +199,15 @@ function DeckBuilderContent() {
             </Button>
 
             <div className="flex items-center gap-3">
-              {resetState === "confirming" ? (
-                <>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => {
-                      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
-                      setResetState("idle");
-                    }}
-                    className="px-3 py-2.5 font-semibold text-slate-400 hover:text-white"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline-red"
-                    onClick={handleReset}
-                    className="px-4 py-2.5 font-semibold flex items-center gap-1.5 bg-red-950/60 text-red-400 border-red-500 hover:bg-red-900/60"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    Confirm Reset
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline-red"
-                  onClick={handleReset}
-                  className="px-4 py-2.5 font-semibold flex items-center gap-1.5"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  Reset
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="outline-red"
+                onClick={() => setResetConfirmOpen(true)}
+                className="px-4 py-2.5 font-semibold flex items-center gap-1.5"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reset
+              </Button>
 
               <Button
                 type="submit"
@@ -270,6 +228,16 @@ function DeckBuilderContent() {
         onClose={() => setIsWizardOpen(false)}
         onDeckGenerated={handleDeckGenerated}
         currentFormat={formatName}
+      />
+
+      <ConfirmDialog
+        isOpen={resetConfirmOpen}
+        onClose={() => setResetConfirmOpen(false)}
+        onConfirm={handleResetModal}
+        title="Reset Workspace"
+        description="Are you sure you want to reset the deck builder? This will clear all cards, title, and description, reverting your workspace to a blank blueprint."
+        confirmText="Reset Workspace"
+        variant="danger"
       />
     </div>
   );

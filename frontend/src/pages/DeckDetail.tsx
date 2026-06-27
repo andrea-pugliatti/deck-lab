@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Edit, Layers, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import DeckGridItem from "../components/deck/DeckGridItem";
@@ -6,6 +6,7 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
 import { deleteDeck, getDeckEndpoint } from "../services/deck";
@@ -18,12 +19,13 @@ export default function DeckDetail() {
   const { user, isAuthenticated } = useAuth();
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : null);
 
-  const handleDelete = async () => {
-    if (!id || !window.confirm("Are you sure you want to delete this deck?")) return;
-
+  const handleDeleteModal = async () => {
+    if (!id) return;
+    setConfirmModalOpen(false);
     setIsDeleting(true);
     setDeleteError(null);
 
@@ -88,6 +90,7 @@ export default function DeckDetail() {
         <div className="flex items-center gap-3">
           <Link
             to={`/simulator?deckId=${deck.id}`}
+            viewTransition
             className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-cyan-accent" />
@@ -98,13 +101,16 @@ export default function DeckDetail() {
             <>
               <Link
                 to={`/decks/${deck.id}/edit`}
+                viewTransition
                 className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
               >
                 <Edit className="w-3.5 h-3.5" />
                 Edit Deck
               </Link>
               <button
-                onClick={handleDelete}
+                onClick={() => {
+                  setConfirmModalOpen(true);
+                }}
                 disabled={isDeleting}
                 className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer disabled:opacity-50"
                 type="button"
@@ -155,7 +161,8 @@ export default function DeckDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <aside className="lg:col-span-4 space-y-6">
           <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
-            <h2 className="font-display text-base font-bold text-white mb-4 border-b border-border-dim/60 pb-2">
+            <h2 className="flex items-center gap-2 font-display text-base font-bold text-white mb-4 border-b border-border-dim/60 pb-2">
+              <Eye className="w-4 h-4 text-cyan-accent" />
               Deck Analytics
             </h2>
 
@@ -249,14 +256,14 @@ export default function DeckDetail() {
                   <div>
                     <div className="flex justify-between text-xs text-slate-400 mb-1">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
                         Traps
                       </span>
                       <span className="font-semibold text-white">{mainTrapsCount}</span>
                     </div>
                     <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
                       <div
-                        className="h-full bg-rose-500"
+                        className="h-full bg-purple-400"
                         style={{ width: `${(mainTrapsCount / mainCount) * 100}%` }}
                       ></div>
                     </div>
@@ -271,7 +278,7 @@ export default function DeckDetail() {
           <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
             <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
               <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-cyan-accent" />
+                <span className={`w-2.5 h-2.5 rounded-full bg-cyan-accent`}></span>
                 Main Deck
               </h2>
               <Badge variant="cyan" className="text-xs font-semibold px-2 py-0.5 rounded">
@@ -302,7 +309,7 @@ export default function DeckDetail() {
           <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
             <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
               <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-gold-accent" />
+                <span className={`w-2.5 h-2.5 rounded-full bg-gold-accent`}></span>
                 Extra Deck
               </h2>
               <Badge variant="gold" className="text-xs font-semibold px-2 py-0.5 rounded">
@@ -333,7 +340,7 @@ export default function DeckDetail() {
           <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
             <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
               <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <Layers className="w-4 h-4 text-purple-400" />
+                <span className={`w-2.5 h-2.5 rounded-full bg-purple-400`}></span>
                 Side Deck
               </h2>
               <Badge variant="purple" className="text-xs font-semibold px-2 py-0.5 rounded">
@@ -362,6 +369,22 @@ export default function DeckDetail() {
           </div>
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDeleteModal}
+        title="Delete Deck Blueprint"
+        description={
+          <>
+            Are you sure you want to delete{" "}
+            <span className="font-semibold text-white">"{deck?.name || "this deck"}"</span>? This
+            action cannot be undone and will permanently remove the blueprint.
+          </>
+        }
+        confirmText="Delete Deck"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }
