@@ -11,7 +11,6 @@ import Decks from "./pages/Decks";
 import HandSimulator from "./pages/HandSimulator";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import MyDecks from "./pages/MyDecks";
 import Register from "./pages/Register";
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
             <Route path="simulator" element={<HandSimulator />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="my-decks" element={<MyDecks />} />
+              <Route path="my-decks" element={<Decks initialTab="user" />} />
               <Route path="decks/create" element={<DeckBuilder />} />
               <Route path="decks/:id/edit" element={<DeckBuilder />} />
             </Route>

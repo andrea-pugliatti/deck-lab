@@ -1,20 +1,30 @@
-import { Filter, Search } from "lucide-react";
+import { Filter, Layers, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import DeckListItem from "../components/deck/DeckListItem";
+import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
-import FormatSelector from "../components/deck/FormatSelector";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
+import Input from "../components/ui/Input";
+import { useAuth } from "../context/AuthContext";
 import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
+import { deleteDeck, getDecksQueryEndpoint, getFormatsEndpoint } from "../services/deck";
 import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
-import Input from "../components/ui/Input";
 
-export default function Decks() {
+export interface DecksProps {
+  initialTab?: "all" | "user";
+}
+
+export default function Decks({ initialTab = "all" }: DecksProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const [tab, setTab] = useState<"all" | "user">(initialTab);
+
   const initialFormat = searchParams.get("format") || "ALL";
   const initialQuery = searchParams.get("q") || "";
 
@@ -22,10 +32,14 @@ export default function Decks() {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const debouncedQuery = useDebounce(searchQuery, 400);
 
-  const { data: formatsData } = useFetch<string[]>("/api/decks/formats");
+  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
+
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
 
   useEffect(() => {
     const format = searchParams.get("format") || "ALL";
@@ -60,32 +74,97 @@ export default function Decks() {
   if (selectedFormat !== "ALL") {
     queryParams.append("format", selectedFormat);
   }
+  if (tab === "user" && user?.username) {
+    queryParams.append("username", user.username);
+  }
 
-  const { data, loading, error } = useFetch<Deck[]>(`/api/decks?${queryParams.toString()}`);
+  const fetchUrl = tab === "user" && !user?.username ? null : getDecksQueryEndpoint(queryParams);
+  const { data, loading, error, refetch } = useFetch<Deck[]>(fetchUrl);
   const decks = data || [];
+
+  const handleTabChange = (targetTab: "all" | "user") => {
+    if (targetTab === "all") {
+      navigate("/decks");
+    } else {
+      navigate("/my-decks");
+    }
+  };
+
+  const handleDelete = async (deckId: number) => {
+    if (!window.confirm("Are you sure you want to delete this deck?")) return;
+    try {
+      await deleteDeck(deckId);
+      refetch();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting deck");
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <PageHeader
-        title="Public Decks"
-        description="Browse, filter, and discover community-built Yu-Gi-Oh! decks."
+        title={tab === "user" ? "My Deck Blueprints" : "Public Decks"}
+        description={
+          tab === "user"
+            ? "Manage, edit, and simulate your custom Yu-Gi-Oh! deck configurations."
+            : "Browse, filter, and discover community-built Yu-Gi-Oh! decks."
+        }
       />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <FormatSelector
-          selectedFormat={selectedFormat}
-          setSelectedFormat={(fmt) => setSelectedFormat(fmt)}
-          formats={formats}
-        />
+      {isAuthenticated && (
+        <div className="flex border-b border-border-dim mb-6">
+          <button
+            onClick={() => handleTabChange("all")}
+            className={`px-4 py-2 border-b-2 font-display text-sm font-semibold transition-colors cursor-pointer ${
+              tab === "all"
+                ? "border-cyan-accent text-cyan-accent"
+                : "border-transparent text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            All Decks
+          </button>
+          <button
+            onClick={() => handleTabChange("user")}
+            className={`px-4 py-2 border-b-2 font-display text-sm font-semibold transition-colors cursor-pointer ${
+              tab === "user"
+                ? "border-cyan-accent text-cyan-accent"
+                : "border-transparent text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            My Decks
+          </button>
+        </div>
+      )}
 
-        <Input
-          type="text"
-          placeholder="Search decks..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          icon={<Search className="w-4 h-4" />}
-          className="bg-dark-surface px-4 py-2 md:max-w-xs"
-        />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-4 flex-wrap md:flex-nowrap w-full justify-between md:justify-start">
+          <FormatSelector
+            selectedFormat={selectedFormat}
+            setSelectedFormat={(fmt) => setSelectedFormat(fmt)}
+            formats={formats}
+          />
+
+          <Input
+            type="text"
+            placeholder="Search decks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<Search className="w-4 h-4" />}
+            className="bg-dark-surface px-4 py-2 w-full md:max-w-xs"
+          />
+        </div>
+
+        {isAuthenticated && (
+          <Link
+            to="/decks/create"
+            viewTransition
+            className="flex items-center gap-2 bg-cyan-accent hover:bg-cyan-hover text-dark-bg px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 hover:-translate-y-0.5 no-underline shrink-0 self-end md:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Construct New Deck</span>
+          </Link>
+        )}
       </div>
 
       {loading ? (
@@ -94,7 +173,7 @@ export default function Decks() {
         <ErrorAlert
           title="Failed to load decks"
           message={error.message}
-          onRetry={() => window.location.reload()}
+          onRetry={() => refetch()}
         />
       ) : decks.length > 0 ? (
         <div className="space-y-4">
@@ -109,11 +188,27 @@ export default function Decks() {
                 formatName={deck.formatName}
                 cardCount={cardCount}
                 updatedAt={formatRelativeTime(deck.updatedAt)}
-                showActions={false}
+                showActions={isAuthenticated && user?.username === deck.creatorUsername}
+                onDelete={handleDelete}
               />
             );
           })}
         </div>
+      ) : tab === "user" ? (
+        <EmptyState
+          icon={Layers}
+          title="You haven't built any decks yet."
+          description="Start your first deck blueprint using the deck editor."
+        >
+          <Link
+            to="/decks/create"
+            viewTransition
+            className="flex items-center gap-2 bg-cyan-accent hover:bg-cyan-hover text-dark-bg px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer no-underline"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Construct New Deck</span>
+          </Link>
+        </EmptyState>
       ) : (
         <EmptyState
           icon={Filter}
