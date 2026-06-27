@@ -1,13 +1,30 @@
 import { Search } from "lucide-react";
-import { useCatalogSearch } from "../../context/CatalogSearchContext";
+import type { CardFiltersState } from "../../types";
 import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
 
-export default function DeckBuilderFilters() {
-  const { searchQuery, setSearchQuery, filters, setFilters, types, attributes, races, archetypes } =
-    useCatalogSearch();
+export interface DeckBuilderFiltersProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  filters: CardFiltersState;
+  setFilters: React.Dispatch<React.SetStateAction<CardFiltersState>>;
+  types: string[];
+  attributes: string[];
+  races: string[];
+  archetypes: string[];
+}
 
+export default function DeckBuilderFilters({
+  searchQuery,
+  setSearchQuery,
+  filters,
+  setFilters,
+  types,
+  attributes,
+  races,
+  archetypes,
+}: DeckBuilderFiltersProps) {
   const { type, attribute, race, archetype } = filters;
 
   const spellProperties = ["Normal", "Field", "Equip", "Continuous", "Quick-Play", "Ritual"];

@@ -29,12 +29,35 @@ function DeckBuilderContent() {
     saveDeck,
     formatName,
     setFormatName,
+    name,
     setName,
+    description,
     setDescription,
     setDeckCards,
+    validationSuccess,
+    validationErrors,
+    submitError,
+    addCard,
+    updateQuantity,
+    removeCard,
   } = useDeckStateContext();
 
-  const { searchPage, setSearchPage, totalSearchPages } = useCatalogSearch();
+  const {
+    searchPage,
+    setSearchPage,
+    totalSearchPages,
+    searchQuery,
+    setSearchQuery,
+    filters,
+    setFilters,
+    types,
+    attributes,
+    races,
+    archetypes,
+    formats,
+    libraryLoading,
+    libraryCards,
+  } = useCatalogSearch();
 
   useEffect(() => {
     if (listContainerRef.current) {
@@ -120,10 +143,24 @@ function DeckBuilderContent() {
             Card Database Library
           </h2>
 
-          <DeckBuilderFilters />
+          <DeckBuilderFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            filters={filters}
+            setFilters={setFilters}
+            types={types}
+            attributes={attributes}
+            races={races}
+            archetypes={archetypes}
+          />
 
           <div ref={listContainerRef} className="flex-1 overflow-y-auto mt-4 pr-1 min-h-0">
-            <DeckBuilderCardList />
+            <DeckBuilderCardList
+              libraryLoading={libraryLoading}
+              libraryCards={libraryCards}
+              deckCards={deckCards}
+              addCard={addCard}
+            />
           </div>
 
           <Pagination
@@ -135,15 +172,34 @@ function DeckBuilderContent() {
         </div>
 
         <div className="lg:col-span-7 space-y-6">
-          <DeckFormHeader />
+          <DeckFormHeader
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+            formatName={formatName}
+            setFormatName={setFormatName}
+            formats={formats}
+          />
 
-          <DeckValidationErrors />
+          <DeckValidationErrors
+            validationSuccess={validationSuccess}
+            validationErrors={validationErrors}
+            submitError={submitError}
+          />
 
-          <AiSuggestionsPanel />
+          <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
 
           <div className="space-y-4">
             {(["MAIN", "EXTRA", "SIDE"] as const).map((section) => (
-              <DeckSectionList key={section} section={section} />
+              <DeckSectionList
+                key={section}
+                section={section}
+                deckCards={deckCards}
+                formatName={formatName}
+                updateQuantity={updateQuantity}
+                removeCard={removeCard}
+              />
             ))}
           </div>
 

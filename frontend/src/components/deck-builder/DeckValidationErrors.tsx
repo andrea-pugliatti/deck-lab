@@ -1,9 +1,16 @@
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { useDeckStateContext } from "../../context/DeckStateContext";
 
-export default function DeckValidationErrors() {
-  const { validationSuccess, validationErrors, submitError } = useDeckStateContext();
+export interface DeckValidationErrorsProps {
+  validationSuccess: boolean;
+  validationErrors: string[];
+  submitError?: string;
+}
 
+export default function DeckValidationErrors({
+  validationSuccess,
+  validationErrors,
+  submitError,
+}: DeckValidationErrorsProps) {
   if (!validationSuccess && validationErrors.length === 0 && !submitError) {
     return null;
   }
