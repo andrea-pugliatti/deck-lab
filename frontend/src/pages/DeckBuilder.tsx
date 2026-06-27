@@ -10,7 +10,8 @@ import DeckSectionList from "../components/deck-builder/DeckSectionList";
 import DeckValidationErrors from "../components/deck-builder/DeckValidationErrors";
 import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
-import { DeckBuilderProvider, useDeckBuilder } from "../context/DeckBuilderContext";
+import { CatalogSearchProvider, useCatalogSearch } from "../context/CatalogSearchContext";
+import { DeckStateProvider, useDeckStateContext } from "../context/DeckStateContext";
 
 function DeckBuilderContent() {
   const navigate = useNavigate();
@@ -22,9 +23,6 @@ function DeckBuilderContent() {
   const {
     isEditMode,
     deckCards,
-    searchPage,
-    setSearchPage,
-    totalSearchPages,
     isValidating,
     isSaving,
     validateDeckPayload,
@@ -34,7 +32,9 @@ function DeckBuilderContent() {
     setName,
     setDescription,
     setDeckCards,
-  } = useDeckBuilder();
+  } = useDeckStateContext();
+
+  const { searchPage, setSearchPage, totalSearchPages } = useCatalogSearch();
 
   useEffect(() => {
     if (listContainerRef.current) {
@@ -50,7 +50,7 @@ function DeckBuilderContent() {
     };
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = (e: React.SubmitEvent) => {
     e.preventDefault();
     saveDeck();
   };
@@ -222,8 +222,10 @@ function DeckBuilderContent() {
 export default function DeckBuilder() {
   const { id } = useParams<{ id: string }>();
   return (
-    <DeckBuilderProvider key={id || "new"}>
-      <DeckBuilderContent />
-    </DeckBuilderProvider>
+    <DeckStateProvider key={id || "new"}>
+      <CatalogSearchProvider>
+        <DeckBuilderContent />
+      </CatalogSearchProvider>
+    </DeckStateProvider>
   );
 }

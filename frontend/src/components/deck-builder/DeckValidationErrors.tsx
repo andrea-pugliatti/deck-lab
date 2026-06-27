@@ -1,8 +1,8 @@
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import { useDeckStateContext } from "../../context/DeckStateContext";
 
 export default function DeckValidationErrors() {
-  const { validationSuccess, validationErrors, submitError } = useDeckBuilder();
+  const { validationSuccess, validationErrors, submitError } = useDeckStateContext();
 
   if (!validationSuccess && validationErrors.length === 0 && !submitError) {
     return null;

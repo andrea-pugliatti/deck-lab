@@ -1,13 +1,15 @@
 import { Layers } from "lucide-react";
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import { useCatalogSearch } from "../../context/CatalogSearchContext";
+import { useDeckStateContext } from "../../context/DeckStateContext";
 import Input from "../ui/Input";
+import Label from "../ui/Label";
 import Select from "../ui/Select";
 import Textarea from "../ui/Textarea";
-import Label from "../ui/Label";
 
 export default function DeckFormHeader() {
-  const { name, setName, description, setDescription, formatName, setFormatName, formats } =
-    useDeckBuilder();
+  const { name, setName, description, setDescription, formatName, setFormatName } =
+    useDeckStateContext();
+  const { formats } = useCatalogSearch();
 
   return (
     <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md space-y-4">

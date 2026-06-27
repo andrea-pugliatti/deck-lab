@@ -1,5 +1,6 @@
 import { apiFetch, parseResponseError } from "./api";
 import type { Deck, Suggestion } from "../types";
+import { validateDeckSections } from "./validation";
 
 export function getFormatsEndpoint(): string {
   return "/api/decks/formats";
@@ -29,6 +30,13 @@ export async function getDeck(id: string): Promise<Deck> {
 }
 
 export async function validateDeck(payload: any): Promise<{ ok: boolean; errors?: string[] }> {
+  // Local sections validation first
+  const localErrors = validateDeckSections(payload.deckCards || [], payload.formatName);
+  if (localErrors.length > 0) {
+    return { ok: false, errors: localErrors };
+  }
+
+  // API validation
   try {
     const res = await apiFetch("/api/decks/validate", {
       method: "POST",

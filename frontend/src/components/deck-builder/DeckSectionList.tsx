@@ -1,4 +1,5 @@
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import { useDeckStateContext } from "../../context/DeckStateContext";
+import { getFormatRules } from "../../services/validation";
 import type { CardSection } from "../../types";
 import EditorCardItem from "./EditorCardItem";
 
@@ -7,16 +8,18 @@ export interface DeckSectionListProps {
 }
 
 export default function DeckSectionList({ section }: DeckSectionListProps) {
-  const { deckCards, updateQuantity, removeCard } = useDeckBuilder();
+  const { deckCards, updateQuantity, removeCard, formatName } = useDeckStateContext();
 
   const cards = deckCards.filter((c) => c.section === section);
   const count = cards.reduce((acc, c) => acc + c.quantity, 0);
 
+  const rules = getFormatRules(formatName);
+
   let title = "Main Deck";
   let colorClass = "bg-cyan-accent";
-  let limitText = `${count} / 60 Cards (Min 40)`;
+  let limitText = `${count} / ${rules.maxMainSize} Cards (Min ${rules.minMainSize})`;
   let limitClass =
-    count >= 40 && count <= 60
+    count >= rules.minMainSize && count <= rules.maxMainSize
       ? "bg-cyan-accent/10 text-cyan-accent"
       : "bg-amber-500/10 text-amber-400";
   let emptyMessage = "Empty Main Deck. Add cards using the catalog search.";
@@ -24,14 +27,20 @@ export default function DeckSectionList({ section }: DeckSectionListProps) {
   if (section === "EXTRA") {
     title = "Extra Deck";
     colorClass = "bg-gold-accent";
-    limitText = `${count} / 15 Cards (Max 15)`;
-    limitClass = count <= 15 ? "bg-gold-accent/10 text-gold-accent" : "bg-red-500/10 text-red-400";
+    limitText = `${count} / ${rules.maxExtraSize} Cards (Max ${rules.maxExtraSize})`;
+    limitClass =
+      count <= rules.maxExtraSize
+        ? "bg-gold-accent/10 text-gold-accent"
+        : "bg-red-500/10 text-red-400";
     emptyMessage = "Empty Extra Deck. Extra Deck monsters (Fusion/Synchro/Xyz/Link) will go here.";
   } else if (section === "SIDE") {
     title = "Side Deck";
     colorClass = "bg-purple-400";
-    limitText = `${count} / 15 Cards (Max 15)`;
-    limitClass = count <= 15 ? "bg-purple-400/10 text-purple-400" : "bg-red-500/10 text-red-400";
+    limitText = `${count} / ${rules.maxSideSize} Cards (Max ${rules.maxSideSize})`;
+    limitClass =
+      count <= rules.maxSideSize
+        ? "bg-purple-400/10 text-purple-400"
+        : "bg-red-500/10 text-red-400";
     emptyMessage = "Empty Side Deck. Add swap options for tournament settings.";
   }
 

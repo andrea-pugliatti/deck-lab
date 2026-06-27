@@ -1,6 +1,4 @@
 import { Filter, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
 import CardFilters from "../components/card/CardFilters";
 import CardGridItem from "../components/card/CardGridItem";
 import EmptyState from "../components/EmptyState";
@@ -8,118 +6,27 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
-import { useDebounce } from "../hooks/useDebounce";
-import { useFetch } from "../hooks/useFetch";
-import type { Card, Page } from "../types";
 import Input from "../components/ui/Input";
+import { useCardMetadata } from "../hooks/useCardMetadata";
+import { useCatalogSearchState } from "../hooks/useCatalogSearchState";
 
 export default function Cards() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    searchPage: page,
+    setSearchPage: handlePageChange,
+    searchQuery,
+    setSearchQuery,
+    filters,
+    setFilters,
+    libraryCards: cards,
+    libraryLoading: loading,
+    totalSearchPages: totalPages,
+    totalElements,
+    error,
+    refetch,
+  } = useCatalogSearchState({ syncWithUrl: true, defaultPageSize: 20 });
 
-  const selectedType = searchParams.get("type") || "ALL";
-  const selectedAttribute = searchParams.get("attribute") || "ALL";
-  const selectedRace = searchParams.get("race") || "ALL";
-  const selectedArchetype = searchParams.get("archetype") || "ALL";
-  const page = parseInt(searchParams.get("page") || "0", 10);
-
-  const urlQuery = searchParams.get("q") || "";
-  const [searchQuery, setSearchQuery] = useState(urlQuery);
-  const debouncedQuery = useDebounce(searchQuery, 400);
-
-  const { data: typesData } = useFetch<string[]>("/api/cards/types");
-  const { data: attributesData } = useFetch<string[]>("/api/cards/attributes");
-  const { data: racesData } = useFetch<string[]>("/api/cards/races");
-  const { data: archetypesData } = useFetch<string[]>("/api/cards/archetypes");
-
-  const types = typesData || ["Monster", "Spell", "Trap"];
-  const attributes = attributesData || [
-    "LIGHT",
-    "DARK",
-    "FIRE",
-    "WIND",
-    "WATER",
-    "EARTH",
-    "DIVINE",
-  ];
-  const races = racesData || [];
-  const archetypes = archetypesData || [];
-
-  useEffect(() => {
-    setSearchQuery((prev) => (prev !== urlQuery ? urlQuery : prev));
-  }, [urlQuery]);
-
-  useEffect(() => {
-    const currentUrlQuery = searchParams.get("q") || "";
-    if (debouncedQuery.trim() !== currentUrlQuery.trim()) {
-      const params = new URLSearchParams(searchParams);
-      if (debouncedQuery.trim()) {
-        params.set("q", debouncedQuery.trim());
-      } else {
-        params.delete("q");
-      }
-      params.delete("page");
-      setSearchParams(params);
-    }
-  }, [debouncedQuery, searchParams, setSearchParams]);
-
-  const handleFilterChange = (newFilters: {
-    type: string;
-    attribute: string;
-    race: string;
-    archetype: string;
-  }) => {
-    const params = new URLSearchParams(searchParams);
-
-    if (newFilters.type !== "ALL") params.set("type", newFilters.type);
-    else params.delete("type");
-
-    if (newFilters.attribute !== "ALL") params.set("attribute", newFilters.attribute);
-    else params.delete("attribute");
-
-    if (newFilters.race !== "ALL") params.set("race", newFilters.race);
-    else params.delete("race");
-
-    if (newFilters.archetype !== "ALL") params.set("archetype", newFilters.archetype);
-    else params.delete("archetype");
-
-    params.delete("page");
-    setSearchParams(params);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams);
-    if (newPage > 0) {
-      params.set("page", newPage.toString());
-    } else {
-      params.delete("page");
-    }
-    setSearchParams(params);
-  };
-
-  const queryParams = new URLSearchParams();
-  if (urlQuery.trim()) {
-    queryParams.append("q", urlQuery.trim());
-  }
-  if (selectedType !== "ALL") {
-    queryParams.append("type", selectedType);
-  }
-  if (selectedAttribute !== "ALL") {
-    queryParams.append("attribute", selectedAttribute);
-  }
-  if (selectedRace !== "ALL") {
-    queryParams.append("race", selectedRace);
-  }
-  if (selectedArchetype !== "ALL") {
-    queryParams.append("archetype", selectedArchetype);
-  }
-  queryParams.append("page", page.toString());
-  queryParams.append("size", "20");
-
-  const { data, loading, error } = useFetch<Page<Card>>(`/api/cards?${queryParams.toString()}`);
-
-  const cards = data?.content || [];
-  const totalElements = data?.page?.totalElements || 0;
-  const totalPages = data?.page?.totalPages || 0;
+  const { types, attributes, races, archetypes } = useCardMetadata();
 
   const startIdx = page * 20 + 1;
   const endIdx = Math.min((page + 1) * 20, totalElements);
@@ -134,13 +41,8 @@ export default function Cards() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <aside className="lg:col-span-1 space-y-6">
           <CardFilters
-            filters={{
-              type: selectedType,
-              attribute: selectedAttribute,
-              race: selectedRace,
-              archetype: selectedArchetype,
-            }}
-            onChange={handleFilterChange}
+            filters={filters}
+            onChange={(newFilters) => setFilters(newFilters)}
             types={types}
             attributes={attributes}
             races={races}
@@ -170,7 +72,7 @@ export default function Cards() {
             <ErrorAlert
               title="Failed to load cards"
               message={error.message}
-              onRetry={() => window.location.reload()}
+              onRetry={() => refetch()}
             />
           ) : cards.length > 0 ? (
             <>

@@ -1,9 +1,11 @@
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import { useCatalogSearch } from "../../context/CatalogSearchContext";
+import { useDeckStateContext } from "../../context/DeckStateContext";
 import LoadingSpinner from "../LoadingSpinner";
 import SearchCardItem from "./SearchCardItem";
 
 export default function DeckBuilderCardList() {
-  const { libraryLoading, libraryCards, deckCards, addCard } = useDeckBuilder();
+  const { libraryLoading, libraryCards } = useCatalogSearch();
+  const { deckCards, addCard } = useDeckStateContext();
 
   if (libraryLoading && libraryCards.length === 0) {
     return <LoadingSpinner size="sm" className="py-16" />;

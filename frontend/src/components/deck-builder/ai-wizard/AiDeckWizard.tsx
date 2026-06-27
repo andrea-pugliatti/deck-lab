@@ -42,6 +42,7 @@ export default function AiDeckWizard({
   const { data: archetypesData } = useFetch<string[]>(getCardMetadataEndpoint("archetypes"));
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData || ["TCG", "OCG", "Goat", "Edison"];
+
   useEffect(() => {
     if (isOpen) {
       setLoading(false);

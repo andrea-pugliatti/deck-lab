@@ -1,12 +1,12 @@
 import { Search } from "lucide-react";
-import { useDeckBuilder } from "../../context/DeckBuilderContext";
+import { useCatalogSearch } from "../../context/CatalogSearchContext";
 import Input from "../ui/Input";
-import Select from "../ui/Select";
 import Label from "../ui/Label";
+import Select from "../ui/Select";
 
 export default function DeckBuilderFilters() {
   const { searchQuery, setSearchQuery, filters, setFilters, types, attributes, races, archetypes } =
-    useDeckBuilder();
+    useCatalogSearch();
 
   const { type, attribute, race, archetype } = filters;
 
