@@ -135,6 +135,11 @@
   dialog {
     margin: auto;
   }
+
+  html:has(dialog[open]),
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
 }
 
 @keyframes fade-in {
