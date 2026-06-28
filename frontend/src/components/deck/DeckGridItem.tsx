@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 
+import { getCardTheme } from "../../utils/card";
+
 export interface DeckGridItemProps {
   cardId: number;
   name: string;
@@ -15,18 +17,7 @@ export default function DeckGridItem({
   imageUrl,
   quantity,
 }: DeckGridItemProps) {
-  const isMonster = type?.toLowerCase().includes("monster") || false;
-  const isSpell = type?.toLowerCase().includes("spell") || false;
-  const isTrap = type?.toLowerCase().includes("trap") || false;
-
-  let badgeColor = "border-slate-500/20 text-slate-400 bg-slate-500/5";
-  if (isSpell) {
-    badgeColor = "border-emerald-500/20 text-emerald-400 bg-emerald-500/5";
-  } else if (isTrap) {
-    badgeColor = "border-rose-500/20 text-rose-400 bg-rose-500/5";
-  } else if (isMonster) {
-    badgeColor = "border-amber-500/20 text-amber-400 bg-amber-500/5";
-  }
+  const { deckBadgeColor: badgeColor } = getCardTheme(type);
 
   return (
     <Link

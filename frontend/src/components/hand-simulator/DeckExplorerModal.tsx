@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { SimulatorCardInstance } from "../../types";
+import { getCardTheme } from "../../utils/card";
 import Input from "../ui/Input";
 
 interface DeckExplorerModalProps {
@@ -91,14 +92,7 @@ export default function DeckExplorerModal({
           {filteredDeckExplorerCards.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
               {filteredDeckExplorerCards.map((card) => {
-                const isMon = card.type?.toLowerCase().includes("monster") || false;
-                const isSp = card.type?.toLowerCase().includes("spell") || false;
-                const isTr = card.type?.toLowerCase().includes("trap") || false;
-
-                let borderC = "border-slate-500/20";
-                if (isSp) borderC = "border-emerald-500/20";
-                else if (isTr) borderC = "border-rose-500/20";
-                else if (isMon) borderC = "border-amber-500/20";
+                const { borderColor: borderC } = getCardTheme(card.type);
 
                 return (
                   <div

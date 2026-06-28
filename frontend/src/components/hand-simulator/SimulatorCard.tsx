@@ -2,6 +2,7 @@ import { Move } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import type { SimulatorCardInstance } from "../../types";
+import { getCardTheme } from "../../utils/card";
 
 interface SimulatorCardProps {
   card: SimulatorCardInstance;
@@ -22,22 +23,7 @@ export default function SimulatorCard({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const isMonster = card.type?.toLowerCase().includes("monster") || false;
-  const isSpell = card.type?.toLowerCase().includes("spell") || false;
-  const isTrap = card.type?.toLowerCase().includes("trap") || false;
-
-  let glowColor = "hover:shadow-[0_0_15px_rgba(148,163,184,0.3)] hover:border-slate-500/40";
-  let borderColor = "border-slate-500/20";
-  if (isSpell) {
-    glowColor = "hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:border-emerald-500/40";
-    borderColor = "border-emerald-500/20";
-  } else if (isTrap) {
-    glowColor = "hover:shadow-[0_0_15px_rgba(244,63,94,0.3)] hover:border-rose-500/40";
-    borderColor = "border-rose-500/20";
-  } else if (isMonster) {
-    glowColor = "hover:shadow-[0_0_15px_rgba(245,158,11,0.35)] hover:border-amber-500/40";
-    borderColor = "border-amber-500/20";
-  }
+  const { borderColor, glowColor } = getCardTheme(card.type);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

@@ -12,6 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
 import { deleteDeck, getDeckEndpoint } from "../services/deck";
 import type { Deck } from "../types";
+import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
 
 export default function DeckDetail() {
@@ -67,13 +68,17 @@ export default function DeckDetail() {
   const sideCount = sideCards.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const totalCount = mainCount + extraCount + sideCount;
 
-  const mainMonsters = mainCards.filter((c) => c.type?.toLowerCase().includes("monster"));
-  const mainSpells = mainCards.filter((c) => c.type?.toLowerCase().includes("spell"));
-  const mainTraps = mainCards.filter((c) => c.type?.toLowerCase().includes("trap"));
+  const mainMonsters = mainCards.filter((c) => getCardTheme(c.type).type === "monster");
+  const mainSpells = mainCards.filter((c) => getCardTheme(c.type).type === "spell");
+  const mainTraps = mainCards.filter((c) => getCardTheme(c.type).type === "trap");
 
   const mainMonstersCount = mainMonsters.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const mainSpellsCount = mainSpells.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const mainTrapsCount = mainTraps.reduce((acc, c) => acc + (c.quantity || 0), 0);
+
+  const monsterTheme = getCardTheme("monster");
+  const spellTheme = getCardTheme("spell");
+  const trapTheme = getCardTheme("trap");
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -225,14 +230,16 @@ export default function DeckDetail() {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                        <span
+                          className={`h-2.5 w-2.5 rounded-full ${monsterTheme.barColor}`}
+                        ></span>
                         Monsters
                       </span>
                       <span className="font-semibold text-white">{mainMonstersCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className="h-full bg-amber-500"
+                        className={`h-full ${monsterTheme.barColor}`}
                         style={{ width: `${(mainMonstersCount / mainCount) * 100}%` }}
                       ></div>
                     </div>
@@ -241,14 +248,14 @@ export default function DeckDetail() {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                        <span className={`h-2.5 w-2.5 rounded-full ${spellTheme.barColor}`}></span>
                         Spells
                       </span>
                       <span className="font-semibold text-white">{mainSpellsCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className="h-full bg-emerald-500"
+                        className={`h-full ${spellTheme.barColor}`}
                         style={{ width: `${(mainSpellsCount / mainCount) * 100}%` }}
                       ></div>
                     </div>
@@ -257,14 +264,14 @@ export default function DeckDetail() {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="h-2.5 w-2.5 rounded-full bg-purple-400"></span>
+                        <span className={`h-2.5 w-2.5 rounded-full ${trapTheme.barColor}`}></span>
                         Traps
                       </span>
                       <span className="font-semibold text-white">{mainTrapsCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className="h-full bg-purple-400"
+                        className={`h-full ${trapTheme.barColor}`}
                         style={{ width: `${(mainTrapsCount / mainCount) * 100}%` }}
                       ></div>
                     </div>

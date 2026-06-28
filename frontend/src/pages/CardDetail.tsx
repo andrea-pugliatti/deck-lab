@@ -9,6 +9,7 @@ import Button from "../components/ui/Button";
 import { useFetch } from "../hooks/useFetch";
 import { getCardEndpoint } from "../services/card";
 import type { Card } from "../types";
+import { getCardTheme } from "../utils/card";
 
 export default function CardDetail() {
   const { id } = useParams<{ id: string }>();
@@ -57,18 +58,8 @@ export default function CardDetail() {
     );
   }
 
-  const isMonster = card.type?.toLowerCase().includes("monster");
-  const isSpell = card.type?.toLowerCase().includes("spell");
-  const isTrap = card.type?.toLowerCase().includes("trap");
-
-  let bgGradient = "from-slate-500/5";
-  if (isSpell) {
-    bgGradient = "from-emerald-500/5";
-  } else if (isTrap) {
-    bgGradient = "from-rose-500/5";
-  } else if (isMonster) {
-    bgGradient = "from-amber-500/5";
-  }
+  const { bgGradient, badgeVariant, type: cardThemeType } = getCardTheme(card.type);
+  const isMonster = cardThemeType === "monster";
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
@@ -122,10 +113,7 @@ export default function CardDetail() {
           <div className="flex flex-col justify-between space-y-6 md:col-span-7">
             <div>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <Badge
-                  variant={isSpell ? "spell" : isTrap ? "trap" : isMonster ? "monster" : "default"}
-                  className="rounded-full px-3 py-1 text-xs"
-                >
+                <Badge variant={badgeVariant} className="rounded-full px-3 py-1 text-xs">
                   {card.type}
                 </Badge>
 

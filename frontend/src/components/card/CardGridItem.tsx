@@ -2,6 +2,7 @@ import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
 import type { Card } from "../../types";
+import { getCardTheme } from "../../utils/card";
 
 export default function CardGridItem({
   id,
@@ -17,17 +18,7 @@ export default function CardGridItem({
   imageUrlCropped,
 }: Card) {
   const isMonster = type?.toLowerCase().includes("monster");
-  const isSpell = type?.toLowerCase().includes("spell");
-  const isTrap = type?.toLowerCase().includes("trap");
-
-  let badgeColor = "text-slate-400 bg-slate-400/10";
-  if (isSpell) {
-    badgeColor = "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
-  } else if (isTrap) {
-    badgeColor = "text-rose-400 bg-rose-400/10 border-rose-400/20";
-  } else if (isMonster) {
-    badgeColor = "text-amber-400 bg-amber-400/10 border-amber-400/20";
-  }
+  const { gridBadgeColor: badgeColor } = getCardTheme(type);
 
   return (
     <Link

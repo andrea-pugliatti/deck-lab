@@ -1,4 +1,5 @@
 import type { Card, CardSection, DeckCardItem } from "../../types";
+import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
@@ -21,10 +22,7 @@ export default function SearchCardItem({
   deckCards = [],
   addCard,
 }: SearchCardItemProps) {
-  let badgeVariant: "default" | "spell" | "trap" | "monster" = "default";
-  if (type?.toLowerCase().includes("spell")) badgeVariant = "spell";
-  else if (type?.toLowerCase().includes("trap")) badgeVariant = "trap";
-  else if (type?.toLowerCase().includes("monster")) badgeVariant = "monster";
+  const { badgeVariant } = getCardTheme(type);
 
   const containerClass =
     "flex bg-dark-surface-elevated/40 border border-border-dim rounded-xl items-center justify-between gap-3 group p-2.5 hover:border-border-glow transition-all duration-200";
