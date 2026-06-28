@@ -1,45 +1,41 @@
 import { Layers, RotateCcw, Search, Shuffle, Sparkles } from "lucide-react";
 import { useState } from "react";
 
-import type { SimulatorCardInstance } from "../../types";
+import { useHandSimulator } from "../../hooks/useHandSimulator";
+import type { Deck, SimulatorCardInstance } from "../../types";
 import Button from "../ui/Button";
 import CardInspector from "./CardInspector";
 import DeckExplorerModal from "./DeckExplorerModal";
 import SimulatorCard from "./SimulatorCard";
 
 interface SimulatorWorkspaceProps {
-  hand: SimulatorCardInstance[];
-  field: SimulatorCardInstance[];
-  graveyard: SimulatorCardInstance[];
-  banished: SimulatorCardInstance[];
-  remainingDeck: SimulatorCardInstance[];
-  onDraw: (count: number) => void;
-  onShuffle: () => void;
-  onReset: (handSize: number) => void;
-  onMoveCard: (
-    card: SimulatorCardInstance,
-    toZone: "hand" | "field" | "graveyard" | "banished" | "deck-top" | "deck-bottom",
-  ) => void;
+  deck: Deck | null;
 }
 
-export default function SimulatorWorkspace({
-  hand,
-  field,
-  graveyard,
-  banished,
-  remainingDeck,
-  onDraw,
-  onShuffle,
-  onReset,
-  onMoveCard,
-}: SimulatorWorkspaceProps) {
+export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
+  const {
+    hand,
+    field,
+    graveyard,
+    banished,
+    remainingDeck,
+    draw: onDraw,
+    shuffleDeck: onShuffle,
+    reset: onReset,
+    moveCard: onMoveCard,
+  } = useHandSimulator(deck, 5);
+
   const [handSizeConfig, setHandSizeConfig] = useState<5 | 6>(5);
   const [showDeckExplorer, setShowDeckExplorer] = useState(false);
-  const [inspectedCard, setInspectedCard] = useState<SimulatorCardInstance>(hand[0] || undefined);
+  const [inspectedCard, setInspectedCard] = useState<SimulatorCardInstance | undefined>(undefined);
+
+  const activeInspectedCard = inspectedCard || hand[0];
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-      <CardInspector inspectedCard={inspectedCard} />
+      <aside className="flex flex-col space-y-4 lg:col-span-3">
+        <CardInspector inspectedCard={activeInspectedCard} />
+      </aside>
 
       <div className="space-y-6 lg:col-span-9">
         <div className="bg-dark-surface border-border-dim flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-md md:flex-row md:items-center">

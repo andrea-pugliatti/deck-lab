@@ -1,5 +1,4 @@
 import { ArrowLeft, Calendar, Layers } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 
 import ErrorAlert from "../components/ErrorAlert";
@@ -9,30 +8,16 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/ui/Button";
 import { useFetch } from "../hooks/useFetch";
-import type { Deck, SimulatorCardInstance } from "../types";
+import { getDeckEndpoint } from "../services/deck";
+import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
-
-function shuffle<T>(array: T[]): T[] {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
 
 export default function HandSimulator() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const deckId = searchParams.get("deckId");
 
-  const [hand, setHand] = useState<SimulatorCardInstance[]>([]);
-  const [field, setField] = useState<SimulatorCardInstance[]>([]);
-  const [graveyard, setGraveyard] = useState<SimulatorCardInstance[]>([]);
-  const [banished, setBanished] = useState<SimulatorCardInstance[]>([]);
-  const [remainingDeck, setRemainingDeck] = useState<SimulatorCardInstance[]>([]);
-
-  const { data: deck, loading, error } = useFetch<Deck>(deckId ? `/api/decks/${deckId}` : null);
+  const { data: deck, loading, error } = useFetch<Deck>(deckId ? getDeckEndpoint(deckId) : null);
 
   const mainCardsCount =
     deck?.deckCards
@@ -47,90 +32,6 @@ export default function HandSimulator() {
       ?.filter((c) => c.section === "SIDE")
       .reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
   const totalCount = mainCardsCount + extraCardsCount + sideCardsCount;
-
-  const initSimulator = useCallback((targetDeck: Deck, startingHandSize: number = 5) => {
-    if (!targetDeck || !targetDeck.deckCards) return;
-
-    const flatMainCards: SimulatorCardInstance[] = [];
-    targetDeck.deckCards.forEach((dc) => {
-      if (dc.section === "MAIN" || !dc.section) {
-        for (let i = 0; i < dc.quantity; i++) {
-          flatMainCards.push({
-            ...dc,
-            uniqId: `${dc.cardId}-${i}-${Math.random().toString(36).substr(2, 9)}`,
-          });
-        }
-      }
-    });
-
-    const shuffled = shuffle(flatMainCards);
-    const initialHand = shuffled.slice(0, startingHandSize);
-    const initialDeck = shuffled.slice(startingHandSize);
-
-    setHand(initialHand);
-    setRemainingDeck(initialDeck);
-    setField([]);
-    setGraveyard([]);
-    setBanished([]);
-  }, []);
-
-  useEffect(() => {
-    if (deck) {
-      initSimulator(deck, 5);
-    }
-  }, [deck, initSimulator]);
-
-  const handleDraw = (count: number) => {
-    if (remainingDeck.length === 0) return;
-    const drawn = remainingDeck.slice(0, count);
-    const rest = remainingDeck.slice(count);
-
-    setHand((prev) => [...prev, ...drawn]);
-    setRemainingDeck(rest);
-  };
-
-  const handleShuffle = () => {
-    setRemainingDeck((prev) => shuffle(prev));
-  };
-
-  const handleReset = (startingHandSize: number) => {
-    if (deck) {
-      initSimulator(deck, startingHandSize);
-    }
-  };
-
-  const handleMoveCard = (
-    card: SimulatorCardInstance,
-    toZone: "hand" | "field" | "graveyard" | "banished" | "deck-top" | "deck-bottom",
-  ) => {
-    const filterFn = (c: SimulatorCardInstance) => c.uniqId !== card.uniqId;
-    setHand((prev) => prev.filter(filterFn));
-    setField((prev) => prev.filter(filterFn));
-    setGraveyard((prev) => prev.filter(filterFn));
-    setBanished((prev) => prev.filter(filterFn));
-    setRemainingDeck((prev) => prev.filter(filterFn));
-
-    switch (toZone) {
-      case "hand":
-        setHand((prev) => [...prev, card]);
-        break;
-      case "field":
-        setField((prev) => [...prev, card]);
-        break;
-      case "graveyard":
-        setGraveyard((prev) => [...prev, card]);
-        break;
-      case "banished":
-        setBanished((prev) => [...prev, card]);
-        break;
-      case "deck-top":
-        setRemainingDeck((prev) => [card, ...prev]);
-        break;
-      case "deck-bottom":
-        setRemainingDeck((prev) => [...prev, card]);
-        break;
-    }
-  };
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -193,17 +94,7 @@ export default function HandSimulator() {
             <ErrorAlert title="Failed to load simulator" message={error.message} />
           ) : (
             <>
-              <SimulatorWorkspace
-                hand={hand}
-                field={field}
-                graveyard={graveyard}
-                banished={banished}
-                remainingDeck={remainingDeck}
-                onDraw={handleDraw}
-                onShuffle={handleShuffle}
-                onReset={handleReset}
-                onMoveCard={handleMoveCard}
-              />
+              <SimulatorWorkspace deck={deck} />
             </>
           )}
         </div>
