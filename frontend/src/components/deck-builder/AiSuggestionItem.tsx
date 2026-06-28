@@ -2,22 +2,25 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import type { DeckCardItem, Suggestion } from "../../types";
+import { getFormatRules } from "../../services/validation";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
 export interface AiSuggestionItemProps {
   card: Suggestion;
   deckCards: DeckCardItem[];
+  formatName: string;
   onAdd: (card: Suggestion) => void;
 }
 
-export default function AiSuggestionItem({ card, deckCards, onAdd }: AiSuggestionItemProps) {
+export default function AiSuggestionItem({ card, deckCards, formatName, onAdd }: AiSuggestionItemProps) {
   const [imgError, setImgError] = useState(false);
   const countInDeck = deckCards
     .filter((c) => c.cardId === card.cardId)
     .reduce((sum, c) => sum + c.quantity, 0);
 
-  const isMaxCopies = countInDeck >= 3;
+  const rules = getFormatRules(formatName);
+  const isMaxCopies = countInDeck >= rules.maxCopiesPerCard;
 
   return (
     <div className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border-border-dim/40 hover:border-border-dim flex items-center gap-3 rounded-xl border p-3">

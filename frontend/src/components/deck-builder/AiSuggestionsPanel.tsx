@@ -119,6 +119,7 @@ export default function AiSuggestionsPanel({
               key={`${card.cardId}-${card.section}`}
               card={card}
               deckCards={deckCards}
+              formatName={formatName}
               onAdd={addSuggestedCard}
             />
           ))}
