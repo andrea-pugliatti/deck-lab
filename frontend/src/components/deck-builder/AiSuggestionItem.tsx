@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import type { DeckCardItem, Suggestion } from "../../types";
 import { getFormatRules } from "../../services/validation";
+import type { DeckCardItem, Suggestion } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
@@ -13,7 +13,12 @@ export interface AiSuggestionItemProps {
   onAdd: (card: Suggestion) => void;
 }
 
-export default function AiSuggestionItem({ card, deckCards, formatName, onAdd }: AiSuggestionItemProps) {
+export default function AiSuggestionItem({
+  card,
+  deckCards,
+  formatName,
+  onAdd,
+}: AiSuggestionItemProps) {
   const [imgError, setImgError] = useState(false);
   const countInDeck = deckCards
     .filter((c) => c.cardId === card.cardId)
