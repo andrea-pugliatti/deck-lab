@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 
 import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
-import { canAddCard, clampQuantity, getFormatRules } from "../services/validation";
 import type { Card, CardSection, Deck, DeckCardItem } from "../types";
+import { deckReducer, initialState } from "../reducers/deckReducer";
 
 const buildDeckPayload = (
   name: string,
@@ -24,18 +24,7 @@ const buildDeckPayload = (
 export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => void) {
   const isEditMode = !!id;
 
-  // Deck State
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [formatName, setFormatName] = useState("TCG");
-  const [deckCards, setDeckCards] = useState<DeckCardItem[]>([]);
-
-  // Statuses
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [validationSuccess, setValidationSuccess] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
-  const [submitError, setSubmitError] = useState<string>();
+  const [state, dispatch] = useReducer(deckReducer, initialState);
 
   // Fetch Deck for Edit Mode
   useEffect(() => {
@@ -43,11 +32,12 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
       const fetchDeck = async () => {
         try {
           const deckData = await getDeck(id);
-          setName(deckData.name);
-          setDescription(deckData.description || "");
-          setFormatName(deckData.formatName);
-          setDeckCards(
-            (deckData.deckCards || []).map((dc) => ({
+          dispatch({
+            type: "LOAD_DECK",
+            name: deckData.name,
+            description: deckData.description || "",
+            formatName: deckData.formatName,
+            deckCards: (deckData.deckCards || []).map((dc) => ({
               cardId: dc.cardId,
               name: dc.name,
               quantity: dc.quantity,
@@ -55,7 +45,7 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
               imageUrl: dc.imageUrl,
               section: dc.section || "MAIN",
             })),
-          );
+          });
         } catch (err) {
           console.error("Failed to load deck for editing:", err);
         }
@@ -64,162 +54,111 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
     }
   }, [isEditMode, id]);
 
-  // Operations
-  const addCard = useCallback(
-    (card: Card, section: CardSection) => {
-      setValidationSuccess(false);
-      setValidationErrors([]);
+  const setName = useCallback((name: string) => {
+    dispatch({ type: "SET_NAME", name });
+  }, []);
 
-      setDeckCards((prevCards) => {
-        const existingIndex = prevCards.findIndex(
-          (c) => c.cardId === card.id && c.section === section,
-        );
+  const setDescription = useCallback((description: string) => {
+    dispatch({ type: "SET_DESCRIPTION", description });
+  }, []);
 
-        if (existingIndex > -1) {
-          const updated = [...prevCards];
-          const newQty = clampQuantity(
-            card.id,
-            section,
-            updated[existingIndex].quantity + 1,
-            prevCards,
-            formatName,
-          );
-          if (newQty === updated[existingIndex].quantity) {
-            const rules = getFormatRules(formatName);
-            setValidationErrors([
-              `You cannot add more than ${rules.maxCopiesPerCard} copies of "${card.name}" across your entire deck.`,
-            ]);
-            return prevCards;
-          }
-          updated[existingIndex].quantity = newQty;
-          return updated;
-        } else {
-          const check = canAddCard(card, section, prevCards, formatName);
-          if (!check.ok) {
-            setValidationErrors([check.error || "Validation check failed."]);
-            return prevCards;
-          }
+  const setFormatName = useCallback((formatName: string) => {
+    dispatch({ type: "SET_FORMAT_NAME", formatName });
+  }, []);
 
-          return [
-            ...prevCards,
-            {
-              cardId: card.id,
-              name: card.name,
-              quantity: 1,
-              type: card.type,
-              imageUrl: card.imageUrlCropped,
-              section,
-            },
-          ];
-        }
-      });
-    },
-    [formatName],
-  );
+  const setDeckCards = useCallback((deckCards: DeckCardItem[]) => {
+    dispatch({ type: "SET_DECK_CARDS", deckCards });
+  }, []);
 
-  const updateQuantity = useCallback(
-    (cardId: number, section: CardSection, delta: number) => {
-      setValidationSuccess(false);
-      setValidationErrors([]);
+  const addCard = useCallback((card: Card, section: CardSection) => {
+    dispatch({ type: "ADD_CARD", card, section });
+  }, []);
 
-      setDeckCards((prevCards) => {
-        const targetIndex = prevCards.findIndex(
-          (c) => c.cardId === cardId && c.section === section,
-        );
-        if (targetIndex === -1) return prevCards;
-
-        const updated = [...prevCards];
-        const targetQty = updated[targetIndex].quantity + delta;
-
-        if (targetQty <= 0) {
-          updated.splice(targetIndex, 1);
-        } else {
-          updated[targetIndex].quantity = clampQuantity(
-            cardId,
-            section,
-            targetQty,
-            prevCards,
-            formatName,
-          );
-        }
-        return updated;
-      });
-    },
-    [formatName],
-  );
+  const updateQuantity = useCallback((cardId: number, section: CardSection, delta: number) => {
+    dispatch({ type: "UPDATE_QUANTITY", cardId, section, delta });
+  }, []);
 
   const removeCard = useCallback((cardId: number, section: CardSection) => {
-    setValidationSuccess(false);
-    setValidationErrors([]);
-    setDeckCards((prevCards) =>
-      prevCards.filter((c) => !(c.cardId === cardId && c.section === section)),
-    );
+    dispatch({ type: "REMOVE_CARD", cardId, section });
   }, []);
 
   const validateDeckPayload = useCallback(async (): Promise<boolean> => {
-    setIsValidating(true);
-    setValidationErrors([]);
-    setValidationSuccess(false);
-    setSubmitError(undefined);
+    dispatch({ type: "START_VALIDATION" });
 
-    const payload = buildDeckPayload(name, description, formatName, deckCards, "Draft Deck");
+    const payload = buildDeckPayload(
+      state.name,
+      state.description,
+      state.formatName,
+      state.deckCards,
+      "Draft Deck",
+    );
     const result = await validateDeck(payload);
 
-    setIsValidating(false);
     if (result.ok) {
-      setValidationSuccess(true);
+      dispatch({ type: "SET_VALIDATION_RESULT", ok: true, errors: [] });
       return true;
     } else {
-      setValidationErrors(result.errors || ["Unknown validation error"]);
+      const errors = result.errors || ["Unknown validation error"];
+      dispatch({ type: "SET_VALIDATION_RESULT", ok: false, errors });
       return false;
     }
-  }, [name, description, formatName, deckCards]);
+  }, [state.name, state.description, state.formatName, state.deckCards]);
 
   const saveDeck = useCallback(async () => {
-    if (!name.trim()) {
-      setSubmitError("Deck name is required.");
+    if (!state.name.trim()) {
+      dispatch({ type: "SET_SUBMIT_ERROR", error: "Deck name is required." });
       return;
     }
 
-    setIsSaving(true);
-    setSubmitError(undefined);
+    dispatch({ type: "START_SAVE" });
 
     const isValid = await validateDeckPayload();
     if (!isValid) {
-      setSubmitError("Please resolve validation errors before saving.");
-      setIsSaving(false);
+      dispatch({ type: "SET_SAVE_RESULT", error: "Please resolve validation errors before saving." });
       return;
     }
 
-    const payload = buildDeckPayload(name, description, formatName, deckCards);
+    const payload = buildDeckPayload(
+      state.name,
+      state.description,
+      state.formatName,
+      state.deckCards,
+    );
 
     try {
       const savedDeck = await saveDeckService(payload, id);
+      dispatch({ type: "SET_SAVE_RESULT" });
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);
       }
     } catch (err: any) {
-      setSubmitError(err.message || "An error occurred while saving the deck.");
-    } finally {
-      setIsSaving(false);
+      dispatch({ type: "SET_SAVE_RESULT", error: err.message || "An error occurred while saving the deck." });
     }
-  }, [id, name, description, formatName, deckCards, validateDeckPayload, onSaveSuccess]);
+  }, [
+    id,
+    state.name,
+    state.description,
+    state.formatName,
+    state.deckCards,
+    validateDeckPayload,
+    onSaveSuccess,
+  ]);
 
   return {
     isEditMode,
-    name,
+    name: state.name,
     setName,
-    description,
+    description: state.description,
     setDescription,
-    formatName,
+    formatName: state.formatName,
     setFormatName,
-    deckCards,
+    deckCards: state.deckCards,
     setDeckCards,
-    validationErrors,
-    validationSuccess,
-    isSaving,
-    isValidating,
-    submitError,
+    validationErrors: state.validationErrors,
+    validationSuccess: state.validationSuccess,
+    isSaving: state.isSaving,
+    isValidating: state.isValidating,
+    submitError: state.submitError,
     addCard,
     updateQuantity,
     removeCard,
