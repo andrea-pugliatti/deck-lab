@@ -12,7 +12,6 @@ export function useUrlSyncedSearch(options: UseUrlSyncedSearchOptions = {}) {
   const { defaultPageSize = 20 } = options;
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 1. Resolve state directly from URL parameters
   const urlPage = parseInt(searchParams.get("page") || "0", 10);
   const urlQuery = searchParams.get("q") || "";
   const urlFilters = useMemo(
@@ -25,7 +24,6 @@ export function useUrlSyncedSearch(options: UseUrlSyncedSearchOptions = {}) {
     [searchParams],
   );
 
-  // 2. Manage immediate search query locally to avoid input lag
   const [searchQuery, setSearchQuery] = useState(urlQuery);
   const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
 
@@ -34,7 +32,6 @@ export function useUrlSyncedSearch(options: UseUrlSyncedSearchOptions = {}) {
     setSearchQuery(urlQuery);
   }
 
-  // 3. Define state setters that modify URL parameters directly (acting as the state store)
   const setPage = (page: number) => {
     const params = new URLSearchParams(searchParams);
     if (page > 0) {
@@ -63,12 +60,10 @@ export function useUrlSyncedSearch(options: UseUrlSyncedSearchOptions = {}) {
     if (resolved.archetype !== "ALL") params.set("archetype", resolved.archetype);
     else params.delete("archetype");
 
-    params.delete("page"); // reset page on filter change
+    params.delete("page");
     setSearchParams(params);
   };
 
-  // 4. Instantiate the pure, in-memory hook under controlled mode
-  // The debounce time is 400ms for URL syncing (matching original logic)
   const searchState = useCatalogSearch({
     page: urlPage,
     setPage,
@@ -80,7 +75,6 @@ export function useUrlSyncedSearch(options: UseUrlSyncedSearchOptions = {}) {
     debounceTime: 400,
   });
 
-  // 5. Synchronize the debounced query from the pure hook back to the URL
   const { debouncedQuery } = searchState;
   useEffect(() => {
     if (debouncedQuery.trim() !== urlQuery.trim()) {

@@ -47,9 +47,16 @@ export default function DeckExplorerModal({
     );
   }, [deck, deckSearchQuery]);
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      dialogRef.current?.close();
+    }
+  };
+
   return (
     <dialog
       ref={dialogRef}
+      onClick={handleBackdropClick}
       className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">

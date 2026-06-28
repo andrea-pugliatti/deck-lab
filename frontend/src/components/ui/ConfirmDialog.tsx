@@ -88,9 +88,16 @@ export default function ConfirmDialog({
     radialAccentClass = "from-cyan-accent/5";
   }
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      dialogRef.current?.close();
+    }
+  };
+
   return (
     <dialog
       ref={dialogRef}
+      onClick={handleBackdropClick}
       className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
       <div className="bg-dark-surface border-border-dim animate-in fade-in zoom-in-95 relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl duration-200">

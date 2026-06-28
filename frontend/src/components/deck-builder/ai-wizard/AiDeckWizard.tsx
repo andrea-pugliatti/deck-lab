@@ -129,9 +129,16 @@ export default function AiDeckWizard({
     }
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      dialogRef.current?.close();
+    }
+  };
+
   return (
     <dialog
       ref={dialogRef}
+      onClick={handleBackdropClick}
       className="max-h-[90vh] w-full max-w-lg overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
