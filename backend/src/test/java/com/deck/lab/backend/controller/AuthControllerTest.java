@@ -105,7 +105,7 @@ public class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{}")
                                 .accept(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
 
                 String token = jwtService.generateToken(testUser.getEmail());
 
@@ -301,4 +301,22 @@ public class AuthControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isForbidden());
         }
+
+        @Test
+        void testExpiredTokenRefreshRejection() throws Exception {
 }
+                expiredToken.setUser(testUser);
+                expiredToken.setToken("expired-dummy-token");
+                expiredToken.setExpiryDate(java.time.Instant.now().minus(1, java.time.temporal.ChronoUnit.HOURS));
+                expiredToken.setRevoked(false);
+                refreshTokenRepository.save(expiredToken);
+
+                mockMvc.perform(post("/api/auth/refresh")
+                                .cookie(new Cookie("refreshToken", "expired-dummy-token"))
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isForbidden());
+
+}
+        }
+}
+
