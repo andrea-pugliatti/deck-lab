@@ -304,7 +304,7 @@ public class AuthControllerTest {
 
         @Test
         void testExpiredTokenRefreshRejection() throws Exception {
-}
+                RefreshToken expiredToken = new RefreshToken();
                 expiredToken.setUser(testUser);
                 expiredToken.setToken("expired-dummy-token");
                 expiredToken.setExpiryDate(java.time.Instant.now().minus(1, java.time.temporal.ChronoUnit.HOURS));
@@ -316,7 +316,7 @@ public class AuthControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isForbidden());
 
-}
+                assertTrue(refreshTokenRepository.findByToken("expired-dummy-token").isEmpty());
         }
 }
 
