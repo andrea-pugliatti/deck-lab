@@ -1,4 +1,3 @@
-import { FlaskConical } from "lucide-react";
 import { Link, Outlet } from "react-router";
 
 export default function AuthLayout() {
@@ -7,8 +6,8 @@ export default function AuthLayout() {
       <div className="max-w-md w-full flex flex-col items-center">
         {/* Brand Header */}
         <Link to="/" className="flex items-center gap-2 no-underline text-white mb-8">
-          <FlaskConical className="w-8 h-8 text-gold-accent drop-shadow-[0_0_4px_rgba(212,175,55,0.25)]" />
-          <span className="font-display text-3xl font-bold tracking-widest text-gold-accent">
+          <img src="/logo.webp" className="w-20 h-20 rounded-full" alt="DeckLab Logo" />
+          <span className="font-display text-4xl font-bold tracking-widest text-gold-accent">
             DECKLAB
           </span>
         </Link>

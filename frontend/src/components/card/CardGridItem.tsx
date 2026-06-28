@@ -15,9 +15,9 @@ export default function CardGridItem({
   level,
   imageUrlCropped,
 }: Card) {
-  const isMonster = type.toLowerCase().includes("monster");
-  const isSpell = type.toLowerCase().includes("spell");
-  const isTrap = type.toLowerCase().includes("trap");
+  const isMonster = type?.toLowerCase().includes("monster");
+  const isSpell = type?.toLowerCase().includes("spell");
+  const isTrap = type?.toLowerCase().includes("trap");
 
   let badgeColor = "text-slate-400 bg-slate-400/10";
   if (isSpell) {
@@ -32,14 +32,14 @@ export default function CardGridItem({
     <Link
       to={`/cards/${id}`}
       viewTransition
-      className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-border-glow hover:shadow-md group no-underline text-inherit"
+      className="bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 hover-hologram rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-cyan-accent/50 hover:shadow-[0_4px_25px_rgba(95,227,217,0.08)] group no-underline text-inherit"
     >
       <div className="relative aspect-video bg-dark-surface-elevated flex items-center justify-center border-b border-border-dim overflow-hidden">
         {imageUrlCropped ? (
           <img
             src={`/api/${imageUrlCropped}`}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transition-transform duration-500"
           />
         ) : (
           <>

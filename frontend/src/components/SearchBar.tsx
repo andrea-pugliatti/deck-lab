@@ -88,16 +88,16 @@ export default function SearchBar() {
     <div className="w-full max-w-2xl mx-auto relative z-10" ref={dropdownRef}>
       <form
         onSubmit={handleSubmit}
-        className="group relative flex items-center bg-dark-surface border border-border-dim rounded-lg px-5 transition-all duration-300 shadow-md hover:border-border-glow focus-within:border-cyan-accent focus-within:ring-4 focus-within:ring-cyan-accent/15 focus-within:bg-dark-surface-elevated"
+        className="group relative flex items-center bg-dark-surface/60 backdrop-blur-md border border-border-dim/80 rounded-xl px-5 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:border-cyan-accent/50 focus-within:border-cyan-accent focus-within:ring-4 focus-within:ring-cyan-accent/10 focus-within:bg-dark-surface-elevated"
       >
-        <Search className="w-5 h-5 text-text-muted shrink-0 mr-3 transition-colors duration-200 group-focus-within:text-cyan-accent" />
+        <Search className="w-5 h-5 text-slate-400 shrink-0 mr-3 transition-colors duration-200 group-focus-within:text-cyan-accent" />
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
-          className="w-full h-13 bg-transparent border-none outline-none text-white font-sans text-base placeholder-text-muted"
+          className="w-full h-13 bg-transparent border-none outline-none text-white font-sans text-base placeholder-slate-500"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
         />
@@ -134,15 +134,15 @@ export default function SearchBar() {
         </div>
       )}
 
-      <div className="flex gap-3 items-center justify-center mt-5 flex-wrap">
-        <span className="text-[10px] text-text-muted uppercase tracking-widest font-semibold">
+      <div className="flex gap-2.5 items-center justify-center mt-5 flex-wrap">
+        <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mr-1">
           Trending:
         </span>
         {staticSuggestions.map((item) => (
           <Link
             key={item}
             to={`/cards?q=${encodeURIComponent(item)}`}
-            className="bg-dark-surface border border-border-dim text-text-secondary px-3 py-1 rounded-full text-xs no-underline transition-all duration-200 hover:border-cyan-accent hover:text-cyan-hover hover:bg-dark-surface-elevated cursor-pointer"
+            className="bg-dark-surface-elevated/40 backdrop-blur-sm border border-border-dim/60 text-slate-300 px-3.5 py-1.5 rounded-full text-xs no-underline transition-all duration-200 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 hover:scale-105 shadow-sm hover:shadow-cyan-950/20 cursor-pointer"
           >
             {item}
           </Link>

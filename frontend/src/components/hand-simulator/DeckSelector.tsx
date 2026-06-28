@@ -1,13 +1,12 @@
-import { BookOpen, Layers, Search, User } from "lucide-react";
+import { BookOpen, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useFetch } from "../../hooks/useFetch";
 import { getDecksEndpoint, getFormatsEndpoint } from "../../services/deck";
 import type { Deck } from "../../types";
+import DeckCard from "../deck/DeckCard";
 import ErrorAlert from "../ErrorAlert";
 import LoadingSpinner from "../LoadingSpinner";
-import Badge from "../ui/Badge";
-import Button from "../ui/Button";
 import Input from "../ui/Input";
 
 interface DeckSelectorProps {
@@ -138,47 +137,17 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
           {filteredDecks.map((deck) => {
             const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
             return (
-              <div
+              <DeckCard
                 key={deck.id}
-                className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated border border-border-dim hover:border-gold-accent/40 rounded-xl p-5 flex flex-col justify-between gap-4 transition-all duration-200 group"
-              >
-                <div>
-                  <div className="flex justify-between items-start gap-2 mb-2">
-                    <h3 className="font-display text-base font-bold text-white group-hover:text-gold-accent transition-colors line-clamp-1">
-                      {deck.name}
-                    </h3>
-                    <Badge
-                      variant={deck.formatName.toLowerCase().includes("tcg") ? "cyan" : "gold"}
-                    >
-                      {deck.formatName}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-slate-400 line-clamp-2 min-h-8 mb-3 leading-relaxed">
-                    {deck.description || "No description provided."}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between border-t border-border-dim/40 pt-3 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
-                  <div className="flex gap-4">
-                    <span className="flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5" />
-                      {cardCount} Cards
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <User className="w-3.5 h-3.5" />
-                      {deck.creatorUsername || "Community"}
-                    </span>
-                  </div>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => onSelect(deck.id)}
-                    className="font-bold uppercase tracking-wider text-[9px] px-3.5 py-1.5 rounded-lg group-hover:shadow-[0_0_12px_rgba(226,197,111,0.25)] transition-all"
-                  >
-                    Select
-                  </Button>
-                </div>
-              </div>
+                id={deck.id}
+                name={deck.name}
+                description={deck.description}
+                formatName={deck.formatName}
+                cardCount={cardCount}
+                updatedAt={deck.updatedAt}
+                creatorUsername={deck.creatorUsername}
+                onSelect={onSelect}
+              />
             );
           })}
         </div>

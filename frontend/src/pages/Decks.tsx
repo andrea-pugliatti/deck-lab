@@ -1,7 +1,7 @@
 import { Filter, Layers, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import DeckListItem from "../components/deck/DeckListItem";
+import DeckCard from "../components/deck/DeckCard";
 import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
@@ -14,7 +14,6 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 import { deleteDeck, getDecksQueryEndpoint, getFormatsEndpoint } from "../services/deck";
 import type { Deck } from "../types";
-import { formatRelativeTime } from "../utils/date";
 
 export interface DecksProps {
   initialTab?: "all" | "user";
@@ -135,7 +134,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           <Link
             to="/decks/create"
             viewTransition
-            className="flex items-center gap-2 bg-cyan-accent hover:bg-cyan-hover text-dark-bg px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 hover:-translate-y-0.5 no-underline shrink-0 self-end md:self-auto"
+            className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 no-underline shrink-0 self-end md:self-auto"
           >
             <Plus className="w-4 h-4" />
             <span>Construct New Deck</span>
@@ -164,18 +163,19 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           onRetry={() => refetch()}
         />
       ) : decks.length > 0 ? (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {decks.map((deck) => {
             const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
             return (
-              <DeckListItem
+              <DeckCard
                 key={deck.id}
                 id={deck.id}
                 name={deck.name}
                 description={deck.description}
                 formatName={deck.formatName}
                 cardCount={cardCount}
-                updatedAt={formatRelativeTime(deck.updatedAt)}
+                updatedAt={deck.updatedAt}
+                creatorUsername={deck.creatorUsername}
                 showActions={isAuthenticated && user?.username === deck.creatorUsername}
                 onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
               />
@@ -191,7 +191,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           <Link
             to="/decks/create"
             viewTransition
-            className="flex items-center gap-2 bg-cyan-accent hover:bg-cyan-hover text-dark-bg px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer no-underline"
+            className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 no-underline shrink-0 self-end md:self-auto"
           >
             <Plus className="w-4 h-4" />
             <span>Construct New Deck</span>

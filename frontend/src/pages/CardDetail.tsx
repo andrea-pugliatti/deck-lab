@@ -7,10 +7,35 @@ import Button from "../components/ui/Button";
 import { useFetch } from "../hooks/useFetch";
 import { getCardEndpoint } from "../services/card";
 import type { Card } from "../types";
+import { useRef, useState, type MouseEvent } from "react";
 
 export default function CardDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+
+    const rX = -(mouseY / (height / 2)) * 12;
+    const rY = (mouseX / (width / 2)) * 12;
+
+    setRotateX(rX);
+    setRotateY(rY);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
 
   const { data: card, loading, error } = useFetch<Card>(id ? getCardEndpoint(id) : null);
 
@@ -31,9 +56,9 @@ export default function CardDetail() {
     );
   }
 
-  const isMonster = card.type.toLowerCase().includes("monster");
-  const isSpell = card.type.toLowerCase().includes("spell");
-  const isTrap = card.type.toLowerCase().includes("trap");
+  const isMonster = card.type?.toLowerCase().includes("monster");
+  const isSpell = card.type?.toLowerCase().includes("spell");
+  const isTrap = card.type?.toLowerCase().includes("trap");
 
   let bgGradient = "from-slate-500/5";
   if (isSpell) {
@@ -59,13 +84,27 @@ export default function CardDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 bg-dark-surface border border-border-dim rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
           {/* Card Artwork */}
-          <div className="md:col-span-5 flex flex-col items-center">
-            <div className="relative w-full max-w-sm aspect-244/356 bg-dark-surface-elevated rounded-xl border border-border-dim shadow-2xl overflow-hidden group">
+          <div
+            className="md:col-span-5 flex flex-col items-center"
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              perspective: "1000px",
+            }}
+          >
+            <div
+              className="relative w-full max-w-sm aspect-244/356 bg-dark-surface-elevated rounded-xl border border-border-dim shadow-2xl overflow-hidden group transition-transform duration-300 ease-out"
+              style={{
+                transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+                transformStyle: "preserve-3d",
+              }}
+            >
               {card.imageUrl ? (
                 <img
                   src={`/api/${card.imageUrl}`}
                   alt={card.name}
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-slate-600 p-6 text-center">
@@ -93,7 +132,7 @@ export default function CardDetail() {
                   {card.attribute && (
                     <Badge
                       variant="default"
-                      className="text-xs font-semibold text-white px-2.5 py-1 rounded-md"
+                      className="font-semibold text-white px-2.5 py-1 rounded-md"
                     >
                       {card.attribute}
                     </Badge>
@@ -146,20 +185,21 @@ export default function CardDetail() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="bg-dark-surface-elevated border border-border-dim rounded-xl p-4 flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 text-blue-500 rounded-lg">
-                      <Shield className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-[10px] text-slate-500 uppercase font-semibold">
-                        Defense
+                  {!card.linkVal && (
+                    <div className="bg-dark-surface-elevated border border-border-dim rounded-xl p-4 flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 text-blue-500 rounded-lg">
+                        <Shield className="w-5 h-5" />
                       </div>
-                      <div className="text-lg font-bold text-white">
-                        {card.def === -1 ? "?" : card.def}
+                      <div>
+                        <div className="text-[10px] text-slate-500 uppercase font-semibold">
+                          Defense
+                        </div>
+                        <div className="text-lg font-bold text-white">
+                          {card.def === -1 ? "?" : card.def}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 

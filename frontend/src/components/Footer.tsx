@@ -1,5 +1,11 @@
-import { FlaskConical } from "lucide-react";
 import { Link } from "react-router";
+
+const NAV_LINKS = [
+  { to: "/", label: "Home", end: true },
+  { to: "/decks", label: "Public Decks" },
+  { to: "/cards", label: "Card Database" },
+  { to: "/simulator", label: "Hand Simulator" },
+];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -8,12 +14,12 @@ export default function Footer() {
     <footer className="bg-dark-surface/30 border-t border-border-dim text-slate-500 py-12 mt-16">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div className="md:col-span-2">
-          <a href="/" className="flex items-center gap-2 no-underline text-white mb-4">
-            <FlaskConical className="w-5 h-5 text-gold-accent drop-shadow-[0_0_4px_rgba(212,175,55,0.25)]" />
-            <span className="font-display text-xl font-bold tracking-widest text-gold-accent">
+          <Link to="/" className="flex items-center gap-2 no-underline text-white mb-4">
+            <img src="/logo.webp" className="w-20 h-20 rounded-full" alt="DeckLab Logo" />
+            <span className="font-display text-4xl font-bold tracking-widest text-gold-accent">
               DECKLAB
             </span>
-          </a>
+          </Link>
           <p className="text-sm text-slate-400 max-w-sm">
             Construct, analyze, and simulate Yu-Gi-Oh! decks with advanced analytics and
             state-of-the-art dueling simulator. Built by duelists, for duelists.
@@ -25,42 +31,17 @@ export default function Footer() {
             Navigation
           </h4>
           <ul className="space-y-2 list-none p-0 text-sm">
-            <li>
-              <Link
-                to="/"
-                viewTransition
-                className="hover:text-cyan-hover transition-colors duration-200"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/decks"
-                viewTransition
-                className="hover:text-cyan-hover transition-colors duration-200"
-              >
-                Decks
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/cards"
-                viewTransition
-                className="hover:text-cyan-hover transition-colors duration-200"
-              >
-                Cards
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/simulator"
-                viewTransition
-                className="hover:text-cyan-hover transition-colors duration-200"
-              >
-                Hand Simulator
-              </Link>
-            </li>
+            {NAV_LINKS.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  className="hover:text-cyan-hover transition-colors duration-200"
+                  viewTransition
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

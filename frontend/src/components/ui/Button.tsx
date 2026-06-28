@@ -27,7 +27,7 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   let variantStyles = "";
   if (variant === "primary") {
     variantStyles =
-      "bg-gold-accent hover:bg-gold-hover text-dark-bg shadow-md hover:-translate-y-0.5";
+      "bg-gold-accent hover:bg-gold-hover text-dark-bg shadow-md hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)]";
   } else if (variant === "outline") {
     variantStyles =
       "border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent bg-dark-surface-elevated";

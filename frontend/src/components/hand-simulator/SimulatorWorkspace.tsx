@@ -191,7 +191,7 @@ export default function SimulatorWorkspace({
               </div>
 
               {graveyard.length > 0 ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-55 overflow-y-auto pr-1">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 pr-1">
                   {graveyard.map((card) => (
                     <SimulatorCard
                       key={card.uniqId}
