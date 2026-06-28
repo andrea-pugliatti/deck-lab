@@ -18,25 +18,25 @@ export default function DeckValidationErrors({
   return (
     <div className="animate-fade-in">
       {validationSuccess && (
-        <div className="bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 p-4 flex items-start gap-2.5 text-xs rounded-xl shadow-md">
-          <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
+        <div className="flex items-start gap-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4 text-xs text-emerald-400 shadow-md">
+          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
           <div>
-            <span className="font-bold block mb-0.5">Deck is Valid!</span>
+            <span className="mb-0.5 block font-bold">Deck is Valid!</span>
             Your deck list complies with all format limits and rules.
           </div>
         </div>
       )}
 
       {(validationErrors.length > 0 || submitError) && (
-        <div className="bg-red-950/20 border border-red-500/30 text-red-400 p-4 space-y-2 text-xs rounded-xl shadow-md">
+        <div className="space-y-2 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-xs text-red-400 shadow-md">
           <div className="flex items-start gap-2.5">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-red-400 mt-0.5" />
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
             <div>
-              <span className="font-bold block mb-0.5">Deck Validation Failed</span>
+              <span className="mb-0.5 block font-bold">Deck Validation Failed</span>
               Please fix the following problems:
             </div>
           </div>
-          <ul className="list-disc pl-8 space-y-1 mt-1 font-light">
+          <ul className="mt-1 list-disc space-y-1 pl-8 font-light">
             {submitError && <li className="font-semibold">{submitError}</li>}
             {validationErrors.map((err, idx) => (
               <li key={idx}>{err}</li>

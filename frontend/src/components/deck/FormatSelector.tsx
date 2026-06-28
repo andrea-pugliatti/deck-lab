@@ -10,12 +10,12 @@ export default function FormatSelector({
   formats,
 }: FormatSelectorProps) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex flex-wrap gap-2">
       {formats.map((format) => (
         <button
           key={format}
           onClick={() => setSelectedFormat(format)}
-          className={`px-4 py-2 rounded text-xs font-semibold uppercase tracking-wider border cursor-pointer transition-all duration-200 ${
+          className={`cursor-pointer rounded border px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
             selectedFormat === format
               ? "bg-cyan-accent/10 border-cyan-accent text-cyan-accent"
               : "bg-dark-surface border-border-dim text-slate-400 hover:border-slate-500 hover:text-slate-200"

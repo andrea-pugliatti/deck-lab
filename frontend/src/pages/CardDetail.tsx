@@ -1,5 +1,7 @@
 import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
+import { useRef, useState, type MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router";
+
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Badge from "../components/ui/Badge";
@@ -7,7 +9,6 @@ import Button from "../components/ui/Button";
 import { useFetch } from "../hooks/useFetch";
 import { getCardEndpoint } from "../services/card";
 import type { Card } from "../types";
-import { useRef, useState, type MouseEvent } from "react";
 
 export default function CardDetail() {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +46,7 @@ export default function CardDetail() {
 
   if (error || !card) {
     return (
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-3xl px-6 py-12">
         <ErrorAlert
           title="Failed to load card details"
           message={error?.message || "Card not found"}
@@ -71,21 +72,21 @@ export default function CardDetail() {
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-6xl px-6 py-12">
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
-          className="mb-8 group text-slate-400 font-normal px-2.5 py-1"
+          className="group mb-8 px-2.5 py-1 font-normal text-slate-400"
           type="button"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           <span>Back</span>
         </Button>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 bg-dark-surface border border-border-dim rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm">
+        <div className="bg-dark-surface border-border-dim grid grid-cols-1 gap-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm md:grid-cols-12 md:p-10">
           {/* Card Artwork */}
           <div
-            className="md:col-span-5 flex flex-col items-center"
+            className="flex flex-col items-center md:col-span-5"
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -94,7 +95,7 @@ export default function CardDetail() {
             }}
           >
             <div
-              className="relative w-full max-w-sm aspect-244/356 bg-dark-surface-elevated rounded-xl border border-border-dim shadow-2xl overflow-hidden group transition-transform duration-300 ease-out"
+              className="bg-dark-surface-elevated border-border-dim group relative aspect-244/356 w-full max-w-sm overflow-hidden rounded-xl border shadow-2xl transition-transform duration-300 ease-out"
               style={{
                 transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
                 transformStyle: "preserve-3d",
@@ -104,11 +105,11 @@ export default function CardDetail() {
                 <img
                   src={`/api/${card.imageUrl}`}
                   alt={card.name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-slate-600 p-6 text-center">
-                  <span className="font-display text-lg font-bold uppercase tracking-widest mb-2">
+                <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center text-slate-600">
+                  <span className="font-display mb-2 text-lg font-bold tracking-widest uppercase">
                     [ No Artwork ]
                   </span>
                   <span className="text-xs text-slate-500">{card.archetype || card.race}</span>
@@ -118,9 +119,9 @@ export default function CardDetail() {
           </div>
 
           {/* Card Details */}
-          <div className="md:col-span-7 flex flex-col justify-between space-y-6">
+          <div className="flex flex-col justify-between space-y-6 md:col-span-7">
             <div>
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <Badge
                   variant={isSpell ? "spell" : isTrap ? "trap" : isMonster ? "monster" : "default"}
                   className="rounded-full px-3 py-1 text-xs"
@@ -132,7 +133,7 @@ export default function CardDetail() {
                   {card.attribute && (
                     <Badge
                       variant="default"
-                      className="font-semibold text-white px-2.5 py-1 rounded-md"
+                      className="rounded-md px-2.5 py-1 font-semibold text-white"
                     >
                       {card.attribute}
                     </Badge>
@@ -140,16 +141,16 @@ export default function CardDetail() {
                   {isMonster && card.level && (
                     <Badge
                       variant="gold"
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-md"
+                      className="flex items-center gap-1 rounded-md px-2.5 py-1"
                     >
-                      <Star className="w-3.5 h-3.5 fill-current" />
+                      <Star className="h-3.5 w-3.5 fill-current" />
                       <span className="text-xs font-bold">Level {card.level}</span>
                     </Badge>
                   )}
                   {isMonster && card.linkVal && (
                     <Badge
                       variant="cyan"
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold"
+                      className="flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-bold"
                     >
                       LINK-{card.linkVal}
                     </Badge>
@@ -157,7 +158,7 @@ export default function CardDetail() {
                   {isMonster && card.scale !== undefined && card.scale !== null && (
                     <Badge
                       variant="purple"
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold"
+                      className="flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-bold"
                     >
                       Scale {card.scale}
                     </Badge>
@@ -165,19 +166,19 @@ export default function CardDetail() {
                 </div>
               </div>
 
-              <h1 className="font-display text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
+              <h1 className="font-display mb-6 text-3xl leading-tight font-black text-white md:text-4xl">
                 {card.name}
               </h1>
 
               {/* Monster Stats Grid */}
               {isMonster && (card.atk !== undefined || card.def !== undefined) && (
-                <div className="grid grid-cols-2 gap-4 max-w-sm mb-6">
-                  <div className="bg-dark-surface-elevated border border-border-dim rounded-xl p-4 flex items-center gap-3">
-                    <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg">
-                      <Flame className="w-5 h-5 fill-current" />
+                <div className="mb-6 grid max-w-sm grid-cols-2 gap-4">
+                  <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
+                    <div className="rounded-lg bg-amber-500/10 p-2 text-amber-500">
+                      <Flame className="h-5 w-5 fill-current" />
                     </div>
                     <div>
-                      <div className="text-[10px] text-slate-500 uppercase font-semibold">
+                      <div className="text-[10px] font-semibold text-slate-500 uppercase">
                         Attack
                       </div>
                       <div className="text-lg font-bold text-white">
@@ -186,12 +187,12 @@ export default function CardDetail() {
                     </div>
                   </div>
                   {!card.linkVal && (
-                    <div className="bg-dark-surface-elevated border border-border-dim rounded-xl p-4 flex items-center gap-3">
-                      <div className="p-2 bg-blue-500/10 text-blue-500 rounded-lg">
-                        <Shield className="w-5 h-5" />
+                    <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
+                      <div className="rounded-lg bg-blue-500/10 p-2 text-blue-500">
+                        <Shield className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="text-[10px] text-slate-500 uppercase font-semibold">
+                        <div className="text-[10px] font-semibold text-slate-500 uppercase">
                           Defense
                         </div>
                         <div className="text-lg font-bold text-white">
@@ -204,39 +205,39 @@ export default function CardDetail() {
               )}
 
               {/* Classification Info */}
-              <div className="bg-dark-surface-elevated border border-border-dim rounded-xl p-5 mb-6 space-y-3">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-dark-surface-elevated border-border-dim mb-6 space-y-3 rounded-xl border p-5">
+                <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
                   {card.race && (
                     <div>
-                      <span className="text-slate-500 block text-xs uppercase font-medium mb-0.5">
+                      <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
                         Race / Class
                       </span>
-                      <span className="text-slate-200 font-semibold">{card.race}</span>
+                      <span className="font-semibold text-slate-200">{card.race}</span>
                     </div>
                   )}
                   {card.archetype && (
                     <div>
-                      <span className="text-slate-500 block text-xs uppercase font-medium mb-0.5">
+                      <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
                         Archetype
                       </span>
-                      <span className="text-slate-200 font-semibold">{card.archetype}</span>
+                      <span className="font-semibold text-slate-200">{card.archetype}</span>
                     </div>
                   )}
                   <div>
-                    <span className="text-slate-500 block text-xs uppercase font-medium mb-0.5">
+                    <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
                       Card ID
                     </span>
-                    <span className="text-slate-400 font-mono text-xs">{card.id}</span>
+                    <span className="font-mono text-xs text-slate-400">{card.id}</span>
                   </div>
                 </div>
               </div>
 
               {/* Effect Text */}
               <div>
-                <h3 className="text-sm text-slate-400 uppercase font-bold tracking-wider mb-2">
+                <h3 className="mb-2 text-sm font-bold tracking-wider text-slate-400 uppercase">
                   Card Text / Effect
                 </h3>
-                <div className="bg-dark-surface-elevated/40 border border-border-dim/60 rounded-xl p-6 text-slate-200 text-sm leading-relaxed whitespace-pre-line font-sans font-light">
+                <div className="bg-dark-surface-elevated/40 border-border-dim/60 rounded-xl border p-6 font-sans text-sm leading-relaxed font-light whitespace-pre-line text-slate-200">
                   {card.description || "No description text available."}
                 </div>
               </div>

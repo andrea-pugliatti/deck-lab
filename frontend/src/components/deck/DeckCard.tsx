@@ -1,5 +1,6 @@
 import { Calendar, Edit, Layers, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
+
 import { formatRelativeTime } from "../../utils/date";
 import Badge from "../ui/Badge";
 import Button, { getButtonClasses } from "../ui/Button";
@@ -33,31 +34,31 @@ export default function DeckCard({
   const cardContent = (
     <>
       <div className="mb-4">
-        <div className="flex justify-between items-center mb-3">
+        <div className="mb-3 flex items-center justify-between">
           <Badge variant={formatName.toLowerCase().includes("tcg") ? "cyan" : "gold"}>
             {formatName}
           </Badge>
-          <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+          <span className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
             by {creatorUsername || "Community"}
           </span>
         </div>
-        <h3 className="font-display text-lg font-bold text-white leading-snug group-hover:text-cyan-accent transition-colors duration-200 line-clamp-1 mb-2">
+        <h3 className="font-display group-hover:text-cyan-accent mb-2 line-clamp-1 text-lg leading-snug font-bold text-white transition-colors duration-200">
           {name}
         </h3>
-        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+        <p className="line-clamp-2 text-xs leading-relaxed text-slate-400">
           {description || "No description provided."}
         </p>
       </div>
 
-      <div className="flex justify-between items-center pt-4 border-t border-border-dim/60 mt-auto gap-4">
+      <div className="border-border-dim/60 mt-auto flex items-center justify-between gap-4 border-t pt-4">
         <div className="flex gap-4 text-xs text-slate-400">
           <span className="flex items-center gap-1.5 font-medium">
-            <Layers className="w-3.5 h-3.5 text-cyan-accent" />
+            <Layers className="text-cyan-accent h-3.5 w-3.5" />
             {cardCount} Cards
           </span>
           {updatedAt && (
             <span className="flex items-center gap-1.5 text-slate-500">
-              <Calendar className="w-3.5 h-3.5" />
+              <Calendar className="h-3.5 w-3.5" />
               {formatRelativeTime(updatedAt)}
             </span>
           )}
@@ -72,7 +73,7 @@ export default function DeckCard({
               e.preventDefault();
               onSelect(id);
             }}
-            className="font-bold uppercase tracking-wider text-[9px] px-3.5 py-1.5 rounded-lg group-hover:shadow-[0_0_12px_rgba(226,197,111,0.25)] transition-all"
+            className="rounded-lg px-3.5 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all group-hover:shadow-[0_0_12px_rgba(226,197,111,0.25)]"
           >
             Select
           </Button>
@@ -88,7 +89,7 @@ export default function DeckCard({
                 }}
                 title="Edit Deck"
               >
-                <Edit className="w-4 h-4" />
+                <Edit className="h-4 w-4" />
               </Link>
               <Button
                 variant="outline-red"
@@ -100,7 +101,7 @@ export default function DeckCard({
                 }}
                 title="Delete Deck"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           )

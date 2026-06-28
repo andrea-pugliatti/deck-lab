@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "semi": true,
+  "printWidth": 100,
   "singleQuote": false,
-  "ignorePatterns": ["dist/"]
+  "trailingComma": "all",
+  "sortImports": {},
+  "sortPackageJson": true,
+  "sortTailwindcss": {},
+  "ignorePatterns": ["dist/", "node_modules/**"]
 }

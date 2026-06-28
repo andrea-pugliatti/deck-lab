@@ -1,5 +1,6 @@
 import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
+
 import CardGridItem from "../components/card/CardGridItem";
 import DeckCard from "../components/deck/DeckCard";
 import HeroCardShowcase from "../components/HeroCardShowcase";
@@ -33,20 +34,20 @@ export default function Home() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="relative bg-dark-bg py-12 sm:py-20 lg:py-24 border-b border-b-border-dim/20">
-        <div className="absolute top-[8%] left-[70%] -translate-x-1/2 w-150 h-150 bg-cyan-accent/5 rounded-full blur-[130px] opacity-75 animate-pulse-glow pointer-events-none"></div>
-        <div className="absolute top-[18%] left-[15%] w-100 h-100 bg-gold-accent/10 rounded-full blur-[110px] opacity-50 pointer-events-none"></div>
+      <section className="bg-dark-bg border-b-border-dim/20 relative border-b py-12 sm:py-20 lg:py-24">
+        <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-[8%] left-[70%] h-150 w-150 -translate-x-1/2 rounded-full opacity-75 blur-[130px]"></div>
+        <div className="bg-gold-accent/10 pointer-events-none absolute top-[18%] left-[15%] h-100 w-100 rounded-full opacity-50 blur-[110px]"></div>
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center">
-            <div className="lg:col-span-7 flex flex-col text-left items-start order-2 lg:order-1">
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-wide text-white">
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
+            <div className="order-2 flex flex-col items-start text-left lg:order-1 lg:col-span-7">
+              <h1 className="font-display text-4xl leading-tight font-black tracking-wide text-white sm:text-5xl lg:text-6xl">
                 Step Into Your{" "}
               </h1>
-              <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-wide bg-clip-text text-transparent bg-linear-to-r  from-cyan-accent to-gold-accent bg-300% drop-shadow-[0_0_15px_rgba(95,227,217,0.15)]">
+              <h1 className="font-display from-cyan-accent to-gold-accent bg-300% mb-6 bg-linear-to-r bg-clip-text text-6xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] sm:text-7xl lg:text-8xl">
                 Deck Lab
               </h1>
-              <p className="text-base sm:text-lg text-slate-400 max-w-xl mb-10 font-light leading-relaxed">
+              <p className="mb-10 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">
                 Construct, analyze, and simulate Yu-Gi-Oh! decks with advanced statistics, real-time
                 archetype analysis, and community-driven insights.
               </p>
@@ -56,60 +57,60 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 w-full flex justify-center items-center order-1 lg:order-2">
+            <div className="order-1 flex w-full items-center justify-center lg:order-2 lg:col-span-5">
               <HeroCardShowcase cards={heroShowcaseCards} loading={heroShowcaseCardsLoading} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative bg-dark-surface/35 py-20 border-b border-b-border-dim/20 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-wide text-white mb-4">
+      <section className="bg-dark-surface/35 border-b-border-dim/20 relative overflow-hidden border-b py-20">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]"></div>
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="mx-auto mb-16 max-w-xl text-center">
+            <h2 className="font-display mb-4 text-3xl font-bold tracking-wide text-white sm:text-4xl">
               Built for Modern Duelists
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 font-light max-w-md mx-auto">
+            <p className="mx-auto max-w-md text-sm font-light text-slate-400 sm:text-base">
               Deck Lab provides the state-of-the-art tools you need to stay ahead of the metagame.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 rounded-2xl p-8 hover:border-cyan-accent/40 hover:bg-dark-surface-elevated/40 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)] transition-all duration-300 group cursor-default">
-              <div className="w-12 h-12 rounded-xl bg-cyan-accent/10 text-cyan-accent flex items-center justify-center mb-6 group-hover:bg-cyan-accent/20 transition-all duration-300">
-                <Compass className="w-6 h-6" />
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-cyan-accent/40 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)]">
+              <div className="bg-cyan-accent/10 text-cyan-accent group-hover:bg-cyan-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
+                <Compass className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-accent transition-colors">
+              <h3 className="group-hover:text-cyan-accent mb-3 text-xl font-bold text-white transition-colors">
                 Search Everything
               </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-light">
+              <p className="text-sm leading-relaxed font-light text-slate-400">
                 Instantly search through cards, archetypes, and text. Find custom specs, attack
                 thresholds, and attributes.
               </p>
             </div>
 
-            <div className="bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 rounded-2xl p-8 hover:border-gold-accent/40 hover:bg-dark-surface-elevated/40 hover:shadow-[0_4px_30px_rgba(226,197,111,0.06)] transition-all duration-300 group cursor-default">
-              <div className="w-12 h-12 rounded-xl bg-gold-accent/10 text-gold-accent flex items-center justify-center mb-6 group-hover:bg-gold-accent/20 transition-all duration-300">
-                <Layers className="w-6 h-6" />
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-gold-accent/40 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_4px_30px_rgba(226,197,111,0.06)]">
+              <div className="bg-gold-accent/10 text-gold-accent group-hover:bg-gold-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
+                <Layers className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-gold-accent transition-colors">
+              <h3 className="group-hover:text-gold-accent mb-3 text-xl font-bold text-white transition-colors">
                 Flexible Formats
               </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-light">
+              <p className="text-sm leading-relaxed font-light text-slate-400">
                 Whether you play TCG, OCG, Goat, or Speed Duel, filter and construct your deck
                 matching format validation guidelines.
               </p>
             </div>
 
-            <div className="bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 rounded-2xl p-8 hover:border-red-500/40 hover:bg-dark-surface-elevated/40 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)] group-hover:bg-red-500/20 transition-all duration-300 group cursor-default">
-              <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6 group-hover:bg-red-500/20 transition-all duration-300">
-                <Flame className="w-6 h-6" />
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 group-hover:bg-red-500/20 hover:border-red-500/40 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)]">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 transition-all duration-300 group-hover:bg-red-500/20">
+                <Flame className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-red-500 transition-colors">
+              <h3 className="mb-3 text-xl font-bold text-white transition-colors group-hover:text-red-500">
                 Spotlight & Trends
               </h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-light">
+              <p className="text-sm leading-relaxed font-light text-slate-400">
                 Browse trending decklists created by the community. Stay up to date with new
                 strategies and cards catalog updates.
               </p>
@@ -119,53 +120,53 @@ export default function Home() {
       </section>
 
       {/* Trending Decks Section */}
-      <section className="relative bg-dark-bg py-20 border-b border-b-border-dim/20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex justify-between items-end mb-10 border-b border-border-dim/40 pb-4">
+      <section className="bg-dark-bg border-b-border-dim/20 relative overflow-hidden border-b py-20">
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="border-border-dim/40 mb-10 flex items-end justify-between border-b pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-6 rounded-full bg-gold-accent"></div>
-              <h2 className="font-display text-2xl font-bold tracking-wider text-white flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-gold-accent" /> Trending Decks
+              <div className="bg-gold-accent h-6 w-1 rounded-full"></div>
+              <h2 className="font-display flex items-center gap-2 text-2xl font-bold tracking-wider text-white">
+                <Trophy className="text-gold-accent h-5 w-5" /> Trending Decks
               </h2>
             </div>
             <Link
               to="/decks"
               viewTransition
-              className="text-cyan-accent no-underline text-sm font-semibold hover:text-cyan-hover hover:underline transition-colors duration-200"
+              className="text-cyan-accent hover:text-cyan-hover text-sm font-semibold no-underline transition-colors duration-200 hover:underline"
             >
               View All Decks
             </Link>
           </div>
 
           {decksLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, idx) => (
                 <div
                   key={idx}
-                  className="bg-dark-surface border border-border-dim rounded-lg p-5 min-h-56 animate-pulse flex flex-col justify-between"
+                  className="bg-dark-surface border-border-dim flex min-h-56 animate-pulse flex-col justify-between rounded-lg border p-5"
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <div className="h-4 bg-slate-700 rounded w-16"></div>
-                      <div className="h-4 bg-slate-700 rounded w-24"></div>
+                      <div className="h-4 w-16 rounded bg-slate-700"></div>
+                      <div className="h-4 w-24 rounded bg-slate-700"></div>
                     </div>
-                    <div className="h-6 bg-slate-700 rounded w-3/4"></div>
+                    <div className="h-6 w-3/4 rounded bg-slate-700"></div>
                     <div className="space-y-2">
-                      <div className="h-3 bg-slate-700 rounded"></div>
-                      <div className="h-3 bg-slate-700 rounded w-5/6"></div>
+                      <div className="h-3 rounded bg-slate-700"></div>
+                      <div className="h-3 w-5/6 rounded bg-slate-700"></div>
                     </div>
                   </div>
-                  <div className="h-4 bg-slate-700 rounded w-1/2 mt-4"></div>
+                  <div className="mt-4 h-4 w-1/2 rounded bg-slate-700"></div>
                 </div>
               ))}
             </div>
           ) : decksError ? (
-            <div className="text-center py-12 bg-red-950/10 border border-red-500/20 rounded-lg p-6">
-              <p className="text-red-400 font-semibold mb-2">Failed to load trending decks</p>
-              <p className="text-xs text-slate-500 mb-4">{decksError.message}</p>
+            <div className="rounded-lg border border-red-500/20 bg-red-950/10 p-6 py-12 text-center">
+              <p className="mb-2 font-semibold text-red-400">Failed to load trending decks</p>
+              <p className="mb-4 text-xs text-slate-500">{decksError.message}</p>
             </div>
           ) : decks.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {decks.map((deck) => {
                 const cardCount =
                   deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
@@ -184,8 +185,8 @@ export default function Home() {
               })}
             </div>
           ) : (
-            <div className="text-center py-12 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
-              <p className="text-slate-400 text-sm">
+            <div className="border-border-dim bg-dark-surface/10 rounded-lg border border-dashed py-12 text-center">
+              <p className="text-sm text-slate-400">
                 No decks available. Log in and create the first deck!
               </p>
             </div>
@@ -194,54 +195,54 @@ export default function Home() {
       </section>
 
       {/* Card Spotlight Section */}
-      <section className="relative bg-dark-bg py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex justify-between items-end mb-10 border-b border-border-dim/40 pb-4">
+      <section className="bg-dark-bg relative overflow-hidden py-20">
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="border-border-dim/40 mb-10 flex items-end justify-between border-b pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-6 rounded-full bg-cyan-accent"></div>
-              <h2 className="font-display text-2xl font-bold tracking-wider text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-cyan-accent" /> Card Spotlight
+              <div className="bg-cyan-accent h-6 w-1 rounded-full"></div>
+              <h2 className="font-display flex items-center gap-2 text-2xl font-bold tracking-wider text-white">
+                <Sparkles className="text-cyan-accent h-5 w-5" /> Card Spotlight
               </h2>
             </div>
             <Link
               to="/cards"
               viewTransition
-              className="text-cyan-accent no-underline text-sm font-semibold hover:text-cyan-hover hover:underline transition-colors duration-200"
+              className="text-cyan-accent hover:text-cyan-hover text-sm font-semibold no-underline transition-colors duration-200 hover:underline"
             >
               Explore Cards
             </Link>
           </div>
 
           {cardsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, idx) => (
                 <div
                   key={idx}
-                  className="bg-dark-surface border border-border-dim rounded-lg overflow-hidden animate-pulse flex flex-col min-h-60"
+                  className="bg-dark-surface border-border-dim flex min-h-60 animate-pulse flex-col overflow-hidden rounded-lg border"
                 >
                   <div className="aspect-video bg-slate-700"></div>
-                  <div className="p-4 flex-1 space-y-3">
-                    <div className="h-4 bg-slate-700 rounded w-1/4"></div>
-                    <div className="h-5 bg-slate-700 rounded w-3/4"></div>
-                    <div className="h-3 bg-slate-700 rounded"></div>
+                  <div className="flex-1 space-y-3 p-4">
+                    <div className="h-4 w-1/4 rounded bg-slate-700"></div>
+                    <div className="h-5 w-3/4 rounded bg-slate-700"></div>
+                    <div className="h-3 rounded bg-slate-700"></div>
                   </div>
                 </div>
               ))}
             </div>
           ) : cardsError ? (
-            <div className="text-center py-12 bg-red-950/10 border border-red-500/20 rounded-lg p-6">
-              <p className="text-red-400 font-semibold mb-2">Failed to load spotlight cards</p>
-              <p className="text-xs text-slate-500 mb-4">{cardsError.message}</p>
+            <div className="rounded-lg border border-red-500/20 bg-red-950/10 p-6 py-12 text-center">
+              <p className="mb-2 font-semibold text-red-400">Failed to load spotlight cards</p>
+              <p className="mb-4 text-xs text-slate-500">{cardsError.message}</p>
             </div>
           ) : spotlightCards.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {spotlightCards.map((card) => (
                 <CardGridItem key={card.id} {...card} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 border border-dashed border-border-dim rounded-lg bg-dark-surface/10">
-              <p className="text-slate-400 text-sm">No cards available in the database.</p>
+            <div className="border-border-dim bg-dark-surface/10 rounded-lg border border-dashed py-12 text-center">
+              <p className="text-sm text-slate-400">No cards available in the database.</p>
             </div>
           )}
         </div>

@@ -1,5 +1,6 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import type { SimulatorCardInstance } from "../../types";
 import Input from "../ui/Input";
 
@@ -48,18 +49,18 @@ export default function DeckExplorerModal({
   return (
     <dialog
       ref={dialogRef}
-      className="bg-transparent text-white p-4 border-none backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none max-w-4xl w-full max-h-[85vh] overflow-visible"
+      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
-      <div className="bg-dark-surface border border-border-dim w-full rounded-2xl shadow-2xl flex flex-col max-h-[80vh] relative overflow-hidden">
-        <div className="absolute inset-0 bg-radial from-cyan-accent/5 via-transparent to-transparent pointer-events-none"></div>
+      <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">
+        <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
 
-        <div className="p-5 border-b border-border-dim/60 flex justify-between items-center bg-dark-surface-elevated/40">
+        <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
           <div>
-            <h3 className="font-display text-lg font-bold text-white flex items-center gap-2">
-              <Search className="w-5 h-5 text-cyan-accent" />
+            <h3 className="font-display flex items-center gap-2 text-lg font-bold text-white">
+              <Search className="text-cyan-accent h-5 w-5" />
               SEARCH DECK ({deck.length} CARDS REMAINING)
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5 leading-none">
+            <p className="mt-0.5 text-xs leading-none text-slate-500">
               Simulate searching your deck. Choose a card to move into a game zone.
             </p>
           </div>
@@ -68,27 +69,27 @@ export default function DeckExplorerModal({
               setDeckSearchQuery("");
               dialogRef.current?.close();
             }}
-            className="text-slate-400 hover:text-white p-1 rounded-lg bg-dark-surface-elevated hover:bg-slate-800 transition-colors cursor-pointer"
+            className="bg-dark-surface-elevated cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
             type="button"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="p-4 border-b border-border-dim/30">
+        <div className="border-border-dim/30 border-b p-4">
           <Input
             type="text"
             placeholder="Search remaining deck cards..."
             value={deckSearchQuery}
             onChange={(e) => setDeckSearchQuery(e.target.value)}
-            icon={<Search className="w-4 h-4 text-slate-500" />}
+            icon={<Search className="h-4 w-4 text-slate-500" />}
             className="w-full bg-slate-950"
           />
         </div>
 
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p-6">
           {filteredDeckExplorerCards.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
               {filteredDeckExplorerCards.map((card) => {
                 const isMon = card.type?.toLowerCase().includes("monster") || false;
                 const isSp = card.type?.toLowerCase().includes("spell") || false;
@@ -102,19 +103,19 @@ export default function DeckExplorerModal({
                 return (
                   <div
                     key={card.uniqId}
-                    className="flex flex-col gap-2 bg-dark-surface-elevated/20 p-2 rounded-xl border border-border-dim/40 hover:border-cyan-accent/30 transition-all duration-200 group/searchcard"
+                    className="bg-dark-surface-elevated/20 border-border-dim/40 hover:border-cyan-accent/30 group/searchcard flex flex-col gap-2 rounded-xl border p-2 transition-all duration-200"
                   >
                     <div
-                      className={`aspect-244/356 w-full rounded-lg overflow-hidden border bg-slate-950 ${borderC}`}
+                      className={`aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950 ${borderC}`}
                     >
                       {card.imageUrl ? (
                         <img
                           src={`/api/${card.imageUrl}`}
                           alt={card.name}
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-500 p-2 text-center bg-dark-surface-elevated">
+                        <div className="bg-dark-surface-elevated flex h-full w-full items-center justify-center p-2 text-center text-[10px] text-slate-500">
                           {card.name}
                         </div>
                       )}
@@ -128,7 +129,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg transition-colors cursor-pointer"
+                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg w-full cursor-pointer rounded py-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
                       >
                         To Hand
                       </button>
@@ -138,7 +139,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg transition-colors cursor-pointer"
+                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg w-full cursor-pointer rounded py-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
                       >
                         To Field
                       </button>
@@ -148,7 +149,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="w-full py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
+                        className="w-full cursor-pointer rounded bg-slate-800 py-1 text-[10px] font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700"
                       >
                         To GY
                       </button>
@@ -158,7 +159,7 @@ export default function DeckExplorerModal({
               })}
             </div>
           ) : (
-            <div className="text-center py-16 text-slate-600 text-xs">
+            <div className="py-16 text-center text-xs text-slate-600">
               No matching cards remaining in the deck.
             </div>
           )}

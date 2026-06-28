@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { setAccessToken } from "../services/api";
 import {
   login as apiLogin,
@@ -76,7 +77,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    checkAuth();
+    Promise.resolve().then(() => {
+      checkAuth();
+    });
     window.addEventListener("auth-logout", handleLogoutState);
     return () => {
       window.removeEventListener("auth-logout", handleLogoutState);

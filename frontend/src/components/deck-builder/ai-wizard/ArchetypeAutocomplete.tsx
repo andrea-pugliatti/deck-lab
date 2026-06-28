@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
 
@@ -15,18 +16,15 @@ export default function ArchetypeAutocomplete({
   disabled = false,
   archetypes = [],
 }: ArchetypeAutocompleteProps) {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  useEffect(() => {
+  const suggestions = useMemo(() => {
     if (!value.trim() || !archetypes.length) {
-      setSuggestions([]);
-      return;
+      return [];
     }
-    const filtered = archetypes
+    return archetypes
       .filter((arch) => arch.toLowerCase().includes(value.toLowerCase()))
       .slice(0, 5);
-    setSuggestions(filtered);
   }, [value, archetypes]);
 
   return (
@@ -48,7 +46,7 @@ export default function ArchetypeAutocomplete({
         required
       />
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-dark-surface-elevated border border-border-dim rounded-lg mt-1 overflow-hidden shadow-xl">
+        <ul className="bg-dark-surface-elevated border-border-dim absolute z-10 mt-1 w-full overflow-hidden rounded-lg border shadow-xl">
           {suggestions.map((sug, idx) => (
             <li key={idx}>
               <button
@@ -57,7 +55,7 @@ export default function ArchetypeAutocomplete({
                   onChange(sug);
                   setShowSuggestions(false);
                 }}
-                className="w-full text-left px-4 py-2 text-xs text-slate-300 hover:bg-gold-accent hover:text-dark-bg transition-colors cursor-pointer"
+                className="hover:bg-gold-accent hover:text-dark-bg w-full cursor-pointer px-4 py-2 text-left text-xs text-slate-300 transition-colors"
               >
                 {sug}
               </button>

@@ -9,15 +9,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     if (icon) {
       return (
         <div
-          className={`group relative flex items-center bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 w-full transition-all duration-300 hover:border-border-glow focus-within:border-cyan-accent ${className}`}
+          className={`group bg-dark-surface-elevated border-border-dim hover:border-border-glow focus-within:border-cyan-accent relative flex w-full items-center rounded border px-3 py-2 transition-all duration-300 ${className}`}
         >
-          <div className="text-slate-500 mr-2 group-focus-within:text-cyan-accent shrink-0">
+          <div className="group-focus-within:text-cyan-accent mr-2 shrink-0 text-slate-500">
             {icon}
           </div>
           <input
             ref={ref}
             disabled={disabled}
-            className="bg-transparent border-none outline-none text-sm text-white placeholder-slate-600 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full border-none bg-transparent text-sm text-white placeholder-slate-600 outline-none disabled:cursor-not-allowed disabled:opacity-50"
             {...props}
           />
         </div>
@@ -28,7 +28,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         disabled={disabled}
-        className={`bg-dark-surface-elevated border border-border-dim rounded px-3 py-2 text-sm text-white w-full outline-none focus:border-cyan-accent disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        className={`bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full rounded border px-3 py-2 text-sm text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
         {...props}
       />
     );

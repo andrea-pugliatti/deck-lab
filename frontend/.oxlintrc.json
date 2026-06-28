@@ -4,10 +4,12 @@
   "categories": {
     "correctness": "error"
   },
-  "rules": {},
+  "rules": {
+    "react/react-compiler": "error"
+  },
   "env": {
     "builtin": true,
     "browser": true
   },
-  "ignorePatterns": ["dist/"]
+  "ignorePatterns": ["dist/", "node_modules/**"]
 }

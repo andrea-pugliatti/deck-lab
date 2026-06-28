@@ -1,6 +1,7 @@
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router";
+
 import { useAuth } from "../context/AuthContext";
 import Button, { getButtonClasses } from "./ui/Button";
 
@@ -45,18 +46,18 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed min-w-full top-0 z-50 bg-dark-bg/85 backdrop-blur-md border-b border-b-border-dim transition-all duration-200">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center relative">
-        <Link to="/" viewTransition className="flex items-center gap-2 no-underline text-white">
-          <img src="/logo.webp" className="w-12 h-12 rounded-full" alt="DeckLab Logo" />
-          <span className="font-display text-2xl font-bold tracking-widest text-gold-accent">
+    <header className="bg-dark-bg/85 border-b-border-dim fixed top-0 z-50 min-w-full border-b backdrop-blur-md transition-all duration-200">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <Link to="/" viewTransition className="flex items-center gap-2 text-white no-underline">
+          <img src="/logo.webp" className="h-12 w-12 rounded-full" alt="DeckLab Logo" />
+          <span className="font-display text-gold-accent text-2xl font-bold tracking-widest">
             DECKLAB
           </span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:block">
-          <ul className="flex items-center gap-8 list-none m-0 p-0">
+          <ul className="m-0 flex list-none items-center gap-8 p-0">
             {NAV_LINKS.map((link) => (
               <li key={link.to}>
                 <NavLink to={link.to} end={link.end} className={linkClass} viewTransition>
@@ -67,21 +68,21 @@ export default function Header() {
           </ul>
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden items-center gap-4 md:flex">
           {isAuthenticated && user ? (
             <div className="flex items-center gap-4">
               <NavLink to="/my-decks" className={linkClass} viewTransition>
                 My Decks
               </NavLink>
-              <span className="w-px h-4 bg-border-dim"></span>
-              <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <span className="bg-border-dim h-4 w-px"></span>
+              <span className="text-xs font-semibold tracking-wider text-slate-300 uppercase">
                 {user.username}
               </span>
               <Button
                 variant="outline-red"
                 size="sm"
                 onClick={logout}
-                className="uppercase tracking-wider font-sans font-semibold"
+                className="font-sans font-semibold tracking-wider uppercase"
               >
                 Logout
               </Button>
@@ -90,7 +91,7 @@ export default function Header() {
             <Link
               to="/login"
               viewTransition
-              className={`${getButtonClasses({ variant: "outline-gold", size: "md" })} uppercase tracking-wider font-sans`}
+              className={`${getButtonClasses({ variant: "outline-gold", size: "md" })} font-sans tracking-wider uppercase`}
             >
               Login
             </Link>
@@ -100,23 +101,23 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-slate-400 hover:text-white p-2 rounded-lg transition-colors cursor-pointer bg-dark-surface-elevated/40 border border-border-dim/40"
+          className="bg-dark-surface-elevated/40 border-border-dim/40 cursor-pointer rounded-lg border p-2 text-slate-400 transition-colors hover:text-white md:hidden"
           type="button"
           aria-label="Toggle Navigation Menu"
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-nav-menu"
         >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div
             id="mobile-nav-menu"
-            className="absolute top-full left-0 right-0 z-50 bg-dark-bg/95 backdrop-blur-lg border-b border-border-dim shadow-2xl p-6 md:hidden animate-in slide-in-from-top-4 duration-200"
+            className="bg-dark-bg/95 border-border-dim animate-in slide-in-from-top-4 absolute top-full right-0 left-0 z-50 border-b p-6 shadow-2xl backdrop-blur-lg duration-200 md:hidden"
           >
             <nav className="mb-6">
-              <ul className="flex flex-col gap-2.5 list-none m-0 p-0">
+              <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
                 {NAV_LINKS.map((link) => (
                   <li key={link.to}>
                     <NavLink
@@ -145,10 +146,10 @@ export default function Header() {
               </ul>
             </nav>
 
-            <div className="pt-4 border-t border-border-dim/60">
+            <div className="border-border-dim/60 border-t pt-4">
               {isAuthenticated && user ? (
-                <div className="flex justify-between items-center gap-4">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs font-bold tracking-wider text-slate-400 uppercase">
                     {user.username}
                   </span>
                   <Button
@@ -158,7 +159,7 @@ export default function Header() {
                       logout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="uppercase tracking-wider font-sans font-semibold"
+                    className="font-sans font-semibold tracking-wider uppercase"
                   >
                     Logout
                   </Button>
@@ -168,7 +169,7 @@ export default function Header() {
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
                   viewTransition
-                  className={`${getButtonClasses({ variant: "outline-gold", size: "md" })} uppercase tracking-wider font-sans w-full`}
+                  className={`${getButtonClasses({ variant: "outline-gold", size: "md" })} w-full font-sans tracking-wider uppercase`}
                 >
                   Login / Register
                 </Link>

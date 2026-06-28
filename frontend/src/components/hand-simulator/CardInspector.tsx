@@ -1,4 +1,5 @@
 import { Eye, Flame, Shield, Star } from "lucide-react";
+
 import type { SimulatorCardInstance } from "../../types";
 import Badge from "../ui/Badge";
 
@@ -8,37 +9,37 @@ interface CardInspectorProps {
 
 export default function CardInspector({ inspectedCard }: CardInspectorProps) {
   return (
-    <aside className="lg:col-span-3 space-y-6">
-      <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-lg relative min-h-112.5 flex flex-col">
-        <div className="absolute inset-0 bg-radial from-cyan-accent/5 via-transparent to-transparent pointer-events-none"></div>
+    <aside className="space-y-6 lg:col-span-3">
+      <div className="bg-dark-surface border-border-dim relative flex min-h-112.5 flex-col rounded-2xl border p-5 shadow-lg">
+        <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
 
-        <h3 className="font-display text-sm font-bold text-white mb-4 border-b border-border-dim/60 pb-2 uppercase tracking-wider flex items-center gap-2">
-          <Eye className="w-4 h-4 text-cyan-accent" />
+        <h3 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-sm font-bold tracking-wider text-white uppercase">
+          <Eye className="text-cyan-accent h-4 w-4" />
           Card Inspector
         </h3>
 
         {inspectedCard ? (
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex flex-1 flex-col justify-between">
             <div className="space-y-4">
-              <div className="aspect-244/356 w-full max-w-50 mx-auto rounded-lg overflow-hidden border border-border-dim shadow-md bg-slate-950">
+              <div className="border-border-dim mx-auto aspect-244/356 w-full max-w-50 overflow-hidden rounded-lg border bg-slate-950 shadow-md">
                 {inspectedCard.imageUrl ? (
                   <img
                     src={`/api/${inspectedCard.imageUrl}`}
                     alt={inspectedCard.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600 text-xs">
+                  <div className="flex h-full w-full items-center justify-center text-xs text-slate-600">
                     [ No Art ]
                   </div>
                 )}
               </div>
 
               <div>
-                <h4 className="font-display text-base font-bold text-white line-clamp-2 leading-tight">
+                <h4 className="font-display line-clamp-2 text-base leading-tight font-bold text-white">
                   {inspectedCard.name}
                 </h4>
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <Badge
                     variant={
                       inspectedCard.type?.toLowerCase().includes("monster")
@@ -53,7 +54,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                     {inspectedCard.type}
                   </Badge>
                   {inspectedCard.attribute && (
-                    <span className="text-[9px] font-bold text-white bg-slate-900 border border-border-dim/60 px-1.5 py-0.5 rounded uppercase">
+                    <span className="border-border-dim/60 rounded border bg-slate-900 px-1.5 py-0.5 text-[9px] font-bold text-white uppercase">
                       {inspectedCard.attribute}
                     </span>
                   )}
@@ -64,38 +65,38 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                 (inspectedCard.atk !== undefined ||
                   inspectedCard.def !== undefined ||
                   inspectedCard.level !== undefined) && (
-                  <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-slate-300 bg-dark-surface-elevated/40 border border-border-dim/50 rounded-lg p-2">
+                  <div className="bg-dark-surface-elevated/40 border-border-dim/50 grid grid-cols-2 gap-2 rounded-lg border p-2 text-[10px] font-semibold text-slate-300">
                     {inspectedCard.atk !== undefined && (
                       <div className="flex items-center gap-1.5">
-                        <Flame className="w-3.5 h-3.5 text-amber-500" />
+                        <Flame className="h-3.5 w-3.5 text-amber-500" />
                         <span>ATK: {inspectedCard.atk === -1 ? "?" : inspectedCard.atk}</span>
                       </div>
                     )}
                     {inspectedCard.def !== undefined && (
                       <div className="flex items-center gap-1.5">
-                        <Shield className="w-3.5 h-3.5 text-blue-400" />
+                        <Shield className="h-3.5 w-3.5 text-blue-400" />
                         <span>DEF: {inspectedCard.def === -1 ? "?" : inspectedCard.def}</span>
                       </div>
                     )}
                     {inspectedCard.level !== undefined && (
-                      <div className="col-span-2 flex items-center gap-1 mt-1 text-gold-accent border-t border-border-dim/20 pt-1">
-                        <Star className="w-3 h-3 fill-current" />
+                      <div className="text-gold-accent border-border-dim/20 col-span-2 mt-1 flex items-center gap-1 border-t pt-1">
+                        <Star className="h-3 w-3 fill-current" />
                         <span>Level {inspectedCard.level}</span>
                       </div>
                     )}
                   </div>
                 )}
 
-              <div className="max-h-40 overflow-y-auto pr-1 bg-dark-surface-elevated/20 border border-border-dim/40 rounded-xl p-3 text-[11px] text-slate-400 leading-relaxed font-sans font-light whitespace-pre-line">
+              <div className="bg-dark-surface-elevated/20 border-border-dim/40 max-h-40 overflow-y-auto rounded-xl border p-3 pr-1 font-sans text-[11px] leading-relaxed font-light whitespace-pre-line text-slate-400">
                 {inspectedCard.description || "No card details available."}
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-slate-500">
-            <Eye className="w-8 h-8 mb-2 text-slate-700" />
-            <p className="text-xs font-semibold uppercase tracking-wider">No Card Inspected</p>
-            <p className="text-[11px] text-slate-600 mt-1 max-w-45">
+          <div className="flex flex-1 flex-col items-center justify-center p-6 text-center text-slate-500">
+            <Eye className="mb-2 h-8 w-8 text-slate-700" />
+            <p className="text-xs font-semibold tracking-wider uppercase">No Card Inspected</p>
+            <p className="mt-1 max-w-45 text-[11px] text-slate-600">
               Hover over a card or click its detail icon to view descriptions.
             </p>
           </div>

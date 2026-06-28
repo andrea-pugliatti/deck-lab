@@ -1,5 +1,6 @@
 import { Move } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+
 import type { SimulatorCardInstance } from "../../types";
 
 interface SimulatorCardProps {
@@ -60,45 +61,45 @@ export default function SimulatorCard({
   };
 
   return (
-    <div className="relative group/card select-none" ref={menuRef}>
+    <div className="group/card relative select-none" ref={menuRef}>
       <div
         onClick={() => {
           setIsMenuOpen(!isMenuOpen);
           onViewDetails?.(card);
         }}
-        className={`relative aspect-244/356 w-full rounded-lg overflow-hidden border bg-slate-950 transition-all duration-200 transform cursor-pointer group-hover/card:-translate-y-1 ${borderColor} ${glowColor}`}
+        className={`relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 ${borderColor} ${glowColor}`}
       >
         {card.imageUrl ? (
           <img
             src={`/api/${card.imageUrl}`}
             alt={card.name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex flex-col justify-between p-3 text-center bg-dark-surface-elevated/40">
-            <span className="text-[9px] font-bold text-slate-500 tracking-wider block uppercase">
+          <div className="bg-dark-surface-elevated/40 flex h-full w-full flex-col justify-between p-3 text-center">
+            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">
               {card.type?.replace(" Card", "")}
             </span>
-            <span className="text-[10px] font-bold text-white uppercase font-display line-clamp-3">
+            <span className="font-display line-clamp-3 text-[10px] font-bold text-white uppercase">
               {card.name}
             </span>
-            <span className="text-[8px] text-slate-600 block">[ No Art ]</span>
+            <span className="block text-[8px] text-slate-600">[ No Art ]</span>
           </div>
         )}
       </div>
 
       {isMenuOpen && (
-        <div className="absolute z-50 left-1/2 transform -translate-x-1/2 mt-1.5 w-40 bg-dark-surface-elevated/95 backdrop-blur-md border border-border-dim rounded-xl shadow-2xl p-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
-          <div className="text-[9px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1 flex items-center gap-1 border-b border-border-dim/40 mb-1">
-            <Move className="w-2.5 h-2.5" /> Move Card
+        <div className="bg-dark-surface-elevated/95 border-border-dim animate-in fade-in slide-in-from-top-2 absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md duration-150">
+          <div className="border-border-dim/40 mb-1 flex items-center gap-1 border-b px-2 py-1 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
+            <Move className="h-2.5 w-2.5" /> Move Card
           </div>
 
-          <div className="space-y-0.5 max-h-45 overflow-y-auto">
+          <div className="max-h-45 space-y-0.5 overflow-y-auto">
             {currentZone !== "hand" && (
               <button
                 onClick={() => handleAction("hand")}
-                className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
               >
                 To Hand
               </button>
@@ -107,7 +108,7 @@ export default function SimulatorCard({
             {currentZone !== "field" && (
               <button
                 onClick={() => handleAction("field")}
-                className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
               >
                 To Field (Summon)
               </button>
@@ -116,7 +117,7 @@ export default function SimulatorCard({
             {currentZone !== "graveyard" && (
               <button
                 onClick={() => handleAction("graveyard")}
-                className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
               >
                 To Graveyard (GY)
               </button>
@@ -125,7 +126,7 @@ export default function SimulatorCard({
             {currentZone !== "banished" && (
               <button
                 onClick={() => handleAction("banished")}
-                className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
               >
                 To Banished (Banish)
               </button>
@@ -135,13 +136,13 @@ export default function SimulatorCard({
               <>
                 <button
                   onClick={() => handleAction("deck-top")}
-                  className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                  className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
                 >
                   To Deck Top
                 </button>
                 <button
                   onClick={() => handleAction("deck-bottom")}
-                  className="w-full text-left text-xs font-semibold px-2 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-accent/15 transition-all cursor-pointer"
+                  className="hover:bg-cyan-accent/15 w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white"
                 >
                   To Deck Bottom
                 </button>

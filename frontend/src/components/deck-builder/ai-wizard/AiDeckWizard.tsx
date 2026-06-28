@@ -1,5 +1,6 @@
 import { AlertTriangle, HelpCircle, Sparkles, Wand2, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+
 import { useFetch } from "../../../hooks/useFetch";
 import { getCardMetadataEndpoint } from "../../../services/card";
 import { generateAiDeck, getFormatsEndpoint } from "../../../services/deck";
@@ -44,7 +45,12 @@ export default function AiDeckWizard({
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData || ["TCG", "OCG", "Goat", "Edison"];
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevCurrentFormat, setPrevCurrentFormat] = useState(currentFormat);
+
+  if (isOpen !== prevIsOpen || currentFormat !== prevCurrentFormat) {
+    setPrevIsOpen(isOpen);
+    setPrevCurrentFormat(currentFormat);
     if (isOpen) {
       setLoading(false);
       setError(null);
@@ -54,7 +60,7 @@ export default function AiDeckWizard({
       setCustomPrompt("");
       setFormatName(currentFormat || "TCG");
     }
-  }, [isOpen, currentFormat]);
+  }
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -126,27 +132,27 @@ export default function AiDeckWizard({
   return (
     <dialog
       ref={dialogRef}
-      className="bg-transparent text-white p-4 border-none backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none max-w-lg w-full max-h-[90vh] overflow-visible"
+      className="max-h-[90vh] w-full max-w-lg overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
-      <div className="bg-dark-surface border border-border-dim rounded-2xl p-6 shadow-2xl relative flex flex-col max-h-[85vh] overflow-y-auto">
-        <div className="flex items-center justify-between pb-4 border-b border-border-dim mb-4">
+      <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
+        <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-gold-accent animate-pulse" />
+            <Sparkles className="text-gold-accent h-5 w-5 animate-pulse" />
             <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
           </div>
           <button
             type="button"
-            className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="cursor-pointer text-slate-400 transition-colors hover:text-white"
             disabled={loading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-red-200 text-xs flex gap-2 items-start">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-500" />
             <span>{error}</span>
           </div>
         )}
@@ -157,7 +163,7 @@ export default function AiDeckWizard({
           <WizardLoading />
         ) : (
           !warnings.length && (
-            <form onSubmit={handleGenerate} className="space-y-4 flex-1">
+            <form onSubmit={handleGenerate} className="flex-1 space-y-4">
               <ArchetypeAutocomplete
                 value={archetype}
                 onChange={setArchetype}
@@ -185,13 +191,13 @@ export default function AiDeckWizard({
               <StrategySelector value={strategy} onChange={setStrategy} disabled={loading} />
 
               <div>
-                <div className="flex items-center gap-1.5 mb-1">
+                <div className="mb-1 flex items-center gap-1.5">
                   <Label htmlFor="customPrompt" className="mb-0">
                     Custom Rules / Instructions (Optional)
                   </Label>
-                  <div className="relative group">
-                    <HelpCircle className="w-3.5 h-3.5 text-slate-400 cursor-help" />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-dark-surface-elevated border border-border-dim rounded px-2 py-1 text-[10px] text-slate-300 w-48 shadow-lg text-center leading-normal">
+                  <div className="group relative">
+                    <HelpCircle className="h-3.5 w-3.5 cursor-help text-slate-400" />
+                    <div className="bg-dark-surface-elevated border-border-dim absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center text-[10px] leading-normal text-slate-300 shadow-lg group-hover:block">
                       Specify specific cards to include, budget options, or combo focuses.
                     </div>
                   </div>
@@ -202,7 +208,7 @@ export default function AiDeckWizard({
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   placeholder="e.g. Include Gorz, don't use traps, focus on milling..."
                   disabled={loading}
-                  className="resize-none h-20"
+                  className="h-20 resize-none"
                 />
               </div>
 
@@ -217,7 +223,7 @@ export default function AiDeckWizard({
                   Cancel
                 </Button>
                 <Button type="submit" isLoading={loading} className="flex-1">
-                  <Wand2 className="w-4 h-4" />
+                  <Wand2 className="h-4 w-4" />
                   Generate Deck
                 </Button>
               </div>

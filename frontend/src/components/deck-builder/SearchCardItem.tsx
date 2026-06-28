@@ -48,24 +48,24 @@ export default function SearchCardItem({
 
   return (
     <div className={containerClass}>
-      <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex min-w-0 items-center gap-2.5">
         <div className={imgWrapperClass}>
           {imageUrl ? (
-            <img src={`/api/${imageUrl}`} alt={name} className="w-full h-full object-cover" />
+            <img src={`/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
           ) : (
-            <span className="font-bold uppercase text-slate-600 text-[8px]">YuGi</span>
+            <span className="text-[8px] font-bold text-slate-600 uppercase">YuGi</span>
           )}
         </div>
         <div className="min-w-0">
           <h4 className={titleClass}>{name}</h4>
-          <div className="flex gap-2 items-center mt-1 flex-wrap">
+          <div className="mt-1 flex flex-wrap items-center gap-2">
             {type && (
-              <Badge variant={badgeVariant} className="text-[8px] px-1.5 py-0.2 select-none">
+              <Badge variant={badgeVariant} className="py-0.2 px-1.5 text-[8px] select-none">
                 {type.replace(" Card", "").replace(" Monster", "")}
               </Badge>
             )}
             {totalInDeck > 0 && (
-              <Badge variant="gold" className="text-[8px] px-1.5 py-0.2 font-mono">
+              <Badge variant="gold" className="py-0.2 px-1.5 font-mono text-[8px]">
                 {totalInDeck} added
               </Badge>
             )}
@@ -73,14 +73,14 @@ export default function SearchCardItem({
         </div>
       </div>
 
-      <div className="flex gap-1 shrink-0 flex-wrap justify-end">
+      <div className="flex shrink-0 flex-wrap justify-end gap-1">
         <Button
           type="button"
           variant="outline-cyan"
           size="sm"
           onClick={() => addCard(card, "MAIN")}
           disabled={isExtra || totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
+          className="rounded px-2 py-1 text-[9px] font-bold transition-all"
           title={isExtra ? "Extra deck monsters cannot go in the Main Deck" : "Add to Main"}
         >
           + Main
@@ -91,7 +91,7 @@ export default function SearchCardItem({
           size="sm"
           onClick={() => addCard(card, "EXTRA")}
           disabled={!isExtra || totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
+          className="rounded px-2 py-1 text-[9px] font-bold transition-all"
           title={!isExtra ? "Main deck cards cannot go in the Extra Deck" : "Add to Extra"}
         >
           + Extra
@@ -102,7 +102,7 @@ export default function SearchCardItem({
           size="sm"
           onClick={() => addCard(card, "SIDE")}
           disabled={totalInDeck >= 3}
-          className="px-2 py-1 text-[9px] font-bold rounded transition-all"
+          className="rounded px-2 py-1 text-[9px] font-bold transition-all"
           title="Add to Side"
         >
           + Side

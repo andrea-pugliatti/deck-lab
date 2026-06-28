@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { apiFetch, parseResponseError } from "../services/api";
 
 export interface FetchOptions extends RequestInit {
@@ -10,6 +11,15 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
   const [loading, setLoading] = useState<boolean>(!options?.skip && !!url);
   const [error, setError] = useState<Error | null>(null);
 
+  const [prevUrl, setPrevUrl] = useState<string | null>(url);
+  const [prevSkip, setPrevSkip] = useState<boolean | undefined>(options?.skip);
+
+  if (url !== prevUrl || options?.skip !== prevSkip) {
+    setPrevUrl(url);
+    setPrevSkip(options?.skip);
+    setLoading(!options?.skip && !!url);
+  }
+
   // Keep a stable ref to options to avoid dependency array issues on every render
   const optionsRef = useRef(options);
   useEffect(() => {
@@ -19,6 +29,10 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
   const execute = useCallback(
     async (abortSignal?: AbortSignal) => {
       if (!url) return;
+
+      // Defer state updates to avoid synchronous setState inside useEffect
+      await Promise.resolve();
+      if (abortSignal?.aborted) return;
 
       setLoading(true);
       setError(null);
@@ -59,14 +73,15 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
 
   useEffect(() => {
     if (options?.skip || !url) {
-      setLoading(false);
       return;
     }
 
     const abortController = new AbortController();
 
-    execute(abortController.signal).catch((_err) => {
-      // Errors are already handled and set in state inside execute
+    Promise.resolve().then(() => {
+      execute(abortController.signal).catch((_err) => {
+        // Errors are already handled and set in state inside execute
+      });
     });
 
     return () => {

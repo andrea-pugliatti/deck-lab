@@ -1,4 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
+
 import type { CardFiltersState } from "../../types";
 import Button from "../ui/Button";
 import Label from "../ui/Label";
@@ -50,10 +51,10 @@ export default function CardFilters({
   const isMonsterSelected = selectedType === "Monster" || selectedType === "ALL";
 
   return (
-    <div className="bg-dark-surface border border-border-dim rounded-lg p-5 space-y-5">
-      <div className="flex items-center gap-2 text-white pb-3 border-b border-border-dim/50">
-        <SlidersHorizontal className="w-4 h-4 text-cyan-accent" />
-        <h2 className="text-sm font-bold uppercase tracking-wider">Catalog Filters</h2>
+    <div className="bg-dark-surface border-border-dim space-y-5 rounded-lg border p-5">
+      <div className="border-border-dim/50 flex items-center gap-2 border-b pb-3 text-white">
+        <SlidersHorizontal className="text-cyan-accent h-4 w-4" />
+        <h2 className="text-sm font-bold tracking-wider uppercase">Catalog Filters</h2>
       </div>
 
       <div>
@@ -165,7 +166,7 @@ export default function CardFilters({
             archetype: "ALL",
           });
         }}
-        className="w-full py-2 border border-dashed border-border-dim hover:border-cyan-accent text-slate-400 hover:text-cyan-accent bg-transparent hover:bg-cyan-accent/5 rounded text-xs font-semibold tracking-wider transition-all duration-200 cursor-pointer"
+        className="border-border-dim hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 w-full cursor-pointer rounded border border-dashed bg-transparent py-2 text-xs font-semibold tracking-wider text-slate-400 transition-all duration-200"
         type="button"
       >
         Clear Filters

@@ -1,6 +1,7 @@
 import { Filter, Layers, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
+
 import DeckCard from "../components/deck/DeckCard";
 import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
@@ -36,16 +37,21 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
-  useEffect(() => {
-    setTab(initialTab);
-  }, [initialTab]);
+  const [prevInitialTab, setPrevInitialTab] = useState(initialTab);
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
 
-  useEffect(() => {
+  if (initialTab !== prevInitialTab) {
+    setPrevInitialTab(initialTab);
+    setTab(initialTab);
+  }
+
+  if (searchParams !== prevSearchParams) {
+    setPrevSearchParams(searchParams);
     const format = searchParams.get("format") || "ALL";
     const q = searchParams.get("q") || "";
     setSelectedFormat(format);
     setSearchQuery((prev) => (prev !== q ? q : prev));
-  }, [searchParams]);
+  }
 
   useEffect(() => {
     const params: Record<string, string> = {};
@@ -103,7 +109,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="mx-auto max-w-7xl px-6 py-12">
       <PageHeader
         title={tab === "user" ? "My Deck Blueprints" : "Public Decks"}
         description={
@@ -112,8 +118,8 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
             : "Browse, filter, and discover community-built Yu-Gi-Oh! decks."
         }
       />
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div className="flex items-center gap-4 flex-wrap md:flex-nowrap w-full justify-between md:justify-start">
+      <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div className="flex w-full flex-wrap items-center justify-between gap-4 md:flex-nowrap md:justify-start">
           <FormatSelector
             selectedFormat={selectedFormat}
             setSelectedFormat={(fmt) => setSelectedFormat(fmt)}
@@ -125,8 +131,8 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
             placeholder="Search decks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="w-4 h-4" />}
-            className="bg-dark-surface px-4 py-2 w-full md:max-w-xs"
+            icon={<Search className="h-4 w-4" />}
+            className="bg-dark-surface w-full px-4 py-2 md:max-w-xs"
           />
         </div>
 
@@ -134,20 +140,20 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           <Link
             to="/decks/create"
             viewTransition
-            className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 no-underline shrink-0 self-end md:self-auto"
+            className="bg-gold-accent hover:bg-gold-hover text-dark-bg flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] md:self-auto"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="h-4 w-4" />
             <span>Construct New Deck</span>
           </Link>
         )}
       </div>
 
       {deleteError && (
-        <div className="bg-red-950/20 border border-red-500/30 text-red-400 rounded-lg p-4 mb-6 text-sm flex justify-between items-center">
+        <div className="mb-6 flex items-center justify-between rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
           <span>{deleteError}</span>
           <button
             onClick={() => setDeleteError(null)}
-            className="text-slate-400 hover:text-white text-xs cursor-pointer"
+            className="cursor-pointer text-xs text-slate-400 hover:text-white"
           >
             Close
           </button>
@@ -163,7 +169,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           onRetry={() => refetch()}
         />
       ) : decks.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {decks.map((deck) => {
             const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
             return (
@@ -191,9 +197,9 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           <Link
             to="/decks/create"
             viewTransition
-            className="flex items-center gap-2 bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all duration-200 no-underline shrink-0 self-end md:self-auto"
+            className="bg-gold-accent hover:bg-gold-hover text-dark-bg flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] md:self-auto"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="h-4 w-4" />
             <span>Construct New Deck</span>
           </Link>
         </EmptyState>

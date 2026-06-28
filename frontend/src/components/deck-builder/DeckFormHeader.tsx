@@ -1,4 +1,5 @@
 import { Layers } from "lucide-react";
+
 import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
@@ -24,13 +25,13 @@ export default function DeckFormHeader({
   formats,
 }: DeckFormHeaderProps) {
   return (
-    <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md space-y-4">
-      <h2 className="font-display text-sm font-bold text-white flex items-center gap-2 pb-2 border-b border-border-dim/60">
-        <Layers className="w-4 h-4 text-gold-accent" />
+    <div className="bg-dark-surface border-border-dim space-y-4 rounded-2xl border p-5 shadow-md">
+      <h2 className="font-display border-border-dim/60 flex items-center gap-2 border-b pb-2 text-sm font-bold text-white">
+        <Layers className="text-gold-accent h-4 w-4" />
         Deck Blueprint Settings
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
         <div className="md:col-span-8">
           <Label>Deck Name</Label>
           <Input

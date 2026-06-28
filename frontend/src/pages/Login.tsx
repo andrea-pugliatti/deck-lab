@@ -1,6 +1,7 @@
 import { AlertTriangle, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Label from "../components/ui/Label";
@@ -30,14 +31,14 @@ export default function Login() {
 
   return (
     <div>
-      <div className="text-center mb-6">
-        <h2 className="font-display text-2xl font-bold text-white mb-1">Login</h2>
+      <div className="mb-6 text-center">
+        <h2 className="font-display mb-1 text-2xl font-bold text-white">Login</h2>
         <p className="text-xs text-slate-400">Enter your credentials to access the laboratory.</p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-red-900/30 border border-red-500/50 text-red-200 p-3 rounded text-xs mb-4">
-          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+        <div className="mb-4 flex items-center gap-2 rounded border border-red-500/50 bg-red-900/30 p-3 text-xs text-red-200">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
           <span>{error}</span>
         </div>
       )}
@@ -52,16 +53,16 @@ export default function Login() {
             disabled={submitting}
             value={usernameOrEmail}
             onChange={(e) => setUsernameOrEmail(e.target.value)}
-            icon={<Mail className="w-4 h-4" />}
+            icon={<Mail className="h-4 w-4" />}
           />
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <Label className="text-xs">Password</Label>
             <a
               href="#forgot-password"
-              className="text-[10px] text-cyan-accent hover:underline hover:text-cyan-hover transition-all duration-200"
+              className="text-cyan-accent hover:text-cyan-hover text-[10px] transition-all duration-200 hover:underline"
             >
               Forgot Password?
             </a>
@@ -73,7 +74,7 @@ export default function Login() {
             disabled={submitting}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            icon={<Lock className="w-4 h-4" />}
+            icon={<Lock className="h-4 w-4" />}
           />
         </div>
 
@@ -81,19 +82,19 @@ export default function Login() {
           type="submit"
           variant="primary"
           isLoading={submitting}
-          className="w-full py-2.5 rounded font-sans font-semibold text-sm mt-4"
+          className="mt-4 w-full rounded py-2.5 font-sans text-sm font-semibold"
         >
           Enter the Lab
         </Button>
       </form>
 
-      <div className="text-center mt-6 pt-4 border-t border-border-dim/50">
+      <div className="border-border-dim/50 mt-6 border-t pt-4 text-center">
         <p className="text-xs text-slate-500">
           New to the Lab?{" "}
           <Link
             to="/register"
             viewTransition
-            className="text-cyan-accent hover:underline hover:text-cyan-hover font-semibold transition-all duration-200"
+            className="text-cyan-accent hover:text-cyan-hover font-semibold transition-all duration-200 hover:underline"
           >
             Create Account
           </Link>

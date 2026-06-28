@@ -1,4 +1,5 @@
 import { Filter, Search } from "lucide-react";
+
 import CardFilters from "../components/card/CardFilters";
 import CardGridItem from "../components/card/CardGridItem";
 import EmptyState from "../components/EmptyState";
@@ -32,14 +33,14 @@ export default function Cards() {
   const endIdx = Math.min((page + 1) * 20, totalElements);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="mx-auto max-w-7xl px-6 py-12">
       <PageHeader
         title="Card Database"
         description="Browse, filter, and search the entire Yu-Gi-Oh! catalog."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1 space-y-6">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+        <aside className="space-y-6 lg:col-span-1">
           <CardFilters
             filters={filters}
             onChange={(newFilters) => setFilters(newFilters)}
@@ -50,17 +51,17 @@ export default function Cards() {
           />
         </aside>
 
-        <div className="lg:col-span-3 space-y-6">
+        <div className="space-y-6 lg:col-span-3">
           <Input
             type="text"
             placeholder="Search card name, type, description, or archetype..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="w-5 h-5" />}
+            icon={<Search className="h-5 w-5" />}
             className="bg-dark-surface px-4 py-2.5"
           />
 
-          <div className="flex justify-between items-center text-xs text-slate-500">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <span>
               Showing {totalElements > 0 ? `${startIdx}-${endIdx}` : "0"} of {totalElements} Cards
             </span>
@@ -76,7 +77,7 @@ export default function Cards() {
             />
           ) : cards.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {cards.map((card) => (
                   <CardGridItem key={card.id} {...card} />
                 ))}

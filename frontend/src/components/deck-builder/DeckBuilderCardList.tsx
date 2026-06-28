@@ -21,7 +21,7 @@ export default function DeckBuilderCardList({
 
   if (libraryCards.length === 0) {
     return (
-      <div className="text-center py-16 text-slate-500 text-xs">
+      <div className="py-16 text-center text-xs text-slate-500">
         No cards match search criteria.
       </div>
     );
@@ -30,7 +30,7 @@ export default function DeckBuilderCardList({
   return (
     <div
       className={`space-y-3 transition-opacity duration-200 ${
-        libraryLoading ? "opacity-50 pointer-events-none" : "opacity-100"
+        libraryLoading ? "pointer-events-none opacity-50" : "opacity-100"
       }`}
     >
       {libraryCards.map((card) => (

@@ -1,5 +1,9 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
   "css.lint.unknownAtRules": "ignore",
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
 }

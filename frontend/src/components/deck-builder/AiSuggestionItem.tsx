@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+
 import type { DeckCardItem, Suggestion } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
@@ -19,23 +20,23 @@ export default function AiSuggestionItem({ card, deckCards, onAdd }: AiSuggestio
   const isMaxCopies = countInDeck >= 3;
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border border-border-dim/40 hover:border-border-dim rounded-xl">
+    <div className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border-border-dim/40 hover:border-border-dim flex items-center gap-3 rounded-xl border p-3">
       {card.imageUrl && !imgError ? (
         <img
           src={card.imageUrl.startsWith("/") ? `/api${card.imageUrl}` : `/api/${card.imageUrl}`}
           alt={card.name}
-          className="w-10 h-10 object-cover rounded-lg border border-border-dim shrink-0 shadow-inner"
+          className="border-border-dim h-10 w-10 shrink-0 rounded-lg border object-cover shadow-inner"
           onError={() => setImgError(true)}
         />
       ) : (
-        <div className="w-10 h-10 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-border-dim/40 shrink-0">
-          <span className="font-bold text-slate-600 text-[10px] select-none">:)</span>
+        <div className="border-border-dim/40 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
+          <span className="text-[10px] font-bold text-slate-600 select-none">:)</span>
         </div>
       )}
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-bold text-slate-200 truncate">{card.name}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="truncate text-xs font-bold text-slate-200">{card.name}</span>
           <Badge
             variant={
               card.section === "EXTRA" ? "purple" : card.section === "SIDE" ? "gold" : "cyan"
@@ -44,7 +45,7 @@ export default function AiSuggestionItem({ card, deckCards, onAdd }: AiSuggestio
             {card.section}
           </Badge>
         </div>
-        <p className="text-[10px] text-slate-400 mt-1 leading-normal">{card.synergyReason}</p>
+        <p className="mt-1 text-[10px] leading-normal text-slate-400">{card.synergyReason}</p>
       </div>
 
       <Button
@@ -52,16 +53,14 @@ export default function AiSuggestionItem({ card, deckCards, onAdd }: AiSuggestio
         variant="outline"
         onClick={() => onAdd(card)}
         disabled={isMaxCopies}
-        className={`w-7 h-7 p-0! shrink-0 flex items-center justify-center rounded-lg
-          ${
-            isMaxCopies
-              ? "border-border-dim bg-dark-surface-elevated text-slate-500 opacity-40 cursor-not-allowed"
-              : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent bg-cyan-950/10 hover:bg-cyan-950/30"
-          }
-        `}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg p-0! ${
+          isMaxCopies
+            ? "border-border-dim bg-dark-surface-elevated cursor-not-allowed text-slate-500 opacity-40"
+            : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent bg-cyan-950/10 hover:bg-cyan-950/30"
+        } `}
         title={isMaxCopies ? "Max copies added" : `Add to ${card.section} Deck`}
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="h-4 w-4" />
       </Button>
     </div>
   );

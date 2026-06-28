@@ -1,5 +1,5 @@
-import { apiFetch, parseResponseError } from "./api";
 import type { Deck, Suggestion } from "../types";
+import { apiFetch, parseResponseError } from "./api";
 import { validateDeckSections } from "./validation";
 
 export function getFormatsEndpoint(): string {

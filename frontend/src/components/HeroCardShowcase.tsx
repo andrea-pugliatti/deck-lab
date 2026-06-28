@@ -1,6 +1,7 @@
 import { Flame, Sparkles, Star, Zap } from "lucide-react";
 import { useRef, useState } from "react";
 import type { MouseEvent } from "react";
+
 import type { Card } from "../types";
 
 interface HeroCardShowcaseProps {
@@ -66,7 +67,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
 
   return (
     <div
-      className="relative w-full max-w-105 h-100 sm:h-120 mx-auto flex items-center justify-center cursor-default select-none touch-none"
+      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default touch-none items-center justify-center select-none sm:h-120"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -75,7 +76,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
       }}
     >
       <div
-        className="relative w-full h-full transition-transform duration-300 ease-out flex items-center justify-center"
+        className="relative flex h-full w-full items-center justify-center transition-transform duration-300 ease-out"
         style={{
           transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transformStyle: "preserve-3d",
@@ -105,87 +106,87 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
           return (
             <div
               key={index}
-              className={`absolute w-45 h-67.5 sm:w-55 sm:h-80 bg-dark-bg border rounded-xl p-2.5 sm:p-3 flex flex-col justify-between transition-all duration-300 ease-out hover:scale-105 shadow-2xl hover:shadow-[0_0_30px_rgba(0,227,217,0.15)] ${CARDS_OFFSETS[index]} text-slate-300 border-slate-500/20`}
+              className={`bg-dark-bg absolute flex h-67.5 w-45 flex-col justify-between rounded-xl border p-2.5 shadow-2xl transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_30px_rgba(0,227,217,0.15)] sm:h-80 sm:w-55 sm:p-3 ${CARDS_OFFSETS[index]} border-slate-500/20 text-slate-300`}
               style={{
                 transformStyle: "preserve-3d",
                 backfaceVisibility: "hidden",
               }}
             >
               <>
-                <div className="flex justify-between items-center mb-1">
+                <div className="mb-1 flex items-center justify-between">
                   <span
-                    className="font-display text-[8.5px] sm:text-[10px] font-bold text-white tracking-wide truncate max-w-25 sm:max-w-32.5"
+                    className="font-display max-w-25 truncate text-[8.5px] font-bold tracking-wide text-white sm:max-w-32.5 sm:text-[10px]"
                     title={card?.name}
                   >
                     {card?.name}
                   </span>
                   {card?.attribute && (
                     <span
-                      className={`text-[7px] sm:text-[8px] font-extrabold px-1 sm:px-1.5 py-0.5 rounded border uppercase shrink-0 scale-90 ${getAttributeStyles(card?.attribute)}`}
+                      className={`shrink-0 scale-90 rounded border px-1 py-0.5 text-[7px] font-extrabold uppercase sm:px-1.5 sm:text-[8px] ${getAttributeStyles(card?.attribute)}`}
                     >
                       {card?.attribute}
                     </span>
                   )}
                 </div>
 
-                <div className="flex gap-0.5 mb-1 sm:mb-1.5 scale-75 sm:scale-90 origin-left min-h-3">
+                <div className="mb-1 flex min-h-3 origin-left scale-75 gap-0.5 sm:mb-1.5 sm:scale-90">
                   {isMonster &&
                     card?.level !== undefined &&
                     card?.level > 0 &&
                     [...Array(Math.min(card?.level, 12))].map((_, i) => (
-                      <Star key={i} className="w-2.5 h-2.5 fill-gold-accent text-gold-accent" />
+                      <Star key={i} className="fill-gold-accent text-gold-accent h-2.5 w-2.5" />
                     ))}
                 </div>
 
-                <div className="relative flex-1 rounded border border-border-dim/60 bg-dark-surface-elevated/40 overflow-hidden flex items-center justify-center group mb-1.5 sm:mb-2">
+                <div className="border-border-dim/60 bg-dark-surface-elevated/40 group relative mb-1.5 flex flex-1 items-center justify-center overflow-hidden rounded border sm:mb-2">
                   {croppedUrl ? (
                     <img
                       src={`/api/${croppedUrl}`}
-                      className="w-full h-full object-cover transition-transform duration-500"
+                      className="h-full w-full object-cover transition-transform duration-500"
                       alt={card?.name}
                     />
                   ) : (
                     <div
-                      className={`w-full h-full bg-linear-to-br ${artGradient} flex items-center justify-center relative`}
+                      className={`h-full w-full bg-linear-to-br ${artGradient} relative flex items-center justify-center`}
                     >
                       <div className="absolute inset-0 opacity-30"></div>
                       <FallbackIcon
-                        className={`w-10 h-10 sm:w-12 sm:h-12 ${fallbackIconColor} drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500`}
+                        className={`h-10 w-10 sm:h-12 sm:w-12 ${fallbackIconColor} drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform duration-500 group-hover:scale-110`}
                       />
                     </div>
                   )}
                 </div>
 
-                <div className="bg-dark-surface/80 border border-border-dim/40 rounded p-1 sm:p-1.5 mb-1 sm:mb-1.5">
-                  <span className="block font-bold text-[7px] sm:text-[8px] text-gold-accent leading-none uppercase tracking-wide mb-0.5">
+                <div className="bg-dark-surface/80 border-border-dim/40 mb-1 rounded border p-1 sm:mb-1.5 sm:p-1.5">
+                  <span className="text-gold-accent mb-0.5 block text-[7px] leading-none font-bold tracking-wide uppercase sm:text-[8px]">
                     [{card?.type}]
                   </span>
                   <p
-                    className="text-[6.5px] sm:text-[7.5px] text-slate-400 leading-normal line-clamp-3 font-light"
+                    className="line-clamp-3 text-[6.5px] leading-normal font-light text-slate-400 sm:text-[7.5px]"
                     title={card?.description}
                   >
                     {card?.description}
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center text-[7.5px] sm:text-[8.5px] font-bold text-slate-300 bg-dark-surface-elevated/40 border border-border-dim/40 rounded px-1.5 sm:px-2 py-0.5 sm:py-1">
+                <div className="bg-dark-surface-elevated/40 border-border-dim/40 flex items-center justify-between rounded border px-1.5 py-0.5 text-[7.5px] font-bold text-slate-300 sm:px-2 sm:py-1 sm:text-[8.5px]">
                   {isMonster ? (
                     <>
                       <span className="flex items-center gap-0.5">
                         ATK:{" "}
-                        <span className="text-white font-mono">
+                        <span className="font-mono text-white">
                           {card?.atk === -1 ? "?" : card?.atk}
                         </span>
                       </span>
                       <span className="flex items-center gap-0.5">
                         DEF:{" "}
-                        <span className="text-white font-mono">
+                        <span className="font-mono text-white">
                           {card?.def === -1 ? "?" : card?.def}
                         </span>
                       </span>
                     </>
                   ) : (
-                    <span className="text-center w-full uppercase tracking-wider text-[7px] sm:text-[8px] text-cyan-accent">
+                    <span className="text-cyan-accent w-full text-center text-[7px] tracking-wider uppercase sm:text-[8px]">
                       {isSpell ? "Spell Card" : "Trap Card"}
                     </span>
                   )}

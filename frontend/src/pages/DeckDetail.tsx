@@ -1,6 +1,7 @@
 import { ArrowLeft, Calendar, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+
 import DeckGridItem from "../components/deck/DeckGridItem";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -44,7 +45,7 @@ export default function DeckDetail() {
 
   if (error || !deck) {
     return (
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-3xl px-6 py-12">
         <ErrorAlert
           title="Failed to load deck details"
           message={error?.message || "Deck not found"}
@@ -75,15 +76,15 @@ export default function DeckDetail() {
   const mainTrapsCount = mainTraps.reduce((acc, c) => acc + (c.quantity || 0), 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="flex justify-between items-center mb-8">
+    <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mb-8 flex items-center justify-between">
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
-          className="group text-slate-400 font-normal px-2.5 py-1"
+          className="group px-2.5 py-1 font-normal text-slate-400"
           type="button"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           <span>Back</span>
         </Button>
 
@@ -91,9 +92,9 @@ export default function DeckDetail() {
           <Link
             to={`/simulator?deckId=${deck.id}`}
             viewTransition
-            className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
+            className="bg-dark-surface-elevated hover:bg-dark-surface border-border-dim hover:border-cyan-accent hover:text-cyan-accent flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold text-slate-300 shadow-md"
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-accent" />
+            <Sparkles className="text-cyan-accent h-3.5 w-3.5" />
             Test Hand
           </Link>
 
@@ -102,9 +103,9 @@ export default function DeckDetail() {
               <Link
                 to={`/decks/${deck.id}/edit`}
                 viewTransition
-                className="flex items-center gap-2 bg-dark-surface-elevated hover:bg-dark-surface border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer"
+                className="bg-dark-surface-elevated hover:bg-dark-surface border-border-dim hover:border-cyan-accent hover:text-cyan-accent flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold text-slate-300 shadow-md"
               >
-                <Edit className="w-3.5 h-3.5" />
+                <Edit className="h-3.5 w-3.5" />
                 Edit Deck
               </Link>
               <button
@@ -112,10 +113,10 @@ export default function DeckDetail() {
                   setConfirmModalOpen(true);
                 }}
                 disabled={isDeleting}
-                className="flex items-center gap-2 bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-400 px-4 py-2 rounded-lg text-xs font-semibold shadow-md cursor-pointer disabled:opacity-50"
+                className="flex cursor-pointer items-center gap-2 rounded-lg border border-red-500/30 bg-red-950/20 px-4 py-2 text-xs font-semibold text-red-400 shadow-md hover:border-red-500/60 hover:bg-red-950/40 disabled:opacity-50"
                 type="button"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="h-3.5 w-3.5" />
                 {isDeleting ? "Deleting..." : "Delete Deck"}
               </button>
             </>
@@ -124,55 +125,55 @@ export default function DeckDetail() {
       </div>
 
       {deleteError && (
-        <div className="bg-red-950/20 border border-red-500/30 text-red-400 rounded-lg p-4 mb-6 text-sm">
+        <div className="mb-6 rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
           {deleteError}
         </div>
       )}
 
-      <div className="bg-dark-surface border border-border-dim rounded-2xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-lg">
-        <div className="absolute inset-0 bg-radial from-cyan-accent/5 via-transparent to-transparent pointer-events-none"></div>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+      <div className="bg-dark-surface border-border-dim relative mb-8 overflow-hidden rounded-2xl border p-6 shadow-lg md:p-8">
+        <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
+        <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
             <Badge variant="gold">{deck.formatName}</Badge>
-            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+            <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
               by {deck.creatorUsername || "Community"}
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs text-slate-500">
             <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
+              <Calendar className="h-3.5 w-3.5" />
               Updated {formatRelativeTime(deck.updatedAt)}
             </span>
             <span className="flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-cyan-accent" />
+              <Layers className="text-cyan-accent h-3.5 w-3.5" />
               {totalCount} Cards Total
             </span>
           </div>
         </div>
 
-        <h1 className="font-display text-2xl md:text-4xl font-black text-white mb-3">
+        <h1 className="font-display mb-3 text-2xl font-black text-white md:text-4xl">
           {deck.name}
         </h1>
-        <p className="text-sm md:text-base text-slate-400 max-w-3xl leading-relaxed font-light">
+        <p className="max-w-3xl text-sm leading-relaxed font-light text-slate-400 md:text-base">
           {deck.description || "No description provided."}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <aside className="lg:col-span-4 space-y-6">
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
-            <h2 className="flex items-center gap-2 font-display text-base font-bold text-white mb-4 border-b border-border-dim/60 pb-2">
-              <Eye className="w-4 h-4 text-cyan-accent" />
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <aside className="space-y-6 lg:col-span-4">
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
+            <h2 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-base font-bold text-white">
+              <Eye className="text-cyan-accent h-4 w-4" />
               Deck Analytics
             </h2>
 
             <div className="space-y-4">
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-medium">
+                <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Main Deck</span>
                   <span className="font-bold text-white">{mainCount} / 60</span>
                 </div>
-                <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-border-dim/40">
+                <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       mainCount < 40 ? "bg-amber-500" : "bg-cyan-accent"
@@ -181,31 +182,31 @@ export default function DeckDetail() {
                   ></div>
                 </div>
                 {mainCount < 40 && (
-                  <span className="text-[10px] text-amber-400 mt-1 block">
+                  <span className="mt-1 block text-[10px] text-amber-400">
                     * Format limit requires at least 40 cards.
                   </span>
                 )}
               </div>
 
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-medium">
+                <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Extra Deck</span>
                   <span className="font-bold text-white">{extraCount} / 15</span>
                 </div>
-                <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-border-dim/40">
+                <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
-                    className="h-full rounded-full bg-gold-accent transition-all duration-500"
+                    className="bg-gold-accent h-full rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(100, (extraCount / 15) * 100)}%` }}
                   ></div>
                 </div>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-medium">
+                <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Side Deck</span>
                   <span className="font-bold text-white">{sideCount} / 15</span>
                 </div>
-                <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-border-dim/40">
+                <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
                     className="h-full rounded-full bg-purple-400 transition-all duration-500"
                     style={{ width: `${Math.min(100, (sideCount / 15) * 100)}%` }}
@@ -215,21 +216,21 @@ export default function DeckDetail() {
             </div>
 
             {mainCount > 0 && (
-              <div className="mt-6 pt-6 border-t border-border-dim/60 space-y-4">
-                <h3 className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-2">
+              <div className="border-border-dim/60 mt-6 space-y-4 border-t pt-6">
+                <h3 className="mb-2 text-xs font-bold tracking-wider text-slate-400 uppercase">
                   Main Deck Composition
                 </h3>
 
                 <div className="space-y-3">
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                    <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
                         Monsters
                       </span>
                       <span className="font-semibold text-white">{mainMonstersCount}</span>
                     </div>
-                    <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
                         className="h-full bg-amber-500"
                         style={{ width: `${(mainMonstersCount / mainCount) * 100}%` }}
@@ -238,14 +239,14 @@ export default function DeckDetail() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                    <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                         Spells
                       </span>
                       <span className="font-semibold text-white">{mainSpellsCount}</span>
                     </div>
-                    <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
                         className="h-full bg-emerald-500"
                         style={{ width: `${(mainSpellsCount / mainCount) * 100}%` }}
@@ -254,14 +255,14 @@ export default function DeckDetail() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                    <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                        <span className="h-2.5 w-2.5 rounded-full bg-purple-400"></span>
                         Traps
                       </span>
                       <span className="font-semibold text-white">{mainTrapsCount}</span>
                     </div>
-                    <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
                         className="h-full bg-purple-400"
                         style={{ width: `${(mainTrapsCount / mainCount) * 100}%` }}
@@ -274,20 +275,20 @@ export default function DeckDetail() {
           </div>
         </aside>
 
-        <div className="lg:col-span-8 space-y-8">
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
-            <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-              <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full bg-cyan-accent`}></span>
+        <div className="space-y-8 lg:col-span-8">
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
+            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+              <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
+                <span className={`bg-cyan-accent h-2.5 w-2.5 rounded-full`}></span>
                 Main Deck
               </h2>
-              <Badge variant="cyan" className="text-xs font-semibold px-2 py-0.5 rounded">
+              <Badge variant="cyan" className="rounded px-2 py-0.5 text-xs font-semibold">
                 {mainCount} Cards
               </Badge>
             </div>
 
             {mainCards.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {mainCards.map((dc) => (
                   <DeckGridItem
                     key={dc.id || dc.cardId}
@@ -300,25 +301,25 @@ export default function DeckDetail() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Main Deck.
               </div>
             )}
           </div>
 
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
-            <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-              <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full bg-gold-accent`}></span>
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
+            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+              <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
+                <span className={`bg-gold-accent h-2.5 w-2.5 rounded-full`}></span>
                 Extra Deck
               </h2>
-              <Badge variant="gold" className="text-xs font-semibold px-2 py-0.5 rounded">
+              <Badge variant="gold" className="rounded px-2 py-0.5 text-xs font-semibold">
                 {extraCount} Cards
               </Badge>
             </div>
 
             {extraCards.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {extraCards.map((dc) => (
                   <DeckGridItem
                     key={dc.id || dc.cardId}
@@ -331,25 +332,25 @@ export default function DeckDetail() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Extra Deck.
               </div>
             )}
           </div>
 
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
-            <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-              <h2 className="font-display text-base font-bold text-white flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full bg-purple-400`}></span>
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
+            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+              <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
+                <span className={`h-2.5 w-2.5 rounded-full bg-purple-400`}></span>
                 Side Deck
               </h2>
-              <Badge variant="purple" className="text-xs font-semibold px-2 py-0.5 rounded">
+              <Badge variant="purple" className="rounded px-2 py-0.5 text-xs font-semibold">
                 {sideCount} Cards
               </Badge>
             </div>
 
             {sideCards.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {sideCards.map((dc) => (
                   <DeckGridItem
                     key={dc.id || dc.cardId}
@@ -362,7 +363,7 @@ export default function DeckDetail() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500 text-sm">
+              <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Side Deck.
               </div>
             )}

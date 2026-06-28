@@ -1,6 +1,7 @@
 import { ArrowLeft, RotateCcw, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+
 import AiDeckWizard from "../components/deck-builder/ai-wizard/AiDeckWizard";
 import AiSuggestionsPanel from "../components/deck-builder/AiSuggestionsPanel";
 import DeckBuilderCardList from "../components/deck-builder/DeckBuilderCardList";
@@ -91,19 +92,19 @@ function DeckBuilderContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
           <Button
             variant="ghost"
             onClick={() => navigate(-1)}
-            className="mb-2 group text-sm text-slate-400 font-normal px-2.5 py-1"
+            className="group mb-2 px-2.5 py-1 text-sm font-normal text-slate-400"
             type="button"
           >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span>Back to Decks</span>
           </Button>
-          <h1 className="font-display text-2xl md:text-3xl font-black text-white">
+          <h1 className="font-display text-2xl font-black text-white md:text-3xl">
             {isEditMode ? "Edit Deck Build" : "Construct New Deck"}
           </h1>
         </div>
@@ -111,18 +112,18 @@ function DeckBuilderContent() {
         <Button
           variant="outline"
           onClick={() => setIsWizardOpen(true)}
-          className="flex items-center gap-2 border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent bg-cyan-950/20 px-4 py-2 text-xs font-semibold rounded-xl"
+          className="border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent flex items-center gap-2 rounded-xl bg-cyan-950/20 px-4 py-2 text-xs font-semibold"
           type="button"
         >
-          <Sparkles className="w-4 h-4 text-cyan-accent" />
+          <Sparkles className="text-cyan-accent h-4 w-4" />
           <span>AI Deck Wizard</span>
         </Button>
       </div>
 
-      <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-5 bg-dark-surface border border-border-dim rounded-2xl p-5 flex flex-col h-[82vh]">
-          <h2 className="font-display text-sm font-bold text-white mb-4 flex items-center gap-2 pb-2 border-b border-border-dim/60">
-            <Sparkles className="w-4 h-4 text-cyan-accent" />
+      <form onSubmit={handleSave} className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="bg-dark-surface border-border-dim flex h-[82vh] flex-col rounded-2xl border p-5 lg:col-span-5">
+          <h2 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-sm font-bold text-white">
+            <Sparkles className="text-cyan-accent h-4 w-4" />
             Card Database Library
           </h2>
 
@@ -137,7 +138,7 @@ function DeckBuilderContent() {
             archetypes={archetypes}
           />
 
-          <div ref={listContainerRef} className="flex-1 overflow-y-auto mt-4 pr-1 min-h-0">
+          <div ref={listContainerRef} className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1">
             <DeckBuilderCardList
               libraryLoading={libraryLoading}
               libraryCards={libraryCards}
@@ -154,7 +155,7 @@ function DeckBuilderContent() {
           />
         </div>
 
-        <div className="lg:col-span-7 space-y-6">
+        <div className="space-y-6 lg:col-span-7">
           <DeckFormHeader
             name={name}
             setName={setName}
@@ -186,14 +187,14 @@ function DeckBuilderContent() {
             ))}
           </div>
 
-          <div className="flex justify-between items-center bg-dark-surface border border-border-dim rounded-2xl p-4 shadow-md gap-4">
+          <div className="bg-dark-surface border-border-dim flex items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
             <Button
               type="button"
               variant="outline"
               onClick={validateDeckPayload}
               isLoading={isValidating}
               disabled={deckCards.length === 0}
-              className="px-5 py-2.5 font-semibold text-slate-300 hover:text-cyan-accent"
+              className="hover:text-cyan-accent px-5 py-2.5 font-semibold text-slate-300"
             >
               Run Validate Check
             </Button>
@@ -203,9 +204,9 @@ function DeckBuilderContent() {
                 type="button"
                 variant="outline-red"
                 onClick={() => setResetConfirmOpen(true)}
-                className="px-4 py-2.5 font-semibold flex items-center gap-1.5"
+                className="flex items-center gap-1.5 px-4 py-2.5 font-semibold"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="h-3.5 w-3.5" />
                 Reset
               </Button>
 

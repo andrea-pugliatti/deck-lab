@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+
 import type { CardFiltersState } from "../../types";
 import Input from "../ui/Input";
 import Label from "../ui/Label";
@@ -41,14 +42,14 @@ export default function DeckBuilderFilters({
   });
 
   return (
-    <div className="space-y-3 mb-4">
+    <div className="mb-4 space-y-3">
       <Input
         type="text"
         placeholder="Search catalog by name..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        icon={<Search className="w-4 h-4" />}
-        className="text-xs placeholder-slate-500 py-1.5"
+        icon={<Search className="h-4 w-4" />}
+        className="py-1.5 text-xs placeholder-slate-500"
       />
 
       <div className="grid grid-cols-2 gap-2 text-xs">

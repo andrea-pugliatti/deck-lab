@@ -1,5 +1,6 @@
 import { AlertTriangle, HelpCircle, X } from "lucide-react";
 import React, { useEffect, useRef } from "react";
+
 import Button from "./Button";
 
 export interface ConfirmDialogProps {
@@ -90,37 +91,37 @@ export default function ConfirmDialog({
   return (
     <dialog
       ref={dialogRef}
-      className="bg-transparent text-white p-4 border-none backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none max-w-md w-full max-h-[90vh] overflow-visible"
+      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
-      <div className="bg-dark-surface border border-border-dim rounded-2xl p-6 shadow-2xl relative flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-dark-surface border-border-dim animate-in fade-in zoom-in-95 relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl duration-200">
         {/* Glow effect based on variant */}
         <div
-          className={`absolute inset-0 bg-radial ${radialAccentClass} via-transparent to-transparent pointer-events-none`}
+          className={`absolute inset-0 bg-radial ${radialAccentClass} pointer-events-none via-transparent to-transparent`}
         ></div>
 
-        <div className="flex items-start gap-4 mb-6 relative z-10">
+        <div className="relative z-10 mb-6 flex items-start gap-4">
           <div
-            className={`p-3 bg-dark-surface-elevated rounded-xl border border-border-dim/60 ${iconColorClass} shrink-0`}
+            className={`bg-dark-surface-elevated border-border-dim/60 rounded-xl border p-3 ${iconColorClass} shrink-0`}
           >
-            <Icon className="w-6 h-6" />
+            <Icon className="h-6 w-6" />
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-display text-lg font-bold text-slate-100 mb-1.5 leading-tight">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display mb-1.5 text-lg leading-tight font-bold text-slate-100">
               {title}
             </h3>
-            <div className="text-sm text-slate-400 font-light leading-relaxed">{description}</div>
+            <div className="text-sm leading-relaxed font-light text-slate-400">{description}</div>
           </div>
           <button
             type="button"
-            className="text-slate-400 hover:text-white transition-colors cursor-pointer p-1 rounded-lg bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated"
+            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white"
             disabled={isLoading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex gap-3 relative z-10 justify-end">
+        <div className="relative z-10 flex justify-end gap-3">
           <Button
             type="button"
             variant="outline"

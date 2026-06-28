@@ -1,5 +1,6 @@
 import { Layers, RotateCcw, Search, Shuffle, Sparkles } from "lucide-react";
 import { useState } from "react";
+
 import type { SimulatorCardInstance } from "../../types";
 import Button from "../ui/Button";
 import CardInspector from "./CardInspector";
@@ -37,19 +38,19 @@ export default function SimulatorWorkspace({
   const [inspectedCard, setInspectedCard] = useState<SimulatorCardInstance>(hand[0] || undefined);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
       <CardInspector inspectedCard={inspectedCard} />
 
-      <div className="lg:col-span-9 space-y-6">
-        <div className="bg-dark-surface border border-border-dim rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
+      <div className="space-y-6 lg:col-span-9">
+        <div className="bg-dark-surface border-border-dim flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-md md:flex-row md:items-center">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mr-1">
+              <span className="mr-1 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                 Hand Size:
               </span>
               <button
                 onClick={() => setHandSizeConfig(5)}
-                className={`w-7 h-7 flex items-center justify-center font-mono text-xs font-bold rounded-lg border transition-all cursor-pointer ${
+                className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
                   handSizeConfig === 5
                     ? "bg-cyan-accent border-cyan-accent text-dark-bg"
                     : "border-border-dim text-slate-400 hover:text-white"
@@ -59,7 +60,7 @@ export default function SimulatorWorkspace({
               </button>
               <button
                 onClick={() => setHandSizeConfig(6)}
-                className={`w-7 h-7 flex items-center justify-center font-mono text-xs font-bold rounded-lg border transition-all cursor-pointer ${
+                className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
                   handSizeConfig === 6
                     ? "bg-cyan-accent border-cyan-accent text-dark-bg"
                     : "border-border-dim text-slate-400 hover:text-white"
@@ -77,7 +78,7 @@ export default function SimulatorWorkspace({
               onClick={() => onReset(handSizeConfig)}
               className="flex items-center gap-1.5"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="h-3.5 w-3.5" />
               Reset & Redraw
             </Button>
             <Button
@@ -87,7 +88,7 @@ export default function SimulatorWorkspace({
               disabled={remainingDeck.length === 0}
               className="flex items-center gap-1.5"
             >
-              <Layers className="w-3.5 h-3.5 text-cyan-accent" />
+              <Layers className="text-cyan-accent h-3.5 w-3.5" />
               Draw 1
             </Button>
             <Button
@@ -96,7 +97,7 @@ export default function SimulatorWorkspace({
               onClick={onShuffle}
               className="flex items-center gap-1.5"
             >
-              <Shuffle className="w-3.5 h-3.5 text-purple-400" />
+              <Shuffle className="h-3.5 w-3.5 text-purple-400" />
               Shuffle
             </Button>
             <Button
@@ -107,26 +108,26 @@ export default function SimulatorWorkspace({
               }}
               className="flex items-center gap-1.5 font-bold"
             >
-              <Search className="w-3.5 h-3.5 text-dark-bg" />
+              <Search className="text-dark-bg h-3.5 w-3.5" />
               Search Deck
             </Button>
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
-            <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-              <h4 className="font-display text-sm font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-gold-accent" />
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
+            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+              <h4 className="font-display flex items-center gap-2 text-sm font-bold text-white">
+                <Sparkles className="text-gold-accent h-4 w-4" />
                 HAND ZONE
               </h4>
-              <span className="text-[10px] font-bold text-gold-accent bg-gold-accent/10 px-2 py-0.5 rounded border border-gold-accent/20">
+              <span className="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold">
                 {hand.length} Cards
               </span>
             </div>
 
             {hand.length > 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3.5">
+              <div className="grid grid-cols-3 gap-3.5 sm:grid-cols-4 md:grid-cols-5">
                 {hand.map((card) => (
                   <SimulatorCard
                     key={card.uniqId}
@@ -140,25 +141,25 @@ export default function SimulatorWorkspace({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-10 border border-dashed border-border-dim/40 rounded-xl text-slate-500 text-xs leading-relaxed">
+              <div className="border-border-dim/40 rounded-xl border border-dashed py-10 text-center text-xs leading-relaxed text-slate-500">
                 Hand is empty. Click "Draw 1" or "Reset & Redraw" to add cards.
               </div>
             )}
           </div>
 
-          <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 md:p-6 shadow-md">
-            <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-              <h4 className="font-display text-sm font-bold text-white flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyan-accent" />
+          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
+            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+              <h4 className="font-display flex items-center gap-2 text-sm font-bold text-white">
+                <Layers className="text-cyan-accent h-4 w-4" />
                 FIELD
               </h4>
-              <span className="text-[10px] font-bold text-cyan-accent bg-cyan-accent/10 px-2 py-0.5 rounded border border-cyan-accent/20">
+              <span className="text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold">
                 {field.length} Cards
               </span>
             </div>
 
             {field.length > 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3.5">
+              <div className="grid grid-cols-3 gap-3.5 sm:grid-cols-4 md:grid-cols-5">
                 {field.map((card) => (
                   <SimulatorCard
                     key={card.uniqId}
@@ -172,26 +173,26 @@ export default function SimulatorWorkspace({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 border border-dashed border-border-dim/40 rounded-xl text-slate-500 text-xs">
+              <div className="border-border-dim/40 rounded-xl border border-dashed py-12 text-center text-xs text-slate-500">
                 Field is empty. Click a card in your hand and select "To Field (Summon)".
               </div>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
-              <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-slate-400" />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
+              <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+                <h4 className="font-display flex items-center gap-2 text-xs font-bold tracking-wider text-white uppercase">
+                  <Layers className="h-4 w-4 text-slate-400" />
                   Graveyard (GY)
                 </h4>
-                <span className="text-[9px] font-bold text-slate-400 bg-slate-400/10 px-2 py-0.5 rounded">
+                <span className="rounded bg-slate-400/10 px-2 py-0.5 text-[9px] font-bold text-slate-400">
                   {graveyard.length} Cards
                 </span>
               </div>
 
               {graveyard.length > 0 ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 pr-1">
+                <div className="grid grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4">
                   {graveyard.map((card) => (
                     <SimulatorCard
                       key={card.uniqId}
@@ -205,25 +206,25 @@ export default function SimulatorWorkspace({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-slate-600 text-[11px]">
+                <div className="py-8 text-center text-[11px] text-slate-600">
                   Graveyard is empty.
                 </div>
               )}
             </div>
 
-            <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
-              <div className="flex justify-between items-center mb-4 border-b border-border-dim/60 pb-3">
-                <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-purple-400" />
+            <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
+              <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
+                <h4 className="font-display flex items-center gap-2 text-xs font-bold tracking-wider text-white uppercase">
+                  <Layers className="h-4 w-4 text-purple-400" />
                   Banished Zone
                 </h4>
-                <span className="text-[9px] font-bold text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded">
+                <span className="rounded bg-purple-400/10 px-2 py-0.5 text-[9px] font-bold text-purple-400">
                   {banished.length} Cards
                 </span>
               </div>
 
               {banished.length > 0 ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-55 overflow-y-auto pr-1">
+                <div className="grid max-h-55 grid-cols-3 gap-2.5 overflow-y-auto pr-1 sm:grid-cols-4">
                   {banished.map((card) => (
                     <SimulatorCard
                       key={card.uniqId}
@@ -237,7 +238,7 @@ export default function SimulatorWorkspace({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-slate-600 text-[11px]">
+                <div className="py-8 text-center text-[11px] text-slate-600">
                   No cards banished.
                 </div>
               )}

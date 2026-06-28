@@ -1,5 +1,6 @@
 import { AlertCircle, RotateCcw, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
+
 import { fetchAiSuggestions } from "../../services/deck";
 import type { Card, CardSection, DeckCardItem, Suggestion } from "../../types";
 import LoadingSpinner from "../LoadingSpinner";
@@ -56,10 +57,10 @@ export default function AiSuggestionsPanel({
   };
 
   return (
-    <div className="bg-dark-surface border border-border-dim rounded-2xl p-5 shadow-md">
-      <div className="flex justify-between items-center pb-2 border-b border-border-dim/60 mb-4">
-        <h3 className="font-display text-sm font-bold text-white flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-cyan-accent" />
+    <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
+      <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
+        <h3 className="font-display flex items-center gap-2 text-sm font-bold text-white">
+          <Sparkles className="text-cyan-accent h-4 w-4" />
           <span>AI Card Suggestions</span>
         </h3>
         <div className="flex items-center gap-2">
@@ -71,9 +72,9 @@ export default function AiSuggestionsPanel({
                 setSuggestions([]);
                 setError(undefined);
               }}
-              className="px-3 py-1.5 flex items-center gap-1.5"
+              className="flex items-center gap-1.5 px-3 py-1.5"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="h-3.5 w-3.5" />
               <span>Reset</span>
             </Button>
           )}
@@ -83,29 +84,29 @@ export default function AiSuggestionsPanel({
             onClick={fetchSuggestions}
             isLoading={loading}
             disabled={loading}
-            className="px-3 py-1.5 flex items-center gap-1.5 border-cyan-accent/20 hover:border-cyan-accent text-cyan-accent bg-cyan-950/10"
+            className="border-cyan-accent/20 hover:border-cyan-accent text-cyan-accent flex items-center gap-1.5 bg-cyan-950/10 px-3 py-1.5"
           >
-            <Wand2 className="w-3.5 h-3.5" />
+            <Wand2 className="h-3.5 w-3.5" />
             <span>Analyze Synergy</span>
           </Button>
         </div>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-950/40 border border-red-800/60 rounded-xl text-red-200 text-xs flex gap-2 items-center mb-4">
-          <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
           <span>{error}</span>
         </div>
       )}
 
       {loading && (
-        <div className="flex justify-center items-center py-10">
+        <div className="flex items-center justify-center py-10">
           <LoadingSpinner size="sm" className="py-2" />
         </div>
       )}
 
       {!loading && suggestions.length === 0 && (
-        <div className="text-center py-6 text-xs text-slate-400">
+        <div className="py-6 text-center text-xs text-slate-400">
           Click <span className="text-cyan-accent font-semibold">Analyze Synergy</span> to get
           recommended cards based on your current deck layout.
         </div>

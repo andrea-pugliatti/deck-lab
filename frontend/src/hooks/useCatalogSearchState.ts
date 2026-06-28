@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
+
 import { getCardsEndpoint } from "../services/card";
 import type { Card, CardFiltersState, Page } from "../types";
 import { useDebounce } from "./useDebounce";
@@ -28,15 +29,25 @@ export function useCatalogSearchState(options: UseCatalogSearchStateOptions = {}
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const debouncedQuery = useDebounce(searchQuery, syncWithUrl ? 400 : 300);
 
-  // Sync searchQuery input with URL parameter changes (e.g. forward/back browser buttons)
-  useEffect(() => {
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+  const [prevDebouncedQuery, setPrevDebouncedQuery] = useState(debouncedQuery);
+
+  if (searchParams !== prevSearchParams) {
+    setPrevSearchParams(searchParams);
     if (syncWithUrl) {
       const urlQuery = searchParams.get("q") || "";
       setSearchQuery((prev) => (prev !== urlQuery ? urlQuery : prev));
     }
-  }, [syncWithUrl, searchParams]);
+  }
 
-  // Sync debounced query to URL params or reset page
+  if (debouncedQuery !== prevDebouncedQuery) {
+    setPrevDebouncedQuery(debouncedQuery);
+    if (!syncWithUrl) {
+      setLocalPage(0);
+    }
+  }
+
+  // Sync debounced query to URL params
   useEffect(() => {
     if (syncWithUrl) {
       const currentUrlQuery = searchParams.get("q") || "";
@@ -50,8 +61,6 @@ export function useCatalogSearchState(options: UseCatalogSearchStateOptions = {}
         params.delete("page");
         setSearchParams(params);
       }
-    } else {
-      setLocalPage(0);
     }
   }, [debouncedQuery, syncWithUrl, setSearchParams, searchParams]);
 

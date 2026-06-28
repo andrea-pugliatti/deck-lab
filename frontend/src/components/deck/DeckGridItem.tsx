@@ -31,32 +31,32 @@ export default function DeckGridItem({
   return (
     <Link
       to={`/cards/${cardId}`}
-      className="group relative flex flex-col bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated border border-border-dim rounded-xl overflow-hidden transition-all duration-200 hover:border-border-glow hover:shadow-md no-underline"
+      className="group bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated border-border-dim hover:border-border-glow relative flex flex-col overflow-hidden rounded-xl border no-underline transition-all duration-200 hover:shadow-md"
     >
-      <div className="relative aspect-video w-full overflow-hidden bg-slate-900 border-b border-border-dim/40 flex items-center justify-center">
+      <div className="border-border-dim/40 relative flex aspect-video w-full items-center justify-center overflow-hidden border-b bg-slate-900">
         {imageUrl ? (
           <img
             src={`/api/${imageUrl}`}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">
+          <span className="text-[10px] font-bold tracking-wider text-slate-600 uppercase">
             [ {name.substring(0, 3)} ]
           </span>
         )}
-        <span className="absolute bottom-1 right-1 font-mono text-[10px] font-bold text-white bg-slate-900/85 px-1.5 py-0.5 rounded border border-white/10 shadow-sm">
+        <span className="absolute right-1 bottom-1 rounded border border-white/10 bg-slate-900/85 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow-sm">
           x{quantity}
         </span>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between">
-        <h4 className="text-xs font-bold text-white group-hover:text-cyan-accent transition-colors duration-150 line-clamp-1 mb-1 font-sans">
+      <div className="flex flex-1 flex-col justify-between p-3">
+        <h4 className="group-hover:text-cyan-accent mb-1 line-clamp-1 font-sans text-xs font-bold text-white transition-colors duration-150">
           {name}
         </h4>
         {type && (
           <span
-            className={`text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded border self-start ${badgeColor}`}
+            className={`self-start rounded border px-1 py-0.5 text-[8px] font-bold tracking-wider uppercase ${badgeColor}`}
           >
             {type.replace(" Monster", "").replace(" Card", "")}
           </span>
