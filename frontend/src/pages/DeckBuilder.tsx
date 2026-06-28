@@ -12,7 +12,7 @@ import DeckValidationErrors from "../components/deck-builder/DeckValidationError
 import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
-import { CatalogSearchProvider, useCatalogSearch } from "../context/CatalogSearchContext";
+import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
 import { DeckStateProvider, useDeckStateContext } from "../context/DeckStateContext";
 
 function DeckBuilderContent() {
@@ -58,7 +58,7 @@ function DeckBuilderContent() {
     formats,
     libraryLoading,
     libraryCards,
-  } = useCatalogSearch();
+  } = useCatalogSearchContext();
 
   useEffect(() => {
     if (listContainerRef.current) {

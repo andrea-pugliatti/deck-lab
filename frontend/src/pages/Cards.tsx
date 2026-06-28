@@ -9,7 +9,7 @@ import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import Input from "../components/ui/Input";
 import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearchState } from "../hooks/useCatalogSearchState";
+import { useUrlSyncedSearch } from "../hooks/useUrlSyncedSearch";
 
 export default function Cards() {
   const {
@@ -25,7 +25,7 @@ export default function Cards() {
     totalElements,
     error,
     refetch,
-  } = useCatalogSearchState({ syncWithUrl: true, defaultPageSize: 20 });
+  } = useUrlSyncedSearch({ defaultPageSize: 20 });
 
   const { types, attributes, races, archetypes } = useCardMetadata();
 

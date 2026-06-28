@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
 import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearchState } from "../hooks/useCatalogSearchState";
+import { useCatalogSearch } from "../hooks/useCatalogSearch";
 import { useFetch } from "../hooks/useFetch";
 import { getFormatsEndpoint } from "../services/deck";
 import type { Card, CardFiltersState } from "../types";
@@ -27,7 +27,7 @@ interface CatalogSearchContextType {
 const CatalogSearchContext = createContext<CatalogSearchContextType | undefined>(undefined);
 
 export function CatalogSearchProvider({ children }: { children: ReactNode }) {
-  const searchState = useCatalogSearchState({ syncWithUrl: false, defaultPageSize: 8 });
+  const searchState = useCatalogSearch({ defaultPageSize: 8 });
 
   // Fetch metadata
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
@@ -51,7 +51,7 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useCatalogSearch() {
+export function useCatalogSearchContext() {
   const context = useContext(CatalogSearchContext);
   if (context === undefined) {
     throw new Error("useCatalogSearch must be used within a CatalogSearchProvider");
