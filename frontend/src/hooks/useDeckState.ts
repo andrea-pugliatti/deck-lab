@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useReducer } from "react";
 
+import { deckReducer, initialState } from "../reducers/deckReducer";
 import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
 import type { Card, CardSection, Deck, DeckCardItem } from "../types";
-import { deckReducer, initialState } from "../reducers/deckReducer";
 
 const buildDeckPayload = (
   name: string,
@@ -114,7 +114,10 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
 
     const isValid = await validateDeckPayload();
     if (!isValid) {
-      dispatch({ type: "SET_SAVE_RESULT", error: "Please resolve validation errors before saving." });
+      dispatch({
+        type: "SET_SAVE_RESULT",
+        error: "Please resolve validation errors before saving.",
+      });
       return;
     }
 
@@ -132,7 +135,10 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
         onSaveSuccess(savedDeck);
       }
     } catch (err: any) {
-      dispatch({ type: "SET_SAVE_RESULT", error: err.message || "An error occurred while saving the deck." });
+      dispatch({
+        type: "SET_SAVE_RESULT",
+        error: err.message || "An error occurred while saving the deck.",
+      });
     }
   }, [
     id,

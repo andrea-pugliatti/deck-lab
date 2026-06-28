@@ -1,5 +1,5 @@
-import type { Card, CardSection, DeckCardItem } from "../types";
 import { canAddCard, clampQuantity, getFormatRules } from "../services/validation";
+import type { Card, CardSection, DeckCardItem } from "../types";
 
 export interface DeckState {
   name: string;
@@ -139,9 +139,7 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
       const { cardId, section, delta } = action;
       const prevCards = state.deckCards;
       const formatName = state.formatName;
-      const targetIndex = prevCards.findIndex(
-        (c) => c.cardId === cardId && c.section === section,
-      );
+      const targetIndex = prevCards.findIndex((c) => c.cardId === cardId && c.section === section);
       if (targetIndex === -1) return state;
 
       const updated = [...prevCards];
