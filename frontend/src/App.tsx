@@ -12,6 +12,7 @@ import Decks from "./pages/Decks";
 import HandSimulator from "./pages/HandSimulator";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
               <Route path="decks/create" element={<DeckBuilder />} />
               <Route path="decks/:id/edit" element={<DeckBuilder />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           <Route element={<AuthLayout />}>
