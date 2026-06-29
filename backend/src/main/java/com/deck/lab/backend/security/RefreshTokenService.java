@@ -21,6 +21,50 @@ import com.deck.lab.backend.model.RefreshToken;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.RefreshTokenRepository;
 
+/**
+ * Service managing database-backed refresh tokens, token rotation rules,
+ * security replay protection, and IP-based rate limiting.
+ *
+ * <p>
+ * <strong>Token Rotation & Replay Protection</strong>
+ * </p>
+ * <p>
+ * Unlike stateless access tokens, refresh tokens represent a persistent
+ * authorization session and are tracked in the database. To minimize the risk
+ * of stolen tokens, this service implements two core security patterns:
+ * </p>
+ * <ul>
+ * <li><strong>Token Rotation:</strong>
+ * Every time a client uses their refresh token to request a new access token,
+ * the current refresh token is rotated (invalidated) and a new refresh token is
+ * issued.</li>
+ * <li><strong>Reuse Detection (Replay Protection):</strong>
+ * If the system receives a refresh request for an already rotated/revoked
+ * token, it implies that an attacker intercepted the token and is trying to
+ * reuse it. To protect the user, the service immediately revokes the entire
+ * family of tokens associated with that session, forcing the legitimate owner
+ * to re-authenticate with their password.</li>
+ * <li><strong>Grace Period:</strong>
+ * Single-page applications (SPAs) often trigger concurrent requests. If two
+ * parallel API requests try to refresh the token at the exact same millisecond,
+ * token rotation could reject the second request as a reuse attempt. A short
+ * configuration-defined grace period prevents these race conditions from
+ * triggering false-positive security revocs.</li>
+ * </ul>
+ *
+ * <p>
+ * <strong>IP-Based Rate Limiting & Background Cleanup:</strong>
+ * </p>
+ * <ul>
+ * <li>In-Memory Rate Limiting: Tracks request attempts per client IP address in
+ * a thread-safe {@link ConcurrentHashMap} to guard the endpoint against
+ * denial-of-service or token enumeration attacks.</li>
+ * <li>{@code @Scheduled} Cleanup: Database tables tracking active sessions can
+ * suffer from performance bloat over time. This service runs a scheduled cron
+ * job (configured via Spring's task scheduler) to periodically purge expired or
+ * revoked token entries.</li>
+ * </ul>
+ */
 @Service
 public class RefreshTokenService {
 
@@ -49,16 +93,33 @@ public class RefreshTokenService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
+    /**
+     * Generates a secure, random url-safe base64 string token.
+     */
     private String generateSecureToken() {
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
 
+    /**
+     * Finds a RefreshToken entity by its token string.
+     *
+     * @param token the token string to search
+     * @return Optional containing the RefreshToken if found
+     */
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
+    /**
+     * Creates and persists a new RefreshToken session for a user.
+     * Automatically invalidates older sessions if they exceed the max sessions per
+     * user limit.
+     *
+     * @param user the User owner of the session
+     * @return the saved RefreshToken entity
+     */
     @Transactional
     public RefreshToken createRefreshToken(User user) {
         List<RefreshToken> activeTokens = refreshTokenRepository.findByUserAndRevokedFalseOrderByCreatedAtAsc(user);
@@ -80,6 +141,17 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
+    /**
+     * Verifies that a RefreshToken has not expired or been improperly reused.
+     * Implements reuse detection: if a revoked token is accessed outside its
+     * rotation grace window,
+     * it invalidates all active sessions for the user to defend against token
+     * theft.
+     *
+     * @param token the RefreshToken entity to verify
+     * @return the verified RefreshToken
+     * @throws TokenRefreshException if the token is expired or reuse is detected
+     */
     @Transactional
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
@@ -107,6 +179,14 @@ public class RefreshTokenService {
         return token;
     }
 
+    /**
+     * Rotates an existing refresh token, creating a new one and revoking the old
+     * one.
+     *
+     * @param tokenStr the current refresh token string
+     * @return the new, rotated RefreshToken entity
+     * @throws TokenRefreshException if the token is invalid or expired
+     */
     @Transactional
     public RefreshToken rotateRefreshToken(String tokenStr) {
         RefreshToken oldToken = refreshTokenRepository.findByToken(tokenStr)
@@ -124,6 +204,11 @@ public class RefreshTokenService {
         return newRefreshToken;
     }
 
+    /**
+     * Revokes a refresh token string by setting its revoked flag to true.
+     *
+     * @param tokenStr the token string to revoke
+     */
     @Transactional
     public void revokeToken(String tokenStr) {
         refreshTokenRepository.findByToken(tokenStr).ifPresent(token -> {
@@ -132,12 +217,24 @@ public class RefreshTokenService {
         });
     }
 
+    /**
+     * Scheduled cron job running daily to purge expired or revoked tokens from
+     * database.
+     */
     @Scheduled(cron = "${refresh-token.cleanup-schedule:0 0 3 * * *}")
     @Transactional
     public void cleanupExpiredTokens() {
         refreshTokenRepository.deleteByExpiryDateBeforeOrRevokedTrue(Instant.now());
     }
 
+    /**
+     * Validates that an IP address has not exceeded token refresh rate limit
+     * constraints.
+     *
+     * @param ipAddress the remote client IP address string
+     * @throws ResponseStatusException HTTP 429 Too Many Requests if limit is
+     *                                 exceeded
+     */
     public void checkRateLimit(String ipAddress) {
         long now = System.currentTimeMillis();
         RateLimitInfo info = rateLimitMap.compute(ipAddress, (k, v) -> {
@@ -155,12 +252,19 @@ public class RefreshTokenService {
         }
     }
 
+    /**
+     * Scheduled cleanup job running every 5 minutes to prune expired rate limit
+     * tracking entries.
+     */
     @Scheduled(cron = "${refresh-token.rate-limit.cleanup-schedule:0 */5 * * * *}")
     public void cleanupRateLimitMap() {
         long now = System.currentTimeMillis();
         rateLimitMap.entrySet().removeIf(entry -> (now - entry.getValue().windowStart) > rateLimitWindowMs);
     }
 
+    /**
+     * Resets rate-limiting logs (used primarily for test scenarios).
+     */
     public void resetRateLimits() {
         rateLimitMap.clear();
     }
@@ -177,6 +281,10 @@ public class RefreshTokenService {
         this.gracePeriodSeconds = gracePeriodSeconds;
     }
 
+    /**
+     * Internal container storing rate limit statistics for a single client IP
+     * address.
+     */
     private static class RateLimitInfo {
         int attempts;
         long windowStart;
