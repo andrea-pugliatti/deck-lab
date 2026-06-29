@@ -19,23 +19,25 @@ export default function DeckDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string>();
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : null);
+  const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : undefined);
 
   const handleDeleteModal = async () => {
     if (!id) return;
     setConfirmModalOpen(false);
     setIsDeleting(true);
-    setDeleteError(null);
+    setDeleteError(undefined);
 
     try {
       await deleteDeck(id);
       navigate("/my-decks");
-    } catch (err: any) {
-      setDeleteError(err.message || "An error occurred while deleting the deck.");
+    } catch (err) {
+      setDeleteError(
+        err instanceof Error ? err.message : "An error occurred while deleting the deck.",
+      );
       setIsDeleting(false);
     }
   };

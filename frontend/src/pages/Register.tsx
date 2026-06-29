@@ -14,12 +14,12 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    setError(null);
+    setError(undefined);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -30,8 +30,8 @@ export default function Register() {
     try {
       await register(username, email, password);
       navigate("/decks");
-    } catch (err: any) {
-      setError(err.message || "Registration failed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setSubmitting(false);
     }

@@ -17,7 +17,11 @@ export default function HandSimulator() {
   const navigate = useNavigate();
   const deckId = searchParams.get("deckId");
 
-  const { data: deck, loading, error } = useFetch<Deck>(deckId ? getDeckEndpoint(deckId) : null);
+  const {
+    data: deck,
+    loading,
+    error,
+  } = useFetch<Deck>(deckId ? getDeckEndpoint(deckId) : undefined);
 
   const mainCardsCount =
     deck?.deckCards

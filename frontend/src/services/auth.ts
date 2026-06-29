@@ -17,7 +17,7 @@ export async function login(
     throw new Error("Invalid username or password");
   }
 
-  return res.json();
+  return res.json() as Promise<{ accessToken: string; username: string }>;
 }
 
 export async function register(
@@ -38,7 +38,7 @@ export async function register(
     throw new Error(errorMsg || "Registration failed");
   }
 
-  return res.json();
+  return res.json() as Promise<{ accessToken: string; username: string }>;
 }
 
 export async function logout(): Promise<void> {
@@ -64,10 +64,15 @@ export async function refreshToken(): Promise<{ accessToken: string }> {
     throw new Error("Failed to refresh token");
   }
 
-  return res.json();
+  return res.json() as Promise<{ accessToken: string }>;
 }
 
-export function parseJwt(token: string) {
+export interface JwtPayload {
+  sub?: string;
+  [key: string]: unknown;
+}
+
+export function parseJwt(token: string): JwtPayload | undefined {
   try {
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -78,8 +83,8 @@ export function parseJwt(token: string) {
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
         .join(""),
     );
-    return JSON.parse(jsonPayload);
+    return JSON.parse(jsonPayload) as JwtPayload;
   } catch {
-    return null;
+    return undefined;
   }
 }

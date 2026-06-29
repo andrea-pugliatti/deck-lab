@@ -1,5 +1,12 @@
-import type { Deck, Suggestion } from "../types";
-import { apiFetch, parseResponseError } from "./api";
+import type {
+  AiGeneratedDeck,
+  Deck,
+  DeckCardItem,
+  DeckPayload,
+  ErrorPayload,
+  Suggestion,
+} from "../types";
+import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
 import { validateDeckSections } from "./validation";
 
 export function getFormatsEndpoint(): string {
@@ -29,7 +36,7 @@ export async function getDeck(id: string): Promise<Deck> {
   return res.json();
 }
 
-export async function validateDeck(payload: any): Promise<{ ok: boolean; errors?: string[] }> {
+export async function validateDeck(payload: DeckPayload): Promise<ErrorPayload> {
   // Local sections validation first
   const localErrors = validateDeckSections(payload.deckCards || [], payload.formatName);
   if (localErrors.length > 0) {
@@ -46,48 +53,18 @@ export async function validateDeck(payload: any): Promise<{ ok: boolean; errors?
     if (res.ok) {
       return { ok: true };
     } else {
-      let errorsList: string[] = [];
-      try {
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await res.json();
-          if (errorData) {
-            if (Array.isArray(errorData.errors)) {
-              errorsList = errorData.errors.map((e: any) => {
-                if (typeof e === "string") return e;
-                if (!e) return "Unknown validation error";
-                return e.defaultMessage || e.message || e.error || String(e);
-              });
-            } else if (typeof errorData.message === "string") {
-              errorsList = [errorData.message];
-            } else if (typeof errorData.error === "string") {
-              errorsList = [errorData.error];
-            }
-          }
-        } else {
-          const text = await res.text();
-          if (text) {
-            errorsList = [text];
-          }
-        }
-      } catch (parseErr) {
-        console.error("Failed to parse validation error response:", parseErr);
-      }
-
-      if (errorsList.length === 0) {
-        errorsList = [
-          `Validation failed with status ${res.status}: ${res.statusText || "Bad Request"}`,
-        ];
-      }
-
+      const errorsList = await parseResponseErrors(res);
       return { ok: false, errors: errorsList };
     }
-  } catch (err: any) {
-    return { ok: false, errors: [err.message || "Connection error during deck validation."] };
+  } catch (err) {
+    return {
+      ok: false,
+      errors: [err instanceof Error ? err.message : "Connection error during deck validation."],
+    };
   }
 }
 
-export async function saveDeck(payload: any, id?: string): Promise<Deck> {
+export async function saveDeck(payload: DeckPayload, id?: string): Promise<Deck> {
   const url = id ? `/api/decks/${id}` : "/api/decks";
   const method = id ? "PUT" : "POST";
 
@@ -100,7 +77,7 @@ export async function saveDeck(payload: any, id?: string): Promise<Deck> {
     throw await parseResponseError(res);
   }
 
-  return res.json();
+  return res.json() as Promise<Deck>;
 }
 
 export async function deleteDeck(id: string | number): Promise<void> {
@@ -115,7 +92,7 @@ export async function deleteDeck(id: string | number): Promise<void> {
 
 export async function fetchAiSuggestions(
   formatName: string,
-  currentCards: { name: string; section: string; quantity: number }[],
+  currentCards: DeckCardItem[],
 ): Promise<Suggestion[]> {
   const res = await apiFetch("/api/decks/ai/suggest", {
     method: "POST",
@@ -129,7 +106,7 @@ export async function fetchAiSuggestions(
     throw await parseResponseError(res);
   }
 
-  const data = await res.json();
+  const data = (await res.json()) as Suggestion[];
   return data || [];
 }
 
@@ -137,8 +114,8 @@ export async function generateAiDeck(payload: {
   archetype: string;
   strategy: string;
   formatName: string;
-  customPrompt: string | null;
-}): Promise<any> {
+  customPrompt?: string;
+}): Promise<AiGeneratedDeck> {
   const res = await apiFetch("/api/decks/ai/generate", {
     method: "POST",
     body: JSON.stringify(payload),
@@ -148,5 +125,5 @@ export async function generateAiDeck(payload: {
     throw await parseResponseError(res);
   }
 
-  return res.json();
+  return res.json() as Promise<AiGeneratedDeck>;
 }

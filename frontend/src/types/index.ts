@@ -71,3 +71,27 @@ export interface Page<T> {
   content: T[];
   page: PageMetadata;
 }
+
+export interface DeckPayloadItem {
+  cardId: number;
+  quantity: number;
+  section: CardSection;
+}
+
+export interface DeckPayload {
+  name: string;
+  description: string;
+  formatName: string;
+  deckCards: DeckPayloadItem[];
+}
+
+export interface AiGeneratedDeck extends Partial<Deck> {
+  validationWarnings?: string[];
+}
+
+export interface ErrorPayload {
+  ok?: boolean;
+  errors?: string[];
+  message?: string;
+  error?: string;
+}

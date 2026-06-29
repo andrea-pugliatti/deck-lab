@@ -3,7 +3,7 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 import { simulatorReducer, initialSimulatorState } from "../reducers/simulatorReducer";
 import type { Deck, SimulatorCardInstance } from "../types";
 
-export function useHandSimulator(deck: Deck | null, initialHandSize: number = 5) {
+export function useHandSimulator(deck?: Deck, initialHandSize: number = 5) {
   const [state, dispatch] = useReducer(simulatorReducer, initialSimulatorState);
   const lastDeckKeyRef = useRef<string>("");
 

@@ -28,5 +28,5 @@ export async function getCard(id: string | number): Promise<Card> {
   if (!res.ok) {
     throw await parseResponseError(res);
   }
-  return res.json();
+  return res.json() as Promise<Card>;
 }

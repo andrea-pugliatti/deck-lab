@@ -58,22 +58,22 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
     skip: tab === "user" && !user?.username,
   });
 
-  const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string } | null>(null);
+  const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string }>();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string>();
 
   const handleDeleteModal = async () => {
     if (!deckToDelete) return;
     setIsDeleting(true);
-    setDeleteError(null);
+    setDeleteError(undefined);
     try {
       await deleteDeck(deckToDelete.id);
       refetch();
-      setDeckToDelete(null);
-    } catch (err: any) {
+      setDeckToDelete(undefined);
+    } catch (err) {
       console.error(err);
-      setDeleteError(err.message || "Failed to delete the deck.");
-      setDeckToDelete(null);
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete the deck.");
+      setDeckToDelete(undefined);
     } finally {
       setIsDeleting(false);
     }
@@ -123,7 +123,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
         <div className="mb-6 flex items-center justify-between rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
           <span>{deleteError}</span>
           <button
-            onClick={() => setDeleteError(null)}
+            onClick={() => setDeleteError(undefined)}
             className="cursor-pointer text-xs text-slate-400 hover:text-white"
           >
             Close
@@ -195,8 +195,8 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
       )}
 
       <ConfirmDialog
-        isOpen={deckToDelete !== null}
-        onClose={() => setDeckToDelete(null)}
+        isOpen={!!deckToDelete}
+        onClose={() => setDeckToDelete(undefined)}
         onConfirm={handleDeleteModal}
         title="Delete Deck Blueprint"
         description={

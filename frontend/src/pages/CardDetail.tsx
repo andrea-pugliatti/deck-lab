@@ -39,7 +39,7 @@ export default function CardDetail() {
     setRotateY(0);
   };
 
-  const { data: card, loading, error } = useFetch<Card>(id ? getCardEndpoint(id) : null);
+  const { data: card, loading, error } = useFetch<Card>(id ? getCardEndpoint(id) : undefined);
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;

@@ -6,12 +6,12 @@ export interface FetchOptions extends RequestInit {
   skip?: boolean;
 }
 
-export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
-  const [data, setData] = useState<T | null>(null);
+export function useFetch<T = unknown>(url?: string, options?: FetchOptions) {
+  const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(!options?.skip && !!url);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error>();
 
-  const [prevUrl, setPrevUrl] = useState<string | null>(url);
+  const [prevUrl, setPrevUrl] = useState<string | undefined>(url);
   const [prevSkip, setPrevSkip] = useState<boolean | undefined>(options?.skip);
 
   if (url !== prevUrl || options?.skip !== prevSkip) {
@@ -35,7 +35,7 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
       if (abortSignal?.aborted) return;
 
       setLoading(true);
-      setError(null);
+      setError(undefined);
 
       try {
         const fetchOpts = { ...optionsRef.current };
@@ -50,19 +50,19 @@ export function useFetch<T = any>(url: string | null, options?: FetchOptions) {
           throw await parseResponseError(response);
         }
 
-        let responseData: any = null;
+        let responseData: T | undefined = undefined;
         if (response.status !== 204) {
-          responseData = await response.json();
+          responseData = (await response.json()) as T;
         }
         setData(responseData);
         return responseData;
-      } catch (err: any) {
-        if (err.name === "AbortError") {
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
           // Fetch was aborted, ignore setting error/loading state
           return;
         }
         setError(err instanceof Error ? err : new Error(String(err)));
-        setData(null);
+        setData(undefined);
         throw err;
       } finally {
         setLoading(false);

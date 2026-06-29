@@ -116,7 +116,6 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
     if (!isValid) {
       dispatch({
         type: "SET_SAVE_RESULT",
-        error: "Please resolve validation errors before saving.",
       });
       return;
     }
@@ -134,10 +133,10 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);
       }
-    } catch (err: any) {
+    } catch (err) {
       dispatch({
         type: "SET_SAVE_RESULT",
-        error: err.message || "An error occurred while saving the deck.",
+        error: err instanceof Error ? err.message : "An error occurred while saving the deck.",
       });
     }
   }, [

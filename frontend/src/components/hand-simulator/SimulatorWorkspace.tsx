@@ -9,7 +9,7 @@ import DeckExplorerModal from "./DeckExplorerModal";
 import SimulatorCard from "./SimulatorCard";
 
 interface SimulatorWorkspaceProps {
-  deck: Deck | null;
+  deck?: Deck;
 }
 
 export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {

@@ -1,6 +1,6 @@
 let accessToken: string | undefined = undefined;
 let isRefreshing = false;
-let refreshSubscribers: { resolve: (token: string) => void; reject: (err: any) => void }[] = [];
+let refreshSubscribers: { resolve: (token: string) => void; reject: (err: unknown) => void }[] = [];
 
 export function getAccessToken(): string | undefined {
   return accessToken;
@@ -10,7 +10,7 @@ export function setAccessToken(token?: string): void {
   accessToken = token;
 }
 
-function subscribeTokenRefresh(resolve: (token: string) => void, reject: (err: any) => void) {
+function subscribeTokenRefresh(resolve: (token: string) => void, reject: (err: unknown) => void) {
   refreshSubscribers.push({ resolve, reject });
 }
 
@@ -19,41 +19,53 @@ function onRefreshed(token: string) {
   refreshSubscribers = [];
 }
 
-function onRefreshFailed(err: any) {
+function onRefreshFailed(err: unknown) {
   refreshSubscribers.forEach((cb) => cb.reject(err));
   refreshSubscribers = [];
 }
 
-export async function parseResponseError(response: Response): Promise<Error> {
-  let errorMessage = `Error: ${response.status} ${response.statusText}`;
+export async function parseResponseErrors(response: Response): Promise<string[]> {
   try {
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      const errData = await response.json();
+      const errData = (await response.json()) as
+        | {
+            errors?: unknown[];
+            message?: string;
+            error?: string;
+          }
+        | null
+        | undefined;
       if (errData) {
         if (Array.isArray(errData.errors)) {
-          const errorsList = errData.errors.map((e: any) => {
+          return errData.errors.map((e: unknown) => {
             if (typeof e === "string") return e;
-            if (!e) return "Unknown validation error";
-            return e.defaultMessage || e.message || e.error || String(e);
+            if (e && typeof e === "object") {
+              const errObj = e as Record<string, unknown>;
+              const msg = errObj.defaultMessage || errObj.message || errObj.error;
+              if (typeof msg === "string") return msg;
+            }
+            return String(e || "Unknown validation error");
           });
-          if (errorsList.length > 0) {
-            errorMessage = errorsList.join(", ");
-          }
         } else if (errData.message) {
-          errorMessage = errData.message;
+          return [errData.message];
         } else if (errData.error) {
-          errorMessage = errData.error;
+          return [errData.error];
         }
       }
     } else {
       const errText = await response.text();
-      if (errText) errorMessage = errText;
+      if (errText) return [errText];
     }
   } catch {
-    // ignore parsing errors and use status message
+    // ignore parsing errors
   }
-  return new Error(errorMessage);
+  return [`Error: ${response.status} ${response.statusText}`];
+}
+
+export async function parseResponseError(response: Response): Promise<Error> {
+  const errorsList = await parseResponseErrors(response);
+  return new Error(errorsList.join(", "));
 }
 
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
@@ -93,7 +105,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
       })
         .then(async (refreshRes) => {
           if (refreshRes.ok) {
-            const data = await refreshRes.json();
+            const data = (await refreshRes.json()) as { accessToken: string };
             const newAccessToken = data.accessToken;
             setAccessToken(newAccessToken);
             isRefreshing = false;

@@ -112,7 +112,7 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
   queryParams.append("page", activePage.toString());
   queryParams.append("size", pageSize.toString());
 
-  const fetchUrl = skip ? null : getDecksQueryEndpoint(queryParams);
+  const fetchUrl = skip ? undefined : getDecksQueryEndpoint(queryParams);
 
   const { data, loading, error, refetch } = useFetch<Page<Deck>>(fetchUrl);
 

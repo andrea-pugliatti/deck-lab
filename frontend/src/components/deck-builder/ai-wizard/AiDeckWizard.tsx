@@ -37,7 +37,7 @@ export default function AiDeckWizard({
   const [formatName, setFormatName] = useState(currentFormat || "TCG");
   const [customPrompt, setCustomPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>();
   const [warnings, setWarnings] = useState<string[]>([]);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -53,7 +53,7 @@ export default function AiDeckWizard({
     setPrevCurrentFormat(currentFormat);
     if (isOpen) {
       setLoading(false);
-      setError(null);
+      setError(undefined);
       setWarnings([]);
       setArchetype("");
       setStrategy("None");
@@ -99,7 +99,7 @@ export default function AiDeckWizard({
     }
 
     setLoading(true);
-    setError(null);
+    setError(undefined);
     setWarnings([]);
 
     try {
@@ -107,7 +107,7 @@ export default function AiDeckWizard({
         archetype: archetype.trim(),
         strategy,
         formatName,
-        customPrompt: customPrompt.trim() || null,
+        customPrompt: customPrompt.trim(),
       });
 
       onDeckGenerated({
@@ -123,8 +123,10 @@ export default function AiDeckWizard({
       } else {
         dialogRef.current?.close();
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred during generation.");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred during generation.",
+      );
       setLoading(false);
     }
   };

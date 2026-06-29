@@ -14,6 +14,7 @@ import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
 import { DeckStateProvider, useDeckStateContext } from "../context/DeckStateContext";
+import type { AiGeneratedDeck } from "../types";
 
 function DeckBuilderContent() {
   const navigate = useNavigate();
@@ -71,16 +72,13 @@ function DeckBuilderContent() {
     saveDeck();
   };
 
-  const handleDeckGenerated = (data: {
-    name: string;
-    description: string;
-    formatName: string;
-    deckCards: any[];
-  }) => {
-    setName(data.name);
-    setDescription(data.description);
-    setFormatName(data.formatName);
-    setDeckCards(data.deckCards);
+  const handleDeckGenerated = (data: AiGeneratedDeck) => {
+    if (data) {
+      setName(data.name!);
+      setDescription(data.description!);
+      setFormatName(data.formatName!);
+      setDeckCards(data.deckCards!);
+    }
   };
 
   const handleResetModal = () => {

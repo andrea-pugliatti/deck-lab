@@ -5,11 +5,11 @@ import { getCardMetadataEndpoint } from "../services/card";
 
 type MetadataKey = "types" | "attributes" | "races" | "archetypes";
 
-const cache: Record<MetadataKey, string[] | null> = {
-  types: null,
-  attributes: null,
-  races: null,
-  archetypes: null,
+const cache: Record<MetadataKey, string[] | undefined> = {
+  types: undefined,
+  attributes: undefined,
+  races: undefined,
+  archetypes: undefined,
 };
 
 const promises: Partial<Record<MetadataKey, Promise<string[]>>> = {};
@@ -32,7 +32,7 @@ async function fetchMetadata(key: MetadataKey): Promise<string[]> {
         if (!res.ok) {
           throw new Error(`Failed to fetch ${key}: ${res.statusText}`);
         }
-        const data = await res.json();
+        const data = (await res.json()) as string[];
         cache[key] = data;
         return data;
       })

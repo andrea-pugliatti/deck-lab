@@ -22,7 +22,9 @@ export default function SearchBar() {
   const debouncedQuery = useDebounce(query, 300);
 
   const fetchUrl =
-    debouncedQuery.trim().length >= 2 ? getCardSuggestionsEndpoint(debouncedQuery.trim()) : null;
+    debouncedQuery.trim().length >= 2
+      ? getCardSuggestionsEndpoint(debouncedQuery.trim())
+      : undefined;
 
   const { data, loading } = useFetch<{ content: SuggestionCard[] }>(fetchUrl);
   const cardSuggestions = data?.content || [];

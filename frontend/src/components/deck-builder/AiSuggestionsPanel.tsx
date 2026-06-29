@@ -28,14 +28,15 @@ export default function AiSuggestionsPanel({
 
     try {
       const currentCards = deckCards.map((c) => ({
+        cardId: c.cardId,
         name: c.name,
         section: c.section,
         quantity: c.quantity,
       }));
       const data = await fetchAiSuggestions(formatName, currentCards);
       setSuggestions(data || []);
-    } catch (err: any) {
-      setError(err.message || "Could not retrieve recommendations.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not retrieve recommendations.");
     } finally {
       setLoading(false);
     }
