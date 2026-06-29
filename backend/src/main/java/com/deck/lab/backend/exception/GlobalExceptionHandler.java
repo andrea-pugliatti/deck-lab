@@ -10,9 +10,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.deck.lab.backend.dto.response.ValidationErrorResponse;
 
+/**
+ * Global API Exception Handler coordinating centralized error parsing across
+ * REST Controllers.
+ * 
+ * <p>
+ * <b>REST Controller Advice Pattern:</b>
+ * Instead of wrapping controller endpoints in duplicate try-catch blocks,
+ * Spring uses the {@link RestControllerAdvice} interceptor pattern. Methods
+ * decorated with {@link ExceptionHandler} catch matching thrown exceptions
+ * automatically, formatting them into clean JSON response bodies and returning
+ * correct HTTP status codes to the client.
+ * </p>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Intercepts and handles {@link DeckValidationException} validation errors.
+     * Extracts errors and returns a 400 Bad Request with a structured
+     * {@link ValidationErrorResponse}.
+     *
+     * @param ex the caught validation exception
+     * @return 400 Bad Request with details
+     */
     @ExceptionHandler(DeckValidationException.class)
     public ResponseEntity<ValidationErrorResponse> handleDeckValidationException(DeckValidationException ex) {
         List<String> errors = ex.getErrors()
@@ -24,6 +45,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    /**
+     * Intercepts {@link NoSuchElementException} errors when resources are missing
+     * or unauthorized. Maps them directly to a 404 Not Found response.
+     *
+     * @param ex the caught missing element exception
+     * @return 404 Not Found status response
+     */
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Void> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.notFound().build();
