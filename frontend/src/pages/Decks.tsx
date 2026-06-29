@@ -1,6 +1,6 @@
 import { BookOpen, Layers, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useState } from "react";
+import { Link } from "react-router";
 
 import DeckCard from "../components/deck/DeckCard";
 import FormatSelector from "../components/deck/FormatSelector";
@@ -8,29 +8,24 @@ import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
+import Pagination from "../components/Pagination";
+import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
-import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
-import { deleteDeck, getDecksQueryEndpoint, getFormatsEndpoint } from "../services/deck";
-import type { Deck } from "../types";
+import { useUrlSyncedDeckSearch } from "../hooks/useUrlSyncedDeckSearch";
+import { deleteDeck, getFormatsEndpoint } from "../services/deck";
 
 export interface DecksProps {
   initialTab?: "all" | "user";
 }
 
+const PAGE_SIZE = 9;
+
 export default function Decks({ initialTab = "all" }: DecksProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
   const { isAuthenticated, user } = useAuth();
   const [tab, setTab] = useState<"all" | "user">(initialTab);
-
-  const initialFormat = searchParams.get("format") || "ALL";
-  const initialQuery = searchParams.get("q") || "";
-
-  const [selectedFormat, setSelectedFormat] = useState(initialFormat);
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const debouncedQuery = useDebounce(searchQuery, 400);
 
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData
@@ -38,54 +33,30 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
   const [prevInitialTab, setPrevInitialTab] = useState(initialTab);
-  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
 
   if (initialTab !== prevInitialTab) {
     setPrevInitialTab(initialTab);
     setTab(initialTab);
   }
 
-  if (searchParams !== prevSearchParams) {
-    setPrevSearchParams(searchParams);
-    const format = searchParams.get("format") || "ALL";
-    const q = searchParams.get("q") || "";
-    setSelectedFormat(format);
-    setSearchQuery((prev) => (prev !== q ? q : prev));
-  }
-
-  useEffect(() => {
-    const params: Record<string, string> = {};
-    if (debouncedQuery.trim()) {
-      params.q = debouncedQuery.trim();
-    }
-    if (selectedFormat !== "ALL") {
-      params.format = selectedFormat;
-    }
-
-    const currentParams = Object.fromEntries(searchParams.entries());
-    const hasChanged =
-      Object.keys(params).length !== Object.keys(currentParams).length ||
-      Object.keys(params).some((k) => params[k] !== currentParams[k]);
-
-    if (hasChanged) {
-      setSearchParams(params);
-    }
-  }, [debouncedQuery, selectedFormat, setSearchParams, searchParams]);
-
-  const queryParams = new URLSearchParams();
-  if (debouncedQuery.trim()) {
-    queryParams.append("q", debouncedQuery.trim());
-  }
-  if (selectedFormat !== "ALL") {
-    queryParams.append("format", selectedFormat);
-  }
-  if (tab === "user" && user?.username) {
-    queryParams.append("username", user.username);
-  }
-
-  const fetchUrl = tab === "user" && !user?.username ? null : getDecksQueryEndpoint(queryParams);
-  const { data, loading, error, refetch } = useFetch<Deck[]>(fetchUrl);
-  const decks = data || [];
+  const {
+    page,
+    setPage,
+    searchQuery,
+    setSearchQuery,
+    format: selectedFormat,
+    setFormat: setSelectedFormat,
+    decks,
+    loading,
+    error,
+    totalPages,
+    totalElements,
+    refetch,
+  } = useUrlSyncedDeckSearch({
+    defaultPageSize: 9,
+    username: tab === "user" ? user?.username || "" : "",
+    skip: tab === "user" && !user?.username,
+  });
 
   const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -160,6 +131,14 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
         </div>
       )}
 
+      <ShowingPageIndicator
+        page={page}
+        pageSize={PAGE_SIZE}
+        totalElements={totalElements}
+        itemType="deck"
+        className="mb-6"
+      />
+
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
@@ -169,25 +148,29 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
           onRetry={() => refetch()}
         />
       ) : decks.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {decks.map((deck) => {
-            const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
-            return (
-              <DeckCard
-                key={deck.id}
-                id={deck.id}
-                name={deck.name}
-                description={deck.description}
-                formatName={deck.formatName}
-                cardCount={cardCount}
-                updatedAt={deck.updatedAt}
-                creatorUsername={deck.creatorUsername}
-                showActions={isAuthenticated && user?.username === deck.creatorUsername}
-                onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
-              />
-            );
-          })}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {decks.map((deck) => {
+              const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+              return (
+                <DeckCard
+                  key={deck.id}
+                  id={deck.id}
+                  name={deck.name}
+                  description={deck.description}
+                  formatName={deck.formatName}
+                  cardCount={cardCount}
+                  updatedAt={deck.updatedAt}
+                  creatorUsername={deck.creatorUsername}
+                  showActions={isAuthenticated && user?.username === deck.creatorUsername}
+                  onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
+                />
+              );
+            })}
+          </div>
+
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       ) : tab === "user" ? (
         <EmptyState
           icon={Layers}

@@ -109,8 +109,8 @@ public class DeckControllerTest {
         mockMvc.perform(get("/api/decks?username=" + testUser.getUsername())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is("ControllerTest Deck")));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name", is("ControllerTest Deck")));
     }
 
     @Test

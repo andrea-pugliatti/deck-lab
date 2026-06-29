@@ -13,8 +13,6 @@ export default function Pagination({
   onPageChange,
   variant = "default",
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
-
   const isCompact = variant === "compact";
 
   const containerClass = `flex items-center w-full ${

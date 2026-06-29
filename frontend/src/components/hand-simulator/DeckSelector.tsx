@@ -3,12 +3,14 @@ import { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useFetch } from "../../hooks/useFetch";
-import { getDecksEndpoint, getFormatsEndpoint } from "../../services/deck";
-import type { Deck } from "../../types";
+import { useUrlSyncedDeckSearch } from "../../hooks/useUrlSyncedDeckSearch";
+import { getFormatsEndpoint } from "../../services/deck";
 import DeckCard from "../deck/DeckCard";
 import EmptyState from "../EmptyState";
 import ErrorAlert from "../ErrorAlert";
 import LoadingSpinner from "../LoadingSpinner";
+import Pagination from "../Pagination";
+import ShowingPageIndicator from "../ShowingPageIndicator";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 
@@ -16,11 +18,11 @@ interface DeckSelectorProps {
   onSelect: (deckId: number) => void;
 }
 
+const PAGE_SIZE = 6;
+
 export default function DeckSelector({ onSelect }: DeckSelectorProps) {
   const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState<"my-decks" | "community">("community");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFormat, setSelectedFormat] = useState("ALL");
 
   const [prevIsAuthenticated, setPrevIsAuthenticated] = useState(isAuthenticated);
 
@@ -35,33 +37,22 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
 
   const {
-    data: myDecks,
-    loading: loadingMy,
-    error: errorMy,
-    refetch: refetchMy,
-  } = useFetch<Deck[]>(isAuthenticated && user?.username ? getDecksEndpoint(user.username) : null);
-
-  const {
-    data: publicDecks,
-    loading: loadingPublic,
-    error: errorPublic,
-    refetch: refetchPublic,
-  } = useFetch<Deck[]>(getDecksEndpoint());
-
-  const decksToFilter = activeTab === "my-decks" ? myDecks || [] : publicDecks || [];
-  const isLoading = activeTab === "my-decks" ? loadingMy : loadingPublic;
-  const error = activeTab === "my-decks" ? errorMy : errorPublic;
-  const refetch = activeTab === "my-decks" ? refetchMy : refetchPublic;
-
-  const filteredDecks = decksToFilter.filter((deck) => {
-    const matchesFormat =
-      selectedFormat === "ALL" || deck.formatName.toLowerCase() === selectedFormat.toLowerCase();
-
-    const matchesSearch =
-      deck.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (deck.description && deck.description.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    return matchesFormat && matchesSearch;
+    page,
+    setPage,
+    searchQuery,
+    setSearchQuery,
+    format: selectedFormat,
+    setFormat: setSelectedFormat,
+    decks: filteredDecks,
+    loading: isLoading,
+    error,
+    totalPages,
+    totalElements,
+    refetch,
+  } = useUrlSyncedDeckSearch({
+    defaultPageSize: PAGE_SIZE,
+    username: activeTab === "my-decks" ? user?.username || "" : "",
+    skip: activeTab === "my-decks" && !user?.username,
   });
 
   const selectRandomDeck = () => {
@@ -164,24 +155,36 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
             <ErrorAlert title="Failed to load decks" message={error.message} onRetry={refetch} />
           </div>
         ) : filteredDecks.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {filteredDecks.map((deck) => {
-              const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
-              return (
-                <DeckCard
-                  key={deck.id}
-                  id={deck.id}
-                  name={deck.name}
-                  description={deck.description}
-                  formatName={deck.formatName}
-                  cardCount={cardCount}
-                  updatedAt={deck.updatedAt}
-                  creatorUsername={deck.creatorUsername}
-                  onSelect={onSelect}
-                />
-              );
-            })}
-          </div>
+          <>
+            <ShowingPageIndicator
+              page={page}
+              pageSize={PAGE_SIZE}
+              totalElements={totalElements}
+              itemType="deck"
+              className="mb-6"
+            />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {filteredDecks.map((deck) => {
+                const cardCount =
+                  deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+                return (
+                  <DeckCard
+                    key={deck.id}
+                    id={deck.id}
+                    name={deck.name}
+                    description={deck.description}
+                    formatName={deck.formatName}
+                    cardCount={cardCount}
+                    updatedAt={deck.updatedAt}
+                    creatorUsername={deck.creatorUsername}
+                    onSelect={onSelect}
+                  />
+                );
+              })}
+            </div>
+
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          </>
         ) : (
           <EmptyState
             icon={BookOpen}

@@ -16,8 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.exception.DeckValidationException;
@@ -115,12 +116,12 @@ class DeckServiceTest {
 
     @Test
     void getDecksByUser_returnsMatchingDecks() {
-        List<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername());
+        Page<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(), PageRequest.of(0, 10));
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("ServiceTest Deck", result.get(0).getName());
+        assertEquals(1, result.getTotalElements());
+        assertEquals("ServiceTest Deck", result.getContent().get(0).getName());
 
-        List<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername());
+        Page<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(), PageRequest.of(0, 10));
         assertTrue(otherResult.isEmpty());
     }
 

@@ -35,6 +35,30 @@ import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 import com.deck.lab.backend.validation.ValidationError;
 
+/**
+ * Service managing AI-driven deck generation and card synergy recommendations.
+ *
+ * <p><strong>Design Pattern: Service Layer (AI Integration & Prompt Orchestrator)</strong></p>
+ * <p>This service coordinates interactions with Large Language Models (LLMs) to generate deck configurations.
+ * It encapsulates prompt construction, system instructions, structured output serialization, and database mapping logic.</p>
+ *
+ * <p><strong>Spring AI & Structured Output Concepts:</strong></p>
+ * <ul>
+ *   <li>{@code ChatModel} Abstraction: Instead of direct vendor API bindings (like OpenAI or Anthropic SDKs), this service
+ *   injects Spring AI's generic {@link ChatModel}. This provides vendor independence, allowing the underlying LLM provider
+ *   to be swapped out via simple configuration updates without altering source code.</li>
+ *   <li>Prompt Structuring: Combines a {@link SystemMessage} (defining AI personas and output guidelines) and a
+ *   {@link UserMessage} (conveying the user's specific strategy request).</li>
+ *   <li>{@link BeanOutputConverter}: Enforces structured outputs (JSON) from the LLM. It generates format instructions
+ *   for the prompt and maps the raw response back into strongly typed Java DTOs (e.g. {@link DeckGenerateAiResponseDto}),
+ *   minimizing parsing errors.</li>
+ * </ul>
+ *
+ * <p><strong>Database Resolution & Verification Pipeline:</strong></p>
+ * <p>LLMs are prone to hallucinations or formatting errors. The service passes raw results through a verification pipeline:
+ * fetching true card specifications from {@link CardRepository}, filtering out unrecognized entries, converting them to
+ * domain entities, and invoking {@link DeckValidationEngine} to identify and flag rule warnings.</p>
+ */
 @Service
 public class DeckGenerationService {
 
@@ -43,6 +67,9 @@ public class DeckGenerationService {
     private final FormatRulesRepository formatRulesRepository;
     private final DeckValidationEngine validationEngine;
 
+    /**
+     * Constructs a new DeckGenerationService.
+     */
     public DeckGenerationService(ChatModel chatModel,
             CardRepository cardRepository,
             FormatRulesRepository formatRulesRepository,
@@ -53,6 +80,13 @@ public class DeckGenerationService {
         this.validationEngine = validationEngine;
     }
 
+    /**
+     * Generates a complete deck list using LLM prompt templates and validates output
+     * against local card databases and format legality rules.
+     *
+     * @param request the DTO parameters specifying archetype, strategy, and format rules
+     * @return the generated deck list and any compliance validation warning strings
+     */
     @Transactional(readOnly = true)
     public DeckGenerationResponseDto generateDeck(DeckGenerateRequestDto request) {
         BeanOutputConverter<DeckGenerateAiResponseDto> converter = new BeanOutputConverter<>(
@@ -170,6 +204,12 @@ public class DeckGenerationService {
                 warnings);
     }
 
+    /**
+     * Provides exactly 5 card recommendations that synergize with the current deck list.
+     *
+     * @param request the DTO containing the current deck list and target format name
+     * @return a list of 5 card suggestions with synergy rationales
+     */
     @Transactional(readOnly = true)
     public List<CardSuggestionDto> suggestCards(DeckSuggestRequestDto request) {
         BeanOutputConverter<CardSuggestionsAiResponseDto> converter = new BeanOutputConverter<>(
@@ -253,6 +293,9 @@ public class DeckGenerationService {
         return matchedSuggestions;
     }
 
+    /**
+     * Translates a format name to specific prompt instruction rules.
+     */
     private String getFormatRules(String formatName) {
         if (formatName == null) {
             formatName = "TCG";
@@ -303,6 +346,9 @@ public class DeckGenerationService {
         };
     }
 
+    /**
+     * Translates a strategy style (e.g. combo, control) to specific prompt guide guidelines.
+     */
     private String getPlaystyleGuide(String strategy) {
         if (strategy == null) {
             strategy = "None";
@@ -343,6 +389,9 @@ public class DeckGenerationService {
         };
     }
 
+    /**
+     * Queries the local database to find a matching Card by exact name or substring fallback.
+     */
     private Optional<Card> lookupCard(String name) {
         Optional<Card> cardOpt = cardRepository.findByName(name.trim());
         if (cardOpt.isEmpty()) {
@@ -354,6 +403,9 @@ public class DeckGenerationService {
         return cardOpt;
     }
 
+    /**
+     * Runs compliance validation on the generated deck list and compiles warning strings.
+     */
     private List<String> runValidation(String deckName, String aiName, String formatName, List<DeckCardDto> cardDtos) {
         Deck deck = new Deck();
         deck.setName(aiName);

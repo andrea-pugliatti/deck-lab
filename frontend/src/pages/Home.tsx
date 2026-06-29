@@ -7,7 +7,7 @@ import HeroCardShowcase from "../components/HeroCardShowcase";
 import SearchBar from "../components/SearchBar";
 import { useFetch } from "../hooks/useFetch";
 import { getCardsEndpoint } from "../services/card";
-import { getDecksEndpoint } from "../services/deck";
+import { getDecksQueryEndpoint } from "../services/deck";
 import type { Card, Deck, Page } from "../types";
 
 const spotlightParams = new URLSearchParams({ size: "6" });
@@ -17,7 +17,7 @@ export default function Home() {
     data: decksData,
     loading: decksLoading,
     error: decksError,
-  } = useFetch<Deck[]>(getDecksEndpoint());
+  } = useFetch<Page<Deck>>(getDecksQueryEndpoint(new URLSearchParams({ size: "6" })));
   const {
     data: cardsData,
     loading: cardsLoading,
@@ -27,7 +27,7 @@ export default function Home() {
     getCardsEndpoint(new URLSearchParams(heroShowcaseParams)),
   );
 
-  const decks = decksData ? decksData.slice(0, 6) : [];
+  const decks = decksData?.content || [];
   const spotlightCards = cardsData?.content || [];
   const heroShowcaseCards = heroShowcaseCardsData?.content || [];
 

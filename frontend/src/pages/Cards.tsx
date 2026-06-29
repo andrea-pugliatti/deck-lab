@@ -7,9 +7,12 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
+import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import Input from "../components/ui/Input";
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useUrlSyncedSearch } from "../hooks/useUrlSyncedSearch";
+
+const PAGE_SIZE = 21;
 
 export default function Cards() {
   const {
@@ -25,12 +28,9 @@ export default function Cards() {
     totalElements,
     error,
     refetch,
-  } = useUrlSyncedSearch({ defaultPageSize: 20 });
+  } = useUrlSyncedSearch({ defaultPageSize: PAGE_SIZE });
 
   const { types, attributes, races, archetypes } = useCardMetadata();
-
-  const startIdx = page * 20 + 1;
-  const endIdx = Math.min((page + 1) * 20, totalElements);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -61,11 +61,12 @@ export default function Cards() {
             className="bg-dark-surface px-4 py-2.5"
           />
 
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>
-              Showing {totalElements > 0 ? `${startIdx}-${endIdx}` : "0"} of {totalElements} Cards
-            </span>
-          </div>
+          <ShowingPageIndicator
+            page={page}
+            pageSize={PAGE_SIZE}
+            totalElements={totalElements}
+            itemType="card"
+          />
 
           {loading ? (
             <LoadingSpinner />
