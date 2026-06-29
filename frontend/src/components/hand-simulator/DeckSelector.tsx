@@ -1,4 +1,4 @@
-import { BookOpen, Search } from "lucide-react";
+import { BookOpen, Globe, Search, Shuffle, User } from "lucide-react";
 import { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -6,8 +6,10 @@ import { useFetch } from "../../hooks/useFetch";
 import { getDecksEndpoint, getFormatsEndpoint } from "../../services/deck";
 import type { Deck } from "../../types";
 import DeckCard from "../deck/DeckCard";
+import EmptyState from "../EmptyState";
 import ErrorAlert from "../ErrorAlert";
 import LoadingSpinner from "../LoadingSpinner";
+import Button from "../ui/Button";
 import Input from "../ui/Input";
 
 interface DeckSelectorProps {
@@ -62,102 +64,132 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     return matchesFormat && matchesSearch;
   });
 
-  return (
-    <div className="bg-dark-surface border-border-dim relative mx-auto max-w-4xl overflow-hidden rounded-2xl border p-6 shadow-xl md:p-8">
-      <div className="from-gold-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
+  const selectRandomDeck = () => {
+    if (filteredDecks.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredDecks.length);
+      onSelect(filteredDecks[randomIndex].id);
+    }
+  };
 
-      <div className="mb-8 text-center">
-        <h2 className="font-display mb-2 text-2xl font-black text-white md:text-3xl">
-          SELECT A DECK
+  return (
+    <div className="grid w-full grid-cols-1 items-start gap-6 lg:grid-cols-12">
+      {/* Left Column */}
+      <aside className="bg-dark-surface border-border-dim flex h-fit flex-col rounded-2xl border p-5 lg:sticky lg:top-24 lg:col-span-4">
+        <h2 className="border-border-dim/60 mb-4 border-b pb-2.5 text-lg font-bold tracking-wide text-white uppercase">
+          Select A Deck
         </h2>
-        <p className="mx-auto max-w-md text-sm leading-relaxed text-slate-400">
+        <p className="mb-6 text-xs leading-relaxed font-light text-slate-400">
           Choose one of your custom deck builds or browse community decks to begin simulating test
           hands.
         </p>
-      </div>
 
-      <div className="border-border-dim mb-6 flex border-b">
-        {isAuthenticated && (
+        <div className="flex flex-col gap-1">
+          {isAuthenticated && (
+            <button
+              onClick={() => setActiveTab("my-decks")}
+              className={`flex w-full cursor-pointer items-center gap-3 rounded-r-xl border-l-2 px-4 py-3.5 text-left text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
+                activeTab === "my-decks"
+                  ? "bg-gold-accent/5 border-l-gold-accent text-gold-accent"
+                  : "hover:bg-dark-surface-elevated/30 border-l-transparent text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              <User className="h-4 w-4" />
+              <span>My Decks</span>
+            </button>
+          )}
           <button
-            onClick={() => setActiveTab("my-decks")}
-            className={`cursor-pointer border-b-2 px-6 py-3 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
-              activeTab === "my-decks"
-                ? "border-gold-accent text-gold-accent"
-                : "border-transparent text-slate-500 hover:text-slate-300"
+            onClick={() => setActiveTab("community")}
+            className={`flex w-full cursor-pointer items-center gap-3 rounded-r-xl border-l-2 px-4 py-3.5 text-left text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
+              activeTab === "community"
+                ? "bg-gold-accent/5 border-l-gold-accent text-gold-accent"
+                : "hover:bg-dark-surface-elevated/30 border-l-transparent text-slate-400 hover:text-slate-200"
             }`}
           >
-            My Decks
+            <Globe className="h-4 w-4" />
+            <span>Community Decks</span>
           </button>
-        )}
-        <button
-          onClick={() => setActiveTab("community")}
-          className={`cursor-pointer border-b-2 px-6 py-3 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
-            activeTab === "community"
-              ? "border-gold-accent text-gold-accent"
-              : "border-transparent text-slate-500 hover:text-slate-300"
-          }`}
-        >
-          Community Decks
-        </button>
-      </div>
-
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-        <div className="flex-1">
-          <Input
-            type="text"
-            placeholder="Search decks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="h-4 w-4 text-slate-500" />}
-          />
         </div>
-        <div className="sm:w-48">
-          <select
-            value={selectedFormat}
-            onChange={(e) => setSelectedFormat(e.target.value)}
-            className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full cursor-pointer rounded border px-3 py-2.5 text-xs font-bold text-slate-200 outline-none"
+
+        <div className="border-border-dim/60 mt-6 border-t p-4">
+          <p className="mb-2.5 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+            Feeling Lucky?
+          </p>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={selectRandomDeck}
+            disabled={filteredDecks.length === 0}
+            className="flex w-full items-center justify-center gap-2 py-3 text-xs font-bold tracking-wider uppercase shadow-md hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)]"
           >
-            {formats.map((fmt) => (
-              <option key={fmt} value={fmt}>
-                {fmt === "ALL" ? "All Formats" : fmt}
-              </option>
-            ))}
-          </select>
+            <Shuffle className="h-4 w-4" />
+            <span>Random Deck</span>
+          </Button>
         </div>
-      </div>
+      </aside>
 
-      {isLoading ? (
-        <div className="py-12">
-          <LoadingSpinner />
+      {/* Right Column */}
+      <div className="flex flex-col lg:col-span-8">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+          <div className="flex-1">
+            <Input
+              type="text"
+              placeholder="Search decks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              icon={<Search className="h-4 w-4 text-slate-500" />}
+              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full"
+            />
+          </div>
+          <div className="sm:w-48">
+            <select
+              value={selectedFormat}
+              onChange={(e) => setSelectedFormat(e.target.value)}
+              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full cursor-pointer rounded border px-3 py-2 text-sm text-slate-200 outline-none"
+            >
+              {formats.map((fmt) => (
+                <option key={fmt} value={fmt}>
+                  {fmt === "ALL" ? "All Formats" : fmt}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      ) : error ? (
-        <ErrorAlert title="Failed to load decks" message={error.message} onRetry={refetch} />
-      ) : filteredDecks.length > 0 ? (
-        <div className="grid max-h-100 grid-cols-1 gap-4 overflow-y-auto pr-1 md:grid-cols-2">
-          {filteredDecks.map((deck) => {
-            const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
-            return (
-              <DeckCard
-                key={deck.id}
-                id={deck.id}
-                name={deck.name}
-                description={deck.description}
-                formatName={deck.formatName}
-                cardCount={cardCount}
-                updatedAt={deck.updatedAt}
-                creatorUsername={deck.creatorUsername}
-                onSelect={onSelect}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div className="border-border-dim bg-dark-surface-elevated/10 rounded-xl border border-dashed py-12 text-center">
-          <BookOpen className="mx-auto mb-2 h-8 w-8 text-slate-600" />
-          <p className="text-sm font-semibold text-slate-400">No decks found</p>
-          <p className="mt-1 text-xs text-slate-500">Try adjusting your filters or search term.</p>
-        </div>
-      )}
+
+        {isLoading ? (
+          <div className="flex flex-1 items-center justify-center py-12">
+            <LoadingSpinner />
+          </div>
+        ) : error ? (
+          <div className="py-8">
+            <ErrorAlert title="Failed to load decks" message={error.message} onRetry={refetch} />
+          </div>
+        ) : filteredDecks.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {filteredDecks.map((deck) => {
+              const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+              return (
+                <DeckCard
+                  key={deck.id}
+                  id={deck.id}
+                  name={deck.name}
+                  description={deck.description}
+                  formatName={deck.formatName}
+                  cardCount={cardCount}
+                  updatedAt={deck.updatedAt}
+                  creatorUsername={deck.creatorUsername}
+                  onSelect={onSelect}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            icon={BookOpen}
+            title="No decks found"
+            description="Try adjusting your filters or search term."
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Filter, Layers, Plus, Search } from "lucide-react";
+import { BookOpen, Layers, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 
@@ -205,7 +205,7 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
         </EmptyState>
       ) : (
         <EmptyState
-          icon={Filter}
+          icon={BookOpen}
           title="No decks found matching the search criteria."
           description="Try adjusting your search query or format filter."
         />

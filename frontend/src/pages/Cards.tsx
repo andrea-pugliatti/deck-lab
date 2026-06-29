@@ -1,4 +1,4 @@
-import { Filter, Search } from "lucide-react";
+import { BookOpen, Search } from "lucide-react";
 
 import CardFilters from "../components/card/CardFilters";
 import CardGridItem from "../components/card/CardGridItem";
@@ -87,7 +87,7 @@ export default function Cards() {
             </>
           ) : (
             <EmptyState
-              icon={Filter}
+              icon={BookOpen}
               title="No Cards Found"
               description="Try adjusting your filters or search terms."
             />
