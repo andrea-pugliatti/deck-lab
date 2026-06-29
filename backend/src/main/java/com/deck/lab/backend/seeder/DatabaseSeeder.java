@@ -1,4 +1,4 @@
-package com.deck.lab.backend.config;
+package com.deck.lab.backend.seeder;
 
 import java.util.Optional;
 
@@ -14,6 +14,32 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.UserRepository;
 
+/**
+ * Component orchestrating the initial database seeding sequence during
+ * application startup.
+ *
+ * <p>
+ * <strong>Spring Boot Startup Hooks:</strong>
+ * </p>
+ * <ul>
+ * <li>{@link CommandLineRunner}: A callback interface provided by Spring Boot.
+ * Beans implementing this interface have their {@code run} method invoked
+ * automatically after the application context is fully loaded and before the
+ * startup sequence finishes. This makes it ideal for bootstrap tasks like
+ * verification and database seeding.</li>
+ * </ul>
+ *
+ * <p>
+ * <strong>Programmatic Transaction Management:</strong>
+ * </p>
+ * <p>
+ * Instead of declarative {@code @Transactional} annotations, this class uses
+ * {@link TransactionTemplate} to manage transactions programmatically. This
+ * ensures that seeding users, importing cards, and writing sample decks occur
+ * in isolated, controlled transactional scopes, preventing bulk seeding errors
+ * from corrupting partial database elements.
+ * </p>
+ */
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
 

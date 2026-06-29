@@ -1,4 +1,4 @@
-package com.deck.lab.backend.config;
+package com.deck.lab.backend.seeder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,22 @@ import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.UserRepository;
 
+/**
+ * Seeder class responsible for populating the database with sample, competitive
+ * deck lists.
+ *
+ * <p>
+ * <strong>Design Pattern: Demo Data Bootstrapper</strong>
+ * </p>
+ * <p>
+ * To help users and developers test features right after starting the
+ * application, this component bootstraps real, historically accurate Yu-Gi-Oh!
+ * deck lists (like Frog OTK, Frog Monarch, Diva Hero, and Lightsworn). It
+ * locates database {@link Card} entities matching card names, maps them to
+ * transient {@link DeckCard} instances, links them to seeded user profiles
+ * (e.g. "yugi" or "admin"), and saves them through the {@link DeckRepository}.
+ * </p>
+ */
 @Component
 public class DeckSeeder {
 

@@ -1,4 +1,4 @@
-package com.deck.lab.backend.config;
+package com.deck.lab.backend.seeder;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -30,6 +30,42 @@ import com.deck.lab.backend.repository.CardRepository;
 
 import jakarta.annotation.PreDestroy;
 
+/**
+ * Importer class responsible for fetching Yu-Gi-Oh! card catalog datasets from
+ * external APIs and seeding the database.
+ *
+ * <p>
+ * <strong>Card Importer</strong>
+ * </p>
+ * <p>
+ * Retrieves card data from the YGOPRODeck REST API, converts the payload into
+ * JPA entities, saves them in batches, and asynchronously downloads artwork
+ * images. Relies on several Spring and Java concurrency features.
+ * </p>
+ *
+ * <ul>
+ * <li><strong>REST Client:</strong>
+ * Leverages Spring's {@link RestClient} to perform standard, synchronous HTTP
+ * GET requests. {@code RestClient} offers an elegant fluent API interface that
+ * wraps default Java HTTP connections.</li>
+ * <li><strong>Batch Database Transactions:</strong>
+ * Inserting thousands of cards one-by-one is slow and risks table locks. This
+ * importer splits data into sublists (defined by {@code batchSize}) and runs
+ * each batch save inside a separate programmatic {@link TransactionTemplate}
+ * boundary. This optimizes Hibernate's batch write settings.</li>
+ * <li><strong>Background Image Caching:</strong>
+ * Card artwork images are large. To prevent blocking the main boot thread,
+ * images are queued and downloaded concurrently using a fixed-size thread pool
+ * managed by {@link ExecutorService}. Downloaded files are cached locally in
+ * the filesystem configuration directory so that the application serves them
+ * locally.</li>
+ * <li><strong>Graceful Shutdown via {@link PreDestroy}:</strong>
+ * When the Spring container is stopped, the method decorated with
+ * {@code @PreDestroy} is automatically invoked to shut down the image download
+ * thread pool, terminating active tasks and preventing memory leaks or orphaned
+ * OS threads.</li>
+ * </ul>
+ */
 @Component
 public class CardImporter {
 

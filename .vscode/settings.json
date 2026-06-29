@@ -6,4 +6,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "oxc.fmt.configPath": ".oxfmtrc.json",
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
+  },
 }
