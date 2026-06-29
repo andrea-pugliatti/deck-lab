@@ -25,18 +25,29 @@ import com.deck.lab.backend.service.DeckService;
 import jakarta.validation.Valid;
 
 /**
- * REST Controller providing API endpoints for managing user decks and decklists.
+ * REST Controller providing API endpoints for managing user decks and
+ * decklists.
  *
- * <p><strong>Design Pattern: Controller (REST API)</strong></p>
- * <p>Exposes CRUD operations and validation services targeting deck resources. Relies on {@link DeckService}
- * to validate, save, query, and modify user decks while translating entities to/from {@link DeckDto}.</p>
+ * <p>
+ * <strong>Controller (REST API)</strong>
+ * </p>
+ * <p>
+ * Exposes CRUD operations and validation services targeting deck resources.
+ * Relies on {@link DeckService} to validate, save, query, and modify user decks
+ * while translating entities to/from {@link DeckDto}.
+ * </p>
  *
- * <p><strong>Spring Security Integration:</strong></p>
+ * <p>
+ * <strong>Spring Security Integration:</strong>
+ * </p>
  * <ul>
- *   <li>{@code @AuthenticationPrincipal}: Instructs Spring Security to extract the currently authenticated user session principal
- *   (which is our custom {@link User} entity) from the security context and bind it directly to the controller method argument.
- *   This prevents manual security context lookups and ensures requests are scoped to the authenticated caller.</li>
- *   <li>Transactional Boundaries: Coordinates request verification with nested card validation parameters before invoking service logic.</li>
+ * <li>{@code @AuthenticationPrincipal}: Instructs Spring Security to extract
+ * the currently authenticated user session principal (which is our custom
+ * {@link User} entity) from the security context and bind it directly to the
+ * controller method argument. This prevents manual security context lookups and
+ * ensures requests are scoped to the authenticated caller.</li>
+ * <li>Transactional Boundaries: Coordinates request verification with nested
+ * card validation parameters before invoking service logic.</li>
  * </ul>
  */
 @RestController
@@ -90,7 +101,7 @@ public class DeckController {
      * @param deckDto the deck definition data containing cards and format details
      * @param user    the authenticated user owning the new deck
      * @return 201 Created with the saved DeckDto
-     * @throws com.deck.lab.backend.exception.DeckValidationException if the deck violates format or size rules
+     * @throws DeckValidationException if the deck violates format or size rules
      */
     @PostMapping
     public ResponseEntity<DeckDto> create(
@@ -105,7 +116,7 @@ public class DeckController {
      *
      * @param deckDto the deck definition to validate
      * @return 200 OK if the deck is valid
-     * @throws com.deck.lab.backend.exception.DeckValidationException containing validation errors if invalid
+     * @throws DeckValidationException containing validation errors if invalid
      */
     @PostMapping("/validate")
     public ResponseEntity<Void> validate(@Valid @RequestBody DeckDto deckDto) {
@@ -119,9 +130,11 @@ public class DeckController {
      * @param id      the ID of the deck to update
      * @param deckDto the updated deck definition data
      * @param user    the authenticated user requesting the update
-     * @return 200 OK with the updated DeckDto, or 404 Not Found if the deck doesn't exist
-     * @throws java.util.NoSuchElementException if the deck is not found or user is unauthorized
-     * @throws com.deck.lab.backend.exception.DeckValidationException if the updated deck list is invalid
+     * @return 200 OK with the updated DeckDto, or 404 Not Found if the deck doesn't
+     *         exist
+     * @throws NoSuchElementException  if the deck is not found or user is
+     *                                 unauthorized
+     * @throws DeckValidationException if the updated deck list is invalid
      */
     @PutMapping("/{id}")
     public ResponseEntity<DeckDto> update(
@@ -140,7 +153,8 @@ public class DeckController {
      * @param id   the ID of the deck to delete
      * @param user the authenticated user requesting deletion
      * @return 24 No Content on success, or 404 Not Found if the deck doesn't exist
-     * @throws java.util.NoSuchElementException if the deck is not found or user is unauthorized
+     * @throws NoSuchElementException if the deck is not found or user is
+     *                                unauthorized
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(

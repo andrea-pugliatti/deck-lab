@@ -8,18 +8,31 @@ import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
 
 /**
- * Utility class compiling JPA specifications for dynamic filtering of {@link Card} records.
+ * Utility class compiling JPA specifications for dynamic filtering of
+ * {@link Card} records.
  *
- * <p><strong>JPA Specification (Domain-Driven Design Specification Pattern)</strong></p>
- * <p>Instead of declaring custom repository finder methods for every possible search filter combination
- * (e.g. {@code findByNameAndTypeAndAttributeAndRace}), this application leverages Spring Data JPA's Specification capabilities.
- * Specifications are reusable query criteria predicates built on top of the JPA Criteria API. They allow developers to programmatically
- * build and chain dynamic SQL WHERE clauses (using {@code AND} and {@code OR} logic) at runtime in the service layer.</p>
+ * <p>
+ * <strong>JPA Specification Pattern:</strong>
+ * </p>
+ * <p>
+ * Instead of declaring custom repository finder methods for every possible
+ * search filter combination (e.g.
+ * {@code findByNameAndTypeAndAttributeAndRace}), this application leverages
+ * Spring Data JPA's Specification capabilities. Specifications are reusable
+ * query criteria predicates built on top of the JPA Criteria API. They allow
+ * developers to programmatically build and chain dynamic SQL WHERE clauses
+ * (using {@code AND} and {@code OR} logic) at runtime in the service layer.
+ * </p>
  *
- * <p><strong>Security & Safety:</strong></p>
- * <p>Using JPA Specifications prevents SQL injection vulnerabilities. Hibernate compiles the Java criteria objects
- * into parameterized SQL queries, ensuring any string inputs (like user card search parameters) are treated as literal values
- * rather than executable SQL fragments.</p>
+ * <p>
+ * <strong>Security & Safety:</strong>
+ * </p>
+ * <p>
+ * Using JPA Specifications prevents SQL injection vulnerabilities. Hibernate
+ * compiles the Java criteria objects into parameterized SQL queries, ensuring
+ * any string inputs (like user card search parameters) are treated as literal
+ * values rather than executable SQL fragments.
+ * </p>
  */
 public class CardSpecification {
     private CardSpecification() {
@@ -98,7 +111,8 @@ public class CardSpecification {
     }
 
     /**
-     * Builds a specification checking if a card's archetype contains the query string.
+     * Builds a specification checking if a card's archetype contains the query
+     * string.
      *
      * @param archetype archetype substring match
      * @return dynamic JPA Specification criteria

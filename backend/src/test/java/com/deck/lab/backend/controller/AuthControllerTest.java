@@ -319,4 +319,3 @@ public class AuthControllerTest {
                 assertTrue(refreshTokenRepository.findByToken("expired-dummy-token").isEmpty());
         }
 }
-

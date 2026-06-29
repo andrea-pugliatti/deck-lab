@@ -8,22 +8,27 @@ import com.deck.lab.backend.model.Format;
 import jakarta.persistence.criteria.JoinType;
 
 /**
- * Utility class compiling JPA specifications for dynamic filtering of {@link Deck} records.
+ * Utility class compiling JPA specifications for dynamic filtering of
+ * {@link Deck} records.
  * 
- * <p><b>JPA Specification Pattern:</b>
- * Instead of writing multiple custom repository query methods (e.g. {@code findByNameAndFormatAndUser}), 
- * Spring Data JPA supports the Specification pattern (based on the DDD "Specification" concept). 
- * Each method here returns a {@link org.springframework.data.jpa.domain.Specification} object representing 
- * a single database search filter (e.g., matching name, matching format, or joining user tables). 
- * These small criteria can be dynamically chained together at runtime in the service layer using 
- * {@code .and()} or {@code .or()} blocks, providing flexibility for query combinations.
+ * <p>
+ * <b>JPA Specification Pattern:</b>
+ * Instead of writing multiple custom repository query methods (e.g.
+ * {@code findByNameAndFormatAndUser}), Spring Data JPA supports the
+ * Specification pattern (based on the DDD "Specification" concept). Each method
+ * here returns a {@link Specification} object representing a single database
+ * search filter (e.g., matching name, matching format, or joining user tables).
+ * These small criteria can be dynamically chained together at runtime in the
+ * service layer using {@code .and()} or {@code .or()} blocks, providing
+ * flexibility for query combinations.
  */
 public class DeckSpecification {
     private DeckSpecification() {
     }
 
     /**
-     * Builds a specification checking if a deck's name contains the query string (case-insensitive).
+     * Builds a specification checking if a deck's name contains the query string
+     * (case-insensitive).
      *
      * @param name search query substring
      * @return dynamic JPA Specification criteria, or null if query is blank
@@ -68,8 +73,9 @@ public class DeckSpecification {
     }
 
     /**
-     * Optimizes database loading by eagerly fetching the list of {@code deckCards} and their 
-     * associated {@code Card} properties in a single SQL JOIN query, solving the N+1 select problem.
+     * Optimizes database loading by eagerly fetching the list of {@code deckCards}
+     * and their associated {@code Card} properties in a single SQL JOIN query,
+     * solving the N+1 select problem.
      *
      * @return dynamic JPA Specification fetch directives
      */

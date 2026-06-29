@@ -27,18 +27,29 @@ import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.specification.DeckSpecification;
 
 /**
- * Service managing user deck configuration lifecycles, database persistence, and validation audits.
+ * Service managing user deck configuration lifecycles, database persistence,
+ * and validation audits.
  *
- * <p><strong>Design Pattern: Service Layer</strong></p>
- * <p>Coordinates business workflows involving user deck list resources. Relies on {@link DeckRepository} for database operations,
- * {@link DeckValidationService} to audit deck legality, and mappers to translate entity representations.</p>
+ * <p>
+ * <strong>Service Layer</strong>
+ * </p>
+ * <p>
+ * Coordinates business workflows involving user deck list resources. Relies on
+ * {@link DeckRepository} for database operations, {@link DeckValidationService}
+ * to audit deck legality, and mappers to translate entity representations.
+ * </p>
  *
- * <p><strong>Database Transaction Management with {@code @Transactional}:</strong></p>
+ * <p>
+ * <strong>Database Transaction Management with {@code @Transactional}:</strong>
+ * </p>
  * <ul>
- *   <li>Atomic Operations: Creating, updating, or deleting decks requires modifying multiple tables concurrently
- *   (e.g., updates to {@code decks} and batch deletes/inserts in {@code deck_cards}). By decorating service methods with
- *   {@code @Transactional}, Spring configures a transaction proxy. If any SQL write fails, or if a validation exception is raised
- *   mid-execution, Spring triggers a database rollback, ensuring no partial or orphaned data corrupts database consistency.</li>
+ * <li>Atomic Operations: Creating, updating, or deleting decks requires
+ * modifying multiple tables concurrently (e.g., updates to {@code decks} and
+ * batch deletes/inserts in {@code deck_cards}). By decorating service methods
+ * with {@code @Transactional}, Spring configures a transaction proxy. If any
+ * SQL write fails, or if a validation exception is raised mid-execution, Spring
+ * triggers a database rollback, ensuring no partial or orphaned data corrupts
+ * database consistency.</li>
  * </ul>
  */
 @Service
@@ -71,7 +82,8 @@ public class DeckService {
     }
 
     /**
-     * Finds and filters decks based on search parameters. Performs JPA Eager Card fetches.
+     * Finds and filters decks based on search parameters. Performs JPA Eager Card
+     * fetches.
      *
      * @param name     optional substring match for the deck's name
      * @param format   optional exact match for the format name
@@ -85,7 +97,8 @@ public class DeckService {
                 .and(DeckSpecification.hasUser(username));
 
         if (pageable.getSort().isUnsorted()) {
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by((Deck d) -> d.getUpdatedAt()).descending());
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by((Deck d) -> d.getUpdatedAt()).descending());
         }
 
         return deckRepository.findAll(spec, pageable).map(deckMapper::toDto);
@@ -120,7 +133,7 @@ public class DeckService {
      * Validates a deck list against structural and format rules.
      *
      * @param deckDto the DTO deck representation to validate
-     * @throws com.deck.lab.backend.exception.DeckValidationException if validation fails
+     * @throws DeckValidationException if validation fails
      */
     public void validateDeck(DeckDto deckDto) {
         deckValidationService.validate(deckDto);
@@ -132,7 +145,7 @@ public class DeckService {
      * @param deckDto the deck details to save
      * @param user    the owner user account
      * @return the saved DeckDto
-     * @throws com.deck.lab.backend.exception.DeckValidationException if the deck format or size is invalid
+     * @throws DeckValidationException if the deck format or size is invalid
      */
     @Transactional
     public DeckDto createDeck(DeckDto deckDto, User user) {
@@ -148,14 +161,16 @@ public class DeckService {
     }
 
     /**
-     * Updates and persists changes to an existing user deck. Checks user authorization first.
+     * Updates and persists changes to an existing user deck. Checks user
+     * authorization first.
      *
      * @param id      the ID of the deck to update
      * @param deckDto the updated deck details
      * @param user    the owner user requesting the change
      * @return the updated and saved DeckDto
-     * @throws NoSuchElementException if the deck doesn't exist or doesn't belong to the user
-     * @throws com.deck.lab.backend.exception.DeckValidationException if the updated deck list is invalid
+     * @throws NoSuchElementException  if the deck doesn't exist or doesn't belong
+     *                                 to the user
+     * @throws DeckValidationException if the updated deck list is invalid
      */
     @Transactional
     public DeckDto updateDeck(Long id, DeckDto deckDto, User user) {
@@ -179,7 +194,8 @@ public class DeckService {
      * @param deck     the target Deck entity
      * @param cardDtos the list of DeckCardDto items to map
      * @param cardMap  pre-fetched database Cards keyed by ID
-     * @throws IllegalArgumentException if a card specified in the DTO is missing from cardMap
+     * @throws IllegalArgumentException if a card specified in the DTO is missing
+     *                                  from cardMap
      */
     public void saveDeckCards(Deck deck, List<DeckCardDto> cardDtos, Map<Long, Card> cardMap) {
         List<DeckCard> newDeckCards = new ArrayList<>();
@@ -202,7 +218,8 @@ public class DeckService {
      *
      * @param id   the ID of the deck to delete
      * @param user the owner user account requesting deletion
-     * @throws NoSuchElementException if the deck is not found or user is unauthorized
+     * @throws NoSuchElementException if the deck is not found or user is
+     *                                unauthorized
      */
     @Transactional
     public void deleteDeck(Long id, User user) {

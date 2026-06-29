@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.exception.DeckValidationException;
@@ -116,12 +117,14 @@ class DeckServiceTest {
 
     @Test
     void getDecksByUser_returnsMatchingDecks() {
-        Page<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(), PageRequest.of(0, 10));
+        Page<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(),
+                PageRequest.of(0, 10));
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals("ServiceTest Deck", result.getContent().get(0).getName());
 
-        Page<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(), PageRequest.of(0, 10));
+        Page<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(),
+                PageRequest.of(0, 10));
         assertTrue(otherResult.isEmpty());
     }
 

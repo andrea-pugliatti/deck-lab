@@ -25,6 +25,32 @@ import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 import com.deck.lab.backend.validation.ValidationError;
 
+/**
+ * Service coordinating validation checks for user deck lists.
+ *
+ * <p>
+ * <strong>Separation of Concerns (Domain Engine Delegator)</strong>
+ * </p>
+ * <p>
+ * To keep code clean and testable, this service decouples database access from
+ * raw business logic evaluation. Instead of embedding validation rules directly
+ * in SQL queries or persistent entities, this class is responsible for fetching
+ * context data (such as actual card properties from {@link CardRepository} and
+ * banlist constraints from {@link FormatRulesRepository}), constructing
+ * transient representations, and passing them to the pure, unit-testable
+ * {@link DeckValidationEngine}.
+ * </p>
+ *
+ * <p>
+ * <strong>JPA Read-Only Optimization:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @Transactional(readOnly = true)}: Used on retrieval methods to
+ * inform the persistence provider (Hibernate) that database modifications are
+ * not permitted. This allows Hibernate to optimize performance by disabling
+ * dirty-checking mechanisms and bypassing session flushes.</li>
+ * </ul>
+ */
 @Service
 public class DeckValidationService {
 
@@ -43,6 +69,17 @@ public class DeckValidationService {
         this.validationEngine = validationEngine;
     }
 
+    /**
+     * Validates the structure and legality of a deck based on the provided DeckDto.
+     * Fetches card definitions, checks missing IDs, converts references,
+     * queries format specific limit lists, and coordinates evaluation of rules.
+     *
+     * @param deckDto the DTO representing the deck to validate
+     * @return a map of database-resolved Card objects mapped by their IDs, for
+     *         subsequent save reuse
+     * @throws DeckValidationException containing all validation errors if any rules
+     *                                 are violated
+     */
     @Transactional(readOnly = true)
     public Map<Long, Card> validate(DeckDto deckDto) {
         Map<Long, Card> cardMap = fetchCardMap(deckDto.getDeckCards());
@@ -108,6 +145,12 @@ public class DeckValidationService {
         return cardMap;
     }
 
+    /**
+     * Resolves and fetches full Card records from database based on DTO card IDs.
+     *
+     * @param cardDtos list of deck card references
+     * @return a map of database resolved Card objects keyed by ID
+     */
     public Map<Long, Card> fetchCardMap(List<DeckCardDto> cardDtos) {
         List<Long> cardIds = cardDtos != null
                 ? cardDtos.stream()
@@ -125,5 +168,4 @@ public class DeckValidationService {
         }
         return cardMap;
     }
-
 }

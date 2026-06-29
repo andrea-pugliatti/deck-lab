@@ -18,19 +18,32 @@ import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.specification.CardSpecification;
 
 /**
- * Service handling query operations and persistence updates for Yu-Gi-Oh! card catalog entries.
+ * Service handling query operations and persistence updates for Yu-Gi-Oh! card
+ * catalog entries.
  *
- * <p><strong>Design Pattern: Service Layer</strong></p>
- * <p>Acts as an intermediary coordinator between controllers querying cards and the data access layers.
- * It encapsulates read-only static listings (such as distinct card attributes, archetypes, and types)
- * along with paginated database searches.</p>
+ * <p>
+ * <strong>Design Pattern: Service Layer</strong>
+ * </p>
+ * <p>
+ * Acts as an intermediary coordinator between controllers querying cards and
+ * the data access layers.
+ * It encapsulates read-only static listings (such as distinct card attributes,
+ * archetypes, and types)
+ * along with paginated database searches.
+ * </p>
  *
- * <p><strong>JPA Specifications Integration:</strong></p>
+ * <p>
+ * <strong>JPA Specifications Integration:</strong>
+ * </p>
  * <ul>
- *   <li>Dynamic Query Building: Rather than hardcoding multiple repository methods (e.g., query by name, query by type, etc.),
- *   this service leverages JPA {@link org.springframework.data.jpa.domain.Specification} interfaces. Specifications encapsulate query criteria
- *   programmatically based on the JPA Criteria API, enabling this class to dynamically combine filters (AND/OR clauses) at runtime
- *   depending on the parameters supplied in HTTP requests.</li>
+ * <li>Dynamic Query Building: Rather than hardcoding multiple repository
+ * methods (e.g., query by name, query by type, etc.),
+ * this service leverages JPA
+ * {@link org.springframework.data.jpa.domain.Specification} interfaces.
+ * Specifications encapsulate query criteria
+ * programmatically based on the JPA Criteria API, enabling this class to
+ * dynamically combine filters (AND/OR clauses) at runtime
+ * depending on the parameters supplied in HTTP requests.</li>
  * </ul>
  */
 @Service

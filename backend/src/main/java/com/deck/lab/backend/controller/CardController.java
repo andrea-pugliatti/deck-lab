@@ -24,6 +24,36 @@ import com.deck.lab.backend.service.CardService;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST Controller providing API endpoints for querying and managing Yu-Gi-Oh!
+ * Cards.
+ *
+ * <p>
+ * <strong>Controller (REST API)</strong>
+ * </p>
+ * <p>
+ * Exposes endpoints to query the card catalog. Relies on {@link CardService}
+ * for data retrieval and uses MapStruct {@link CardMapper} to translate
+ * database entities ({@link Card}) into client-safe DTO structures
+ * ({@link CardDto}).
+ * </p>
+ *
+ * <p>
+ * <strong>Spring Data Pagination & Query Features:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code Pageable} & {@code Page}: Database tables containing thousands of
+ * records (like card catalogs) must never be queried entirely. This controller
+ * uses Spring Data's pagination mechanisms. By passing parameters like
+ * {@code page} and {@code size}, Spring builds limit/offset SQL queries under
+ * the hood, returning a {@link Page} structure containing both the sublist and
+ * metadata (total elements, total pages) so that clients can build dynamic
+ * pagination UIs.</li>
+ * <li>Dynamic Filtering: API endpoints support passing optional query
+ * parameters (e.g. name, type, race, attribute) which are translated into
+ * database search criteria using JPA Specifications.</li>
+ * </ul>
+ */
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
@@ -38,6 +68,18 @@ public class CardController {
         this.mapper = cardMapper;
     }
 
+    /**
+     * Retrieves a paginated list of cards filtered by search criteria.
+     *
+     * @param name      optional name substring filter
+     * @param type      optional card type exact match filter
+     * @param attribute optional card attribute exact match filter
+     * @param race      optional card race/type exact match filter
+     * @param archetype optional card archetype exact match filter
+     * @param page      zero-indexed page number (default 0)
+     * @param size      page size (default 20)
+     * @return a page of matching CardDto records
+     */
     @GetMapping
     public ResponseEntity<Page<CardDto>> index(
             @RequestParam(value = "q", required = false) String name,
@@ -55,6 +97,12 @@ public class CardController {
         return ResponseEntity.ok(cards);
     }
 
+    /**
+     * Retrieves details of a single card by its unique ID.
+     *
+     * @param id the unique ID of the card
+     * @return 200 OK with CardDto, or 404 Not Found if card doesn't exist
+     */
     @GetMapping("/{id}")
     public ResponseEntity<CardDto> show(@PathVariable Long id) {
         if (!service.existsById(id)) {
@@ -63,6 +111,12 @@ public class CardController {
         return ResponseEntity.ok(mapper.toDto(service.getById(id)));
     }
 
+    /**
+     * Creates a new card entry in the database.
+     *
+     * @param cardDto the card definition details
+     * @return 201 Created with the saved CardDto
+     */
     @PostMapping
     public ResponseEntity<CardDto> create(@Valid @RequestBody CardDto cardDto) {
         Card card = mapper.toEntity(cardDto);
@@ -70,6 +124,14 @@ public class CardController {
         return new ResponseEntity<>(mapper.toDto(savedCard), HttpStatus.CREATED);
     }
 
+    /**
+     * Updates details of an existing card entry.
+     *
+     * @param id      the ID of the card to update
+     * @param cardDto the updated card details
+     * @return 200 OK with the updated CardDto, or 404 Not Found if card doesn't
+     *         exist
+     */
     @PutMapping("/{id}")
     public ResponseEntity<CardDto> update(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
         if (!service.existsById(id)) {
@@ -81,6 +143,12 @@ public class CardController {
         return ResponseEntity.ok(mapper.toDto(updatedCard));
     }
 
+    /**
+     * Deletes a card entry by its ID.
+     *
+     * @param id the ID of the card to delete
+     * @return 204 No Content on success, or 404 Not Found if card doesn't exist
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (!service.existsById(id)) {
@@ -90,26 +158,47 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Retrieves all distinct card attributes present in the game (e.g. LIGHT, DARK,
+     * FIRE).
+     *
+     * @return list of attribute name strings
+     */
     @GetMapping("/attributes")
     public ResponseEntity<List<String>> getAttributes() {
         return ResponseEntity.ok(service.findDistinctAttributes());
     }
 
+    /**
+     * Retrieves all distinct card races present in the game (e.g. Spellcaster,
+     * Dragon, Warrior).
+     *
+     * @return list of race/type name strings
+     */
     @GetMapping("/races")
     public ResponseEntity<List<String>> getRaces() {
         return ResponseEntity.ok(service.findDistinctRaces());
-
     }
 
+    /**
+     * Retrieves all distinct card archetypes indexed in the database (e.g.
+     * Blue-Eyes, Elemental HERO).
+     *
+     * @return list of archetype name strings
+     */
     @GetMapping("/archetypes")
     public ResponseEntity<List<String>> getArchetypes() {
         return ResponseEntity.ok(service.findDistinctArchetypes());
-
     }
 
+    /**
+     * Retrieves all distinct card classification types (e.g. Spell Card, Trap Card,
+     * Normal Monster).
+     *
+     * @return list of card type strings
+     */
     @GetMapping("/types")
     public ResponseEntity<List<String>> getTypes() {
         return ResponseEntity.ok(service.findDistinctTypes());
-
     }
 }
