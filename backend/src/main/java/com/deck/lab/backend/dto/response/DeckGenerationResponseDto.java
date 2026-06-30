@@ -5,6 +5,22 @@ import java.util.List;
 
 import com.deck.lab.backend.dto.DeckCardDto;
 
+/**
+ * Data Transfer Object (DTO) representing the response payload for a
+ * successfully generated deck list.
+ *
+ * <p>
+ * <strong>Response DTO</strong>
+ * </p>
+ * <p>
+ * Unlike raw AI responses, this DTO contains fully resolved database entities
+ * (translated to {@link DeckCardDto}) along with a list of validation warnings
+ * (such as card limit issues or unknown cards). Returning validation warning
+ * lists directly to the client enables a rich user interface experience where
+ * users can see what formatting corrections were automatically applied to their
+ * AI-generated deck list.
+ * </p>
+ */
 public class DeckGenerationResponseDto {
     private String name;
     private String description;

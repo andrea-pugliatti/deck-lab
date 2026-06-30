@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.deck.lab.backend.dto.response.ValidationErrorResponse;
+import com.deck.lab.backend.dto.response.ValidationErrorResponseDto;
 
 /**
  * Global API Exception Handler coordinating centralized error parsing across
@@ -29,19 +29,19 @@ public class GlobalExceptionHandler {
     /**
      * Intercepts and handles {@link DeckValidationException} validation errors.
      * Extracts errors and returns a 400 Bad Request with a structured
-     * {@link ValidationErrorResponse}.
+     * {@link ValidationErrorResponseDto}.
      *
      * @param ex the caught validation exception
      * @return 400 Bad Request with details
      */
     @ExceptionHandler(DeckValidationException.class)
-    public ResponseEntity<ValidationErrorResponse> handleDeckValidationException(DeckValidationException ex) {
+    public ResponseEntity<ValidationErrorResponseDto> handleDeckValidationException(DeckValidationException ex) {
         List<String> errors = ex.getErrors()
                 .stream()
                 .map(error -> error.message())
                 .collect(Collectors.toList());
 
-        ValidationErrorResponse response = new ValidationErrorResponse("Validation failed", errors);
+        ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
         return ResponseEntity.badRequest().body(response);
     }
 

@@ -1,5 +1,20 @@
 package com.deck.lab.backend.dto.response;
 
+/**
+ * Data Transfer Object (DTO) representing the response payload returned upon
+ * successful user authentication.
+ *
+ * <p>
+ * <strong>Response DTO</strong>
+ * </p>
+ * <p>
+ * This object wraps authentication credentials (JWT access token and refresh
+ * token) along with username details to deliver them securely to client
+ * applications. By packaging the tokens within a structured JSON response
+ * entity, we avoid using non-standard HTTP header configurations and maintain a
+ * standardized API boundary contract.
+ * </p>
+ */
 public class AuthResponseDto {
 
     private String accessToken;
