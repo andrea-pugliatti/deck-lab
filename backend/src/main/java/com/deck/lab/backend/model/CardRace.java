@@ -3,6 +3,29 @@ package com.deck.lab.backend.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Enum defining card monster races and spell/trap sub-classifications.
+ *
+ * <p>
+ * <strong>Design Context:</strong>
+ * </p>
+ * <p>
+ * In the Yu-Gi-Oh! card database, the "race" attribute is overloaded: for
+ * monster cards, it represents physical races (e.g. Dragon, Spellcaster,
+ * Zombie); for Spell and Trap cards, it represents mechanics sub-categories
+ * (e.g. Continuous, Counter, Quick-Play).
+ * </p>
+ *
+ * <p>
+ * <strong>Serialization Annotations:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @JsonValue}: Formats enums to human-friendly strings (e.g.
+ * "Beast-Warrior", "Quick-Play") for REST transmissions.</li>
+ * <li>{@code @JsonCreator}: Resolves incoming API strings case-insensitively to
+ * matching enum entries.</li>
+ * </ul>
+ */
 public enum CardRace {
     AQUA("Aqua"),
     BEAST("Beast"),
@@ -30,7 +53,7 @@ public enum CardRace {
     WINGED_BEAST("Winged Beast"),
     WYRM("Wyrm"),
     ZOMBIE("Zombie"),
-    
+
     // Spell/Trap Subtypes
     NORMAL("Normal"),
     CONTINUOUS("Continuous"),
@@ -39,7 +62,7 @@ public enum CardRace {
     EQUIP("Equip"),
     FIELD("Field"),
     RITUAL("Ritual"),
-    
+
     // Others
     SKILL("Skill"),
     TOKEN("Token");

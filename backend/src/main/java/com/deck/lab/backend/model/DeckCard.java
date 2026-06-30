@@ -14,6 +14,39 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Association entity representing a specific card entry within a user's deck
+ * list.
+ *
+ * <p>
+ * <strong>Composite Association Class (Junction Entity with Payload)</strong>
+ * </p>
+ * <p>
+ * Standard many-to-many relationships (like Decks containing Cards) do not
+ * easily support additional column attributes (such as which deck section a
+ * card belongs to, or how many copies of the card are in the deck). To solve
+ * this, we promote the relationship into a first-class JPA entity called
+ * {@code DeckCard}. This acts as a junction table connecting the {@link Deck}
+ * and {@link Card} entities while housing payload attributes like
+ * {@code section} (e.g. MAIN/EXTRA/SIDE) and {@code quantity} copies.
+ * </p>
+ *
+ * <p>
+ * <strong>Mapping Concepts:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @ManyToOne(fetch = FetchType.LAZY)}: Minimizes database query load
+ * by only fetching card or deck details when explicitly requested in code.</li>
+ * <li>{@code @JsonIgnore}: Applied to the {@code deck} field to prevent
+ * infinite recursion serialization loops. Without this, serializing a
+ * {@code Deck} would serialize its list of {@code DeckCard} objects, which
+ * would serialize the parent {@code Deck} again, eventually causing a stack
+ * overflow exception ({@code StackOverflowError}).</li>
+ * <li>{@code @Enumerated(EnumType.STRING)}: Serializes the {@link DeckSection}
+ * enum to its name string in the database column, preserving readability and
+ * avoiding database value mismatch if enum ordering changes.</li>
+ * </ul>
+ */
 @Entity
 @Table(name = "deck_cards")
 public class DeckCard {

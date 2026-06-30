@@ -3,6 +3,22 @@ package com.deck.lab.backend.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Enum defining the supported Yu-Gi-Oh! game format environments.
+ *
+ * <p>
+ * <strong>Jackson Serialization Mappings:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @JsonValue}: Marks the method returns the serialized
+ * representation of this enum (e.g. "Goat" or "Edison") so that Jackson maps
+ * the string instead of the raw enum identifier (e.g. {@code GOAT} or
+ * {@code EDISON}).</li>
+ * <li>{@code @JsonCreator}: Factory method that Jackson calls when
+ * deserializing a JSON string payload back into this enum structure. Enables
+ * flexible case-insensitive matching when clients send format codes.</li>
+ * </ul>
+ */
 public enum Format {
     TCG("TCG"),
     OCG("OCG"),

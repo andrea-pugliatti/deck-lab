@@ -12,6 +12,45 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Domain model entity representing a Yu-Gi-Oh! card.
+ *
+ * <p>
+ * <strong>JPA Entity (Domain Model)</strong>
+ * </p>
+ * <p>
+ * In Spring Boot applications, an <strong>Entity</strong> represents a
+ * lightweight persistent domain object. This class is mapped directly to the
+ * {@code cards} table in the relational database. Each instance of this class
+ * corresponds to a single row in that table, managed by Hibernate (the default
+ * JPA provider).
+ * </p>
+ *
+ * <p>
+ * <strong>JPA Annotations & Mapping Concepts:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @Entity}: Marks the class as a JPA entity so that the persistence
+ * engine (Hibernate) discovers it.</li>
+ * <li>{@code @Table}: Identifies the specific database table name mapped to
+ * this class.</li>
+ * <li>{@code @Id}: Marks the primary key field.</li>
+ * <li>{@code @GeneratedValue}: Instructs JPA how to generate primary keys. We
+ * use a sequence generator ({@code SEQUENCE})
+ * which is optimized for database engines like PostgreSQL. By specifying an
+ * {@code allocationSize = 50}, Hibernate pre-allocates
+ * batches of IDs to minimize roundtrips and boost insertion performance.</li>
+ * <li>{@code @Column(columnDefinition = "TEXT")}: Specifies that the
+ * description should map to a SQL {@code TEXT} column,
+ * supporting long-form descriptions rather than defaulting to a
+ * {@code VARCHAR(255)} size constraint.</li>
+ * <li>{@code @Enumerated(EnumType.STRING)} vs Converters: Enums like
+ * {@link CardAttribute} are mapped using standard string serialization.
+ * Enums like {@link CardType}, {@link FrameType}, and {@link CardRace} are
+ * managed via JPA {@link Converter} classes, which map enums to specific DB
+ * codes and back, providing clean decoupled data representations.</li>
+ * </ul>
+ */
 @Entity
 @Table(name = "cards")
 public class Card {
@@ -60,9 +99,9 @@ public class Card {
     public Card() {
     }
 
-    public Card(String name, CardType type, FrameType frameType, String description, CardRace race, CardAttribute attribute,
-            String archetype, String imageUrl, String imageUrlCropped, Integer atk, Integer def, Integer level,
-            Integer linkVal, Integer scale) {
+    public Card(String name, CardType type, FrameType frameType, String description, CardRace race,
+            CardAttribute attribute, String archetype, String imageUrl, String imageUrlCropped, Integer atk,
+            Integer def, Integer level, Integer linkVal, Integer scale) {
         this.name = name;
         this.type = type;
         this.frameType = frameType;

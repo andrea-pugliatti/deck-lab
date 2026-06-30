@@ -3,6 +3,19 @@ package com.deck.lab.backend.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Enum defining all possible classification categories for a Yu-Gi-Oh! card.
+ *
+ * <p>
+ * <strong>Serialization & Deserialization:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @JsonValue}: Ensures cards serialize with client-friendly
+ * formatted names (e.g. "Normal Monster", "Spell Card").</li>
+ * <li>{@code @JsonCreator}: Provides a case-insensitive parser mapping inbound
+ * API JSON strings to their respective enum instances.</li>
+ * </ul>
+ */
 public enum CardType {
     NORMAL_MONSTER("Normal Monster"),
     EFFECT_MONSTER("Effect Monster"),
@@ -45,10 +58,18 @@ public enum CardType {
         return value;
     }
 
+    /**
+     * Determines whether this card type is historically placed in the Extra Deck
+     * instead of the Main Deck.
+     * Used by validation rules to enforce correct card placements.
+     *
+     * @return true if the card is a Fusion, Synchro, Xyz, Link, or related pendulum
+     *         subtype.
+     */
     public boolean isExtraDeck() {
-        return this == FUSION_MONSTER || this == SYNCHRO_MONSTER || this == XYZ_MONSTER || this == LINK_MONSTER 
-            || this == SYNCHRO_TUNER_MONSTER || this == SYNCHRO_PENDULUM_EFFECT_MONSTER 
-            || this == XYZ_PENDULUM_EFFECT_MONSTER || this == FUSION_PENDULUM_EFFECT_MONSTER;
+        return this == FUSION_MONSTER || this == SYNCHRO_MONSTER || this == XYZ_MONSTER || this == LINK_MONSTER
+                || this == SYNCHRO_TUNER_MONSTER || this == SYNCHRO_PENDULUM_EFFECT_MONSTER
+                || this == XYZ_PENDULUM_EFFECT_MONSTER || this == FUSION_PENDULUM_EFFECT_MONSTER;
     }
 
     @JsonCreator

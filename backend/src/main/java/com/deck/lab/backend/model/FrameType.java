@@ -3,6 +3,29 @@ package com.deck.lab.backend.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Enum defining the visual frame color styles corresponding to card categories.
+ *
+ * <p>
+ * <strong>Design Intent:</strong>
+ * </p>
+ * <p>
+ * Used primarily by frontend applications to dynamically apply correct
+ * background stylesheets, borders, and font styles matching the physical
+ * Yu-Gi-Oh! card frames (e.g. green spell card borders, purple fusion monster
+ * frames).
+ * </p>
+ *
+ * <p>
+ * <strong>Serialization Annotations:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @JsonValue}: Serializes enums using their lowercase database names
+ * (e.g., "normal_pendulum", "fusion").</li>
+ * <li>{@code @JsonCreator}: Factory parsing utility supporting case-insensitive
+ * deserialization of inbound API values.</li>
+ * </ul>
+ */
 public enum FrameType {
     NORMAL("normal"),
     EFFECT("effect"),

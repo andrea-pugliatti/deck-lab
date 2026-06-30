@@ -18,6 +18,47 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
+/**
+ * Domain model entity representing a user's deck list configuration.
+ *
+ * <p>
+ * <strong>JPA Entity (Domain Model)</strong>
+ * </p>
+ * <p>
+ * Maps a collection of cards (a deck) associated with a specific owner (user)
+ * and configured for a specific gameplay format. Relies on bidirectional
+ * relations and entity lifecycle listeners to ensure database consistency.
+ * </p>
+ *
+ * <p>
+ * <strong>JPA Mapping Patterns:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @ManyToOne(fetch = FetchType.LAZY)}: Models a many-to-one
+ * relationship between Decks and Users.
+ * Using {@code FetchType.LAZY} ensures that Hibernate does not query and load
+ * the full {@link User} entity unless
+ * its fields are explicitly accessed in code, preventing performance
+ * degradation ("N+1 Query Problem").</li>
+ * <li>{@code @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL, orphanRemoval = true)}:
+ * Models the deck's card slots.
+ * <ul>
+ * <li>{@code mappedBy}: Designates the child class {@link DeckCard} as the
+ * owner of the relationship.</li>
+ * <li>{@code CascadeType.ALL}: Ensures persistence operations (saving,
+ * updating, deleting) on this deck automatically propagate to child card
+ * entries.</li>
+ * <li>{@code orphanRemoval = true}: Ensures that if a card entry is removed
+ * from this list, JPA automatically deletes that record from the database.</li>
+ * </ul>
+ * </li>
+ * <li>{@code @PrePersist} and {@code @PreUpdate}: Lifecycle callback
+ * annotations.
+ * These trigger methods automatically before writing (persisting) or updating
+ * database records, allowing automatic auditing of creation and modification
+ * timestamps.</li>
+ * </ul>
+ */
 @Entity
 @Table(name = "decks")
 public class Deck {
