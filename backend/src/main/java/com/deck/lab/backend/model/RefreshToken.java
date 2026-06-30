@@ -13,6 +13,48 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Domain model entity representing a persistent refresh token used for session
+ * management.
+ *
+ * <p>
+ * <strong>Persistent Refresh Token (JWT Session Store)</strong>
+ * </p>
+ * <p>
+ * Short-lived JWT access tokens are stateless and cannot be easily revoked. To
+ * maintain security, we issue short-lived access tokens along with long-lived
+ * refresh tokens. This entity maps refresh token records to the
+ * {@code refresh_tokens} table, storing them in the database to enable token
+ * tracking.
+ * </p>
+ *
+ * <p>
+ * <strong>Security Benefits of Database Tracking:</strong>
+ * </p>
+ * <ul>
+ * <li><strong>Revocation:</strong>
+ * Setting {@code revoked = true} allows immediate invalidation of user sessions
+ * (e.g., during logout or password changes), blocking subsequent requests to
+ * generate new access tokens.</li>
+ * <li><strong>Token Rotation:</strong>
+ * Tracking fields like {@code rotatedAt} and {@code token} uniqueness enables
+ * token rotation policies. If a token is used multiple times or reused after
+ * rotation, it can indicate a token theft/replay attack, allowing the system to
+ * flag and revoke the entire session.</li>
+ * <li><strong>Expiration:</strong>
+ * {@code expiryDate} checks are evaluated before issuing new access tokens to
+ * enforce absolute session timeouts.</li>
+ * </ul>
+ *
+ * <p>
+ * <strong>JPA Configuration:</strong>
+ * </p>
+ * <ul>
+ * <li>{@code @ManyToOne(fetch = FetchType.LAZY)}: Connects the token to a
+ * single {@link User}. We lazy-load the user record to save query overhead
+ * during token validation cycles.</li>
+ * </ul>
+ */
 @Entity
 @Table(name = "refresh_tokens")
 public class RefreshToken {

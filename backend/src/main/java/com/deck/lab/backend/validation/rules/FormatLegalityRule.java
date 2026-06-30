@@ -15,8 +15,33 @@ import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
+/**
+ * Deck list construction rule enforcing format banlist compliance restrictions.
+ *
+ * <p>
+ * <strong>Concrete Rule Strategy (Banlist Verification Strategy)</strong>
+ * </p>
+ * <p>
+ * Annotated with {@link stereotype.Component} for autowired loading. This
+ * strategy evaluates card counts against the database-configured banlist
+ * definitions for a chosen format:
+ * <ul>
+ * <li>{@link CardStatus#FORBIDDEN}: Enforces that the total card count across
+ * all sections (Main, Extra, Side) must be exactly 0.</li>
+ * <li>{@link CardStatus#LIMITED}: Enforces that the total count must not exceed
+ * 1.</li>
+ * <li>{@link CardStatus#SEMI_LIMITED}: Enforces that the total count must not
+ * exceed 2.</li>
+ * </ul>
+ * Any excess cards are logged as validation errors.
+ * </p>
+ */
 @Component
 public class FormatLegalityRule implements DeckRule {
+
+    /**
+     * Evaluates card quantities against target format limits.
+     */
     @Override
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();

@@ -13,8 +13,31 @@ import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
+/**
+ * Deck list construction rule enforcing deck section capacity bounds.
+ *
+ * <p>
+ * <strong>Concrete Rule Strategy (Quantity Auditing)</strong>
+ * </p>
+ * <p>
+ * Annotated with {@link Component} so that it registers automatically into the
+ * Spring container. This class evaluates the cumulative quantity of cards
+ * located in each of the three card boundaries (Main Deck, Extra Deck, and Side
+ * Deck):
+ * </p>
+ * <ul>
+ * <li>Main Deck: Must contain between 40 and 60 cards (inclusive) to prevent
+ * players from entering matches with over-sized or under-sized decks.</li>
+ * <li>Extra Deck: Limited to a maximum of 15 cards.</li>
+ * <li>Side Deck: Limited to a maximum of 15 cards.</li>
+ * </ul>
+ */
 @Component
 public class DeckSizeRule implements DeckRule {
+
+    /**
+     * Evaluates section limits (Main, Extra, Side) of the deck.
+     */
     @Override
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();
