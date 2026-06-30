@@ -9,9 +9,34 @@ import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.FrameType;
 
+/**
+ * Mapper component that translates between {@link Card} database entities and
+ * {@link CardDto} DTO records.
+ *
+ * <p>
+ * <b>Enums and DTO Mapping:</b>
+ * Database columns often store static values as Enums (like {@code CardType} or
+ * {@code CardAttribute}). However, API clients communicate in JSON strings.
+ * This class orchestrates the parsing of incoming JSON strings into type-safe
+ * Java Enums via their {@code fromString()} methods, and converts Enums back to
+ * strings for client responses.
+ *
+ * <p>
+ * Annotated with {@link Component} for Spring-managed automatic bean
+ * registration.
+ * </p>
+ */
 @Component
 public class CardMapper {
 
+    /**
+     * Translates a {@link Card} database entity to a {@link CardDto} API
+     * representation.
+     * Extracts values from Enums into displayable string representations.
+     *
+     * @param card database-managed Card entity
+     * @return the mapped DTO payload, or null if parameter is null
+     */
     public CardDto toDto(Card card) {
         if (card == null) {
             return null;
@@ -35,6 +60,14 @@ public class CardMapper {
         return dto;
     }
 
+    /**
+     * Converts a {@link CardDto} API payload into a new transient {@link Card}
+     * database entity.
+     * Catches and safe-handles exceptions arising from unknown enum values.
+     *
+     * @param dto input DTO data
+     * @return new transient Card entity, or null if parameter is null
+     */
     public Card toEntity(CardDto dto) {
         if (dto == null) {
             return null;
@@ -81,6 +114,15 @@ public class CardMapper {
         return card;
     }
 
+    /**
+     * Updates an existing database-managed {@link Card} entity with values from a
+     * {@link CardDto}.
+     * Saves changes directly onto the entity instance reference while safe-handling
+     * enum conversion failures.
+     *
+     * @param dto  incoming updated DTO parameters
+     * @param card the existing database entity instance to modify
+     */
     public void updateEntityFromDto(CardDto dto, Card card) {
         if (dto == null || card == null) {
             return;

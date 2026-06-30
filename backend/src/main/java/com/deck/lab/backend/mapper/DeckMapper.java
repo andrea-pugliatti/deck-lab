@@ -10,6 +10,24 @@ import com.deck.lab.backend.dto.DeckDto;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.Format;
 
+/**
+ * Mapper component that translates between {@link Deck} JPA Entities and
+ * {@link DeckDto} Data Transfer Objects.
+ * 
+ * <p>
+ * <b>Mapper Pattern:</b>
+ * Database entities (like {@code Deck}) map directly to SQL tables and column
+ * definitions. However, exposing database classes directly to API clients is
+ * dangerous (it leaks database structure and makes schema refactoring
+ * difficult). This class solves that by mapping entities to decoupled DTOs
+ * (like {@code DeckDto}) which define the exact API payload format expected by
+ * the frontend.
+ * 
+ * <p>
+ * Annotated with {@link Component} so Spring automatically manages its
+ * lifecycle and makes it available for injection in other services.
+ * </p>
+ */
 @Component
 public class DeckMapper {
 
@@ -19,6 +37,13 @@ public class DeckMapper {
         this.deckCardMapper = deckCardMapper;
     }
 
+    /**
+     * Maps a {@link Deck} database entity to an API-friendly {@link DeckDto}.
+     * Translates child entity relations and resolves format names.
+     *
+     * @param deck the database-managed Deck entity
+     * @return the populated DeckDto representation
+     */
     public DeckDto toDto(Deck deck) {
         List<DeckCardDto> cardDtos = deck.getDeckCards() != null
                 ? deck.getDeckCards().stream().map(deckCardMapper::toDto).toList()
@@ -33,6 +58,14 @@ public class DeckMapper {
         return dto;
     }
 
+    /**
+     * Converts a incoming {@link DeckDto} payload into a new {@link Deck} JPA
+     * entity.
+     * Safe-handles invalid format strings.
+     *
+     * @param dto the DTO data received from client API request
+     * @return a new transient (unsaved) Deck entity populated with the DTO values
+     */
     public Deck toEntity(DeckDto dto) {
         if (dto == null) {
             return null;
@@ -49,6 +82,13 @@ public class DeckMapper {
         return deck;
     }
 
+    /**
+     * Updates an existing database-managed {@link Deck} entity with new parameters
+     * from a request DTO, preserving database primary keys and references.
+     *
+     * @param dto  the incoming updated DTO parameters
+     * @param deck the existing database entity to update
+     */
     public void updateEntityFromDto(DeckDto dto, Deck deck) {
         if (dto == null || deck == null) {
             return;

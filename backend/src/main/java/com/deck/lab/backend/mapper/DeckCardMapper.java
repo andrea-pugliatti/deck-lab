@@ -8,9 +8,32 @@ import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.DeckSection;
 
+/**
+ * Mapper component that translates database-relational {@link DeckCard} join
+ * entities to flattened {@link DeckCardDto} representations and vice versa.
+ *
+ * <p>
+ * <b>Relational Joins & Flat DTOs:</b>
+ * In relational databases, many-to-many associations are managed via a join
+ * table containing foreign keys. In JPA, this is represented by the
+ * {@link DeckCard} entity which holds references to both {@link Deck} and
+ * {@link Card}. However, API clients prefer a flattened JSON structure that
+ * includes detailed card details directly. This mapper resolves references,
+ * flattens card properties (like name, type, and race), and provides a simple
+ * JSON layout to the client.
+ * </p>
+ */
 @Component
 public class DeckCardMapper {
 
+    /**
+     * Translates a {@link DeckCard} database association entity into a flat
+     * {@link DeckCardDto} record.
+     * Incorporates detailed card database columns directly onto the DTO fields.
+     *
+     * @param dc the DeckCard join entity
+     * @return the flattened DeckCardDto payload
+     */
     public DeckCardDto toDto(DeckCard dc) {
         if (dc == null) {
             return null;
@@ -28,8 +51,7 @@ public class DeckCardMapper {
                     null,
                     null,
                     dc.getSection() != null ? dc.getSection().getValue() : null,
-                    dc.getQuantity()
-            );
+                    dc.getQuantity());
         }
         return new DeckCardDto(
                 dc.getId(),
@@ -45,6 +67,16 @@ public class DeckCardMapper {
                 dc.getQuantity());
     }
 
+    /**
+     * Converts a incoming {@link DeckCardDto} back into a relational
+     * {@link DeckCard} database entity.
+     * Links the correct {@link Deck} and {@link Card} context mappings.
+     *
+     * @param dto  the input card mapping received from the client request
+     * @param deck the database-managed parent Deck entity
+     * @param card the database-managed Card entity referenced
+     * @return a populated DeckCard join entity mapping
+     */
     public DeckCard toEntity(DeckCardDto dto, Deck deck, Card card) {
         if (dto == null) {
             return null;
