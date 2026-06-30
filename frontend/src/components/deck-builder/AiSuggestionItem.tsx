@@ -1,11 +1,14 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import { getFormatRules } from "../../services/validation";
+import { getFormatRules } from "../../reducers/deckReducer";
 import type { DeckCardItem, Suggestion } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
+/**
+ * Properties for the {@link AiSuggestionItem} component.
+ */
 export interface AiSuggestionItemProps {
   card: Suggestion;
   deckCards: DeckCardItem[];
@@ -13,6 +16,14 @@ export interface AiSuggestionItemProps {
   onAdd: (card: Suggestion) => void;
 }
 
+/**
+ * AiSuggestionItem component displays an individual AI-recommended card.
+ * It shows the card's name, type section, synergy reason, artwork, and current quantity count,
+ * with an "Add" button that is disabled if the user has reached the maximum permitted copies.
+ *
+ * @param props - The component properties.
+ * @returns The rendered AI suggestion item.
+ */
 export default function AiSuggestionItem({
   card,
   deckCards,

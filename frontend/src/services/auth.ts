@@ -1,3 +1,11 @@
+/**
+ * Authenticates a user by username or email and retrieves the JWT tokens.
+ *
+ * @param usernameOrEmail - The user's username or email address.
+ * @param password - The user's password.
+ * @returns A promise resolving to the token payload containing access token and username.
+ * @throws {Error} If credentials are invalid or rate limits are exceeded.
+ */
 export async function login(
   usernameOrEmail: string,
   password: string,
@@ -20,6 +28,15 @@ export async function login(
   return res.json() as Promise<{ accessToken: string; username: string }>;
 }
 
+/**
+ * Registers a new user account.
+ *
+ * @param username - The desired unique username.
+ * @param email - The user's email address.
+ * @param password - The user's password.
+ * @returns A promise resolving to the registered user's payload.
+ * @throws {Error} If registration fails.
+ */
 export async function register(
   username: string,
   email: string,
@@ -41,6 +58,12 @@ export async function register(
   return res.json() as Promise<{ accessToken: string; username: string }>;
 }
 
+/**
+ * Revokes the session by posting to the logout endpoint.
+ *
+ * @returns A promise resolving when the logout completes successfully.
+ * @throws {Error} If the server rejects the logout request.
+ */
 export async function logout(): Promise<void> {
   const res = await fetch("/api/auth/logout", {
     method: "POST",
@@ -51,6 +74,12 @@ export async function logout(): Promise<void> {
   }
 }
 
+/**
+ * Sends a post request to refresh the current JWT access token using the HTTP-only cookie.
+ *
+ * @returns A promise resolving to the new access token payload.
+ * @throws {Error} If the refresh operation fails.
+ */
 export async function refreshToken(): Promise<{ accessToken: string }> {
   const res = await fetch("/api/auth/refresh", {
     method: "POST",
@@ -67,11 +96,21 @@ export async function refreshToken(): Promise<{ accessToken: string }> {
   return res.json() as Promise<{ accessToken: string }>;
 }
 
+/**
+ * Decoded payload shape of a JWT token.
+ */
 export interface JwtPayload {
-  sub?: string;
+  subject?: string;
   [key: string]: unknown;
 }
 
+/**
+ * Parses and decodes the payload of a JWT token string.
+ * Safe helper that returns undefined if base64 decoding fails.
+ *
+ * @param token - The raw JWT token string.
+ * @returns The parsed payload object, or undefined if invalid.
+ */
 export function parseJwt(token: string): JwtPayload | undefined {
   try {
     const base64Url = token.split(".")[1];

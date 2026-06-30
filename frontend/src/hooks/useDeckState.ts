@@ -4,6 +4,17 @@ import { deckReducer, initialState } from "../reducers/deckReducer";
 import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
 import type { Card, CardSection, Deck, DeckCardItem } from "../types";
 
+/**
+ * Private helper function to format the deck configuration state into a simplified payload model
+ * compatible with the backend save/validation controllers.
+ *
+ * @param name - The deck name.
+ * @param description - Description of the deck.
+ * @param formatName - The format name.
+ * @param deckCards - Current list of active cards.
+ * @param defaultName - Fallback name if the deck name is empty.
+ * @returns A structured DeckPayload object.
+ */
 const buildDeckPayload = (
   name: string,
   description: string,
@@ -21,6 +32,15 @@ const buildDeckPayload = (
   })),
 });
 
+/**
+ * Custom React hook that acts as the primary state manager for the Deck Builder.
+ * Wraps useReducer logic with asynchronous triggers for fetching, saving, and
+ * validating deck designs.
+ *
+ * @param id - The optional deck ID. If provided, fetches and loads existing deck on mount.
+ * @param onSaveSuccess - Optional callback executed when save operation completes.
+ * @returns State variables, dispatch wrappers, and save/validation handles.
+ */
 export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => void) {
   const isEditMode = !!id;
 

@@ -1,3 +1,7 @@
+/**
+ * Represents the styling parameters used to customize the layout, borders,
+ * glowing shadows, and badges of cards and lists based on their card type.
+ */
 export interface CardTheme {
   type: "monster" | "spell" | "trap" | "default";
   borderColor: string;
@@ -9,6 +13,12 @@ export interface CardTheme {
   bgGradient: string;
 }
 
+/**
+ * Resolves a card's visual styling theme parameters based on its type string.
+ *
+ * @param typeString - The type description of the card (e.g. "Normal Monster", "Spell Card").
+ * @returns A computed `CardTheme` object mapping colors and class overrides.
+ */
 export function getCardTheme(typeString?: string): CardTheme {
   const type = typeString?.toLowerCase() || "";
   const isMonster = type.includes("monster");

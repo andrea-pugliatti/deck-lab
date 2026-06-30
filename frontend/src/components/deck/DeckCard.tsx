@@ -43,13 +43,13 @@ export default function DeckCard({
   onSelect,
 }: DeckCardProps) {
   const navigate = useNavigate();
+  const formatLabel = formatName || "Unknown";
+  const badgeVariant = formatLabel.toLowerCase().includes("tcg") ? "cyan" : "gold";
   const cardContent = (
     <>
       <div className="mb-4">
         <div className="mb-3 flex items-center justify-between">
-          <Badge variant={formatName.toLowerCase().includes("tcg") ? "cyan" : "gold"}>
-            {formatName}
-          </Badge>
+          <Badge variant={badgeVariant}>{formatLabel}</Badge>
           <span className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
             by {creatorUsername || "Community"}
           </span>

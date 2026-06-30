@@ -13,10 +13,21 @@ import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
-import { DeckStateProvider, useDeckStateContext } from "../context/DeckStateContext";
+import { useDeckState } from "../hooks/useDeckState";
 import type { AiGeneratedDeck } from "../types";
 
-function DeckBuilderContent() {
+/**
+ * DeckBuilderContent Component.
+ *
+ * Implements the core workspace for constructing or editing a Yu-Gi-Oh! deck.
+ * Displays the card library with search/filtering on the left, and the current deck details,
+ * validations, and divided deck sections (Main, Extra, Side) on the right. Also handles
+ * resetting the workspace and opening the AI Deck Wizard modal.
+ *
+ * @returns {React.JSX.Element} The DeckBuilder workspace user interface.
+ */
+function DeckBuilderContent(): React.JSX.Element {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +53,9 @@ function DeckBuilderContent() {
     addCard,
     updateQuantity,
     removeCard,
-  } = useDeckStateContext();
+  } = useDeckState(id, (savedDeck) => {
+    navigate(`/decks/${savedDeck.id}`);
+  });
 
   const {
     searchPage,
@@ -61,17 +74,29 @@ function DeckBuilderContent() {
     libraryCards,
   } = useCatalogSearchContext();
 
+  // Scroll back to top of card search catalog whenever the search page changes
   useEffect(() => {
     if (listContainerRef.current) {
       listContainerRef.current.scrollTop = 0;
     }
   }, [searchPage]);
 
+  /**
+   * Submits the form to save the deck.
+   *
+   * @param {React.SubmitEvent} e - Form submission event.
+   */
   const handleSave = (e: React.SubmitEvent) => {
     e.preventDefault();
     saveDeck();
   };
 
+  /**
+   * Callback triggered when the AI Deck Wizard generates a deck layout.
+   * Updates current name, description, format, and card listing based on output.
+   *
+   * @param {AiGeneratedDeck} data - Object containing generated deck details.
+   */
   const handleDeckGenerated = (data: AiGeneratedDeck) => {
     if (data) {
       setName(data.name!);
@@ -81,6 +106,10 @@ function DeckBuilderContent() {
     }
   };
 
+  /**
+   * Resets the entire builder session variables, clearing any selected cards,
+   * name, description, and resetting the format selector back to default TCG.
+   */
   const handleResetModal = () => {
     setResetConfirmOpen(false);
     setName("");
@@ -242,13 +271,19 @@ function DeckBuilderContent() {
   );
 }
 
-export default function DeckBuilder() {
+/**
+ * DeckBuilder Root Page Component.
+ *
+ * Wraps the main DeckBuilderContent workspace within the CatalogSearchProvider
+ * context provider, using the deck `id` parameter as key for key-based state updates.
+ *
+ * @returns {React.JSX.Element} The rendered DeckBuilder page.
+ */
+export default function DeckBuilder(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   return (
-    <DeckStateProvider key={id || "new"}>
-      <CatalogSearchProvider>
-        <DeckBuilderContent />
-      </CatalogSearchProvider>
-    </DeckStateProvider>
+    <CatalogSearchProvider>
+      <DeckBuilderContent key={id || "new"} />
+    </CatalogSearchProvider>
   );
 }

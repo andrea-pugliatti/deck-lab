@@ -7,7 +7,6 @@ import type {
   Suggestion,
 } from "../types";
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
-import { validateDeckSections } from "./validation";
 
 /**
  * Generates the API endpoint URL for fetching all supported deck formats.
@@ -67,19 +66,12 @@ export async function getDeck(id: string): Promise<Deck> {
 }
 
 /**
- * Validates a deck's card composition, both locally and via server-side rules.
+ * Validates a deck's card composition via server-side rules.
  *
  * @param payload - The deck representation to validate.
  * @returns A promise resolving to an ErrorPayload indicating success or errors.
  */
 export async function validateDeck(payload: DeckPayload): Promise<ErrorPayload> {
-  // Local sections validation first
-  const localErrors = validateDeckSections(payload.deckCards || [], payload.formatName);
-  if (localErrors.length > 0) {
-    return { ok: false, errors: localErrors };
-  }
-
-  // API validation
   try {
     const res = await apiFetch("/api/decks/validate", {
       method: "POST",

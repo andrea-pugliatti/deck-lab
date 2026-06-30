@@ -1,5 +1,9 @@
 import type { Deck, SimulatorCardInstance } from "../types";
 
+/**
+ * State representing all active cards in various game zones
+ * during a starting hand simulation session.
+ */
 export interface SimulatorState {
   hand: SimulatorCardInstance[];
   field: SimulatorCardInstance[];
@@ -8,8 +12,11 @@ export interface SimulatorState {
   remainingDeck: SimulatorCardInstance[];
 }
 
+/**
+ * Actions that can be dispatched to mutate the Simulator State.
+ */
 export type SimulatorAction =
-  | { type: "INIT"; deck: Deck; initialHandSize: number }
+  | { type: "INIT"; deck: Deck | null; initialHandSize: number }
   | { type: "CLEAR" }
   | { type: "DRAW"; count: number }
   | { type: "SHUFFLE" }
@@ -19,6 +26,9 @@ export type SimulatorAction =
       toZone: "hand" | "field" | "graveyard" | "banished" | "deck-top" | "deck-bottom";
     };
 
+/**
+ * Initial state configuration for starting hand simulations.
+ */
 export const initialSimulatorState: SimulatorState = {
   hand: [],
   field: [],
@@ -27,6 +37,13 @@ export const initialSimulatorState: SimulatorState = {
   remainingDeck: [],
 };
 
+/**
+ * Internal pure helper function to shuffle an array using the Fisher-Yates algorithm.
+ *
+ * @template T - The type of items in the array.
+ * @param array - The target array to shuffle.
+ * @returns A new shuffled array.
+ */
 function shuffle<T>(array: T[]): T[] {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -36,6 +53,15 @@ function shuffle<T>(array: T[]): T[] {
   return copy;
 }
 
+/**
+ * State reducer managing the Yu-Gi-Oh! starting hand simulator, handling actions like
+ * deck initialization, drawing cards, shuffling, and moving cards between zones (Hand,
+ * Field, Graveyard, Banished, Deck Top, Deck Bottom).
+ *
+ * @param state - The current simulator state.
+ * @param action - The action dispatched to mutate simulator state.
+ * @returns The mutated next simulator state.
+ */
 export function simulatorReducer(state: SimulatorState, action: SimulatorAction): SimulatorState {
   switch (action.type) {
     case "INIT": {
