@@ -1,29 +1,75 @@
+/**
+ * @file api.ts
+ * @description Core API client utility providing token-based authentication headers,
+ * automatic token refreshing using cookies, queueing of failed requests during refresh,
+ * and unified response error parsing.
+ */
+
+/** Current JWT access token stored in memory. */
 let accessToken: string | undefined = undefined;
+
+/** Flag indicating if an access token refresh operation is currently in progress. */
 let isRefreshing = false;
+
+/** Subscriber queue for requests waiting for the token refresh to complete. */
 let refreshSubscribers: { resolve: (token: string) => void; reject: (err: unknown) => void }[] = [];
 
+/**
+ * Retrieves the currently active in-memory access token.
+ *
+ * @returns The active JWT access token, or undefined if not authenticated.
+ */
 export function getAccessToken(): string | undefined {
   return accessToken;
 }
 
+/**
+ * Sets the active in-memory access token.
+ *
+ * @param token - The new JWT access token, or undefined to clear.
+ */
 export function setAccessToken(token?: string): void {
   accessToken = token;
 }
 
+/**
+ * Enqueues a promise resolution callback to be called once the access token
+ * is successfully refreshed.
+ *
+ * @param resolve - Callback to execute on successful refresh.
+ * @param reject - Callback to execute if refresh fails.
+ */
 function subscribeTokenRefresh(resolve: (token: string) => void, reject: (err: unknown) => void) {
   refreshSubscribers.push({ resolve, reject });
 }
 
+/**
+ * Flushes the subscription queue with the newly retrieved token, resolving all queued promises.
+ *
+ * @param token - The refreshed access token.
+ */
 function onRefreshed(token: string) {
   refreshSubscribers.forEach((cb) => cb.resolve(token));
   refreshSubscribers = [];
 }
 
+/**
+ * Flushes the subscription queue with an error, rejecting all queued promises.
+ *
+ * @param err - The refresh failure error.
+ */
 function onRefreshFailed(err: unknown) {
   refreshSubscribers.forEach((cb) => cb.reject(err));
   refreshSubscribers = [];
 }
 
+/**
+ * Parses validation errors or generic error messages returned in a JSON payload
+ * or raw text format from the server.
+ *
+ * @param response - The Fetch API Response object containing errors.
+ * @returns A promise resolving to an array of error messages.
+ */
 export async function parseResponseErrors(response: Response): Promise<string[]> {
   try {
     const contentType = response.headers.get("content-type");
@@ -63,11 +109,29 @@ export async function parseResponseErrors(response: Response): Promise<string[]>
   return [`Error: ${response.status} ${response.statusText}`];
 }
 
+/**
+ * Parses response errors and packages them into a standard JavaScript Error object.
+ *
+ * @param response - The Fetch API Response object.
+ * @returns A promise resolving to an Error object containing concatenated error details.
+ */
 export async function parseResponseError(response: Response): Promise<Error> {
   const errorsList = await parseResponseErrors(response);
   return new Error(errorsList.join(", "));
 }
 
+/**
+ * Custom fetch wrapper that automatically appends the Bearer token, sets correct
+ * Content-Type headers, sets credentials options to 'same-origin', and handles 401 token refresh.
+ *
+ * If a 401 Unauthorized occurs, it attempts to refresh the access token once.
+ * Other requests triggered during the refresh are queued and retried automatically.
+ *
+ * @param url - The resource URL to fetch.
+ * @param options - Standard RequestInit options.
+ * @returns A promise resolving to the Fetch API Response object.
+ * @throws {Error} If refreshing the token fails or session expires.
+ */
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const headers = {
     ...options.headers,
@@ -133,8 +197,11 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
             ...options.headers,
             Authorization: `Bearer ${newToken}`,
           } as Record<string, string>;
-          options.headers = retryHeaders;
-          fetch(url, options).then(resolve).catch(reject);
+          const retryOptions = {
+            ...options,
+            headers: retryHeaders,
+          };
+          fetch(url, retryOptions).then(resolve).catch(reject);
         },
         (err) => {
           reject(err);

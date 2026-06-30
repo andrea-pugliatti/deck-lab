@@ -1,5 +1,8 @@
 import type { Card, CardSection, DeckCardItem } from "../types";
 
+/**
+ * Rules and sizing limitations enforced by a specific Yu-Gi-Oh! game format.
+ */
 export interface FormatRules {
   minMainSize: number;
   maxMainSize: number;
@@ -8,6 +11,9 @@ export interface FormatRules {
   maxCopiesPerCard: number;
 }
 
+/**
+ * Standard default format rules applied to TCG/OCG.
+ */
 export const DEFAULT_RULES: FormatRules = {
   minMainSize: 40,
   maxMainSize: 60,
@@ -16,6 +22,9 @@ export const DEFAULT_RULES: FormatRules = {
   maxCopiesPerCard: 3,
 };
 
+/**
+ * Mapped collection of game formats and their respective deck size limits.
+ */
 export const FORMAT_RULES_MAP: Record<string, FormatRules> = {
   TCG: DEFAULT_RULES,
   OCG: DEFAULT_RULES,
@@ -36,14 +45,21 @@ export const FORMAT_RULES_MAP: Record<string, FormatRules> = {
 };
 
 /**
- * Returns the layout size and copy limits for a selected format.
+ * Resolves the deck size limits and copy restrictions for a selected format name.
+ *
+ * @param formatName - The identifier of the deck format (e.g. "Goat", "Speed Duel").
+ * @returns The resolved FormatRules settings.
  */
 export function getFormatRules(formatName: string): FormatRules {
   return FORMAT_RULES_MAP[formatName] || DEFAULT_RULES;
 }
 
 /**
- * Checks if a card type corresponds to an Extra Deck card (Fusion, Synchro, Xyz, Link).
+ * Checks if a card's type classification places it in the Extra Deck.
+ * Extra Deck cards include Fusion, Synchro, Xyz, and Link monsters.
+ *
+ * @param cardType - The type classification text of the card.
+ * @returns True if it is an Extra Deck monster, otherwise false.
  */
 export function isExtraDeckCard(cardType: string | undefined): boolean {
   if (!cardType) return false;
@@ -57,7 +73,14 @@ export function isExtraDeckCard(cardType: string | undefined): boolean {
 }
 
 /**
- * Validates if a card can be added to a section under copies and placement limitations.
+ * Validates whether a card can be added to a specific deck section under copy limits
+ * and placement restrictions.
+ *
+ * @param card - The Card schema to add.
+ * @param section - The target deck section (MAIN, EXTRA, or SIDE).
+ * @param currentCards - The current deck items.
+ * @param formatName - The name of the game format ruleset to check.
+ * @returns An object containing validation status (ok) and optional error message.
  */
 export function canAddCard(
   card: Card,
@@ -98,7 +121,15 @@ export function canAddCard(
 }
 
 /**
- * Clamps quantity modifications to comply with format copy rules, taking other sections into account.
+ * Clamps quantity modifications to comply with format copy rules, taking copies
+ * in other deck sections into account.
+ *
+ * @param cardId - The target card unique ID.
+ * @param section - The section being modified.
+ * @param newQty - The proposed new quantity for this section.
+ * @param currentCards - The current deck card items list.
+ * @param formatName - The name of the game format ruleset.
+ * @returns The clamped quantity.
  */
 export function clampQuantity(
   cardId: number,
@@ -119,7 +150,12 @@ export function clampQuantity(
 }
 
 /**
- * Checks deck section counts locally and returns immediate size violation warning messages.
+ * Validates deck section counts locally and returns immediate size validation warning messages.
+ * Checks main deck min/max count, extra deck max count, and side deck max count.
+ *
+ * @param cards - List of cards in the deck with quantity and section parameters.
+ * @param formatName - The name of the format ruleset.
+ * @returns An array of string descriptions of size violations.
  */
 export function validateDeckSections(
   cards: { quantity: number; section: CardSection }[],

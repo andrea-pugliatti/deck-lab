@@ -1,7 +1,15 @@
+/**
+ * Formats an ISO date string into a human-readable relative time expression
+ * (e.g. "just now", "10 minutes ago", "3 hours ago", "5 days ago", or locale date).
+ *
+ * @param dateString - The ISO date string to format.
+ * @returns A user-friendly relative duration description.
+ */
 export function formatRelativeTime(dateString?: string): string {
   if (!dateString) return "some time ago";
   try {
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "recently";
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);

@@ -9,14 +9,31 @@ import type {
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
 import { validateDeckSections } from "./validation";
 
+/**
+ * Generates the API endpoint URL for fetching all supported deck formats.
+ *
+ * @returns The resolved formats endpoint path.
+ */
 export function getFormatsEndpoint(): string {
   return "/api/decks/formats";
 }
 
+/**
+ * Generates the API endpoint URL for fetching a single deck by its ID.
+ *
+ * @param id - The unique identifier of the deck.
+ * @returns The resolved deck endpoint path.
+ */
 export function getDeckEndpoint(id: string | number): string {
   return `/api/decks/${id}`;
 }
 
+/**
+ * Generates the API endpoint URL for querying decks (optionally filtered by username).
+ *
+ * @param username - The optional username filter.
+ * @returns The resolved decks search path.
+ */
 export function getDecksEndpoint(username?: string): string {
   if (username) {
     return `/api/decks?username=${encodeURIComponent(username)}`;
@@ -24,10 +41,23 @@ export function getDecksEndpoint(username?: string): string {
   return "/api/decks";
 }
 
+/**
+ * Generates the API endpoint URL with query parameters for search/paging decks.
+ *
+ * @param params - The URLSearchParams parameters.
+ * @returns The resolved endpoint path with query parameters.
+ */
 export function getDecksQueryEndpoint(params: URLSearchParams): string {
   return `/api/decks?${params.toString()}`;
 }
 
+/**
+ * Fetches a single deck detail from the backend.
+ *
+ * @param id - The unique ID string of the deck.
+ * @returns A promise resolving to the Deck details.
+ * @throws {Error} If the request fails.
+ */
 export async function getDeck(id: string): Promise<Deck> {
   const res = await apiFetch(`/api/decks/${id}`);
   if (!res.ok) {
@@ -36,6 +66,12 @@ export async function getDeck(id: string): Promise<Deck> {
   return res.json();
 }
 
+/**
+ * Validates a deck's card composition, both locally and via server-side rules.
+ *
+ * @param payload - The deck representation to validate.
+ * @returns A promise resolving to an ErrorPayload indicating success or errors.
+ */
 export async function validateDeck(payload: DeckPayload): Promise<ErrorPayload> {
   // Local sections validation first
   const localErrors = validateDeckSections(payload.deckCards || [], payload.formatName);
@@ -64,6 +100,14 @@ export async function validateDeck(payload: DeckPayload): Promise<ErrorPayload> 
   }
 }
 
+/**
+ * Saves a new deck or updates an existing deck.
+ *
+ * @param payload - The deck data payload.
+ * @param id - Optional deck ID. If provided, updates the existing deck; otherwise, creates a new one.
+ * @returns A promise resolving to the saved Deck details.
+ * @throws {Error} If saving fails.
+ */
 export async function saveDeck(payload: DeckPayload, id?: string): Promise<Deck> {
   const url = id ? `/api/decks/${id}` : "/api/decks";
   const method = id ? "PUT" : "POST";
@@ -80,6 +124,13 @@ export async function saveDeck(payload: DeckPayload, id?: string): Promise<Deck>
   return res.json() as Promise<Deck>;
 }
 
+/**
+ * Deletes a deck by its unique ID.
+ *
+ * @param id - The ID of the deck to delete.
+ * @returns A promise resolving when the deletion is complete.
+ * @throws {Error} If deleting fails.
+ */
 export async function deleteDeck(id: string | number): Promise<void> {
   const res = await apiFetch(`/api/decks/${id}`, {
     method: "DELETE",
@@ -90,6 +141,14 @@ export async function deleteDeck(id: string | number): Promise<void> {
   }
 }
 
+/**
+ * Requests AI-powered card suggestions based on the deck's active cards and format rules.
+ *
+ * @param formatName - The name of the selected game format (e.g. "GOAT").
+ * @param currentCards - The current list of cards in the deck builder.
+ * @returns A promise resolving to an array of Synergy Suggestions.
+ * @throws {Error} If the suggestion request fails.
+ */
 export async function fetchAiSuggestions(
   formatName: string,
   currentCards: DeckCardItem[],
@@ -110,6 +169,13 @@ export async function fetchAiSuggestions(
   return data || [];
 }
 
+/**
+ * Uses generative AI to design a fully valid deck based on an archetype and strategy.
+ *
+ * @param payload - Setup details including archetype name, strategy keyword, format, and custom requirements.
+ * @returns A promise resolving to the AI-generated deck details.
+ * @throws {Error} If generation fails.
+ */
 export async function generateAiDeck(payload: {
   archetype: string;
   strategy: string;

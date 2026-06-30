@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 
+/**
+ * Props for the {@link SimulatorCard} component.
+ */
 interface SimulatorCardProps {
   card: SimulatorCardInstance;
   currentZone: "hand" | "field" | "graveyard" | "banished" | "deck";
@@ -14,6 +17,15 @@ interface SimulatorCardProps {
   onViewDetails?: (card: SimulatorCardInstance) => void;
 }
 
+/**
+ * SimulatorCard component.
+ * Renders an individual card in the Hand Simulator workspace.
+ * Features an interactive dropdown menu on click allowing the card to be moved
+ * to other zones (Hand, Field, GY, Banish, Deck Top/Bottom) and triggers detail inspection.
+ *
+ * @param props - The component props.
+ * @returns A JSX element representing the simulator card and its context menu.
+ */
 export default function SimulatorCard({
   card,
   currentZone,

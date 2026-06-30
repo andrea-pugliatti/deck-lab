@@ -5,6 +5,9 @@ import { formatRelativeTime } from "../../utils/date";
 import Badge from "../ui/Badge";
 import Button, { getButtonClasses } from "../ui/Button";
 
+/**
+ * Properties for the {@link DeckCard} component.
+ */
 export interface DeckCardProps {
   id: number;
   name: string;
@@ -18,6 +21,15 @@ export interface DeckCardProps {
   onSelect?: (id: number) => void;
 }
 
+/**
+ * DeckCard component renders a visual card summarizing a deck's details,
+ * including format, name, description, card count, and last updated time.
+ *
+ * It supports standard navigation to the deck details or inline selection/actions.
+ *
+ * @param props - The component properties.
+ * @returns The rendered deck card.
+ */
 export default function DeckCard({
   id,
   name,

@@ -1,4 +1,4 @@
-import { Layers, RotateCcw, Search, Shuffle, Sparkles } from "lucide-react";
+import { Calculator, Layers, RotateCcw, Search, Shuffle, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import { useHandSimulator } from "../../hooks/useHandSimulator";
@@ -6,12 +6,25 @@ import type { Deck, SimulatorCardInstance } from "../../types";
 import Button from "../ui/Button";
 import CardInspector from "./CardInspector";
 import DeckExplorerModal from "./DeckExplorerModal";
+import ProbabilityCalculator from "./ProbabilityCalculator";
 import SimulatorCard from "./SimulatorCard";
 
+/**
+ * Props for the {@link SimulatorWorkspace} component.
+ */
 interface SimulatorWorkspaceProps {
   deck?: Deck;
 }
 
+/**
+ * SimulatorWorkspace component.
+ * Acts as the primary orchestrator and layout container for the Hand Simulator workspace.
+ * Manages hand, field, graveyard, banished, and remaining deck zones, and connects them
+ * to the card inspector, deck explorer modal, and probability (consistency) calculator.
+ *
+ * @param props - Component properties.
+ * @returns React element representing the simulator workspace.
+ */
 export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
   const {
     hand,
@@ -27,7 +40,8 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
 
   const [handSizeConfig, setHandSizeConfig] = useState<5 | 6>(5);
   const [showDeckExplorer, setShowDeckExplorer] = useState(false);
-  const [inspectedCard, setInspectedCard] = useState<SimulatorCardInstance | undefined>(undefined);
+  const [showProbabilityModal, setShowProbabilityModal] = useState(false);
+  const [inspectedCard, setInspectedCard] = useState<SimulatorCardInstance>();
 
   const activeInspectedCard = inspectedCard || hand[0];
 
@@ -35,6 +49,14 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
       <aside className="flex flex-col space-y-4 lg:col-span-3">
         <CardInspector inspectedCard={activeInspectedCard} />
+        <Button
+          variant="outline-cyan"
+          onClick={() => setShowProbabilityModal(true)}
+          className="w-full py-3 text-xs"
+        >
+          <Calculator className="h-4 w-4" />
+          <span>Consistency Calculator</span>
+        </Button>
       </aside>
 
       <div className="space-y-6 lg:col-span-9">
@@ -250,6 +272,13 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
           handleActionFromExplorer={(card, toZone) => {
             onMoveCard(card, toZone);
           }}
+        />
+      )}
+
+      {showProbabilityModal && (
+        <ProbabilityCalculator
+          cards={deck?.deckCards || []}
+          onClose={() => setShowProbabilityModal(false)}
         />
       )}
     </div>
