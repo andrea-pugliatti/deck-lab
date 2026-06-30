@@ -2,6 +2,35 @@ package com.deck.lab.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Data Transfer Object (DTO) representing detailed card statistics and
+ * attributes.
+ *
+ * <p>
+ * <strong>Data Transfer Object (DTO)</strong>
+ * </p>
+ * <p>
+ * This class encapsulates card details (such as name, type, stats, image URLs)
+ * and exposes them to the API client. By using a DTO instead of sending the JPA
+ * database entity directly, we decouple the internal database mapping structure
+ * (defined in {@link Card}) from the external JSON API contract.
+ * </p>
+ *
+ * <p>
+ * <strong>Benefits:</strong>
+ * </p>
+ * <ul>
+ * <li><strong>API Stability:</strong>
+ * If database column structures change, the DTO interface can remain stable,
+ * avoiding breaking client applications.</li>
+ * <li><strong>Performance optimization:</strong>
+ * Eliminates circular references or lazy-loading issues common in Hibernate/JPA
+ * entities when serialized directly to JSON.</li>
+ * <li><strong>Input Validation:</strong>
+ * Annotations like {@code @NotBlank} are processed by Spring's validation
+ * engine before any processing logic runs.</li>
+ * </ul>
+ */
 public class CardDto {
 
     private Long id;
@@ -9,20 +38,63 @@ public class CardDto {
     @NotBlank(message = "Name is required")
     private String name;
 
+    /**
+     * Classification category string (e.g. "Spell Card", "Effect Monster").
+     */
     @NotBlank(message = "Type is required")
     private String type;
 
+    /**
+     * Text detailing card effects or flavor text.
+     */
     private String description;
+
+    /**
+     * Card monster race or sub-classification.
+     */
     private String race;
+
+    /**
+     * Monster elemental attribute.
+     */
     private String attribute;
+
+    /**
+     * Archetype group name the card belongs to.
+     */
     private String archetype;
+
     private String imageUrl;
     private String imageUrlCropped;
+
+    /**
+     * Visual frame border style color representation.
+     */
     private String frameType;
+
+    /**
+     * Monster Attack points value.
+     */
     private Integer atk;
+
+    /**
+     * Monster Defense points value.
+     */
     private Integer def;
+
+    /**
+     * Monster Level or Rank rating.
+     */
     private Integer level;
+
+    /**
+     * Monster Link Rating value.
+     */
     private Integer linkVal;
+
+    /**
+     * Monster Pendulum Scale rating.
+     */
     private Integer scale;
 
     public CardDto() {
