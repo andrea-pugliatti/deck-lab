@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useMemo } from "react";
 
 import { getDecksQueryEndpoint } from "../services/deck";
 import type { Deck, Page } from "../types";
-import { useDebounce } from "./useDebounce";
-import { useFetch } from "./useFetch";
+import { useSearch } from "./useSearch";
 
+/**
+ * Filter state representation for decks.
+ */
+export interface DeckFiltersState {
+  format: string;
+  username: string;
+}
+
+/**
+ * Configuration options for searching decks.
+ * Supports both controlled state variables and initial uncontrolled fallbacks.
+ */
 export interface UseDeckSearchOptions {
   page?: number;
   setPage?: (page: number) => void;
@@ -22,8 +33,17 @@ export interface UseDeckSearchOptions {
   pageSize?: number;
   debounceTime?: number;
   skip?: boolean;
+  syncUrl?: boolean;
 }
 
+/**
+ * Custom React hook that handles searching, filtering, and pagination logic
+ * for the user decks directory.
+ * Connects database queries, input debouncing, and API pagination parameters.
+ *
+ * @param options - Deck search options and states.
+ * @returns Deck search results, loading state, pagination details, and mutators.
+ */
 export function useDeckSearch(options: UseDeckSearchOptions = {}) {
   const {
     page,
@@ -41,93 +61,126 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
     pageSize = 6,
     debounceTime = 400,
     skip = false,
+    syncUrl = false,
   } = options;
 
-  const [localPage, setLocalPage] = useState(initialPage);
-  const [localSearchQuery, setLocalSearchQuery] = useState(initialQuery);
-  const [localFormat, setLocalFormat] = useState(initialFormat);
-  const [localUsername, setLocalUsername] = useState(initialUsername);
-
-  const activePage = page !== undefined ? page : localPage;
-  const activeSearchQuery = searchQuery !== undefined ? searchQuery : localSearchQuery;
-  const activeFormat = format !== undefined ? format : localFormat;
-  const activeUsername = username !== undefined ? username : localUsername;
-
-  const handleSetPage = (nextPage: number) => {
-    if (setPage) {
-      setPage(nextPage);
-    } else {
-      setLocalPage(nextPage);
+  // Map flat format/username options to structured DeckFiltersState for the generic hook
+  const controlledFilters = useMemo(() => {
+    if (format !== undefined || username !== undefined) {
+      return {
+        format: format !== undefined ? format : "ALL",
+        username: username !== undefined ? username : "",
+      };
     }
-  };
+    return undefined;
+  }, [format, username]);
 
-  const handleSetSearchQuery = (nextQuery: string) => {
-    if (setSearchQuery) {
-      setSearchQuery(nextQuery);
-    } else {
-      setLocalSearchQuery(nextQuery);
-      setLocalPage(0);
+  const controlledSetFilters = useMemo(() => {
+    if (setFormat || setUsername) {
+      return (
+        nextFilters:
+          | DeckFiltersState
+          | ((prev: DeckFiltersState) => DeckFiltersState),
+      ) => {
+        const prev = {
+          format: format !== undefined ? format : "ALL",
+          username: username !== undefined ? username : "",
+        };
+        const resolved =
+          typeof nextFilters === "function" ? nextFilters(prev) : nextFilters;
+        if (setFormat && resolved.format !== prev.format) {
+          setFormat(resolved.format);
+        }
+        if (setUsername && resolved.username !== prev.username) {
+          setUsername(resolved.username);
+        }
+      };
     }
-  };
+    return undefined;
+  }, [setFormat, setUsername, format, username]);
 
-  const handleSetFormat = (nextFormat: string) => {
-    if (setFormat) {
-      setFormat(nextFormat);
-    } else {
-      setLocalFormat(nextFormat);
-      setLocalPage(0);
-    }
-  };
+  const {
+    page: activePage,
+    setPage: handleSetPage,
+    searchQuery: activeSearchQuery,
+    setSearchQuery: handleSetSearchQuery,
+    filters: activeFilters,
+    setFilters: handleSetFilters,
+    debouncedQuery,
+    data,
+    loading,
+    error,
+    refetch,
+  } = useSearch<Page<Deck>, DeckFiltersState>(
+    (query, p, f) => {
+      if (skip) return undefined;
+      const queryParams = new URLSearchParams();
+      if (query.trim()) {
+        queryParams.append("q", query.trim());
+      }
+      if (f.format !== "ALL") {
+        queryParams.append("format", f.format);
+      }
+      if (f.username) {
+        queryParams.append("username", f.username);
+      }
+      queryParams.append("page", p.toString());
+      queryParams.append("size", pageSize.toString());
 
-  const handleSetUsername = (nextUsername: string) => {
-    if (setUsername) {
-      setUsername(nextUsername);
-    } else {
-      setLocalUsername(nextUsername);
-      setLocalPage(0);
-    }
-  };
-
-  const debouncedQuery = useDebounce(activeSearchQuery, debounceTime);
-
-  const [prevDebouncedQuery, setPrevDebouncedQuery] = useState(debouncedQuery);
-
-  if (debouncedQuery !== prevDebouncedQuery) {
-    setPrevDebouncedQuery(debouncedQuery);
-    if (page === undefined) {
-      setLocalPage(0);
-    }
-  }
-
-  const queryParams = new URLSearchParams();
-  if (debouncedQuery.trim()) {
-    queryParams.append("q", debouncedQuery.trim());
-  }
-  if (activeFormat !== "ALL") {
-    queryParams.append("format", activeFormat);
-  }
-  if (activeUsername) {
-    queryParams.append("username", activeUsername);
-  }
-  queryParams.append("page", activePage.toString());
-  queryParams.append("size", pageSize.toString());
-
-  const fetchUrl = skip ? undefined : getDecksQueryEndpoint(queryParams);
-
-  const { data, loading, error, refetch } = useFetch<Page<Deck>>(fetchUrl);
+      return getDecksQueryEndpoint(queryParams);
+    },
+    {
+      page,
+      setPage,
+      searchQuery,
+      setSearchQuery,
+      filters: controlledFilters,
+      setFilters: controlledSetFilters,
+      initialPage,
+      initialSearchQuery: initialQuery,
+      initialFilters: {
+        format: initialFormat,
+        username: initialUsername,
+      },
+      debounceTime,
+      syncUrl,
+      urlConfig: {
+        parse: (params) => ({
+          format: params.get("format") || "ALL",
+          username: username || "",
+        }),
+        serialize: (params, f) => {
+          if (f.format !== "ALL") {
+            params.set("format", f.format);
+          } else {
+            params.delete("format");
+          }
+          // Note: username is not synchronized to URL
+        },
+      },
+    },
+  );
 
   const decks = data?.content || [];
   const totalPages = data?.page?.totalPages || 0;
   const totalElements = data?.page?.totalElements || 0;
+
+  const handleSetFormat = (nextFormat: string) => {
+    handleSetFilters((prev) => ({ ...prev, format: nextFormat }));
+  };
+
+  const handleSetUsername = (nextUsername: string) => {
+    handleSetFilters((prev) => ({ ...prev, username: nextUsername }));
+  };
 
   return {
     page: activePage,
     setPage: handleSetPage,
     searchQuery: activeSearchQuery,
     setSearchQuery: handleSetSearchQuery,
-    format: activeFormat,
+    format: activeFilters.format,
     setFormat: handleSetFormat,
-    username: activeUsername,
+    username: activeFilters.username,
     setUsername: handleSetUsername,
     debouncedQuery,
     decks,

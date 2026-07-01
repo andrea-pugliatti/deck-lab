@@ -14,9 +14,7 @@ export interface UseSearchOptions<TFilters> {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   filters?: TFilters;
-  setFilters?: (
-    nextFilters: TFilters | ((prev: TFilters) => TFilters),
-  ) => void;
+  setFilters?: (nextFilters: TFilters | ((prev: TFilters) => TFilters)) => void;
 
   // Uncontrolled state fallbacks/defaults
   initialPage?: number;
@@ -40,11 +38,7 @@ export interface UseSearchOptions<TFilters> {
  * @param options - Configuration options for the hook.
  */
 export function useSearch<TData, TFilters>(
-  endpointBuilder: (
-    query: string,
-    page: number,
-    filters: TFilters,
-  ) => string | undefined,
+  endpointBuilder: (query: string, page: number, filters: TFilters) => string | undefined,
   options: UseSearchOptions<TFilters> = {},
 ) {
   const {
@@ -64,7 +58,7 @@ export function useSearch<TData, TFilters>(
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 1. URL State Parsing (if syncUrl is enabled)
+  // URL State Parsing (if syncUrl is enabled)
   const urlPage = useMemo(() => {
     if (!syncUrl) return 0;
     return parseInt(searchParams.get("page") || "0", 10);
@@ -80,11 +74,9 @@ export function useSearch<TData, TFilters>(
     return urlConfig.parse(searchParams);
   }, [syncUrl, urlConfig, searchParams, initialFilters]);
 
-  // 2. Uncontrolled State Fallbacks
+  // Uncontrolled State Fallbacks
   const [localPage, setLocalPage] = useState(initialPage);
-  const [localFilters, setLocalFilters] = useState<TFilters>(
-    initialFilters as TFilters,
-  );
+  const [localFilters, setLocalFilters] = useState<TFilters>(initialFilters as TFilters);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialSearchQuery);
 
   // Uncontrolled URL-sync local query (updates immediately on keystrokes)
@@ -96,7 +88,7 @@ export function useSearch<TData, TFilters>(
     setUrlLocalQuery(urlQuery);
   }
 
-  // 3. Compute Active State Values
+  // Compute Active State Values
   const activePage = useMemo(() => {
     if (syncUrl) return urlPage;
     return controlledPage !== undefined ? controlledPage : localPage;
@@ -109,19 +101,15 @@ export function useSearch<TData, TFilters>(
 
   const activeSearchQuery = useMemo(() => {
     if (syncUrl) {
-      return controlledSearchQuery !== undefined
-        ? controlledSearchQuery
-        : urlLocalQuery;
+      return controlledSearchQuery !== undefined ? controlledSearchQuery : urlLocalQuery;
     }
-    return controlledSearchQuery !== undefined
-      ? controlledSearchQuery
-      : localSearchQuery;
+    return controlledSearchQuery !== undefined ? controlledSearchQuery : localSearchQuery;
   }, [syncUrl, controlledSearchQuery, urlLocalQuery, localSearchQuery]);
 
-  // 4. Debouncing search queries
+  // Debouncing search queries
   const debouncedQuery = useDebounce(activeSearchQuery, debounceTime);
 
-  // 5. State Setters
+  // State Setters
   const setPage = (nextPage: number) => {
     if (syncUrl) {
       const params = new URLSearchParams(searchParams);
@@ -156,9 +144,7 @@ export function useSearch<TData, TFilters>(
     }
   };
 
-  const setFilters = (
-    nextFilters: TFilters | ((prev: TFilters) => TFilters),
-  ) => {
+  const setFilters = (nextFilters: TFilters | ((prev: TFilters) => TFilters)) => {
     if (syncUrl) {
       const resolved =
         typeof nextFilters === "function"
@@ -187,7 +173,7 @@ export function useSearch<TData, TFilters>(
     }
   };
 
-  // 6. Sync debounced query to URL
+  // Sync debounced query to URL
   useEffect(() => {
     if (syncUrl && debouncedQuery.trim() !== urlQuery.trim()) {
       const params = new URLSearchParams(searchParams);
@@ -201,7 +187,7 @@ export function useSearch<TData, TFilters>(
     }
   }, [syncUrl, debouncedQuery, urlQuery, searchParams, setSearchParams]);
 
-  // 7. Reset page when debouncedQuery changes (in uncontrolled non-url-synced mode)
+  // Reset page when debouncedQuery changes (in uncontrolled non-url-synced mode)
   const [prevDebouncedQuery, setPrevDebouncedQuery] = useState(debouncedQuery);
   if (debouncedQuery !== prevDebouncedQuery) {
     setPrevDebouncedQuery(debouncedQuery);
@@ -210,7 +196,7 @@ export function useSearch<TData, TFilters>(
     }
   }
 
-  // 8. Execute fetch
+  // Execute fetch
   const fetchUrl = endpointBuilder(debouncedQuery, activePage, activeFilters);
   const { data, loading, error, refetch } = useFetch<TData>(fetchUrl);
 
