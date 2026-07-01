@@ -2,10 +2,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { apiFetch, parseResponseError } from "../services/api";
 
+/**
+ * Configuration options for useFetch, inheriting standard RequestInit settings
+ * and introducing a `skip` property to conditionally bypass fetching.
+ */
 export interface FetchOptions extends RequestInit {
   skip?: boolean;
 }
 
+/**
+ * Custom React hook that handles data fetching from a URL using the authenticated
+ * `apiFetch` wrapper. Manages loading, error, and response data states,
+ * and handles component unmounts or URL updates by automatically aborting requests.
+ *
+ * @template T - The expected response data structure.
+ * @param url - The URL resource path to fetch.
+ * @param options - Configure fetch options and skipping rules.
+ * @returns An object containing the data, loading state, error, and a refetch function.
+ */
 export function useFetch<T = unknown>(url?: string, options?: FetchOptions) {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(!options?.skip && !!url);

@@ -21,6 +21,13 @@ const DEFAULTS: Record<MetadataKey, string[]> = {
   archetypes: [],
 };
 
+/**
+ * Fetches card metadata list items for a specific key (types, attributes, races, or archetypes)
+ * utilizing an in-memory cache and promise-sharing to prevent duplicate requests.
+ *
+ * @param key - The metadata dictionary key to query.
+ * @returns A promise resolving to the metadata options array.
+ */
 async function fetchMetadata(key: MetadataKey): Promise<string[]> {
   if (cache[key]) {
     return cache[key]!;
@@ -45,6 +52,13 @@ async function fetchMetadata(key: MetadataKey): Promise<string[]> {
   return promises[key]!;
 }
 
+/**
+ * Custom React hook that fetches and exposes Yu-Gi-Oh! card filter metadata collections
+ * (types, attributes, races, and archetypes) for catalog filter selections.
+ * Safe lifecycle handling avoids setting state if the component has unmounted.
+ *
+ * @returns An object containing arrays for types, attributes, races, and archetypes.
+ */
 export function useCardMetadata() {
   const [types, setTypes] = useState<string[]>(() => cache.types || DEFAULTS.types);
   const [attributes, setAttributes] = useState<string[]>(

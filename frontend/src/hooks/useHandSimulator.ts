@@ -3,6 +3,15 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 import { simulatorReducer, initialSimulatorState } from "../reducers/simulatorReducer";
 import type { Deck, SimulatorCardInstance } from "../types";
 
+/**
+ * Custom React hook that coordinates drawing simulations and card zoning.
+ * Maps state changes to the simulatorReducer and uses refs to avoid redundant shuffles
+ * when identical deck states are re-rendered.
+ *
+ * @param deck - The current Deck schema context.
+ * @param initialHandSize - The starting hand card count (defaults to 5).
+ * @returns State containers representing zones and action callbacks to trigger simulator moves.
+ */
 export function useHandSimulator(deck?: Deck, initialHandSize: number = 5) {
   const [state, dispatch] = useReducer(simulatorReducer, initialSimulatorState);
   const lastDeckKeyRef = useRef<string>("");
