@@ -2,6 +2,16 @@ import { Navigate, Outlet } from "react-router";
 
 import { useAuth } from "../context/AuthContext";
 
+/**
+ * ProtectedRoute component.
+ * Layout wrapper that guards routes requiring user authentication.
+ * Checks the authentication state using the {@link useAuth} hook.
+ * If authentication state is still loading, displays a spinner.
+ * If authenticated, renders the child routes via {@link Outlet}.
+ * If not authenticated, redirects the user to the "/login" page.
+ *
+ * @returns A JSX element wrapping the protected content or redirect logic.
+ */
 export default function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth();
 

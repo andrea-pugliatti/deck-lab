@@ -1,5 +1,13 @@
 import { Link, Outlet } from "react-router";
 
+/**
+ * AuthLayout component.
+ * Layout wrapper for authentication routes (e.g. Login, Register).
+ * Renders a centered layout containing the brand header logo and a card container
+ * holding the route's nested {@link Outlet} content.
+ *
+ * @returns A JSX element wrapping the authentication page layout.
+ */
 export default function AuthLayout() {
   return (
     <div className="bg-dark-bg flex min-h-screen flex-col items-center justify-center px-6 py-12">
