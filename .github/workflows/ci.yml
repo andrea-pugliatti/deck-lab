@@ -51,12 +51,15 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
+        with:
+          package_json_file: frontend/package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install pnpm
         run: corepack enable && corepack prepare pnpm@latest --activate
