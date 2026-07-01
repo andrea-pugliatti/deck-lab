@@ -30,6 +30,21 @@ export function getAccessToken(): string | undefined {
  */
 export function setAccessToken(token?: string): void {
   accessToken = token;
+  if (typeof window !== "undefined" && window.dispatchEvent) {
+    window.dispatchEvent(new CustomEvent("auth-token-update", { detail: token }));
+  }
+}
+
+/**
+ * Helper to check if a URL is an authentication endpoint.
+ */
+function isAuthUrl(url: string): boolean {
+  return (
+    url.endsWith("/api/auth/login") ||
+    url.endsWith("/api/auth/register") ||
+    url.endsWith("/api/auth/logout") ||
+    url.endsWith("/api/auth/refresh")
+  );
 }
 
 /**
@@ -140,7 +155,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   // Ensure cookies are sent (HttpOnly refresh token)
   options.credentials = "same-origin";
 
-  if (accessToken) {
+  if (accessToken && !isAuthUrl(url)) {
     headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
@@ -152,28 +167,48 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
 
   const response = await fetch(url, options);
 
+  const isLogin = url.endsWith("/api/auth/login");
+  const isRegister = url.endsWith("/api/auth/register");
+  const isRefresh = url.endsWith("/api/auth/refresh");
+  const isLogout = url.endsWith("/api/auth/logout");
+
+  // If logout request, clear local token state anyway
+  if (isLogout) {
+    setAccessToken(undefined);
+  }
+
+  if (response.ok && (isLogin || isRegister || isRefresh)) {
+    try {
+      const cloned = typeof response.clone === "function" ? response.clone() : response;
+      const data = (await cloned.json()) as { accessToken?: string };
+      if (data && data.accessToken) {
+        setAccessToken(data.accessToken);
+      }
+    } catch {
+      // Ignore JSON parsing errors
+    }
+  }
+
   if (response.status === 401) {
-    if (url === "/api/auth/refresh") {
+    if (isRefresh) {
       setAccessToken(undefined);
       throw new Error("Refresh token expired or invalid");
     }
 
+    if (isAuthUrl(url)) {
+      return response;
+    }
+
     if (!isRefreshing) {
       isRefreshing = true;
-      fetch("/api/auth/refresh", {
+      apiFetch("/api/auth/refresh", {
         method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-        },
       })
         .then(async (refreshRes) => {
           if (refreshRes.ok) {
-            const data = (await refreshRes.json()) as { accessToken: string };
-            const newAccessToken = data.accessToken;
-            setAccessToken(newAccessToken);
+            // accessToken is updated by the interceptor during the successful apiFetch refresh call.
             isRefreshing = false;
-            onRefreshed(newAccessToken);
+            onRefreshed(accessToken || "");
           } else {
             const err = new Error("Session expired");
             isRefreshing = false;

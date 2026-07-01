@@ -1,3 +1,5 @@
+import { apiFetch } from "./api";
+
 /**
  * Authenticates a user by username or email and retrieves the JWT tokens.
  *
@@ -10,11 +12,8 @@ export async function login(
   usernameOrEmail: string,
   password: string,
 ): Promise<{ accessToken: string; username: string }> {
-  const res = await fetch("/api/auth/login", {
+  const res = await apiFetch("/api/auth/login", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({ username: usernameOrEmail, password }),
   });
 
@@ -42,11 +41,8 @@ export async function register(
   email: string,
   password: string,
 ): Promise<{ accessToken: string; username: string }> {
-  const res = await fetch("/api/auth/register", {
+  const res = await apiFetch("/api/auth/register", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify({ username, email, password }),
   });
 
@@ -65,9 +61,8 @@ export async function register(
  * @throws {Error} If the server rejects the logout request.
  */
 export async function logout(): Promise<void> {
-  const res = await fetch("/api/auth/logout", {
+  const res = await apiFetch("/api/auth/logout", {
     method: "POST",
-    credentials: "same-origin",
   });
   if (!res.ok) {
     throw new Error("Logout failed");
@@ -81,12 +76,8 @@ export async function logout(): Promise<void> {
  * @throws {Error} If the refresh operation fails.
  */
 export async function refreshToken(): Promise<{ accessToken: string }> {
-  const res = await fetch("/api/auth/refresh", {
+  const res = await apiFetch("/api/auth/refresh", {
     method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
 
   if (!res.ok) {

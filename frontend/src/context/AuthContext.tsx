@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { setAccessToken } from "../services/api";
 import {
   login as apiLogin,
   logout as apiLogout,
@@ -10,6 +9,9 @@ import {
 } from "../services/auth";
 import type { User } from "../types";
 
+/**
+ * Properties and authentication functions provided by the AuthContext.
+ */
 interface AuthContextType {
   user?: User;
   accessToken?: string;
@@ -20,8 +22,18 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
+/**
+ * Context container for authentication status.
+ */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * AuthProvider component that wraps the application routes to inject authentication states.
+ * Automatically checks token status on mount and subscribes to auth logout trigger events.
+ *
+ * @param props - Children components.
+ * @returns React Context Provider wrapping the children.
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>();
   const [accessToken, setAccessTokenState] = useState<string>();
@@ -29,16 +41,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = !!accessToken;
 
   const handleAuthSuccess = (token: string, username: string) => {
-    setAccessToken(token);
     setAccessTokenState(token);
     const decoded = parseJwt(token);
-    const email = decoded?.sub || "";
+    const email = decoded?.subject || "";
     setUser({ username, email });
     localStorage.setItem("username", username);
   };
 
   const handleLogoutState = () => {
-    setAccessToken(undefined);
     setAccessTokenState(undefined);
     setUser(undefined);
     localStorage.removeItem("username");
@@ -77,12 +87,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    const handleTokenUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<string | undefined>;
+      setAccessTokenState(customEvent.detail);
+    };
+
     Promise.resolve().then(() => {
       checkAuth();
     });
+
     window.addEventListener("auth-logout", handleLogoutState);
+    window.addEventListener("auth-token-update", handleTokenUpdate);
+
     return () => {
       window.removeEventListener("auth-logout", handleLogoutState);
+      window.removeEventListener("auth-token-update", handleTokenUpdate);
     };
   }, []);
 
@@ -103,6 +122,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Custom React hook to consume authentication contexts from any downstream component.
+ *
+ * @returns The active AuthContext properties and handlers.
+ * @throws {Error} If called outside of an AuthProvider scope.
+ */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
