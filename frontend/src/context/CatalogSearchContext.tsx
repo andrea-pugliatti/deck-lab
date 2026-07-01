@@ -7,6 +7,9 @@ import { useFetch } from "../hooks/useFetch";
 import { getFormatsEndpoint } from "../services/deck";
 import type { Card, CardFiltersState } from "../types";
 
+/**
+ * Properties and state values provided by the CatalogSearchContext.
+ */
 interface CatalogSearchContextType {
   searchPage: number;
   setSearchPage: (page: number) => void;
@@ -24,8 +27,18 @@ interface CatalogSearchContextType {
   totalSearchPages: number;
 }
 
+/**
+ * Context container for card catalog search state.
+ */
 const CatalogSearchContext = createContext<CatalogSearchContextType | undefined>(undefined);
 
+/**
+ * CatalogSearchProvider component that manages and exposes search preferences,
+ * card catalog loading queries, metadata list selections, and pagination variables.
+ *
+ * @param props - Children components.
+ * @returns React Context Provider wrapping the children.
+ */
 export function CatalogSearchProvider({ children }: { children: ReactNode }) {
   const searchState = useCatalogSearch({ defaultPageSize: 8 });
 
@@ -51,6 +64,12 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Custom React hook to consume catalog search states from any component downstream.
+ *
+ * @returns The active CatalogSearchContext properties.
+ * @throws {Error} If called outside of a CatalogSearchProvider scope.
+ */
 export function useCatalogSearchContext() {
   const context = useContext(CatalogSearchContext);
   if (context === undefined) {
