@@ -16,12 +16,11 @@ import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
-import com.deck.lab.backend.model.DeckCard;
-import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
+import com.deck.lab.backend.service.generation.DeckAssembler;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 import com.deck.lab.backend.validation.ValidationError;
 
@@ -58,15 +57,18 @@ public class DeckValidationService {
     private final FormatRulesRepository formatRulesRepository;
     private final DeckMapper deckMapper;
     private final DeckValidationEngine validationEngine;
+    private final DeckAssembler deckAssembler;
 
     public DeckValidationService(CardRepository cardRepository,
             FormatRulesRepository formatRulesRepository,
             DeckMapper deckMapper,
-            DeckValidationEngine validationEngine) {
+            DeckValidationEngine validationEngine,
+            DeckAssembler deckAssembler) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.deckMapper = deckMapper;
         this.validationEngine = validationEngine;
+        this.deckAssembler = deckAssembler;
     }
 
     /**
@@ -98,23 +100,9 @@ public class DeckValidationService {
         // Map DTO to Deck model
         Deck deck = deckMapper.toEntity(deckDto);
 
-        List<DeckCard> deckCards = new ArrayList<>();
-        if (cardDtos != null) {
-            for (DeckCardDto cardDto : cardDtos) {
-                Card card = cardMap.get(cardDto.getCardId());
-                if (card != null) {
-                    DeckSection sectionEnum = null;
-                    try {
-                        sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection())
-                                : null;
-                    } catch (IllegalArgumentException e) {
-                        // Ignore invalid section
-                    }
-                    deckCards.add(new DeckCard(deck, card, sectionEnum, cardDto.getQuantity()));
-                }
-            }
-        }
-        deck.setDeckCards(deckCards);
+        // Assemble using centralized DeckAssembler
+        Deck assembled = deckAssembler.assembleDeckFromDtos(deck.getName(), deckDto.getFormatName(), cardDtos, cardMap);
+        deck.setDeckCards(assembled.getDeckCards());
 
         // Fetch format rules if format name is set
         String formatName = deckDto.getFormatName();

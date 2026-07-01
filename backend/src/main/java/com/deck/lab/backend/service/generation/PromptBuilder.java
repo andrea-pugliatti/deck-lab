@@ -1,112 +1,23 @@
-package com.deck.lab.backend.service;
+package com.deck.lab.backend.service.generation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.CardEntryDto;
-import com.deck.lab.backend.dto.CardSuggestionDto;
-import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
-import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
-import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
-import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
-import com.deck.lab.backend.model.Card;
-import com.deck.lab.backend.model.CardStatus;
-import com.deck.lab.backend.model.Deck;
-import com.deck.lab.backend.model.DeckCard;
-import com.deck.lab.backend.model.DeckSection;
-import com.deck.lab.backend.model.Format;
-import com.deck.lab.backend.model.FormatRules;
-import com.deck.lab.backend.repository.CardRepository;
-import com.deck.lab.backend.repository.FormatRulesRepository;
-import com.deck.lab.backend.validation.DeckValidationEngine;
-import com.deck.lab.backend.validation.ValidationError;
 
 /**
- * Service managing AI-driven deck generation and card synergy recommendations.
- *
- * <p>
- * <strong>Service Layer (AI Integration & Prompt Orchestrator)</strong>
- * </p>
- * <p>
- * This service coordinates interactions with Large Language Models (LLMs) to
- * generate deck configurations. It encapsulates prompt construction, system
- * instructions, structured output serialization, and database mapping logic.
- * </p>
- *
- * <p>
- * <strong>Spring AI & Structured Output Concepts:</strong>
- * </p>
- * <ul>
- * <li>{@code ChatModel} Abstraction: Instead of direct vendor API bindings
- * (like OpenAI or Anthropic SDKs), this service injects Spring AI's generic
- * {@link ChatModel}. This provides vendor independence, allowing the underlying
- * LLM provider to be swapped out via simple configuration updates without
- * altering source code.</li>
- * <li>Prompt Structuring: Combines a {@link SystemMessage} (defining AI
- * personas and output guidelines) and a {@link UserMessage} (conveying the
- * user's specific strategy request).</li>
- * <li>{@link BeanOutputConverter}: Enforces structured outputs (JSON) from the
- * LLM. It generates format instructions for the prompt and maps the raw
- * response back into strongly typed Java DTOs (e.g.
- * {@link DeckGenerateAiResponseDto}), minimizing parsing errors.</li>
- * </ul>
- *
- * <p>
- * <strong>Database Resolution & Verification Pipeline:</strong>
- * </p>
- * <p>
- * LLMs are prone to hallucinations or formatting errors. The service passes raw
- * results through a verification pipeline: fetching true card specifications
- * from {@link CardRepository}, filtering out unrecognized entries, converting
- * them to domain entities, and invoking {@link DeckValidationEngine} to
- * identify and flag rule warnings.
- * </p>
+ * Pure component responsible for constructing Spring AI prompts from request DTOs.
  */
-@Service
-public class DeckGenerationService {
+@Component
+public class PromptBuilder {
 
-    private final ChatModel chatModel;
-    private final CardRepository cardRepository;
-    private final FormatRulesRepository formatRulesRepository;
-    private final DeckValidationEngine validationEngine;
-
-    public DeckGenerationService(ChatModel chatModel,
-            CardRepository cardRepository,
-            FormatRulesRepository formatRulesRepository,
-            DeckValidationEngine validationEngine) {
-        this.chatModel = chatModel;
-        this.cardRepository = cardRepository;
-        this.formatRulesRepository = formatRulesRepository;
-        this.validationEngine = validationEngine;
-    }
-
-    /**
-     * Generates a complete deck list using LLM prompt templates and validates
-     * output against local card databases and format legality rules.
-     *
-     * @param request the DTO parameters specifying archetype, strategy, and format
-     *                rules
-     * @return the generated deck list and any compliance validation warning strings
-     */
-    @Transactional(readOnly = true)
-    public DeckGenerationResponseDto generateDeck(DeckGenerateRequestDto request) {
-        BeanOutputConverter<DeckGenerateAiResponseDto> converter = new BeanOutputConverter<>(
-                DeckGenerateAiResponseDto.class);
-
+    public Prompt buildGenerationPrompt(DeckGenerateRequestDto request, String formatInstructions) {
         String systemInstruction = """
                 You are an expert Yu-Gi-Oh! deck builder. Your goal is to generate a competitive, playable, and legally compliant deck for the {formatName} format.
 
@@ -137,10 +48,20 @@ public class DeckGenerationService {
                 4. A deck cannot contain more than 3 copies of any card across the Main, Extra, and Side decks combined.
                 5. Use EXACT official English Yu-Gi-Oh! card names. Do not make up cards.
 
+                AVAILABLE TOOLS FOR PRECISION BUILDING:
+                You have access to several database tools to search and verify card details. Use them to ensure zero spelling mistakes or legality errors:
+                - cardSearch(query): Search cards matching a name or archetype.
+                - cardDetails(name): Retrieve full text, stats (ATK/DEF/Level), and types of a card by exact name.
+                - getFormatRules(format): Lookup the active banlist (Forbidden, Limited, Semi-Limited) for the given format.
+                - getArchetypeCards(archetype): Retrieve all cards belonging to an archetype.
+                - analyzeDeckStats(cardNames): Analyze type ratios and average stats for a list of card names to verify balance.
+
+                Use these tools actively before deciding on your deck configurations.
+
                 %s
                 """;
 
-        String formattedInstruction = String.format(systemInstruction, converter.getFormat());
+        String formattedInstruction = String.format(systemInstruction, formatInstructions);
 
         String finalInstruction = formattedInstruction
                 .replace("{formatName}", request.getFormatName())
@@ -160,78 +81,10 @@ public class DeckGenerationService {
                 request.getCustomPrompt() != null ? request.getCustomPrompt() : "");
         UserMessage userMessage = new UserMessage(userPrompt);
 
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-
-        var response = chatModel.call(prompt);
-        String responseContent = response.getResult().getOutput().getText();
-
-        DeckGenerateAiResponseDto aiDeck = converter.convert(responseContent);
-
-        // Process generated cards and match them against local database
-        List<DeckCardDto> matchedCards = new ArrayList<>();
-        long tempIdCounter = 1;
-
-        if (aiDeck != null && aiDeck.getCards() != null) {
-            for (CardEntryDto entry : aiDeck.getCards()) {
-                if (entry.getName() == null || entry.getName().isBlank()) {
-                    continue;
-                }
-                Optional<Card> dbCardOpt = lookupCard(entry.getName());
-                if (dbCardOpt.isPresent()) {
-                    Card card = dbCardOpt.get();
-                    String section = entry.getSection() != null ? entry.getSection().toUpperCase() : "MAIN";
-                    if (!List.of("MAIN", "EXTRA", "SIDE").contains(section)) {
-                        section = "MAIN";
-                    }
-                    Integer quantity = entry.getQuantity();
-                    if (quantity == null || quantity < 1) {
-                        quantity = 1;
-                    } else if (quantity > 3) {
-                        quantity = 3;
-                    }
-
-                    matchedCards.add(new DeckCardDto(
-                            tempIdCounter++,
-                            card.getId(),
-                            card.getName(),
-                            card.getType() != null ? card.getType().getValue() : null,
-                            card.getDescription(),
-                            card.getRace() != null ? card.getRace().getValue() : null,
-                            card.getAttribute() != null ? card.getAttribute().getValue() : null,
-                            card.getArchetype(),
-                            card.getImageUrl(),
-                            section,
-                            quantity));
-                }
-            }
-        }
-
-        // Run validator engine
-        List<String> warnings = runValidation(request.getFormatName(),
-                aiDeck != null ? aiDeck.getName() : "Generated Deck", request.getFormatName(), matchedCards);
-
-        return new DeckGenerationResponseDto(
-                aiDeck != null && aiDeck.getName() != null && !aiDeck.getName().isBlank() ? aiDeck.getName()
-                        : request.getArchetype() + " Deck",
-                aiDeck != null && aiDeck.getDescription() != null ? aiDeck.getDescription() : "AI generated deck.",
-                request.getFormatName(),
-                matchedCards,
-                warnings);
+        return new Prompt(List.of(systemMessage, userMessage));
     }
 
-    /**
-     * Provides exactly 5 card recommendations that synergize with the current deck
-     * list.
-     *
-     * @param request the DTO containing the current deck list and target format
-     *                name
-     * @return a list of 5 card suggestions with synergy rationales
-     */
-    @Transactional(readOnly = true)
-    public List<CardSuggestionDto> suggestCards(DeckSuggestRequestDto request) {
-        BeanOutputConverter<CardSuggestionsAiResponseDto> converter = new BeanOutputConverter<>(
-                CardSuggestionsAiResponseDto.class);
-
+    public Prompt buildSuggestionPrompt(DeckSuggestRequestDto request, String formatInstructions) {
         String systemInstruction = """
                 You are an expert Yu-Gi-Oh! deck builder. Your goal is to analyze a current partially built deck list and recommend exactly 5 highly synergistic cards.
 
@@ -259,10 +112,20 @@ public class DeckGenerationService {
                 - For retro formats (Goat, Edison, Tengu Plant, HAT), prioritize setting spell and trap cards in the backrow for disruption.
                 - For modern formats (TCG, OCG), prioritize hand traps that activate from the hand for fast interaction.
 
+                AVAILABLE TOOLS FOR PRECISION BUILDING:
+                You have access to several database tools to search and verify card details. Use them to ensure zero spelling mistakes or legality errors:
+                - cardSearch(query): Search cards matching a name or archetype.
+                - cardDetails(name): Retrieve full text, stats (ATK/DEF/Level), and types of a card by exact name.
+                - getFormatRules(format): Lookup the active banlist (Forbidden, Limited, Semi-Limited) for the given format.
+                - getArchetypeCards(archetype): Retrieve all cards belonging to an archetype.
+                - analyzeDeckStats(cardNames): Analyze type ratios and average stats for a list of card names to verify balance.
+
+                Use these tools actively before deciding on your deck configurations.
+
                 %s
                 """;
 
-        String formattedInstruction = String.format(systemInstruction, converter.getFormat());
+        String formattedInstruction = String.format(systemInstruction, formatInstructions);
 
         String serializedCards = request.getCurrentCards().stream()
                 .map(c -> String.format("- %s (%s) x%d", c.getName(), c.getSection(), c.getQuantity()))
@@ -279,40 +142,9 @@ public class DeckGenerationService {
                 request.getFormatName());
         UserMessage userMessage = new UserMessage(userPrompt);
 
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-
-        var response = chatModel.call(prompt);
-        String responseContent = response.getResult().getOutput().getText();
-
-        CardSuggestionsAiResponseDto aiSuggestions = converter.convert(responseContent);
-
-        List<CardSuggestionDto> matchedSuggestions = new ArrayList<>();
-        if (aiSuggestions != null && aiSuggestions.getSuggestions() != null) {
-            for (CardSuggestionDto suggestion : aiSuggestions.getSuggestions()) {
-                if (suggestion.getName() == null || suggestion.getName().isBlank()) {
-                    continue;
-                }
-                Optional<Card> dbCardOpt = lookupCard(suggestion.getName());
-                if (dbCardOpt.isPresent()) {
-                    Card card = dbCardOpt.get();
-                    matchedSuggestions.add(new CardSuggestionDto(
-                            card.getName(),
-                            suggestion.getSection() != null ? suggestion.getSection().toUpperCase() : "MAIN",
-                            suggestion.getSynergyReason() != null ? suggestion.getSynergyReason()
-                                    : "Provides good synergy.",
-                            card.getId(),
-                            card.getType() != null ? card.getType().getValue() : null,
-                            card.getImageUrlCropped()));
-                }
-            }
-        }
-
-        return matchedSuggestions;
+        return new Prompt(List.of(systemMessage, userMessage));
     }
 
-    /**
-     * Translates a format name to specific prompt instruction rules.
-     */
     private String getFormatRules(String formatName) {
         if (formatName == null) {
             formatName = "TCG";
@@ -363,10 +195,6 @@ public class DeckGenerationService {
         };
     }
 
-    /**
-     * Translates a strategy style (e.g. combo, control) to specific prompt guide
-     * guidelines.
-     */
     private String getPlaystyleGuide(String strategy) {
         if (strategy == null) {
             strategy = "None";
@@ -405,68 +233,5 @@ public class DeckGenerationService {
                         - Playstyle Guideline: Standard / Balanced. Build a standard deck for this archetype, letting the archetype's native playstyle dictate card ratios.
                         """;
         };
-    }
-
-    /**
-     * Queries the local database to find a matching Card by exact name or substring
-     * fallback.
-     */
-    private Optional<Card> lookupCard(String name) {
-        Optional<Card> cardOpt = cardRepository.findByName(name.trim());
-        if (cardOpt.isEmpty()) {
-            List<Card> fallbacks = cardRepository.findByNameContainingIgnoreCase(name.trim());
-            if (!fallbacks.isEmpty()) {
-                cardOpt = Optional.of(fallbacks.get(0));
-            }
-        }
-        return cardOpt;
-    }
-
-    /**
-     * Runs compliance validation on the generated deck list and compiles warning
-     * strings.
-     */
-    private List<String> runValidation(String deckName, String aiName, String formatName, List<DeckCardDto> cardDtos) {
-        Deck deck = new Deck();
-        deck.setName(aiName);
-        Format format = null;
-        try {
-            format = Format.fromString(formatName);
-            deck.setFormatName(format);
-        } catch (IllegalArgumentException e) {
-            // Ignore invalid format
-        }
-
-        List<Long> cardIds = cardDtos.stream().map(card -> card.getCardId()).toList();
-        List<Card> cards = cardRepository.findAllById(cardIds);
-        Map<Long, Card> cardMap = cards.stream().collect(Collectors.toMap(c -> c.getId(), c -> c));
-
-        List<DeckCard> deckCards = new ArrayList<>();
-        for (DeckCardDto cardDto : cardDtos) {
-            Card card = cardMap.get(cardDto.getCardId());
-            if (card != null) {
-                DeckSection sectionEnum = null;
-                try {
-                    sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection()) : null;
-                } catch (IllegalArgumentException e) {
-                    // Ignore invalid section
-                }
-                deckCards.add(new DeckCard(deck, card, sectionEnum, cardDto.getQuantity()));
-            }
-        }
-        deck.setDeckCards(deckCards);
-
-        Map<Long, CardStatus> formatLimits = new HashMap<>();
-        if (format != null) {
-            List<FormatRules> formatRules = formatRulesRepository.findByFormatName(format);
-            for (FormatRules rule : formatRules) {
-                if (rule.getCard() != null) {
-                    formatLimits.put(rule.getCard().getId(), rule.getStatus());
-                }
-            }
-        }
-
-        List<ValidationError> errors = validationEngine.validate(deck, formatLimits);
-        return errors.stream().map(error -> error.message()).collect(Collectors.toList());
     }
 }

@@ -12,7 +12,7 @@ import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
-import com.deck.lab.backend.service.DeckGenerationService;
+import com.deck.lab.backend.service.GenerationService;
 
 import jakarta.validation.Valid;
 
@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
  * <p>
  * This controller orchestrates user requests to build or analyze decks using
  * Large Language Models (LLMs). It acts as an integration gateway: accepting
- * strategy requests, prompting the AI engine via {@link DeckGenerationService},
+ * strategy requests, prompting the AI engine via {@link GenerationService},
  * resolving the resulting text suggestions against our relational database,
  * passing them through our local validation engine, and returning complete card
  * payloads alongside warning arrays explaining any rules adjustments.
@@ -34,11 +34,11 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/decks/ai")
-public class DeckGenerationController {
+public class GenerationController {
 
-    private final DeckGenerationService deckGenerationService;
+    private final GenerationService deckGenerationService;
 
-    public DeckGenerationController(DeckGenerationService deckGenerationService) {
+    public GenerationController(GenerationService deckGenerationService) {
         this.deckGenerationService = deckGenerationService;
     }
 
