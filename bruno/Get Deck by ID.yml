@@ -1,7 +1,7 @@
 info:
   name: Get Deck by ID
   type: http
-  seq: 11
+  seq: 15
 
 http:
   method: GET

@@ -1,7 +1,7 @@
 info:
   name: Suggest Cards
   type: http
-  seq: 16
+  seq: 22
 
 http:
   method: post
@@ -9,6 +9,8 @@ http:
   headers:
     - name: Content-Type
       value: application/json
+    - name: Authorization
+      value: Bearer {{accessToken}}
   body:
     type: json
     data: |-

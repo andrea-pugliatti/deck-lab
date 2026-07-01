@@ -1,7 +1,7 @@
 info:
   name: Auth Login
   type: http
-  seq: 1
+  seq: 5
 
 http:
   method: POST
@@ -35,6 +35,15 @@ runtime:
           }
           if (refreshToken) {
             bru.setVar("refreshToken", refreshToken);
+          }
+
+          const setCookie = res.getHeader("set-cookie");
+          if (setCookie) {
+            const cookieHeader = Array.isArray(setCookie) ? setCookie.join(";") : setCookie;
+            const match = cookieHeader.match(/refreshToken=([^;]+)/);
+            if (match && match[1]) {
+              bru.setVar("refreshCookie", `refreshToken=${match[1]}`);
+            }
           }
           
           console.log("Successfully logged in and saved tokens.");

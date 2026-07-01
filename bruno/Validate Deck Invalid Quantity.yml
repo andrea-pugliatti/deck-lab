@@ -1,7 +1,7 @@
 info:
-  name: Validate Deck
+  name: Validate Deck Invalid Quantity
   type: http
-  seq: 18
+  seq: 20
 
 http:
   method: POST
@@ -11,36 +11,34 @@ http:
       value: application/json
     - name: content-type
       value: application/json
+    - name: Authorization
+      value: Bearer {{accessToken}}
   body:
     type: json
     data: |-
       {
-        "name": "Validation Test Deck",
-        "description": "A test deck to validate via API",
+        "name": "Invalid Quantity Deck",
+        "description": "Should fail validation",
         "formatName": "TCG",
         "deckCards": [
           {
-            "cardId": {{createdCardId}},
+            "cardId": 1,
             "section": "MAIN",
-            "quantity": 3
+            "quantity": 4
           }
         ]
       }
+  auth: inherit
 
 runtime:
   variables:
     - name: baseUrl
       value: http://localhost:8080
   scripts:
-    - type: before-request
-      code: |-
-        if (!bru.getVar("createdCardId")) {
-          bru.setVar("createdCardId", 1);
-        }
     - type: tests
       code: |-
-        test("Response should be 200 OK or 400 Bad Request depending on validity", function() {
-          expect([200, 400]).to.include(res.status);
+        test("Response should be 400 Bad Request", function() {
+          expect(res.status).to.equal(400);
         });
 
 settings:

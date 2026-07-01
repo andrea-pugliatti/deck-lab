@@ -1,7 +1,7 @@
 info:
   name: Create Deck
   type: http
-  seq: 10
+  seq: 14
 
 http:
   method: POST
@@ -11,6 +11,8 @@ http:
       value: application/json
     - name: content-type
       value: application/json
+    - name: Authorization
+      value: Bearer {{accessToken}}
   body:
     type: json
     data: |-

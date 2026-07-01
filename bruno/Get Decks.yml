@@ -1,7 +1,7 @@
 info:
   name: Get Decks
   type: http
-  seq: 9
+  seq: 13
 
 http:
   method: GET
@@ -20,8 +20,9 @@ runtime:
         test("Response should be 200 OK", function() {
           expect(res.status).to.equal(200);
         });
-        test("Response should be an array", function() {
-          expect(res.body).to.be.an('array');
+        test("Response should be a paginated deck response", function() {
+          expect(res.body).to.be.an('object');
+          expect(res.body.content).to.be.an('array');
         });
 
 settings:

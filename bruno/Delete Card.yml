@@ -1,7 +1,7 @@
 info:
   name: Delete Card
   type: http
-  seq: 6
+  seq: 10
 
 http:
   method: DELETE
@@ -9,6 +9,8 @@ http:
   headers:
     - name: accept
       value: application/json
+    - name: Authorization
+      value: Bearer {{accessToken}}
   auth: inherit
 
 runtime:

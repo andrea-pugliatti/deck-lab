@@ -1,14 +1,14 @@
 info:
   name: Auth Logout
   type: http
-  seq: 17
+  seq: 23
 
 http:
   method: POST
   url: "{{baseUrl}}/api/auth/logout"
   headers:
     - name: Cookie
-      value: refreshToken={{refreshToken}}
+      value: "[object Object]"
 
 runtime:
   variables:

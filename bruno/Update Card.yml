@@ -1,7 +1,7 @@
 info:
   name: Update Card
   type: http
-  seq: 5
+  seq: 9
 
 http:
   method: PUT
@@ -11,6 +11,8 @@ http:
       value: application/json
     - name: content-type
       value: application/json
+    - name: Authorization
+      value: Bearer {{accessToken}}
   body:
     type: json
     data: |-

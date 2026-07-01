@@ -1,0 +1,39 @@
+info:
+  name: Create Deck Without Auth
+  type: http
+  seq: 26
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/decks"
+  headers:
+    - name: accept
+      value: application/json
+    - name: content-type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Unauthorized Deck",
+        "description": "Should fail without a token",
+        "formatName": "TCG",
+        "deckCards": []
+      }
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+  scripts:
+    - type: tests
+      code: |-
+        test("Response should be 401 Unauthorized", function() {
+          expect(res.status).to.equal(401);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
