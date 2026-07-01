@@ -14,16 +14,32 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
-import { useUrlSyncedDeckSearch } from "../hooks/useUrlSyncedDeckSearch";
+import { useDeckSearch } from "../hooks/useDeckSearch";
 import { deleteDeck, getFormatsEndpoint } from "../services/deck";
 
+/**
+ * Properties for the Decks page component.
+ */
 export interface DecksProps {
   initialTab?: "all" | "user";
 }
 
+/**
+ * Number of deck blueprints to render per page.
+ */
 const PAGE_SIZE = 9;
 
-export default function Decks({ initialTab = "all" }: DecksProps) {
+/**
+ * Decks Page Component.
+ *
+ * Renders a list of deck blueprints. It can operate in two modes: public ("all") to browse
+ * community decks, or private ("user") to manage the authenticated user's deck blueprints.
+ * Features search and format-filtering with synced URL state queries.
+ *
+ * @param {DecksProps} props - The component props.
+ * @returns {React.JSX.Element} The rendered Decks catalog page.
+ */
+export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Element {
   const { isAuthenticated, user } = useAuth();
   const [tab, setTab] = useState<"all" | "user">(initialTab);
 
@@ -52,16 +68,21 @@ export default function Decks({ initialTab = "all" }: DecksProps) {
     totalPages,
     totalElements,
     refetch,
-  } = useUrlSyncedDeckSearch({
-    defaultPageSize: 9,
+  } = useDeckSearch({
+    pageSize: 9,
     username: tab === "user" ? user?.username || "" : "",
     skip: tab === "user" && !user?.username,
+    syncUrl: true,
   });
 
   const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string }>();
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
 
+  /**
+   * Event handler for confirming and executing deletion of a selected deck.
+   * Clears state and triggers a refresh of the deck listing after successful API request.
+   */
   const handleDeleteModal = async () => {
     if (!deckToDelete) return;
     setIsDeleting(true);

@@ -12,7 +12,16 @@ import { getDeckEndpoint } from "../services/deck";
 import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
 
-export default function HandSimulator() {
+/**
+ * HandSimulator Page Component.
+ *
+ * Provides an interactive environment to simulate drawing starting hands, test opening play combos,
+ * and verify deck configuration consistency. If a `deckId` query parameter is present in the URL,
+ * the component fetches the deck and mounts the workspace; otherwise, it displays a deck selection interface.
+ *
+ * @returns {React.JSX.Element} The rendered HandSimulator component.
+ */
+export default function HandSimulator(): React.JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const deckId = searchParams.get("deckId");

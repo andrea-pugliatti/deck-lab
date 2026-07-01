@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useFetch } from "../../hooks/useFetch";
-import { useUrlSyncedDeckSearch } from "../../hooks/useUrlSyncedDeckSearch";
+import { useDeckSearch } from "../../hooks/useDeckSearch";
 import { getFormatsEndpoint } from "../../services/deck";
 import DeckCard from "../deck/DeckCard";
 import EmptyState from "../EmptyState";
@@ -14,12 +14,24 @@ import ShowingPageIndicator from "../ShowingPageIndicator";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 
+/**
+ * Props for the {@link DeckSelector} component.
+ */
 interface DeckSelectorProps {
   onSelect: (deckId: number) => void;
 }
 
 const PAGE_SIZE = 6;
 
+/**
+ * DeckSelector component.
+ * Provides a UI panel that allows users to search, filter (by format), and select
+ * a deck from either their own private builds or community shared builds.
+ * Features tabs, a "random selection" fallback, and integrated pagination.
+ *
+ * @param props - The component props.
+ * @returns A JSX element displaying the deck selection and filtering interfaces.
+ */
 export default function DeckSelector({ onSelect }: DeckSelectorProps) {
   const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState<"my-decks" | "community">("community");
@@ -49,10 +61,11 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     totalPages,
     totalElements,
     refetch,
-  } = useUrlSyncedDeckSearch({
-    defaultPageSize: PAGE_SIZE,
+  } = useDeckSearch({
+    pageSize: PAGE_SIZE,
     username: activeTab === "my-decks" ? user?.username || "" : "",
     skip: activeTab === "my-decks" && !user?.username,
+    syncUrl: true,
   });
 
   const selectRandomDeck = () => {

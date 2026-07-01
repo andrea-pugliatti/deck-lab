@@ -10,11 +10,22 @@ import Pagination from "../components/Pagination";
 import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import Input from "../components/ui/Input";
 import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useUrlSyncedSearch } from "../hooks/useUrlSyncedSearch";
+import { useCatalogSearch } from "../hooks/useCatalogSearch";
 
+/**
+ * Number of cards to display per page in the pagination grid.
+ */
 const PAGE_SIZE = 21;
 
-export default function Cards() {
+/**
+ * Cards Page Component.
+ *
+ * Provides a searchable, filterable catalog of all available cards. Uses synced URL parameters
+ * to maintain search query, current filters, and pagination state.
+ *
+ * @returns {React.JSX.Element} The Cards page component containing search input, filters sidebar, and card grid.
+ */
+export default function Cards(): React.JSX.Element {
   const {
     searchPage: page,
     setSearchPage: handlePageChange,
@@ -28,7 +39,7 @@ export default function Cards() {
     totalElements,
     error,
     refetch,
-  } = useUrlSyncedSearch({ defaultPageSize: PAGE_SIZE });
+  } = useCatalogSearch({ defaultPageSize: PAGE_SIZE, syncUrl: true });
 
   const { types, attributes, races, archetypes } = useCardMetadata();
 

@@ -11,13 +11,28 @@ import { getCardEndpoint } from "../services/card";
 import type { Card } from "../types";
 import { getCardTheme } from "../utils/card";
 
-export default function CardDetail() {
+/**
+ * CardDetail Page Component.
+ *
+ * Displays detailed information about a specific card, including its stats (ATK, DEF, level, etc.),
+ * description, attributes, and type badges. It also features an interactive 3D rotation hover effect
+ * on the card artwork.
+ *
+ * @returns {React.JSX.Element} The CardDetail component.
+ */
+export default function CardDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
 
+  /**
+   * Calculates and sets the 3D rotation angles (X and Y) based on the cursor position
+   * relative to the artwork container to create a tilting effect.
+   *
+   * @param {MouseEvent<HTMLDivElement>} e - The mouse move event.
+   */
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -34,6 +49,9 @@ export default function CardDetail() {
     setRotateY(rY);
   };
 
+  /**
+   * Resets the 3D rotation angles to 0 when the mouse leaves the artwork container.
+   */
   const handleMouseLeave = () => {
     setRotateX(0);
     setRotateY(0);

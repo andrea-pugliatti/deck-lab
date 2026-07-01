@@ -7,7 +7,16 @@ import Input from "../components/ui/Input";
 import Label from "../components/ui/Label";
 import { useAuth } from "../context/AuthContext";
 
-export default function Login() {
+/**
+ * Login Page Component.
+ *
+ * Provides a login interface for registered users. Handles username/email and password submission
+ * by communicating with the authentication context. Displays failure messages and redirects to
+ * the decks dashboard on success.
+ *
+ * @returns {React.JSX.Element} The rendered Login form page.
+ */
+export default function Login(): React.JSX.Element {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -15,6 +24,12 @@ export default function Login() {
   const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
 
+  /**
+   * Handles form submission for signing in.
+   * Prevents default browser submission, invokes AuthContext login, and redirects to dashboard.
+   *
+   * @param {React.SubmitEvent} e - Form submission event.
+   */
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setError(undefined);

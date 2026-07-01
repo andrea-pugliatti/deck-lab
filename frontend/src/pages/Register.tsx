@@ -7,7 +7,16 @@ import Input from "../components/ui/Input";
 import Label from "../components/ui/Label";
 import { useAuth } from "../context/AuthContext";
 
-export default function Register() {
+/**
+ * Register Page Component.
+ *
+ * Provides a registration interface for new users to create their profile.
+ * Performs client-side password matching checks and makes an API call via context registry helper.
+ * Automatically logs in the user and redirects to the decks catalogue on successful account creation.
+ *
+ * @returns {React.JSX.Element} The rendered Register page.
+ */
+export default function Register(): React.JSX.Element {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -17,6 +26,12 @@ export default function Register() {
   const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
 
+  /**
+   * Handles user submission of registration details.
+   * Compares password fields, handles loaders, invokes API registration, and redirects to dashboard.
+   *
+   * @param {React.SubmitEvent} e - Form submission event.
+   */
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setError(undefined);

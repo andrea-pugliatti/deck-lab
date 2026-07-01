@@ -1,8 +1,11 @@
-import { getFormatRules } from "../../services/validation";
+import { getFormatRules } from "../../reducers/deckReducer";
 import type { CardSection, DeckCardItem } from "../../types";
 import Badge from "../ui/Badge";
 import EditorCardItem from "./EditorCardItem";
 
+/**
+ * Props for the {@link DeckSectionList} component.
+ */
 export interface DeckSectionListProps {
   section: CardSection;
   deckCards: DeckCardItem[];
@@ -11,6 +14,14 @@ export interface DeckSectionListProps {
   removeCard: (cardId: number, section: CardSection) => void;
 }
 
+/**
+ * DeckSectionList renders the list of cards belonging to a specific section
+ * (Main, Extra, or Side) of the deck, showing counts, section limits, validation state,
+ * and individual card controls.
+ *
+ * @param props - The component props.
+ * @returns The rendered DeckSectionList component.
+ */
 export default function DeckSectionList({
   section,
   deckCards,

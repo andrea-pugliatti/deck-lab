@@ -10,9 +10,21 @@ import { getCardsEndpoint } from "../services/card";
 import { getDecksQueryEndpoint } from "../services/deck";
 import type { Card, Deck, Page } from "../types";
 
+/**
+ * URLSearchParams configurations used to fetch spotlight/showcase items on the home landing page.
+ */
 const spotlightParams = new URLSearchParams({ size: "6" });
 const heroShowcaseParams = new URLSearchParams({ q: "", type: "Effect Monster", size: "3" });
-export default function Home() {
+
+/**
+ * Home Landing Page Component.
+ *
+ * Renders the main entry point of the Deck Lab application. Includes a hero banner with an interactive
+ * card artwork showcase, search functionality, lists of trending deck blueprints, and spotlighted catalog cards.
+ *
+ * @returns {React.JSX.Element} The rendered Home landing page.
+ */
+export default function Home(): React.JSX.Element {
   const {
     data: decksData,
     loading: decksLoading,

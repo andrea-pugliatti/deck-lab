@@ -15,7 +15,16 @@ import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
 
-export default function DeckDetail() {
+/**
+ * DeckDetail Page Component.
+ *
+ * Displays detailed information about a specific deck blueprint, including total counts,
+ * formats, updates, and deck analysis bars (representing monster/spell/trap ratios and quantities in sections).
+ * Users can also click to test hands in the Hand Simulator, or edit/delete the deck if they are the owner.
+ *
+ * @returns {React.JSX.Element} The rendered DeckDetail page.
+ */
+export default function DeckDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
@@ -25,6 +34,10 @@ export default function DeckDetail() {
 
   const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : undefined);
 
+  /**
+   * Performs the deletion of the deck by calling the deleteDeck service.
+   * Redirects the user to the "My Decks" catalog upon successful deletion.
+   */
   const handleDeleteModal = async () => {
     if (!id) return;
     setConfirmModalOpen(false);

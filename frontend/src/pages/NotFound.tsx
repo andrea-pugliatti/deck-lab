@@ -4,7 +4,15 @@ import { useNavigate } from "react-router";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 
-export default function NotFound() {
+/**
+ * NotFound Page Component.
+ *
+ * Renders a custom 404 error page themed as a Yu-Gi-Oh! card layout. Displays a banished card animation
+ * and includes a CTA button to navigate back to the home route.
+ *
+ * @returns {React.JSX.Element} The rendered NotFound error page.
+ */
+export default function NotFound(): React.JSX.Element {
   const navigate = useNavigate();
 
   return (
