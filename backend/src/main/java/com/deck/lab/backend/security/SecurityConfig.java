@@ -102,6 +102,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/cards/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/decks/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/decks/validate").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))

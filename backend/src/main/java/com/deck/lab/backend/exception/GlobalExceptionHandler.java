@@ -46,6 +46,42 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Intercepts JSR-380 validation failures on request parameters or bodies (e.g. @NotNull, @Max).
+     * Returns a 400 Bad Request with a structured ValidationErrorResponseDto,
+     * preventing standard Spring MVC /error forwards.
+     *
+     * @param ex the caught MethodArgumentNotValidException
+     * @return 400 Bad Request with detailed field validation messages
+     */
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponseDto> handleMethodArgumentNotValidException(
+            org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
+     * Intercepts constraint violation exceptions.
+     */
+    @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponseDto> handleConstraintViolationException(
+            jakarta.validation.ConstraintViolationException ex) {
+        List<String> errors = ex.getConstraintViolations()
+                .stream()
+                .map(violation -> violation.getMessage())
+                .collect(Collectors.toList());
+
+        ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
      * Intercepts {@link NoSuchElementException} errors when resources are missing
      * or unauthorized. Maps them directly to a 404 Not Found response.
      *
@@ -57,3 +93,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 }
+
