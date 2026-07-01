@@ -26,7 +26,7 @@ app:
   cors.allowed-origins: ${ALLOWED_CORS_ORIGINS:http://localhost:5173,http://localhost,http://127.0.0.1:5173}
 
 jwt:
-  secret: ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=
+  secret: ${JWT_SECRET:ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=}
   expiration: 900000
 
 refresh-token:

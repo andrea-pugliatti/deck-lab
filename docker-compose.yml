@@ -4,14 +4,14 @@ services:
     container_name: deck-lab-db
     environment:
       POSTGRES_DB: deck-lab
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d deck-lab"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d deck-lab"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,10 +26,11 @@ services:
     environment:
       - DB_HOST=db
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deck-lab?reWriteBatchedInserts=true
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - IMAGE_UPLOAD_DIR=/app/data/images
-      - GEMINI_API_KEY=test-key
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - card-images:/app/data/images
     depends_on:

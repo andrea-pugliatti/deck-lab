@@ -61,12 +61,17 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: frontend/pnpm-lock.yaml
 
-      - name: Install pnpm
-        run: corepack enable && corepack prepare pnpm@latest --activate
-
       - name: Install dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: pnpm lint
+
+      - name: Check code formatting
+        working-directory: frontend
+        run: pnpm format:check
 
       - name: Run frontend tests
         working-directory: frontend
