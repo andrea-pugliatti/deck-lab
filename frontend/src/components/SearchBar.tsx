@@ -6,12 +6,20 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useFetch } from "../hooks/useFetch";
 import { getCardSuggestionsEndpoint } from "../services/card";
 
+/**
+ * Representation of a card suggestion result returned in the search suggestions dropdown.
+ */
 interface SuggestionCard {
   id: number;
   name: string;
   type: string;
 }
 
+/**
+ * A search bar component with autocomplete suggestions for searching the card database.
+ * Debounces search input queries, handles keyboard navigation for suggestions (arrows, enter, escape),
+ * and lists popular trending searches.
+ */
 export default function SearchBar() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);

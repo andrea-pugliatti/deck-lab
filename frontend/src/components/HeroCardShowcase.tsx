@@ -4,7 +4,10 @@ import type { MouseEvent } from "react";
 
 import type { Card } from "../types";
 
-interface HeroCardShowcaseProps {
+/**
+ * Props for the {@link HeroCardShowcase} component.
+ */
+export interface HeroCardShowcaseProps {
   cards: Card[];
   loading: boolean;
 }
@@ -35,6 +38,11 @@ const getAttributeStyles = (attr?: string): string => {
   }
 };
 
+/**
+ * A interactive 3D parallax card showcase component used in the Hero section.
+ * Renders multiple card templates overlapping each other, which tilt dynamically
+ * based on the user's mouse position to create a 3D effect.
+ */
 export default function HeroCardShowcase({ cards, loading }: HeroCardShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);

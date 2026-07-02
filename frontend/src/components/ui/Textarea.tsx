@@ -1,7 +1,16 @@
 import React from "react";
 
+/**
+ * Props for the {@link Textarea} component.
+ * Extends standard HTML textarea element attributes.
+ */
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
+/**
+ * A highly styled multi-line text input (textarea) component.
+ * Features fixed heights, disabled resize, and focus glow styling.
+ * Wraps the HTML `<textarea>` element with `React.forwardRef`.
+ */
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className = "", ...props }, ref) => {
     return (

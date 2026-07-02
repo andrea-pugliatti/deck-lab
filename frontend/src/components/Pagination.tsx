@@ -1,5 +1,8 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+/**
+ * Props for the {@link Pagination} component.
+ */
 export interface PaginationProps {
   page: number;
   totalPages: number;
@@ -7,6 +10,10 @@ export interface PaginationProps {
   variant?: "default" | "compact";
 }
 
+/**
+ * A pagination control component that renders previous/next buttons and page details.
+ * Prevents navigation beyond bounds (disabled state if on first or last page).
+ */
 export default function Pagination({
   page,
   totalPages,

@@ -5,6 +5,9 @@ import { Link, NavLink } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Button, { getButtonClasses } from "./ui/Button";
 
+/**
+ * Representation of a single navigation link item.
+ */
 interface NavLinkItem {
   to: string;
   label: string;
@@ -30,6 +33,11 @@ const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "text-cyan-accent" : "text-slate-300 hover:text-cyan-hover"
   }`;
 
+/**
+ * Header navigation bar component.
+ * Displays navigation links, branding/logo, authentication status (Login/Logout buttons, user info),
+ * and dynamic responsive mobile hamburger menu.
+ */
 export default function Header() {
   const { isAuthenticated, user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

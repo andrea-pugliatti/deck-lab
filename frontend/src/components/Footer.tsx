@@ -7,6 +7,10 @@ const NAV_LINKS = [
   { to: "/simulator", label: "Hand Simulator" },
 ];
 
+/**
+ * Footer component displayed at the bottom of pages.
+ * Renders logo, navigation links, copyright info, and legal disclaimer.
+ */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 

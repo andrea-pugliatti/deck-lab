@@ -1,7 +1,16 @@
 import React from "react";
 
+/**
+ * Props for the {@link Label} component.
+ * Extends standard HTML label element attributes.
+ */
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {}
 
+/**
+ * A highly styled text label component for forms.
+ * Displays as a bold uppercase text, matching the theme design tokens.
+ * Wraps the HTML `<label>` element with `React.forwardRef`.
+ */
 export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
   ({ className = "", children, ...props }, ref) => {
     return (

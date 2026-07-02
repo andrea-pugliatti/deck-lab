@@ -1,8 +1,15 @@
-interface LoadingSpinnerProps {
+/**
+ * Props for the {@link LoadingSpinner} component.
+ */
+export interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
+/**
+ * A standard animated loading spinner component.
+ * Uses a cyan accent border-spin animation, centered within its container.
+ */
 export default function LoadingSpinner({ size = "md", className = "" }: LoadingSpinnerProps) {
   let spinnerSize = "w-10 h-10 border-4";
   if (size === "sm") {

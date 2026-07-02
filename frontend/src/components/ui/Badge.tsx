@@ -1,9 +1,17 @@
 import React from "react";
 
+/**
+ * Props for the {@link Badge} component.
+ * Extends the default HTML span element attributes.
+ */
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: "default" | "gold" | "cyan" | "purple" | "spell" | "trap" | "monster";
 }
 
+/**
+ * A highly styled badge/tag component for displaying metadata, classifications, or card types.
+ * Supports forward ref to the underlying HTML span element.
+ */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className = "", variant = "default", children, ...props }, ref) => {
     const baseStyles =

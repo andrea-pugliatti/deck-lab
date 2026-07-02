@@ -1,10 +1,17 @@
-interface ErrorAlertProps {
+/**
+ * Props for the {@link ErrorAlert} component.
+ */
+export interface ErrorAlertProps {
   title?: string;
   message: string;
   onRetry?: () => void;
   retryText?: string;
 }
 
+/**
+ * An alert component to visually flag errors to the user.
+ * Displays a red bordered panel containing the error details and an optional retry action.
+ */
 export default function ErrorAlert({
   title = "An error occurred",
   message,

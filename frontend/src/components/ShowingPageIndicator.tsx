@@ -1,4 +1,7 @@
-interface ShowingPageIndicatorProps {
+/**
+ * Props for the {@link ShowingPageIndicator} component.
+ */
+export interface ShowingPageIndicatorProps {
   page: number;
   pageSize?: number;
   totalElements: number;
@@ -6,6 +9,10 @@ interface ShowingPageIndicatorProps {
   className?: string;
 }
 
+/**
+ * A standard helper component that textually describes the range of items currently displayed
+ * in a paginated list (e.g., "Showing 1-9 of 50 decks").
+ */
 export default function ShowingPageIndicator({
   page,
   pageSize = 9,

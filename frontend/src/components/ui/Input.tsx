@@ -1,9 +1,19 @@
 import React from "react";
 
+/**
+ * Props for the {@link Input} component.
+ * Extends standard HTML input element attributes.
+ */
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
 }
 
+/**
+ * A highly styled text input component.
+ * Supports an optional icon positioned on the left side of the input field
+ * and applies glow focus borders.
+ * Wraps the HTML `<input>` element with `React.forwardRef`.
+ */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className = "", icon, disabled, ...props }, ref) => {
     if (icon) {

@@ -1,5 +1,9 @@
 import React from "react";
 
+/**
+ * Props for the {@link Button} component.
+ * Extends standard HTML button element attributes.
+ */
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | "primary"
@@ -13,11 +17,23 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   isLoading?: boolean;
 }
 
+/**
+ * Styling options for generating button CSS classnames.
+ */
 export interface ButtonStyleProps {
+  /** The style variant of the button. */
   variant?: ButtonProps["variant"];
+  /** The size variant of the button. */
   size?: ButtonProps["size"];
 }
 
+/**
+ * Utility function to generate Tailwind CSS classes for buttons based on variant and size.
+ * Useful when styling components that look like buttons (e.g. React Router Links).
+ *
+ * @param props - The styling props for the button class generation.
+ * @returns A string containing the computed Tailwind CSS classes.
+ */
 export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonStyleProps = {}) => {
   // base styles
   const baseStyles =
@@ -62,6 +78,12 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   return `${baseStyles} ${variantStyles} ${sizeStyles}`;
 };
 
+/**
+ * A highly customizable and styled button component.
+ * Supports loading states, custom visual variants (primary, outline, ghost, color-coded borders),
+ * different sizes, and standard HTML button attributes.
+ * Wraps the HTML `<button>` element with `React.forwardRef`.
+ */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className = "", variant = "primary", size = "md", isLoading, children, disabled, ...props },

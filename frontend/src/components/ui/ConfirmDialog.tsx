@@ -3,6 +3,9 @@ import React, { useEffect, useRef } from "react";
 
 import Button from "./Button";
 
+/**
+ * Props for the {@link ConfirmDialog} component.
+ */
 export interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +18,11 @@ export interface ConfirmDialogProps {
   isLoading?: boolean;
 }
 
+/**
+ * A modal dialog component for requesting user confirmation.
+ * Built using the HTML `<dialog>` element, fully keyboard accessible,
+ * supports backdrop blur, theme styling (info, danger, warning), and loading states.
+ */
 export default function ConfirmDialog({
   isOpen,
   onClose,
