@@ -5,6 +5,9 @@ import Button from "../ui/Button";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
 
+/**
+ * Properties for the {@link CardFilters} component.
+ */
 export interface CardFiltersProps {
   filters: CardFiltersState;
   onChange: (filters: CardFiltersState) => void;
@@ -14,6 +17,13 @@ export interface CardFiltersProps {
   archetypes: string[];
 }
 
+/**
+ * CardFilters component provides a user interface with dropdown menus
+ * for filtering cards based on type, monster attribute, race/property, and archetype.
+ *
+ * @param props - The component properties.
+ * @returns The rendered card filters panel.
+ */
 export default function CardFilters({
   filters,
   onChange,
@@ -58,8 +68,11 @@ export default function CardFilters({
       </div>
 
       <div>
-        <Label className="mb-2">Card Type</Label>
+        <Label htmlFor="card-type" className="mb-2">
+          Card Type
+        </Label>
         <Select
+          id="card-type"
           value={selectedType}
           onChange={(e) => {
             onChange({
@@ -87,8 +100,11 @@ export default function CardFilters({
 
       {isMonsterSelected && (
         <div>
-          <Label className="mb-2">Monster Attribute</Label>
+          <Label htmlFor="monster-attribute" className="mb-2">
+            Monster Attribute
+          </Label>
           <Select
+            id="monster-attribute"
             value={selectedAttribute}
             onChange={(e) => {
               onChange({
@@ -109,7 +125,7 @@ export default function CardFilters({
       )}
 
       <div>
-        <Label className="mb-2">
+        <Label htmlFor="race-property" className="mb-2">
           {selectedType === "Monster"
             ? "Monster Type (Race)"
             : selectedType === "Spell" || selectedType === "Trap"
@@ -117,6 +133,7 @@ export default function CardFilters({
               : "Type / Property"}
         </Label>
         <Select
+          id="race-property"
           value={selectedRace}
           onChange={(e) => {
             onChange({
@@ -136,8 +153,11 @@ export default function CardFilters({
       </div>
 
       <div>
-        <Label className="mb-2">Archetype Group</Label>
+        <Label htmlFor="archetype-group" className="mb-2">
+          Archetype Group
+        </Label>
         <Select
+          id="archetype-group"
           value={selectedArchetype}
           onChange={(e) => {
             onChange({

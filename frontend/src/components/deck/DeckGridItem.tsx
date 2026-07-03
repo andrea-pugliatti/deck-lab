@@ -2,6 +2,9 @@ import { Link } from "react-router";
 
 import { getCardTheme } from "../../utils/card";
 
+/**
+ * Properties for the {@link DeckGridItem} component.
+ */
 export interface DeckGridItemProps {
   cardId: number;
   name: string;
@@ -10,6 +13,13 @@ export interface DeckGridItemProps {
   quantity: number;
 }
 
+/**
+ * DeckGridItem component displays an individual card representation inside a deck list.
+ * It showcases the card image, quantity, name, and themed type badge, with a link to the card's details.
+ *
+ * @param props - The component properties.
+ * @returns The rendered deck grid item.
+ */
 export default function DeckGridItem({
   cardId,
   name,

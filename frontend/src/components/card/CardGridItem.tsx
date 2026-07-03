@@ -4,6 +4,14 @@ import { Link } from "react-router";
 import type { Card } from "../../types";
 import { getCardTheme } from "../../utils/card";
 
+/**
+ * CardGridItem component renders a preview card representation in a grid layout.
+ * It displays the card's cropped artwork, type, attribute, name, description, and monster-specific
+ * statistics (like level, ATK, and DEF) with a view transition link to details.
+ *
+ * @param props - The card details based on {@link Card} type.
+ * @returns The rendered grid item.
+ */
 export default function CardGridItem({
   id,
   name,

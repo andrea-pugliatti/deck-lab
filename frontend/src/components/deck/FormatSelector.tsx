@@ -1,9 +1,19 @@
+/**
+ * Properties for the {@link FormatSelector} component.
+ */
 export interface FormatSelectorProps {
   selectedFormat: string;
   setSelectedFormat: (format: string) => void;
   formats: string[];
 }
 
+/**
+ * FormatSelector component renders a horizontal list of buttons representing game formats.
+ * It highlights the active selection and calls a state updater when another format is clicked.
+ *
+ * @param props - The component properties.
+ * @returns The rendered format selector component.
+ */
 export default function FormatSelector({
   selectedFormat,
   setSelectedFormat,
