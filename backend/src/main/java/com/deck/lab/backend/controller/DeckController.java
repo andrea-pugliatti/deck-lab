@@ -1,6 +1,7 @@
 package com.deck.lab.backend.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.service.DeckService;
 
@@ -34,7 +36,7 @@ import jakarta.validation.Valid;
  * <p>
  * Exposes CRUD operations and validation services targeting deck resources.
  * Relies on {@link DeckService} to validate, save, query, and modify user decks
- * while translating entities to/from {@link DeckDto}.
+ * while translating entities to/from {@link DeckResponseDto}.
  * </p>
  *
  * <p>
@@ -71,7 +73,7 @@ public class DeckController {
      * @return a page of matching DeckDto records
      */
     @GetMapping
-    public ResponseEntity<Page<DeckDto>> index(
+    public ResponseEntity<Page<DeckResponseDto>> index(
             @RequestParam(value = "q", required = false) String name,
             @RequestParam(value = "format", required = false) String format,
             @RequestParam(value = "username", required = false) String username,
@@ -88,7 +90,7 @@ public class DeckController {
      * @return 200 OK with the DeckDto, or 404 Not Found if the ID does not exist
      */
     @GetMapping("/{id}")
-    public ResponseEntity<DeckDto> show(@PathVariable Long id) {
+    public ResponseEntity<DeckResponseDto> show(@PathVariable Long id) {
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -104,8 +106,8 @@ public class DeckController {
      * @throws DeckValidationException if the deck violates format or size rules
      */
     @PostMapping
-    public ResponseEntity<DeckDto> create(
-            @Valid @RequestBody DeckDto deckDto,
+    public ResponseEntity<DeckResponseDto> create(
+            @Valid @RequestBody DeckResponseDto deckDto,
             @AuthenticationPrincipal User user) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
@@ -119,7 +121,7 @@ public class DeckController {
      * @throws DeckValidationException containing validation errors if invalid
      */
     @PostMapping("/validate")
-    public ResponseEntity<Void> validate(@Valid @RequestBody DeckDto deckDto) {
+    public ResponseEntity<Void> validate(@Valid @RequestBody DeckResponseDto deckDto) {
         deckService.validateDeck(deckDto);
         return ResponseEntity.ok().build();
     }
@@ -137,9 +139,9 @@ public class DeckController {
      * @throws DeckValidationException if the updated deck list is invalid
      */
     @PutMapping("/{id}")
-    public ResponseEntity<DeckDto> update(
+    public ResponseEntity<DeckResponseDto> update(
             @PathVariable Long id,
-            @Valid @RequestBody DeckDto deckDto,
+            @Valid @RequestBody DeckResponseDto deckDto,
             @AuthenticationPrincipal User user) {
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();

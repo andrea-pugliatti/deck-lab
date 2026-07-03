@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deck.lab.backend.dto.CardDto;
+import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.mapper.CardMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.service.CardService;
@@ -35,7 +35,7 @@ import jakarta.validation.Valid;
  * Exposes endpoints to query the card catalog. Relies on {@link CardService}
  * for data retrieval and uses MapStruct {@link CardMapper} to translate
  * database entities ({@link Card}) into client-safe DTO structures
- * ({@link CardDto}).
+ * ({@link CardResponseDto}).
  * </p>
  *
  * <p>
@@ -81,7 +81,7 @@ public class CardController {
      * @return a page of matching CardDto records
      */
     @GetMapping
-    public ResponseEntity<Page<CardDto>> index(
+    public ResponseEntity<Page<CardResponseDto>> index(
             @RequestParam(value = "q", required = false) String name,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "attribute", required = false) String attribute,
@@ -90,7 +90,7 @@ public class CardController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<CardDto> cards = service
+        Page<CardResponseDto> cards = service
                 .findAllOrWithFilters(name, type, attribute, race, archetype, pageable)
                 .map(mapper::toDto);
 
@@ -104,7 +104,7 @@ public class CardController {
      * @return 200 OK with CardDto, or 404 Not Found if card doesn't exist
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CardDto> show(@PathVariable Long id) {
+    public ResponseEntity<CardResponseDto> show(@PathVariable Long id) {
         if (!service.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -118,7 +118,7 @@ public class CardController {
      * @return 201 Created with the saved CardDto
      */
     @PostMapping
-    public ResponseEntity<CardDto> create(@Valid @RequestBody CardDto cardDto) {
+    public ResponseEntity<CardResponseDto> create(@Valid @RequestBody CardResponseDto cardDto) {
         Card card = mapper.toEntity(cardDto);
         Card savedCard = service.save(card);
         return new ResponseEntity<>(mapper.toDto(savedCard), HttpStatus.CREATED);
@@ -133,7 +133,7 @@ public class CardController {
      *         exist
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CardDto> update(@PathVariable Long id, @Valid @RequestBody CardDto cardDto) {
+    public ResponseEntity<CardResponseDto> update(@PathVariable Long id, @Valid @RequestBody CardResponseDto cardDto) {
         if (!service.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

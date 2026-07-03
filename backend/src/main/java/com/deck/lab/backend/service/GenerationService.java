@@ -7,11 +7,11 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.CardSuggestionDto;
-import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.Deck;
@@ -97,7 +97,7 @@ public class GenerationService {
          * @return a list of 5 card suggestions with synergy rationales
          */
         @Transactional(readOnly = true)
-        public List<CardSuggestionDto> suggestCards(DeckSuggestRequestDto request) {
+        public List<CardSuggestionResponseDto> suggestCards(DeckSuggestRequestDto request) {
                 BeanOutputConverter<CardSuggestionsAiResponseDto> converter = new BeanOutputConverter<>(
                                 CardSuggestionsAiResponseDto.class);
 

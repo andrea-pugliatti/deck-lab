@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;

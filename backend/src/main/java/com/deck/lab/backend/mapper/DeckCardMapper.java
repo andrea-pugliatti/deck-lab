@@ -2,7 +2,7 @@ package com.deck.lab.backend.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;

@@ -7,12 +7,13 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.deck.lab.backend.dto.CardEntryDto;
-import com.deck.lab.backend.dto.CardSuggestionDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
 
 /**
- * Service responsible for mapping AI-generated card names to actual database card records.
+ * Service responsible for mapping AI-generated card names to actual database
+ * card records.
  */
 @Service
 public class CardResolver {
@@ -27,7 +28,8 @@ public class CardResolver {
      * Resolves card names to database records and normalizes quantity/sections.
      *
      * @param entries list of raw card entries from the AI response
-     * @return a list of resolved card entries containing the database entity and quantity
+     * @return a list of resolved card entries containing the database entity and
+     *         quantity
      */
     public List<ResolvedCardEntry> resolveCards(List<CardEntryDto> entries) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
@@ -43,7 +45,7 @@ public class CardResolver {
             Optional<Card> dbCardOpt = lookupCard(entry.getName());
             if (dbCardOpt.isPresent()) {
                 Card card = dbCardOpt.get();
-                
+
                 String section = entry.getSection() != null ? entry.getSection().toUpperCase() : "MAIN";
                 if (!List.of("MAIN", "EXTRA", "SIDE").contains(section)) {
                     section = "MAIN";
@@ -63,18 +65,19 @@ public class CardResolver {
     }
 
     /**
-     * Resolves card suggestions by mapping suggested names to real database records.
+     * Resolves card suggestions by mapping suggested names to real database
+     * records.
      *
      * @param suggestions list of suggestions from the AI response
      * @return a list of resolved card suggestions containing database attributes
      */
-    public List<CardSuggestionDto> resolveSuggestions(List<CardSuggestionDto> suggestions) {
-        List<CardSuggestionDto> resolved = new ArrayList<>();
+    public List<CardSuggestionResponseDto> resolveSuggestions(List<CardSuggestionResponseDto> suggestions) {
+        List<CardSuggestionResponseDto> resolved = new ArrayList<>();
         if (suggestions == null) {
             return resolved;
         }
 
-        for (CardSuggestionDto suggestion : suggestions) {
+        for (CardSuggestionResponseDto suggestion : suggestions) {
             if (suggestion.getName() == null || suggestion.getName().isBlank()) {
                 continue;
             }
@@ -82,21 +85,22 @@ public class CardResolver {
             Optional<Card> dbCardOpt = lookupCard(suggestion.getName());
             if (dbCardOpt.isPresent()) {
                 Card card = dbCardOpt.get();
-                resolved.add(new CardSuggestionDto(
+                resolved.add(new CardSuggestionResponseDto(
                         card.getName(),
                         suggestion.getSection() != null ? suggestion.getSection().toUpperCase() : "MAIN",
-                        suggestion.getSynergyReason() != null ? suggestion.getSynergyReason() : "Provides good synergy.",
+                        suggestion.getSynergyReason() != null ? suggestion.getSynergyReason()
+                                : "Provides good synergy.",
                         card.getId(),
                         card.getType() != null ? card.getType().getValue() : null,
-                        card.getImageUrlCropped()
-                ));
+                        card.getImageUrlCropped()));
             }
         }
         return resolved;
     }
 
     /**
-     * Resolves a card by exact matching name, or falls back to case-insensitive substring search.
+     * Resolves a card by exact matching name, or falls back to case-insensitive
+     * substring search.
      */
     public Optional<Card> lookupCard(String name) {
         Optional<Card> cardOpt = cardRepository.findByName(name.trim());
@@ -109,5 +113,6 @@ public class CardResolver {
         return cardOpt;
     }
 
-    public record ResolvedCardEntry(Card card, String section, int quantity) {}
+    public record ResolvedCardEntry(Card card, String section, int quantity) {
+    }
 }

@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -31,7 +31,7 @@ import jakarta.validation.constraints.NotBlank;
  * engine before any processing logic runs.</li>
  * </ul>
  */
-public class CardDto {
+public class CardResponseDto {
 
     private Long id;
 
@@ -97,10 +97,10 @@ public class CardDto {
      */
     private Integer scale;
 
-    public CardDto() {
+    public CardResponseDto() {
     }
 
-    public CardDto(Long id, String name, String type, String description, String race, String attribute,
+    public CardResponseDto(Long id, String name, String type, String description, String race, String attribute,
             String archetype, String imageUrl, String imageUrlCropped, String frameType, Integer atk, Integer def,
             Integer level, Integer linkVal, Integer scale) {
         this.id = id;

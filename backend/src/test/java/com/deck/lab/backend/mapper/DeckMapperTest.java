@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -72,7 +72,7 @@ class DeckMapperTest {
 
         deck.setDeckCards(List.of(dc1, dc2));
 
-        DeckDto dto = deckMapper.toDto(deck);
+        DeckResponseDto dto = deckMapper.toDto(deck);
 
         assertNotNull(dto);
         assertEquals(deck.getId(), dto.getId());
@@ -114,7 +114,7 @@ class DeckMapperTest {
         deck.setId(20L);
         deck.setDeckCards(new ArrayList<>());
 
-        DeckDto dto = deckMapper.toDto(deck);
+        DeckResponseDto dto = deckMapper.toDto(deck);
 
         assertNotNull(dto);
         assertEquals(20L, dto.getId());
@@ -127,7 +127,7 @@ class DeckMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsFieldsCorrectly() {
-        DeckDto dto = new DeckDto(30L, "New Deck", "Some description", "Goat", new ArrayList<>());
+        DeckResponseDto dto = new DeckResponseDto(30L, "New Deck", "Some description", "Goat", new ArrayList<>());
 
         Deck deck = deckMapper.toEntity(dto);
 
@@ -148,7 +148,7 @@ class DeckMapperTest {
         Deck deck = new Deck("Old Name", "Old Desc", Format.TCG, null);
         deck.setId(40L);
 
-        DeckDto dto = new DeckDto(50L, "Updated Name", "Updated Desc", "Goat", new ArrayList<>());
+        DeckResponseDto dto = new DeckResponseDto(50L, "Updated Name", "Updated Desc", "Goat", new ArrayList<>());
 
         deckMapper.updateEntityFromDto(dto, deck);
 

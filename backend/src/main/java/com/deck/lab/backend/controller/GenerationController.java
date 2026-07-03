@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deck.lab.backend.dto.CardSuggestionDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.service.GenerationService;
 
@@ -64,7 +64,7 @@ public class GenerationController {
      * @return 200 OK with a list of 5 card suggestions and synergy rationales
      */
     @PostMapping("/suggest")
-    public ResponseEntity<List<CardSuggestionDto>> suggest(@Valid @RequestBody DeckSuggestRequestDto request) {
+    public ResponseEntity<List<CardSuggestionResponseDto>> suggest(@Valid @RequestBody DeckSuggestRequestDto request) {
         return ResponseEntity.ok(deckGenerationService.suggestCards(request));
     }
 }

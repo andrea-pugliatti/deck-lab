@@ -16,11 +16,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ai.chat.prompt.Prompt;
 
-import com.deck.lab.backend.dto.CardSuggestionDto;
-import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.Deck;
@@ -71,15 +71,16 @@ class GenerationServiceTest {
         when(aiClient.call(mockPrompt)).thenReturn(rawResponse);
 
         CardSuggestionsAiResponseDto parsed = new CardSuggestionsAiResponseDto();
-        CardSuggestionDto suggestion = new CardSuggestionDto("Lumina", "MAIN", "Milling", 10L, "Effect Monster", "url");
+        CardSuggestionResponseDto suggestion = new CardSuggestionResponseDto("Lumina", "MAIN", "Milling", 10L,
+                "Effect Monster", "url");
         parsed.setSuggestions(List.of(suggestion));
         when(responseParser.parseSuggestionResponse(rawResponse)).thenReturn(parsed);
 
-        List<CardSuggestionDto> expectedSuggestions = List.of(suggestion);
+        List<CardSuggestionResponseDto> expectedSuggestions = List.of(suggestion);
         when(cardResolver.resolveSuggestions(parsed.getSuggestions())).thenReturn(expectedSuggestions);
 
         // Act
-        List<CardSuggestionDto> suggestions = deckGenerationService.suggestCards(request);
+        List<CardSuggestionResponseDto> suggestions = deckGenerationService.suggestCards(request);
 
         // Assert
         assertNotNull(suggestions);

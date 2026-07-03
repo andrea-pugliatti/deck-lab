@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import jakarta.validation.constraints.NotBlank;
  * the controller code.
  * </p>
  */
-public class DeckDto {
+public class DeckResponseDto {
 
     private Long id;
 
@@ -54,10 +54,10 @@ public class DeckDto {
 
     private String creatorUsername;
 
-    public DeckDto() {
+    public DeckResponseDto() {
     }
 
-    public DeckDto(Long id, String name, String description, String formatName, List<DeckCardDto> deckCards) {
+    public DeckResponseDto(Long id, String name, String description, String formatName, List<DeckCardDto> deckCards) {
         this.id = id;
         this.name = name;
         this.description = description;

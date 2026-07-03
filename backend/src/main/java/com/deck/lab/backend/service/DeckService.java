@@ -14,8 +14,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.mapper.DeckCardMapper;
 import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
@@ -90,7 +90,7 @@ public class DeckService {
      * @param username optional exact match for the owner's username
      * @return a list of sorted, matching DeckDto objects
      */
-    public Page<DeckDto> findAllWithFilters(String name, String format, String username, Pageable pageable) {
+    public Page<DeckResponseDto> findAllWithFilters(String name, String format, String username, Pageable pageable) {
         Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
                 .and(DeckSpecification.hasName(name))
                 .and(DeckSpecification.hasFormat(format))
@@ -121,7 +121,7 @@ public class DeckService {
      * @return mapped DeckDto
      * @throws NoSuchElementException if no deck is found matching the ID
      */
-    public DeckDto getDeckById(Long id) {
+    public DeckResponseDto getDeckById(Long id) {
         Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
                 .and((root, query, builder) -> builder.equal(root.get("id"), id));
         Deck deck = deckRepository.findOne(spec)
@@ -135,7 +135,7 @@ public class DeckService {
      * @param deckDto the DTO deck representation to validate
      * @throws DeckValidationException if validation fails
      */
-    public void validateDeck(DeckDto deckDto) {
+    public void validateDeck(DeckResponseDto deckDto) {
         deckValidationService.validate(deckDto);
     }
 
@@ -148,7 +148,7 @@ public class DeckService {
      * @throws DeckValidationException if the deck format or size is invalid
      */
     @Transactional
-    public DeckDto createDeck(DeckDto deckDto, User user) {
+    public DeckResponseDto createDeck(DeckResponseDto deckDto, User user) {
         Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
 
         Deck deck = deckMapper.toEntity(deckDto);
@@ -173,7 +173,7 @@ public class DeckService {
      * @throws DeckValidationException if the updated deck list is invalid
      */
     @Transactional
-    public DeckDto updateDeck(Long id, DeckDto deckDto, User user) {
+    public DeckResponseDto updateDeck(Long id, DeckResponseDto deckDto, User user) {
         Deck deck = deckRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
 

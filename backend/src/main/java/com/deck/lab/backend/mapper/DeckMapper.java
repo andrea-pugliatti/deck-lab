@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.Format;
 
 /**
  * Mapper component that translates between {@link Deck} JPA Entities and
- * {@link DeckDto} Data Transfer Objects.
+ * {@link DeckResponseDto} Data Transfer Objects.
  * 
  * <p>
  * <b>Mapper Pattern:</b>
@@ -38,18 +38,19 @@ public class DeckMapper {
     }
 
     /**
-     * Maps a {@link Deck} database entity to an API-friendly {@link DeckDto}.
+     * Maps a {@link Deck} database entity to an API-friendly
+     * {@link DeckResponseDto}.
      * Translates child entity relations and resolves format names.
      *
      * @param deck the database-managed Deck entity
      * @return the populated DeckDto representation
      */
-    public DeckDto toDto(Deck deck) {
+    public DeckResponseDto toDto(Deck deck) {
         List<DeckCardDto> cardDtos = deck.getDeckCards() != null
                 ? deck.getDeckCards().stream().map(deckCardMapper::toDto).toList()
                 : new ArrayList<>();
         String formatStr = deck.getFormatName() != null ? deck.getFormatName().getValue() : null;
-        DeckDto dto = new DeckDto(deck.getId(), deck.getName(), deck.getDescription(), formatStr,
+        DeckResponseDto dto = new DeckResponseDto(deck.getId(), deck.getName(), deck.getDescription(), formatStr,
                 cardDtos);
         dto.setUpdatedAt(deck.getUpdatedAt());
         if (deck.getUser() != null) {
@@ -59,14 +60,15 @@ public class DeckMapper {
     }
 
     /**
-     * Converts a incoming {@link DeckDto} payload into a new {@link Deck} JPA
+     * Converts a incoming {@link DeckResponseDto} payload into a new {@link Deck}
+     * JPA
      * entity.
      * Safe-handles invalid format strings.
      *
      * @param dto the DTO data received from client API request
      * @return a new transient (unsaved) Deck entity populated with the DTO values
      */
-    public Deck toEntity(DeckDto dto) {
+    public Deck toEntity(DeckResponseDto dto) {
         if (dto == null) {
             return null;
         }
@@ -89,7 +91,7 @@ public class DeckMapper {
      * @param dto  the incoming updated DTO parameters
      * @param deck the existing database entity to update
      */
-    public void updateEntityFromDto(DeckDto dto, Deck deck) {
+    public void updateEntityFromDto(DeckResponseDto dto, Deck deck) {
         if (dto == null || deck == null) {
             return;
         }

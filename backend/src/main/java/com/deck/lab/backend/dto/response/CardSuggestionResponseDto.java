@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 /**
  * Data Transfer Object (DTO) conveying card suggestions recommended by AI
@@ -22,7 +22,7 @@ package com.deck.lab.backend.dto;
  * AI data with actual database records.
  * </p>
  */
-public class CardSuggestionDto {
+public class CardSuggestionResponseDto {
 
     private String name;
 
@@ -48,16 +48,16 @@ public class CardSuggestionDto {
 
     private String imageUrl;
 
-    public CardSuggestionDto() {
+    public CardSuggestionResponseDto() {
     }
 
-    public CardSuggestionDto(String name, String section, String synergyReason) {
+    public CardSuggestionResponseDto(String name, String section, String synergyReason) {
         this.name = name;
         this.section = section;
         this.synergyReason = synergyReason;
     }
 
-    public CardSuggestionDto(String name, String section, String synergyReason, Long cardId, String type,
+    public CardSuggestionResponseDto(String name, String section, String synergyReason, Long cardId, String type,
             String imageUrl) {
         this.name = name;
         this.section = section;

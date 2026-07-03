@@ -10,6 +10,7 @@ import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.validation.DeckRule;
 import com.deck.lab.backend.validation.ValidationError;
 
@@ -23,14 +24,8 @@ import com.deck.lab.backend.validation.ValidationError;
  * Annotated with {@link Component} so that it registers automatically into the
  * Spring container. This class evaluates the cumulative quantity of cards
  * located in each of the three card boundaries (Main Deck, Extra Deck, and Side
- * Deck):
+ * Deck) based on the format-specific constraints.
  * </p>
- * <ul>
- * <li>Main Deck: Must contain between 40 and 60 cards (inclusive) to prevent
- * players from entering matches with over-sized or under-sized decks.</li>
- * <li>Extra Deck: Limited to a maximum of 15 cards.</li>
- * <li>Side Deck: Limited to a maximum of 15 cards.</li>
- * </ul>
  */
 @Component
 public class DeckSizeRule implements DeckRule {
@@ -42,8 +37,11 @@ public class DeckSizeRule implements DeckRule {
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();
 
+        Format format = deck != null ? deck.getFormatName() : null;
+        DeckSizeLimits limits = FormatDeckLimits.getLimits(format);
+
         if (deck == null || deck.getDeckCards() == null || deck.getDeckCards().isEmpty()) {
-            errors.add(new ValidationError("Main Deck must contain between 40 and 60 cards. Current size: 0"));
+            errors.add(new ValidationError("Main Deck must contain between " + limits.minMainSize() + " and " + limits.maxMainSize() + " cards. Current size: 0"));
             return errors;
         }
 
@@ -64,15 +62,15 @@ public class DeckSizeRule implements DeckRule {
             }
         }
 
-        if (mainSize < 40 || mainSize > 60) {
+        if (mainSize < limits.minMainSize() || mainSize > limits.maxMainSize()) {
             errors.add(
-                    new ValidationError("Main Deck must contain between 40 and 60 cards. Current size: " + mainSize));
+                    new ValidationError("Main Deck must contain between " + limits.minMainSize() + " and " + limits.maxMainSize() + " cards. Current size: " + mainSize));
         }
-        if (extraSize > 15) {
-            errors.add(new ValidationError("Extra Deck cannot exceed 15 cards. Current size: " + extraSize));
+        if (extraSize > limits.maxExtraSize()) {
+            errors.add(new ValidationError("Extra Deck cannot exceed " + limits.maxExtraSize() + " cards. Current size: " + extraSize));
         }
-        if (sideSize > 15) {
-            errors.add(new ValidationError("Side Deck cannot exceed 15 cards. Current size: " + sideSize));
+        if (sideSize > limits.maxSideSize()) {
+            errors.add(new ValidationError("Side Deck cannot exceed " + limits.maxSideSize() + " cards. Current size: " + sideSize));
         }
 
         return errors;

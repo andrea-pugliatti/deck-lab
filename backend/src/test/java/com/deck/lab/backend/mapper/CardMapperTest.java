@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.CardDto;
+import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -42,7 +42,7 @@ class CardMapperTest {
         card.setLinkVal(0);
         card.setScale(0);
 
-        CardDto dto = cardMapper.toDto(card);
+        CardResponseDto dto = cardMapper.toDto(card);
 
         assertNotNull(dto);
         assertEquals(card.getId(), dto.getId());
@@ -69,7 +69,7 @@ class CardMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsAllFields() {
-        CardDto dto = new CardDto();
+        CardResponseDto dto = new CardResponseDto();
         dto.setId(15L);
         dto.setName("Dark Magician");
         dto.setType("Normal Monster");
@@ -128,7 +128,7 @@ class CardMapperTest {
         card.setDef(2000);
         card.setLevel(7);
 
-        CardDto dto = new CardDto();
+        CardResponseDto dto = new CardResponseDto();
         dto.setName("Red-Eyes Black Dragon Updated");
         dto.setType("Effect Monster");
         dto.setDescription("Updated desc");
@@ -171,7 +171,7 @@ class CardMapperTest {
         Card card = new Card();
         // Should handle null gracefully
         cardMapper.updateEntityFromDto(null, card);
-        cardMapper.updateEntityFromDto(new CardDto(), null);
+        cardMapper.updateEntityFromDto(new CardResponseDto(), null);
         cardMapper.updateEntityFromDto(null, null);
     }
 }

@@ -3,8 +3,6 @@ package com.deck.lab.backend.dto.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-
 /**
  * Data Transfer Object (DTO) representing the response payload for a
  * successfully generated deck list.

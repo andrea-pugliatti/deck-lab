@@ -19,11 +19,11 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.deck.lab.backend.dto.CardEntryDto;
-import com.deck.lab.backend.dto.CardSuggestionDto;
-import com.deck.lab.backend.dto.DeckCardDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -340,9 +340,8 @@ class AiGenerationSubModulesTest {
         assertTrue(cardResolver.resolveSuggestions(List.of()).isEmpty());
 
         List<CardEntryDto> rawEntries = List.of(
-            new CardEntryDto(null, "MAIN", 3), 
-            new CardEntryDto("  ", "MAIN", 3)
-        );
+                new CardEntryDto(null, "MAIN", 3),
+                new CardEntryDto("  ", "MAIN", 3));
         assertTrue(cardResolver.resolveCards(rawEntries).isEmpty());
     }
 
@@ -356,11 +355,10 @@ class AiGenerationSubModulesTest {
         when(cardRepository.findByName("Sangan")).thenReturn(Optional.of(card));
 
         List<CardEntryDto> rawEntries = List.of(
-            new CardEntryDto("Sangan", "MAIN", null),
-            new CardEntryDto("Sangan", "MAIN", 0),
-            new CardEntryDto("Sangan", "MAIN", -5),
-            new CardEntryDto("Sangan", "MAIN", 5)
-        );
+                new CardEntryDto("Sangan", "MAIN", null),
+                new CardEntryDto("Sangan", "MAIN", 0),
+                new CardEntryDto("Sangan", "MAIN", -5),
+                new CardEntryDto("Sangan", "MAIN", 5));
 
         List<CardResolver.ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
         assertEquals(4, resolved.size());
@@ -370,11 +368,10 @@ class AiGenerationSubModulesTest {
         assertEquals(3, resolved.get(3).quantity());
 
         List<CardEntryDto> sectionEntries = List.of(
-            new CardEntryDto("Sangan", null, 1),
-            new CardEntryDto("Sangan", "INVALID_SECTION", 1),
-            new CardEntryDto("Sangan", "side", 1),
-            new CardEntryDto("Sangan", "EXTRA", 1)
-        );
+                new CardEntryDto("Sangan", null, 1),
+                new CardEntryDto("Sangan", "INVALID_SECTION", 1),
+                new CardEntryDto("Sangan", "side", 1),
+                new CardEntryDto("Sangan", "EXTRA", 1));
 
         List<CardResolver.ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
         assertEquals(4, resolvedSections.size());
@@ -394,11 +391,10 @@ class AiGenerationSubModulesTest {
 
         when(cardRepository.findByName("Cyber Dragon")).thenReturn(Optional.of(card));
 
-        List<CardSuggestionDto> suggestions = List.of(
-            new CardSuggestionDto("Cyber Dragon", "MAIN", "Great attacker", null, null, null)
-        );
+        List<CardSuggestionResponseDto> suggestions = List.of(
+                new CardSuggestionResponseDto("Cyber Dragon", "MAIN", "Great attacker", null, null, null));
 
-        List<CardSuggestionDto> resolved = cardResolver.resolveSuggestions(suggestions);
+        List<CardSuggestionResponseDto> resolved = cardResolver.resolveSuggestions(suggestions);
         assertEquals(1, resolved.size());
         assertEquals("Cyber Dragon", resolved.get(0).getName());
         assertEquals("MAIN", resolved.get(0).getSection());
@@ -407,11 +403,10 @@ class AiGenerationSubModulesTest {
         assertEquals("Effect Monster", resolved.get(0).getType());
         assertEquals("http://images/cropped.jpg", resolved.get(0).getImageUrl());
 
-        List<CardSuggestionDto> sparseSuggestions = List.of(
-            new CardSuggestionDto("Cyber Dragon", null, null, null, null, null)
-        );
+        List<CardSuggestionResponseDto> sparseSuggestions = List.of(
+                new CardSuggestionResponseDto("Cyber Dragon", null, null, null, null, null));
 
-        List<CardSuggestionDto> sparseResolved = cardResolver.resolveSuggestions(sparseSuggestions);
+        List<CardSuggestionResponseDto> sparseResolved = cardResolver.resolveSuggestions(sparseSuggestions);
         assertEquals(1, sparseResolved.size());
         assertEquals("MAIN", sparseResolved.get(0).getSection());
         assertEquals("Provides good synergy.", sparseResolved.get(0).getSynergyReason());
@@ -427,8 +422,7 @@ class AiGenerationSubModulesTest {
         card.setId(12L);
         card.setName("Gorz");
         List<CardResolver.ResolvedCardEntry> resolved = List.of(
-            new CardResolver.ResolvedCardEntry(card, "INVALID_SECTION", 1)
-        );
+                new CardResolver.ResolvedCardEntry(card, "INVALID_SECTION", 1));
         Deck assembled = deckAssembler.assembleDeck("Gorz Deck", "Edison", resolved);
         assertEquals(1, assembled.getDeckCards().size());
         org.junit.jupiter.api.Assertions.assertNull(assembled.getDeckCards().get(0).getSection());

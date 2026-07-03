@@ -20,8 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -117,20 +117,20 @@ class DeckServiceTest {
 
     @Test
     void getDecksByUser_returnsMatchingDecks() {
-        Page<DeckDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(),
+        Page<DeckResponseDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(),
                 PageRequest.of(0, 10));
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals("ServiceTest Deck", result.getContent().get(0).getName());
 
-        Page<DeckDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(),
+        Page<DeckResponseDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(),
                 PageRequest.of(0, 10));
         assertTrue(otherResult.isEmpty());
     }
 
     @Test
     void getDeckById_returnsDeckDto() {
-        DeckDto result = deckService.getDeckById(testDeck.getId());
+        DeckResponseDto result = deckService.getDeckById(testDeck.getId());
         assertNotNull(result);
         assertEquals(testDeck.getId(), result.getId());
         assertEquals("ServiceTest Deck", result.getName());
@@ -147,13 +147,13 @@ class DeckServiceTest {
 
     @Test
     void createDeck_savesDeckAndReturnsDto() {
-        DeckDto requestDto = new DeckDto();
+        DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("New Created Deck");
         requestDto.setDescription("Freshly created");
         requestDto.setFormatName("Goat");
         requestDto.setDeckCards(createValidDeckCards());
 
-        DeckDto result = deckService.createDeck(requestDto, testUser);
+        DeckResponseDto result = deckService.createDeck(requestDto, testUser);
         assertNotNull(result.getId());
         assertEquals("New Created Deck", result.getName());
         assertEquals("Goat", result.getFormatName());
@@ -170,7 +170,7 @@ class DeckServiceTest {
         List<DeckCardDto> cardDtos = createValidDeckCards();
         cardDtos.get(0).setCardId(999999L); // Replace first card with non-existent ID
 
-        DeckDto requestDto = new DeckDto();
+        DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Invalid Deck");
         requestDto.setFormatName("TCG");
         requestDto.setDeckCards(cardDtos);
@@ -188,7 +188,7 @@ class DeckServiceTest {
         cardDto.setSection("MAIN");
         cardDto.setQuantity(3);
 
-        DeckDto requestDto = new DeckDto();
+        DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Size Invalid Deck");
         requestDto.setFormatName("TCG");
         requestDto.setDeckCards(List.of(cardDto));
@@ -214,13 +214,13 @@ class DeckServiceTest {
         List<DeckCardDto> newCardsList = new ArrayList<>(validCards);
         newCardsList.add(extraCardDto);
 
-        DeckDto updateRequest = new DeckDto();
+        DeckResponseDto updateRequest = new DeckResponseDto();
         updateRequest.setName("ServiceTest Deck Updated");
         updateRequest.setDescription("An updated description");
         updateRequest.setFormatName("Edison");
         updateRequest.setDeckCards(newCardsList);
 
-        DeckDto result = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
+        DeckResponseDto result = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
         assertEquals("ServiceTest Deck Updated", result.getName());
         assertEquals("An updated description", result.getDescription());
         assertEquals("Edison", result.getFormatName());
@@ -239,7 +239,7 @@ class DeckServiceTest {
 
     @Test
     void updateDeck_whenUnauthorized_throwsNoSuchElementException() {
-        DeckDto request = new DeckDto();
+        DeckResponseDto request = new DeckResponseDto();
         request.setName("Hacked Deck");
         request.setFormatName("TCG");
 
@@ -268,7 +268,7 @@ class DeckServiceTest {
 
     @Test
     void validateDeck_withValidDeck_doesNotThrow() {
-        DeckDto requestDto = new DeckDto();
+        DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Valid Deck");
         requestDto.setFormatName("TCG");
         requestDto.setDeckCards(createValidDeckCards());
@@ -281,7 +281,7 @@ class DeckServiceTest {
     @Test
     void validateDeck_withInvalidDeck_throwsDeckValidationException() {
         // Less than 40 cards
-        DeckDto requestDto = new DeckDto();
+        DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Too Small");
         requestDto.setFormatName("TCG");
         requestDto.setDeckCards(List.of());

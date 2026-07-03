@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.dto.response;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

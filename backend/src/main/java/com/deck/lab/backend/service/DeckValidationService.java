@@ -9,8 +9,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.DeckCardDto;
-import com.deck.lab.backend.dto.DeckDto;
+import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
@@ -83,7 +83,7 @@ public class DeckValidationService {
      *                                 are violated
      */
     @Transactional(readOnly = true)
-    public Map<Long, Card> validate(DeckDto deckDto) {
+    public Map<Long, Card> validate(DeckResponseDto deckDto) {
         Map<Long, Card> cardMap = fetchCardMap(deckDto.getDeckCards());
         List<ValidationError> errors = new ArrayList<>();
 

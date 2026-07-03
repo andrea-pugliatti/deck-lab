@@ -2,7 +2,7 @@ package com.deck.lab.backend.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.CardDto;
+import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -11,7 +11,7 @@ import com.deck.lab.backend.model.FrameType;
 
 /**
  * Mapper component that translates between {@link Card} database entities and
- * {@link CardDto} DTO records.
+ * {@link CardResponseDto} DTO records.
  *
  * <p>
  * <b>Enums and DTO Mapping:</b>
@@ -30,18 +30,18 @@ import com.deck.lab.backend.model.FrameType;
 public class CardMapper {
 
     /**
-     * Translates a {@link Card} database entity to a {@link CardDto} API
+     * Translates a {@link Card} database entity to a {@link CardResponseDto} API
      * representation.
      * Extracts values from Enums into displayable string representations.
      *
      * @param card database-managed Card entity
      * @return the mapped DTO payload, or null if parameter is null
      */
-    public CardDto toDto(Card card) {
+    public CardResponseDto toDto(Card card) {
         if (card == null) {
             return null;
         }
-        CardDto dto = new CardDto();
+        CardResponseDto dto = new CardResponseDto();
         dto.setId(card.getId());
         dto.setName(card.getName());
         dto.setType(card.getType() != null ? card.getType().getValue() : null);
@@ -61,14 +61,15 @@ public class CardMapper {
     }
 
     /**
-     * Converts a {@link CardDto} API payload into a new transient {@link Card}
+     * Converts a {@link CardResponseDto} API payload into a new transient
+     * {@link Card}
      * database entity.
      * Catches and safe-handles exceptions arising from unknown enum values.
      *
      * @param dto input DTO data
      * @return new transient Card entity, or null if parameter is null
      */
-    public Card toEntity(CardDto dto) {
+    public Card toEntity(CardResponseDto dto) {
         if (dto == null) {
             return null;
         }
@@ -116,14 +117,14 @@ public class CardMapper {
 
     /**
      * Updates an existing database-managed {@link Card} entity with values from a
-     * {@link CardDto}.
+     * {@link CardResponseDto}.
      * Saves changes directly onto the entity instance reference while safe-handling
      * enum conversion failures.
      *
      * @param dto  incoming updated DTO parameters
      * @param card the existing database entity instance to modify
      */
-    public void updateEntityFromDto(CardDto dto, Card card) {
+    public void updateEntityFromDto(CardResponseDto dto, Card card) {
         if (dto == null || card == null) {
             return;
         }
