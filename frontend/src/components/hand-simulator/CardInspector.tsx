@@ -4,10 +4,21 @@ import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
 
+/**
+ * Props for the {@link CardInspector} component.
+ */
 interface CardInspectorProps {
   inspectedCard?: SimulatorCardInstance;
 }
 
+/**
+ * CardInspector component.
+ * Renders a side panel that displays detailed attributes, stats (ATK, DEF, Level),
+ * and the card description text of a hovered or selected simulator card.
+ *
+ * @param props - The component props.
+ * @returns A JSX element containing the detailed card inspector UI.
+ */
 export default function CardInspector({ inspectedCard }: CardInspectorProps) {
   return (
     <div className="bg-dark-surface border-border-dim relative flex min-h-112.5 flex-col rounded-2xl border p-5 shadow-lg">

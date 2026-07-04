@@ -5,6 +5,9 @@ import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Input from "../ui/Input";
 
+/**
+ * Props for the {@link DeckExplorerModal} component.
+ */
 interface DeckExplorerModalProps {
   deck: SimulatorCardInstance[];
   setShowDeckExplorer: (flag: boolean) => void;
@@ -14,6 +17,14 @@ interface DeckExplorerModalProps {
   ) => void;
 }
 
+/**
+ * DeckExplorerModal component.
+ * Renders a dialog/modal overlay allowing users to search through the remaining
+ * cards in their deck and perform actions (e.g. move a card to Hand, Field, or Graveyard).
+ *
+ * @param props - The component props.
+ * @returns A JSX element containing the modal search/exploration dialog.
+ */
 export default function DeckExplorerModal({
   deck,
   setShowDeckExplorer,

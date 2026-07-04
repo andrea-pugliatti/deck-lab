@@ -2,8 +2,8 @@ import { BookOpen, Globe, Search, Shuffle, User } from "lucide-react";
 import { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
-import { useFetch } from "../../hooks/useFetch";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
+import { useFetch } from "../../hooks/useFetch";
 import { getFormatsEndpoint } from "../../services/deck";
 import DeckCard from "../deck/DeckCard";
 import EmptyState from "../EmptyState";
