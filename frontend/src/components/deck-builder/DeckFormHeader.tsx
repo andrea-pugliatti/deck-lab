@@ -5,6 +5,9 @@ import Label from "../ui/Label";
 import Select from "../ui/Select";
 import Textarea from "../ui/Textarea";
 
+/**
+ * Properties for the {@link DeckFormHeader} component.
+ */
 export interface DeckFormHeaderProps {
   name: string;
   setName: (name: string) => void;
@@ -15,6 +18,13 @@ export interface DeckFormHeaderProps {
   formats: string[];
 }
 
+/**
+ * DeckFormHeader component renders fields to configure basic deck info,
+ * including its name, format legality, and strategy details.
+ *
+ * @param props - The component properties.
+ * @returns The rendered deck form header.
+ */
 export default function DeckFormHeader({
   name,
   setName,

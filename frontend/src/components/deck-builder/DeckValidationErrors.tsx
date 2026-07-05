@@ -1,11 +1,21 @@
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
+/**
+ * Props for the {@link DeckValidationErrors} component.
+ */
 export interface DeckValidationErrorsProps {
   validationSuccess: boolean;
   validationErrors: string[];
   submitError?: string;
 }
 
+/**
+ * DeckValidationErrors renders status boxes highlighting either successful validation
+ * or a list of validation/submission errors that must be resolved.
+ *
+ * @param props - The component props.
+ * @returns The rendered DeckValidationErrors component, or null if no validation/error state is present.
+ */
 export default function DeckValidationErrors({
   validationSuccess,
   validationErrors,

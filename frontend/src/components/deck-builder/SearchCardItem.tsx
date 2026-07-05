@@ -3,6 +3,9 @@ import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
+/**
+ * Props for the {@link SearchCardItem} component.
+ */
 export interface SearchCardItemProps {
   cardId: number;
   name: string;
@@ -13,6 +16,13 @@ export interface SearchCardItemProps {
   addCard: (card: Card, section: CardSection) => void;
 }
 
+/**
+ * SearchCardItem renders a card search result item, enabling quick additions to
+ * the Main, Extra, or Side decks with validation badges showing the count already added.
+ *
+ * @param props - The component props.
+ * @returns The rendered SearchCardItem component.
+ */
 export default function SearchCardItem({
   cardId,
   name,

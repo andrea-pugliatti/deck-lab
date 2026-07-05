@@ -5,6 +5,9 @@ import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
+/**
+ * Props for the {@link EditorCardItem} component.
+ */
 export interface EditorCardItemProps {
   cardId: number;
   name: string;
@@ -16,6 +19,13 @@ export interface EditorCardItemProps {
   remove: (cardId: number, section: CardSection) => void;
 }
 
+/**
+ * EditorCardItem renders a single card entry in the deck editor lists, providing
+ * quantity increments, decrements, and removal actions, alongside the card image and type badge.
+ *
+ * @param props - The component props.
+ * @returns The rendered EditorCardItem component.
+ */
 export default function EditorCardItem({
   cardId,
   name,
