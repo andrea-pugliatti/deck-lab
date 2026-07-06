@@ -7,12 +7,23 @@ import LoadingSpinner from "../LoadingSpinner";
 import Button from "../ui/Button";
 import AiSuggestionItem from "./AiSuggestionItem";
 
+/**
+ * Properties for the {@link AiSuggestionsPanel} component.
+ */
 export interface AiSuggestionsPanelProps {
   deckCards: DeckCardItem[];
   formatName: string;
   addCard: (card: Card, section: CardSection) => void;
 }
 
+/**
+ * AiSuggestionsPanel component renders a sidebar widget that communicates with
+ * an AI service to recommend cards that synergize with the current deck layout.
+ * It provides buttons to analyze synergy, reset recommendations, and list suggested cards.
+ *
+ * @param props - The component properties.
+ * @returns The rendered AI suggestions panel.
+ */
 export default function AiSuggestionsPanel({
   deckCards,
   formatName,

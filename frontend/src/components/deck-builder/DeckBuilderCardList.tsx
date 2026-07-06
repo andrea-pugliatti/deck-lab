@@ -2,6 +2,9 @@ import type { Card, CardSection, DeckCardItem } from "../../types";
 import LoadingSpinner from "../LoadingSpinner";
 import SearchCardItem from "./SearchCardItem";
 
+/**
+ * Properties for the {@link DeckBuilderCardList} component.
+ */
 export interface DeckBuilderCardListProps {
   libraryLoading: boolean;
   libraryCards: Card[];
@@ -9,6 +12,14 @@ export interface DeckBuilderCardListProps {
   addCard: (card: Card, section: CardSection) => void;
 }
 
+/**
+ * DeckBuilderCardList component renders the scrollable list of card search results
+ * within the deck builder. It handles loading spinner states, empty search results,
+ * and renders individual {@link SearchCardItem} elements for each card.
+ *
+ * @param props - The component properties.
+ * @returns The rendered deck builder card list.
+ */
 export default function DeckBuilderCardList({
   libraryLoading,
   libraryCards,

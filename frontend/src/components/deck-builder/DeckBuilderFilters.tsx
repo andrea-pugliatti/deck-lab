@@ -5,6 +5,9 @@ import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
 
+/**
+ * Properties for the {@link DeckBuilderFilters} component.
+ */
 export interface DeckBuilderFiltersProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -16,6 +19,14 @@ export interface DeckBuilderFiltersProps {
   archetypes: string[];
 }
 
+/**
+ * DeckBuilderFilters component renders a search bar and multiple selectors
+ * (type, attribute, race/property, archetype) in a responsive grid layout
+ * to filter the available card library inside the deck builder view.
+ *
+ * @param props - The component properties.
+ * @returns The rendered deck builder filters panel.
+ */
 export default function DeckBuilderFilters({
   searchQuery,
   setSearchQuery,
