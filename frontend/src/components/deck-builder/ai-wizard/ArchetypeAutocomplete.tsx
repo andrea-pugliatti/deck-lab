@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
 
+/**
+ * Props for the {@link ArchetypeAutocomplete} component.
+ */
 export interface ArchetypeAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
@@ -10,6 +13,13 @@ export interface ArchetypeAutocompleteProps {
   archetypes: string[];
 }
 
+/**
+ * ArchetypeAutocomplete is an input component with auto-suggest capability,
+ * assisting users in searching and selecting from a list of valid deck archetypes.
+ *
+ * @param props - The component props.
+ * @returns The rendered ArchetypeAutocomplete component.
+ */
 export default function ArchetypeAutocomplete({
   value,
   onChange,

@@ -1,11 +1,17 @@
 import Label from "../../ui/Label";
 
+/**
+ * Represents a strategic playstyle option that can be applied to the deck generator.
+ */
 export interface StrategyOption {
   label: string;
   value: string;
   description: string;
 }
 
+/**
+ * Array of predefined deck-building playstyle strategies.
+ */
 export const strategies: StrategyOption[] = [
   {
     label: "None (Standard)",
@@ -51,12 +57,22 @@ export const strategies: StrategyOption[] = [
   },
 ];
 
+/**
+ * Props for the {@link StrategySelector} component.
+ */
 export interface StrategySelectorProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
 }
 
+/**
+ * StrategySelector renders a grid of buttons for selecting different deck playstyles,
+ * along with a helper paragraph describing the currently selected playstyle strategy.
+ *
+ * @param props - The component props.
+ * @returns The rendered StrategySelector component.
+ */
 export default function StrategySelector({
   value,
   onChange,

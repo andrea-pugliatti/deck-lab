@@ -1,5 +1,11 @@
 import LoadingSpinner from "../../LoadingSpinner";
 
+/**
+ * WizardLoading renders a centralized loading state with a spinner
+ * and status text explaining that the AI is generating the deck.
+ *
+ * @returns The rendered WizardLoading component.
+ */
 export default function WizardLoading() {
   return (
     <div className="animate-fade-in flex flex-col items-center justify-center py-16">

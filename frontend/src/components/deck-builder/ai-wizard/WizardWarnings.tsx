@@ -2,11 +2,21 @@ import { AlertTriangle } from "lucide-react";
 
 import Button from "../../ui/Button";
 
+/**
+ * Props for the {@link WizardWarnings} component.
+ */
 export interface WizardWarningsProps {
   warnings: string[];
   onClose: () => void;
 }
 
+/**
+ * WizardWarnings displays a list of deck legality issues or format warnings
+ * following an AI deck generation, along with an acknowledgement action.
+ *
+ * @param props - The component props.
+ * @returns The rendered WizardWarnings component.
+ */
 export default function WizardWarnings({ warnings, onClose }: WizardWarningsProps) {
   return (
     <>

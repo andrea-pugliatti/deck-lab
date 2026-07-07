@@ -14,6 +14,9 @@ import StrategySelector from "./StrategySelector";
 import WizardLoading from "./WizardLoading";
 import WizardWarnings from "./WizardWarnings";
 
+/**
+ * Props for the {@link AiDeckWizard} component.
+ */
 export interface AiDeckWizardProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,6 +29,14 @@ export interface AiDeckWizardProps {
   currentFormat: string;
 }
 
+/**
+ * AiDeckWizard is a modal dialog flow utilizing AI to generate a functional
+ * Yu-Gi-Oh! deck list based on archetype search, strategic goals (e.g., aggro, control),
+ * format restrictions, and user-specified custom prompts.
+ *
+ * @param props - The component props.
+ * @returns The rendered AiDeckWizard dialog element.
+ */
 export default function AiDeckWizard({
   isOpen,
   onClose,
