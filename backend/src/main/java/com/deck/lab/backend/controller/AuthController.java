@@ -5,19 +5,20 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.deck.lab.backend.dto.request.LoginRequestDto;
 import com.deck.lab.backend.dto.request.RegisterRequestDto;
 import com.deck.lab.backend.dto.response.AuthResponseDto;
 import com.deck.lab.backend.dto.response.TokenRefreshResponseDto;
 import com.deck.lab.backend.exception.TokenRefreshException;
+import com.deck.lab.backend.security.RateLimiter;
 import com.deck.lab.backend.security.RefreshTokenCookieAdapter;
 import com.deck.lab.backend.service.AuthService;
 
@@ -78,11 +79,20 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthService service;
+    private final RateLimiter tokenRefreshRateLimiter;
+    private final RateLimiter loginRateLimiter;
+    private final RateLimiter registerRateLimiter;
     private final RefreshTokenCookieAdapter cookieAdapter;
 
     public AuthController(AuthService service,
+            @Qualifier("tokenRefreshRateLimiter") RateLimiter tokenRefreshRateLimiter,
+            @Qualifier("loginRateLimiter") RateLimiter loginRateLimiter,
+            @Qualifier("registerRateLimiter") RateLimiter registerRateLimiter,
             RefreshTokenCookieAdapter cookieAdapter) {
         this.service = service;
+        this.tokenRefreshRateLimiter = tokenRefreshRateLimiter;
+        this.loginRateLimiter = loginRateLimiter;
+        this.registerRateLimiter = registerRateLimiter;
         this.cookieAdapter = cookieAdapter;
     }
 
@@ -94,7 +104,11 @@ public class AuthController {
      * @return 200 OK with AuthResponseDto, or 401 Unauthorized if login fails
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest) {
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequestDto loginRequest,
+            HttpServletRequest servletRequest) {
+        String ipAddress = servletRequest.getRemoteAddr();
+        loginRateLimiter.checkLimit(ipAddress);
         Optional<AuthResponseDto> authResponse = service.login(loginRequest);
         if (authResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -115,7 +129,11 @@ public class AuthController {
      * @return 200 OK with AuthResponseDto, or 400 Bad Request if registration fails
      */
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest) {
+    public ResponseEntity<?> register(
+            @Valid @RequestBody RegisterRequestDto registerRequest,
+            HttpServletRequest servletRequest) {
+        String ipAddress = servletRequest.getRemoteAddr();
+        registerRateLimiter.checkLimit(ipAddress);
         Optional<AuthResponseDto> authResponse = service.register(registerRequest);
         if (authResponse.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -150,7 +168,7 @@ public class AuthController {
         }
 
         String ipAddress = servletRequest.getRemoteAddr();
-        refreshTokenService.checkRateLimit(ipAddress);
+        tokenRefreshRateLimiter.checkLimit(ipAddress);
 
         TokenRefreshResponseDto responseDto = service.refresh(refreshToken);
         return ResponseEntity.ok()

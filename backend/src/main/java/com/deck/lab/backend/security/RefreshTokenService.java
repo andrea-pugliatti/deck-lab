@@ -7,14 +7,11 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.deck.lab.backend.exception.TokenRefreshException;
 import com.deck.lab.backend.model.RefreshToken;
@@ -23,7 +20,7 @@ import com.deck.lab.backend.repository.RefreshTokenRepository;
 
 /**
  * Service managing database-backed refresh tokens, token rotation rules,
- * security replay protection, and IP-based rate limiting.
+ * and security replay protection.
  *
  * <p>
  * <strong>Token Rotation & Replay Protection</strong>
@@ -77,17 +74,10 @@ public class RefreshTokenService {
     @Value("${refresh-token.grace-period-seconds:10}")
     private int gracePeriodSeconds;
 
-    @Value("${refresh-token.rate-limit.max-attempts:5}")
-    private int rateLimitMaxAttempts;
-
-    @Value("${refresh-token.rate-limit.window-ms:60000}")
-    private long rateLimitWindowMs;
-
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final ConcurrentMap<String, RateLimitInfo> rateLimitMap = new ConcurrentHashMap<>();
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
@@ -227,48 +217,6 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByExpiryDateBeforeOrRevokedTrue(Instant.now());
     }
 
-    /**
-     * Validates that an IP address has not exceeded token refresh rate limit
-     * constraints.
-     *
-     * @param ipAddress the remote client IP address string
-     * @throws ResponseStatusException HTTP 429 Too Many Requests if limit is
-     *                                 exceeded
-     */
-    public void checkRateLimit(String ipAddress) {
-        long now = System.currentTimeMillis();
-        RateLimitInfo info = rateLimitMap.compute(ipAddress, (k, v) -> {
-            if (v == null || (now - v.windowStart) > rateLimitWindowMs) {
-                return new RateLimitInfo(1, now);
-            } else {
-                v.attempts++;
-                return v;
-            }
-        });
-
-        if (info.attempts > rateLimitMaxAttempts) {
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS,
-                    "Too many refresh attempts. Please try again later.");
-        }
-    }
-
-    /**
-     * Scheduled cleanup job running every 5 minutes to prune expired rate limit
-     * tracking entries.
-     */
-    @Scheduled(cron = "${refresh-token.rate-limit.cleanup-schedule:0 */5 * * * *}")
-    public void cleanupRateLimitMap() {
-        long now = System.currentTimeMillis();
-        rateLimitMap.entrySet().removeIf(entry -> (now - entry.getValue().windowStart) > rateLimitWindowMs);
-    }
-
-    /**
-     * Resets rate-limiting logs (used primarily for test scenarios).
-     */
-    public void resetRateLimits() {
-        rateLimitMap.clear();
-    }
-
     public void setDurationDays(int durationDays) {
         this.durationDays = durationDays;
     }
@@ -279,19 +227,5 @@ public class RefreshTokenService {
 
     public void setGracePeriodSeconds(int gracePeriodSeconds) {
         this.gracePeriodSeconds = gracePeriodSeconds;
-    }
-
-    /**
-     * Internal container storing rate limit statistics for a single client IP
-     * address.
-     */
-    private static class RateLimitInfo {
-        int attempts;
-        long windowStart;
-
-        RateLimitInfo(int attempts, long windowStart) {
-            this.attempts = attempts;
-            this.windowStart = windowStart;
-        }
     }
 }

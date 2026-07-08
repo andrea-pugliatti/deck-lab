@@ -18,9 +18,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import com.deck.lab.backend.security.RateLimiter;
+import com.deck.lab.backend.security.InMemoryRateLimiter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +66,14 @@ public class DeckControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    @Qualifier("deckValidationRateLimiter")
+    private RateLimiter deckValidationRateLimiter;
+
+    @Autowired
+    @Qualifier("deckSaveRateLimiter")
+    private RateLimiter deckSaveRateLimiter;
+
     private User testUser;
     private User unauthorizedUser;
     private Card testCard;
@@ -73,6 +84,8 @@ public class DeckControllerTest {
 
     @BeforeEach
     void setUp() {
+        ((InMemoryRateLimiter) deckValidationRateLimiter).reset();
+        ((InMemoryRateLimiter) deckSaveRateLimiter).reset();
         testUser = new User("controller-deck-user-1", "password", "ctrl-deck-user-1@example.com");
         testUser = userRepository.save(testUser);
         testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());

@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import com.deck.lab.backend.model.User;
+import com.deck.lab.backend.security.RateLimiter;
 import com.deck.lab.backend.service.DeckService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
@@ -57,9 +60,15 @@ import jakarta.validation.Valid;
 public class DeckController {
 
     private final DeckService deckService;
+    private final RateLimiter deckValidationRateLimiter;
+    private final RateLimiter deckSaveRateLimiter;
 
-    public DeckController(DeckService deckService) {
+    public DeckController(DeckService deckService,
+                          @Qualifier("deckValidationRateLimiter") RateLimiter deckValidationRateLimiter,
+                          @Qualifier("deckSaveRateLimiter") RateLimiter deckSaveRateLimiter) {
         this.deckService = deckService;
+        this.deckValidationRateLimiter = deckValidationRateLimiter;
+        this.deckSaveRateLimiter = deckSaveRateLimiter;
     }
 
     /**
@@ -109,7 +118,7 @@ public class DeckController {
     public ResponseEntity<DeckResponseDto> create(
             @Valid @RequestBody DeckResponseDto deckDto,
             @AuthenticationPrincipal User user) {
-
+        deckSaveRateLimiter.checkLimit("user:" + user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
     }
 
@@ -121,7 +130,12 @@ public class DeckController {
      * @throws DeckValidationException containing validation errors if invalid
      */
     @PostMapping("/validate")
-    public ResponseEntity<Void> validate(@Valid @RequestBody DeckResponseDto deckDto) {
+    public ResponseEntity<Void> validate(
+            @Valid @RequestBody DeckResponseDto deckDto,
+            @AuthenticationPrincipal User user,
+            HttpServletRequest servletRequest) {
+        String key = (user != null) ? "user:" + user.getId() : "ip:" + servletRequest.getRemoteAddr();
+        deckValidationRateLimiter.checkLimit(key);
         deckService.validateDeck(deckDto);
         return ResponseEntity.ok().build();
     }
@@ -146,6 +160,7 @@ public class DeckController {
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        deckSaveRateLimiter.checkLimit("user:" + user.getId());
         return ResponseEntity.ok(deckService.updateDeck(id, deckDto, user));
     }
 
