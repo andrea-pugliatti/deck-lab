@@ -1,4 +1,4 @@
-import { Calculator, Layers, RotateCcw, Search, Shuffle, Sparkles } from "lucide-react";
+import { Calculator, Hand, Layers, RotateCcw, Search, Shuffle } from "lucide-react";
 import { useState } from "react";
 
 import { useHandSimulator } from "../../hooks/useHandSimulator";
@@ -7,7 +7,7 @@ import Button from "../ui/Button";
 import CardInspector from "./CardInspector";
 import DeckExplorerModal from "./DeckExplorerModal";
 import ProbabilityCalculator from "./ProbabilityCalculator";
-import SimulatorCard from "./SimulatorCard";
+import ZonePanel from "./ZonePanel";
 
 /**
  * Props for the {@link SimulatorWorkspace} component.
@@ -133,134 +133,52 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
-            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
-              <h4 className="font-display flex items-center gap-2 text-sm font-bold text-white">
-                <Sparkles className="text-gold-accent h-4 w-4" />
-                HAND ZONE
-              </h4>
-              <span className="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold">
-                {hand.length} Cards
-              </span>
-            </div>
+          <ZonePanel
+            title="HAND ZONE"
+            icon={<Hand className="text-gold-accent h-4 w-4" />}
+            cards={hand}
+            currentZone="hand"
+            onMoveCard={onMoveCard}
+            onViewDetails={setInspectedCard}
+            emptyStateText='Hand is empty. Click "Draw 1" or "Reset & Redraw" to add cards.'
+            countBadgeClassName="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold"
+          />
 
-            {hand.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3.5 sm:grid-cols-4 md:grid-cols-5">
-                {hand.map((card) => (
-                  <SimulatorCard
-                    key={card.uniqId}
-                    card={card}
-                    currentZone="hand"
-                    onMove={onMoveCard}
-                    onViewDetails={(card: SimulatorCardInstance) => {
-                      setInspectedCard(card);
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="border-border-dim/40 rounded-xl border border-dashed py-10 text-center text-xs leading-relaxed text-slate-500">
-                Hand is empty. Click "Draw 1" or "Reset & Redraw" to add cards.
-              </div>
-            )}
-          </div>
-
-          <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
-            <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
-              <h4 className="font-display flex items-center gap-2 text-sm font-bold text-white">
-                <Layers className="text-cyan-accent h-4 w-4" />
-                FIELD
-              </h4>
-              <span className="text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold">
-                {field.length} Cards
-              </span>
-            </div>
-
-            {field.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3.5 sm:grid-cols-4 md:grid-cols-5">
-                {field.map((card) => (
-                  <SimulatorCard
-                    key={card.uniqId}
-                    card={card}
-                    currentZone="field"
-                    onMove={onMoveCard}
-                    onViewDetails={(card: SimulatorCardInstance) => {
-                      setInspectedCard(card);
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="border-border-dim/40 rounded-xl border border-dashed py-12 text-center text-xs text-slate-500">
-                Field is empty. Click a card in your hand and select "To Field (Summon)".
-              </div>
-            )}
-          </div>
+          <ZonePanel
+            title="FIELD"
+            icon={<Layers className="text-cyan-accent h-4 w-4" />}
+            cards={field}
+            currentZone="field"
+            onMoveCard={onMoveCard}
+            onViewDetails={setInspectedCard}
+            emptyStateText='Field is empty. Click a card in your hand and select "To Field (Summon)".'
+            countBadgeClassName="text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold"
+          />
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
-              <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
-                <h4 className="font-display flex items-center gap-2 text-xs font-bold tracking-wider text-white uppercase">
-                  <Layers className="h-4 w-4 text-slate-400" />
-                  Graveyard (GY)
-                </h4>
-                <span className="rounded bg-slate-400/10 px-2 py-0.5 text-[9px] font-bold text-slate-400">
-                  {graveyard.length} Cards
-                </span>
-              </div>
+            <ZonePanel
+              title="GRAVEYARD"
+              icon={<Layers className="h-4 w-4 text-slate-400" />}
+              cards={graveyard}
+              currentZone="graveyard"
+              onMoveCard={onMoveCard}
+              onViewDetails={setInspectedCard}
+              emptyStateText="Graveyard is empty."
+              gridClassName="grid grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4"
+              countBadgeClassName="rounded bg-slate-400/10 px-2 py-0.5 text-[9px] font-bold text-slate-400"
+            />
 
-              {graveyard.length > 0 ? (
-                <div className="grid grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4">
-                  {graveyard.map((card) => (
-                    <SimulatorCard
-                      key={card.uniqId}
-                      card={card}
-                      currentZone="graveyard"
-                      onMove={onMoveCard}
-                      onViewDetails={(card: SimulatorCardInstance) => {
-                        setInspectedCard(card);
-                      }}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="py-8 text-center text-[11px] text-slate-600">
-                  Graveyard is empty.
-                </div>
-              )}
-            </div>
-
-            <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
-              <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
-                <h4 className="font-display flex items-center gap-2 text-xs font-bold tracking-wider text-white uppercase">
-                  <Layers className="h-4 w-4 text-purple-400" />
-                  Banished Zone
-                </h4>
-                <span className="rounded bg-purple-400/10 px-2 py-0.5 text-[9px] font-bold text-purple-400">
-                  {banished.length} Cards
-                </span>
-              </div>
-
-              {banished.length > 0 ? (
-                <div className="grid max-h-55 grid-cols-3 gap-2.5 overflow-y-auto pr-1 sm:grid-cols-4">
-                  {banished.map((card) => (
-                    <SimulatorCard
-                      key={card.uniqId}
-                      card={card}
-                      currentZone="banished"
-                      onMove={onMoveCard}
-                      onViewDetails={(card: SimulatorCardInstance) => {
-                        setInspectedCard(card);
-                      }}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="py-8 text-center text-[11px] text-slate-600">
-                  No cards banished.
-                </div>
-              )}
-            </div>
+            <ZonePanel
+              title="BANISHED ZONE"
+              icon={<Layers className="h-4 w-4 text-purple-400" />}
+              cards={banished}
+              currentZone="banished"
+              onMoveCard={onMoveCard}
+              onViewDetails={setInspectedCard}
+              emptyStateText="No cards banished."
+              gridClassName="grid max-h-55 grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4"
+              countBadgeClassName="rounded bg-purple-400/10 px-2 py-0.5 text-[9px] font-bold text-purple-400"
+            />
           </div>
         </div>
       </div>
