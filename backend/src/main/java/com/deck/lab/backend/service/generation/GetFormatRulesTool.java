@@ -7,6 +7,8 @@ import java.util.function.Function;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.FormatRulesRepository;
+import com.deck.lab.backend.validation.rules.FormatDeckLimits;
+import com.deck.lab.backend.validation.rules.DeckSizeLimits;
 
 /**
  * Tool function enabling the AI model to query database rules (banlists) for a format.
@@ -45,12 +47,34 @@ public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRul
             }
         }
 
-        return new FormatRulesResponse(format.name(), ruleInfos, null);
+        DeckSizeLimits limits = FormatDeckLimits.getLimits(format);
+
+        return new FormatRulesResponse(
+                format.name(),
+                ruleInfos,
+                limits.minMainSize(),
+                limits.maxMainSize(),
+                limits.maxExtraSize(),
+                limits.maxSideSize(),
+                null
+        );
     }
 
     public record FormatRulesRequest(String format) {}
 
     public record FormatRuleInfo(String cardName, String status) {}
 
-    public record FormatRulesResponse(String format, List<FormatRuleInfo> rules, String error) {}
+    public record FormatRulesResponse(
+            String format,
+            List<FormatRuleInfo> rules,
+            Integer minMainSize,
+            Integer maxMainSize,
+            Integer maxExtraSize,
+            Integer maxSideSize,
+            String error
+    ) {
+        public FormatRulesResponse(String format, List<FormatRuleInfo> rules, String error) {
+            this(format, rules, null, null, null, null, error);
+        }
+    }
 }

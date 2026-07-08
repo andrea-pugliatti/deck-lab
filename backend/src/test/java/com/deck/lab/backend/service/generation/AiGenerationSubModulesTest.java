@@ -54,7 +54,7 @@ class AiGenerationSubModulesTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        promptBuilder = new PromptBuilder();
+        promptBuilder = new PromptBuilder(cardRepository);
         responseParser = new ResponseParser();
         cardResolver = new CardResolver(cardRepository);
         deckAssembler = new DeckAssembler();
@@ -63,9 +63,9 @@ class AiGenerationSubModulesTest {
     }
 
     @Test
-    void testPromptBuilderGeneration() {
+    void testPromptBuilderDraft() {
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "Include JD");
-        Prompt prompt = promptBuilder.buildGenerationPrompt(request, "formatInstructionsTemplate");
+        Prompt prompt = promptBuilder.buildDraftPrompt(request, "formatInstructionsTemplate");
 
         assertNotNull(prompt);
         String systemContent = prompt.getInstructions().get(0).getText();
@@ -76,6 +76,29 @@ class AiGenerationSubModulesTest {
         assertTrue(systemContent.contains("Include JD"));
         assertTrue(systemContent.contains("formatInstructionsTemplate"));
         assertTrue(userContent.contains("Edison"));
+    }
+
+    @Test
+    void testPromptBuilderRefinement() {
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "Include JD");
+        com.deck.lab.backend.model.Card card = new com.deck.lab.backend.model.Card();
+        card.setName("Judgment Dragon");
+        card.setType(com.deck.lab.backend.model.CardType.EFFECT_MONSTER);
+        card.setAttribute(com.deck.lab.backend.model.CardAttribute.LIGHT);
+        card.setLevel(8);
+        List<ResolvedCardEntry> resolved = List.of(new ResolvedCardEntry(card, "MAIN", 3));
+        List<String> unresolved = List.of("UnresolvedCard");
+        List<String> warnings = List.of("Warning 1");
+
+        Prompt prompt = promptBuilder.buildRefinementPrompt(request, resolved, unresolved, warnings,
+                "formatInstructionsTemplate");
+
+        assertNotNull(prompt);
+        String systemContent = prompt.getInstructions().get(0).getText();
+        assertTrue(systemContent.contains("Judgment Dragon"));
+        assertTrue(systemContent.contains("UnresolvedCard"));
+        assertTrue(systemContent.contains("Warning 1"));
+        assertTrue(systemContent.contains("formatInstructionsTemplate"));
     }
 
     @Test
@@ -120,7 +143,7 @@ class AiGenerationSubModulesTest {
                 new CardEntryDto("Judgment Dragon", "MAIN", 3),
                 new CardEntryDto("Unknown Card", "EXTRA", 1));
 
-        List<CardResolver.ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
+        List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
 
         assertEquals(1, resolved.size());
         assertEquals(jdCard, resolved.get(0).card());
@@ -168,8 +191,8 @@ class AiGenerationSubModulesTest {
         card.setName("Judgment Dragon");
         card.setType(CardType.EFFECT_MONSTER);
 
-        List<CardResolver.ResolvedCardEntry> resolved = List.of(
-                new CardResolver.ResolvedCardEntry(card, "MAIN", 3));
+        List<ResolvedCardEntry> resolved = List.of(
+                new ResolvedCardEntry(card, "MAIN", 3));
 
         Deck deck = deckAssembler.assembleDeck("AI Deck", "Edison", resolved);
 
@@ -360,7 +383,7 @@ class AiGenerationSubModulesTest {
                 new CardEntryDto("Sangan", "MAIN", -5),
                 new CardEntryDto("Sangan", "MAIN", 5));
 
-        List<CardResolver.ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
+        List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
         assertEquals(4, resolved.size());
         assertEquals(1, resolved.get(0).quantity());
         assertEquals(1, resolved.get(1).quantity());
@@ -373,7 +396,7 @@ class AiGenerationSubModulesTest {
                 new CardEntryDto("Sangan", "side", 1),
                 new CardEntryDto("Sangan", "EXTRA", 1));
 
-        List<CardResolver.ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
+        List<ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
         assertEquals(4, resolvedSections.size());
         assertEquals("MAIN", resolvedSections.get(0).section());
         assertEquals("MAIN", resolvedSections.get(1).section());
@@ -421,8 +444,8 @@ class AiGenerationSubModulesTest {
         Card card = new Card();
         card.setId(12L);
         card.setName("Gorz");
-        List<CardResolver.ResolvedCardEntry> resolved = List.of(
-                new CardResolver.ResolvedCardEntry(card, "INVALID_SECTION", 1));
+        List<ResolvedCardEntry> resolved = List.of(
+                new ResolvedCardEntry(card, "INVALID_SECTION", 1));
         Deck assembled = deckAssembler.assembleDeck("Gorz Deck", "Edison", resolved);
         assertEquals(1, assembled.getDeckCards().size());
         org.junit.jupiter.api.Assertions.assertNull(assembled.getDeckCards().get(0).getSection());

@@ -26,7 +26,9 @@ public enum Format {
     EDISON("Edison"),
     TENGU_PLANT("Tengu Plant"),
     HAT_FORMAT("HAT Format"),
-    SPEED_DUEL("Speed Duel");
+    SPEED_DUEL("Speed Duel"),
+    MASTER_DUEL("Master Duel"),
+    RUSH_DUEL("Rush Duel");
 
     private final String value;
 

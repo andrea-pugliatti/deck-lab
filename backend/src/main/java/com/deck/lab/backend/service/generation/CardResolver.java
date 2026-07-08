@@ -112,7 +112,4 @@ public class CardResolver {
         }
         return cardOpt;
     }
-
-    public record ResolvedCardEntry(Card card, String section, int quantity) {
-    }
 }

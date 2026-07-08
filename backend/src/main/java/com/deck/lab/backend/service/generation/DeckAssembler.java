@@ -28,7 +28,7 @@ public class DeckAssembler {
      * @param resolvedCards list of database-resolved cards
      * @return an assembled Deck entity ready for validation or persistence
      */
-    public Deck assembleDeck(String name, String formatName, List<CardResolver.ResolvedCardEntry> resolvedCards) {
+    public Deck assembleDeck(String name, String formatName, List<ResolvedCardEntry> resolvedCards) {
         Deck deck = new Deck();
         deck.setName(name);
 
@@ -42,7 +42,7 @@ public class DeckAssembler {
 
         List<DeckCard> deckCards = new ArrayList<>();
         if (resolvedCards != null) {
-            for (CardResolver.ResolvedCardEntry entry : resolvedCards) {
+            for (ResolvedCardEntry entry : resolvedCards) {
                 DeckSection sectionEnum = null;
                 if (entry.section() != null) {
                     try {
@@ -65,12 +65,12 @@ public class DeckAssembler {
      */
     public Deck assembleDeckFromDtos(String name, String formatName, List<DeckCardDto> cardDtos,
             Map<Long, Card> cardMap) {
-        List<CardResolver.ResolvedCardEntry> resolved = new ArrayList<>();
+        List<ResolvedCardEntry> resolved = new ArrayList<>();
         if (cardDtos != null && cardMap != null) {
             for (DeckCardDto dto : cardDtos) {
                 Card card = cardMap.get(dto.getCardId());
                 if (card != null) {
-                    resolved.add(new CardResolver.ResolvedCardEntry(card, dto.getSection(), dto.getQuantity()));
+                    resolved.add(new ResolvedCardEntry(card, dto.getSection(), dto.getQuantity()));
                 }
             }
         }
@@ -83,14 +83,14 @@ public class DeckAssembler {
      * @param resolvedCards list of database resolved cards
      * @return a list of mapped DeckCardDto objects
      */
-    public List<DeckCardDto> toDeckCardDtos(List<CardResolver.ResolvedCardEntry> resolvedCards) {
+    public List<DeckCardDto> toDeckCardDtos(List<ResolvedCardEntry> resolvedCards) {
         List<DeckCardDto> dtos = new ArrayList<>();
         if (resolvedCards == null) {
             return dtos;
         }
 
         long tempIdCounter = 1;
-        for (CardResolver.ResolvedCardEntry entry : resolvedCards) {
+        for (ResolvedCardEntry entry : resolvedCards) {
             Card card = entry.card();
             dtos.add(new DeckCardDto(
                     tempIdCounter++,
