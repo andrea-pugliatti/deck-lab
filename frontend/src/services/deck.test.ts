@@ -20,7 +20,6 @@ vi.mock("./api", () => ({
   parseResponseErrors: vi.fn().mockImplementation(async () => ["Mocked field error"]),
 }));
 
-
 describe("deck service", () => {
   describe("endpoint builders", () => {
     it("should build formats endpoint", () => {

@@ -108,8 +108,8 @@ describe("SimulatorWorkspace component", () => {
     // Check zones headers
     expect(screen.getByText("HAND ZONE")).toBeInTheDocument();
     expect(screen.getByText("FIELD")).toBeInTheDocument();
-    expect(screen.getByText("Graveyard (GY)")).toBeInTheDocument();
-    expect(screen.getByText("Banished Zone")).toBeInTheDocument();
+    expect(screen.getByText("GRAVEYARD")).toBeInTheDocument();
+    expect(screen.getByText("BANISHED ZONE")).toBeInTheDocument();
   });
 
   it("should handle config hand size updates when clicking buttons 5 and 6", () => {

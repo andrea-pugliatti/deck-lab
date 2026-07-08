@@ -13,8 +13,8 @@ import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import Input from "../components/ui/Input";
 import { useAuth } from "../context/AuthContext";
-import { useFetch } from "../hooks/useFetch";
 import { useDeckSearch } from "../hooks/useDeckSearch";
+import { useFetch } from "../hooks/useFetch";
 import { deleteDeck, getFormatsEndpoint } from "../services/deck";
 
 /**

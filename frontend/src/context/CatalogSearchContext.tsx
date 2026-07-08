@@ -40,7 +40,7 @@ const CatalogSearchContext = createContext<CatalogSearchContextType | undefined>
  * @returns React Context Provider wrapping the children.
  */
 export function CatalogSearchProvider({ children }: { children: ReactNode }) {
-  const searchState = useCatalogSearch({ defaultPageSize: 8 });
+  const searchState = useCatalogSearch({ defaultPageSize: 9 });
 
   // Fetch metadata
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());

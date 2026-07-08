@@ -25,10 +25,7 @@ describe("useCatalogSearch hook", () => {
     setSearchParamsMock.mockReset();
     vi.mocked(useSearchParams).mockReset();
     mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      setSearchParamsMock,
-    ]);
+    vi.mocked(useSearchParams).mockReturnValue([mockSearchParams, setSearchParamsMock]);
 
     vi.mocked(useFetch).mockReset();
     vi.mocked(useFetch).mockReturnValue({

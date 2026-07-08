@@ -133,7 +133,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
 
       {/* Right Column */}
       <div className="flex flex-col lg:col-span-8">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="flex-1">
             <Input
               type="text"
@@ -141,14 +141,14 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               icon={<Search className="h-4 w-4 text-slate-500" />}
-              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full"
+              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full px-4 py-2.5"
             />
           </div>
           <div className="sm:w-48">
             <select
               value={selectedFormat}
               onChange={(e) => setSelectedFormat(e.target.value)}
-              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full cursor-pointer rounded border px-3 py-2 text-sm text-slate-200 outline-none"
+              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full cursor-pointer rounded border px-4 py-2.75 text-sm text-slate-200 outline-none"
             >
               {formats.map((fmt) => (
                 <option key={fmt} value={fmt}>

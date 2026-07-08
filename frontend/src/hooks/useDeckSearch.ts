@@ -77,17 +77,12 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
 
   const controlledSetFilters = useMemo(() => {
     if (setFormat || setUsername) {
-      return (
-        nextFilters:
-          | DeckFiltersState
-          | ((prev: DeckFiltersState) => DeckFiltersState),
-      ) => {
+      return (nextFilters: DeckFiltersState | ((prev: DeckFiltersState) => DeckFiltersState)) => {
         const prev = {
           format: format !== undefined ? format : "ALL",
           username: username !== undefined ? username : "",
         };
-        const resolved =
-          typeof nextFilters === "function" ? nextFilters(prev) : nextFilters;
+        const resolved = typeof nextFilters === "function" ? nextFilters(prev) : nextFilters;
         if (setFormat && resolved.format !== prev.format) {
           setFormat(resolved.format);
         }

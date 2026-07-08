@@ -199,8 +199,6 @@ function DeckBuilderContent(): React.JSX.Element {
             submitError={submitError}
           />
 
-          <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
-
           <div className="space-y-4">
             {(["MAIN", "EXTRA", "SIDE"] as const).map((section) => (
               <DeckSectionList
@@ -213,6 +211,8 @@ function DeckBuilderContent(): React.JSX.Element {
               />
             ))}
           </div>
+
+          <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
 
           <div className="bg-dark-surface border-border-dim flex items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
             <Button

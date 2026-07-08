@@ -282,7 +282,14 @@ describe("deckReducer", () => {
 
     it("should block adding more than maxCopiesPerCard copies of a card", () => {
       const currentCards = [
-        { cardId: 1, name: "Raigeki", quantity: 3, section: "MAIN" as const, type: "Spell", imageUrl: "" },
+        {
+          cardId: 1,
+          name: "Raigeki",
+          quantity: 3,
+          section: "MAIN" as const,
+          type: "Spell",
+          imageUrl: "",
+        },
       ];
       const result = canAddCard(spellCard, "MAIN", currentCards, "TCG");
       expect(result.ok).toBe(false);
@@ -295,7 +302,14 @@ describe("deckReducer", () => {
   describe("clampQuantity", () => {
     it("should clamp quantity to limit copies across all sections", () => {
       const currentCards = [
-        { cardId: 1, name: "Raigeki", quantity: 1, section: "SIDE" as const, type: "Spell", imageUrl: "" },
+        {
+          cardId: 1,
+          name: "Raigeki",
+          quantity: 1,
+          section: "SIDE" as const,
+          type: "Spell",
+          imageUrl: "",
+        },
       ];
 
       const clamped = clampQuantity(1, "MAIN", 3, currentCards, "TCG");

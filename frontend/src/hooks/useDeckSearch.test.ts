@@ -25,10 +25,7 @@ describe("useDeckSearch hook", () => {
     setSearchParamsMock.mockReset();
     vi.mocked(useSearchParams).mockReset();
     mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      setSearchParamsMock,
-    ]);
+    vi.mocked(useSearchParams).mockReturnValue([mockSearchParams, setSearchParamsMock]);
 
     vi.mocked(useFetch).mockReset();
     vi.mocked(useFetch).mockReturnValue({
@@ -130,9 +127,7 @@ describe("useDeckSearch hook", () => {
       mockSearchParams.set("format", "Goat");
       mockSearchParams.set("q", "Exodia");
 
-      const { result } = renderHook(() =>
-        useDeckSearch({ syncUrl: true, username: "kaiba" }),
-      );
+      const { result } = renderHook(() => useDeckSearch({ syncUrl: true, username: "kaiba" }));
 
       expect(result.current.page).toBe(2);
       expect(result.current.searchQuery).toBe("Exodia");

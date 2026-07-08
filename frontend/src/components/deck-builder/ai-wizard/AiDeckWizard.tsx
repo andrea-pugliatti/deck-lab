@@ -157,7 +157,7 @@ export default function AiDeckWizard({
       <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
         <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-gold-accent h-5 w-5 animate-pulse" />
+            <Sparkles className="text-gold-accent h-5 w-5" />
             <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
           </div>
           <button

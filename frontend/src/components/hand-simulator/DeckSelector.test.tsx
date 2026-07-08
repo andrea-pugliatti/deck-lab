@@ -3,8 +3,8 @@ import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../../context/AuthContext";
-import { useFetch } from "../../hooks/useFetch";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
+import { useFetch } from "../../hooks/useFetch";
 import DeckSelector from "./DeckSelector";
 
 vi.mock("../../context/AuthContext", () => ({
