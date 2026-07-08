@@ -14,8 +14,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +31,11 @@ import com.deck.lab.backend.model.RefreshToken;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.RefreshTokenRepository;
 import com.deck.lab.backend.repository.UserRepository;
+import com.deck.lab.backend.security.InMemoryAdapter;
+import com.deck.lab.backend.security.InMemoryRateLimiter;
 import com.deck.lab.backend.security.JwtService;
+import com.deck.lab.backend.security.RateLimiter;
+import com.deck.lab.backend.security.RefreshTokenCookieAdapter;
 import com.deck.lab.backend.security.RefreshTokenService;
 
 import jakarta.servlet.http.Cookie;
@@ -37,6 +45,15 @@ import tools.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 @Transactional
 public class AuthControllerTest {
+
+        @TestConfiguration
+        public static class TestConfig {
+                @Bean
+                @Primary
+                public RefreshTokenCookieAdapter testCookieAdapter() {
+                        return new InMemoryAdapter();
+                }
+        }
 
         @Autowired
         private MockMvc mockMvc;
@@ -57,13 +74,27 @@ public class AuthControllerTest {
         private RefreshTokenService refreshTokenService;
 
         @Autowired
+        @Qualifier("tokenRefreshRateLimiter")
+        private RateLimiter tokenRefreshRateLimiter;
+
+        @Autowired
+        @Qualifier("loginRateLimiter")
+        private RateLimiter loginRateLimiter;
+
+        @Autowired
+        @Qualifier("registerRateLimiter")
+        private RateLimiter registerRateLimiter;
+
+        @Autowired
         private ObjectMapper objectMapper;
 
         private User testUser;
 
         @BeforeEach
         void setUp() {
-                refreshTokenService.resetRateLimits();
+                ((InMemoryRateLimiter) tokenRefreshRateLimiter).reset();
+                ((InMemoryRateLimiter) loginRateLimiter).reset();
+                ((InMemoryRateLimiter) registerRateLimiter).reset();
                 testUser = new User("auth-test-user", passwordEncoder.encode("securepassword"),
                                 "auth-test-email@example.com");
                 testUser = userRepository.save(testUser);
@@ -261,7 +292,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void testRateLimiting() throws Exception {
+        void testRefreshRateLimiting() throws Exception {
                 for (int i = 0; i < 5; i++) {
                         mockMvc.perform(post("/api/auth/refresh")
                                         .cookie(new Cookie("refreshToken", "dummy-token"))
@@ -270,6 +301,42 @@ public class AuthControllerTest {
 
                 mockMvc.perform(post("/api/auth/refresh")
                                 .cookie(new Cookie("refreshToken", "dummy-token"))
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isTooManyRequests());
+        }
+
+        @Test
+        void testLoginRateLimiting() throws Exception {
+                LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
+                for (int i = 0; i < 10; i++) {
+                        mockMvc.perform(post("/api/auth/login")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(loginRequest))
+                                        .accept(MediaType.APPLICATION_JSON));
+                }
+
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest))
+                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isTooManyRequests());
+        }
+
+        @Test
+        void testRegisterRateLimiting() throws Exception {
+                for (int i = 0; i < 5; i++) {
+                        RegisterRequestDto registerRequest = new RegisterRequestDto("new-user-" + i, "new-user-" + i + "@example.com", "securepassword");
+                        mockMvc.perform(post("/api/auth/register")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(registerRequest))
+                                        .accept(MediaType.APPLICATION_JSON))
+                                        .andExpect(status().isOk());
+                }
+
+                RegisterRequestDto registerRequest = new RegisterRequestDto("new-user-5", "new-user-5@example.com", "securepassword");
+                mockMvc.perform(post("/api/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(registerRequest))
                                 .accept(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isTooManyRequests());
         }

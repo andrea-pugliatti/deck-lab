@@ -2,7 +2,7 @@ package com.deck.lab.backend.controller;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -17,7 +17,8 @@ import com.deck.lab.backend.dto.request.LoginRequestDto;
 import com.deck.lab.backend.dto.request.RegisterRequestDto;
 import com.deck.lab.backend.dto.response.AuthResponseDto;
 import com.deck.lab.backend.dto.response.TokenRefreshResponseDto;
-import com.deck.lab.backend.security.RefreshTokenService;
+import com.deck.lab.backend.exception.TokenRefreshException;
+import com.deck.lab.backend.security.RefreshTokenCookieAdapter;
 import com.deck.lab.backend.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,9 +34,9 @@ import jakarta.validation.Valid;
  * <p>
  * In a Layered Architecture, this class acts as a primary adapter (driving
  * adapter) exposing REST APIs to external clients. It delegates business
- * validation and authentication logic to the service layer ({@link AuthService}
- * and {@link RefreshTokenService}), and maps service outputs back into standard
- * HTTP Response Entities.
+ * validation and authentication logic to the service layer
+ * ({@link AuthService}), and maps service outputs back into standard HTTP
+ * Response Entities.
  * </p>
  *
  * <p>
@@ -65,9 +66,8 @@ import jakarta.validation.Valid;
  * this controller implements a hybrid token delivery strategy:
  * Short-lived JWT Access Tokens are returned in the JSON response body,
  * enabling the client application to use them in standard authorization
- * headers.
- * Long-lived Refresh Tokens are stored inside HTTP cookies configured with
- * {@code HttpOnly}, {@code Secure}, and {@code SameSite=Lax} properties.
+ * headers. Long-lived Refresh Tokens are stored inside HTTP cookies configured
+ * with {@code HttpOnly}, {@code Secure}, and {@code SameSite=Lax} properties.
  * This prevents client-side JavaScript from accessing the refresh token,
  * protecting sessions from being hijacked if malicious scripts execute in the
  * browser.
@@ -77,15 +77,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Value("${refresh-token.duration-days:7}")
-    private int durationDays;
-
     private final AuthService service;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenCookieAdapter cookieAdapter;
 
-    public AuthController(AuthService service, RefreshTokenService refreshTokenService) {
+    public AuthController(AuthService service,
+            RefreshTokenCookieAdapter cookieAdapter) {
         this.service = service;
-        this.refreshTokenService = refreshTokenService;
+        this.cookieAdapter = cookieAdapter;
     }
 
     /**
@@ -105,7 +103,7 @@ public class AuthController {
         AuthResponseDto responseDto = authResponse.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
+                        cookieAdapter.createCookie(responseDto.getRefreshToken()))
                 .body(responseDto);
     }
 
@@ -126,7 +124,7 @@ public class AuthController {
         AuthResponseDto responseDto = authResponse.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
+                        cookieAdapter.createCookie(responseDto.getRefreshToken()))
                 .body(responseDto);
     }
 
@@ -157,7 +155,7 @@ public class AuthController {
         TokenRefreshResponseDto responseDto = service.refresh(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE,
-                        buildRefreshTokenCookie(responseDto.getRefreshToken(), durationDays * 24 * 60 * 60L))
+                        cookieAdapter.createCookie(responseDto.getRefreshToken()))
                 .body(responseDto);
     }
 
@@ -175,21 +173,7 @@ public class AuthController {
         service.revoke(refreshToken);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, buildRefreshTokenCookie("", 0))
+                .header(HttpHeaders.SET_COOKIE, cookieAdapter.clearCookie())
                 .build();
-    }
-
-    /**
-     * Helper to build a secure HTTP Cookie header for the refresh token.
-     */
-    private String buildRefreshTokenCookie(String token, long maxAge) {
-        return ResponseCookie.from("refreshToken", token)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Lax")
-                .path("/api/auth")
-                .maxAge(maxAge)
-                .build()
-                .toString();
     }
 }
