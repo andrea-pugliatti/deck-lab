@@ -71,7 +71,9 @@ public class BanlistImporter {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.restClient = RestClient.create();
+        this.restClient = RestClient.builder()
+                .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                .build();
     }
 
     public void seedBanlistsFromApi() {

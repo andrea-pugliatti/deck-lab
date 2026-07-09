@@ -24,6 +24,9 @@ app:
   seed.cards: true
   upload-dir: ${IMAGE_UPLOAD_DIR:data/images}
   cors.allowed-origins: ${ALLOWED_CORS_ORIGINS:http://localhost:5173,http://localhost,http://127.0.0.1:5173}
+  cookie:
+    same-site: ${COOKIE_SAME_SITE:Lax}
+    secure: ${COOKIE_SECURE:true}
 
 jwt:
   secret: ${JWT_SECRET:ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=}
