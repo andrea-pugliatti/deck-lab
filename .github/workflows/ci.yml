@@ -70,12 +70,7 @@ jobs:
         run: java -jar target/*.jar > backend.log 2>&1 &
 
       - name: Wait for backend readiness
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: http://localhost:8080/api/decks
-          responseCode: 200
-          timeout: 180000
-          interval: 2000
+        run: npx wait-on tcp:localhost:8080 --timeout 60000
 
       - name: Print backend logs on failure
         if: failure()
@@ -83,7 +78,7 @@ jobs:
 
       - name: Run Bruno API tests
         working-directory: bruno
-        run: bru run --env Local --reporter-junit results.xml --reporter-json results.json
+        run: bru run --env CI --reporter-junit results.xml --reporter-json results.json
 
       - name: Upload Bruno Test Results
         uses: actions/upload-artifact@v5
