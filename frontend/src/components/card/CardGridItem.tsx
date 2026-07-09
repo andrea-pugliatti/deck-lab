@@ -27,6 +27,7 @@ export default function CardGridItem({
 }: Card) {
   const isMonster = type?.toLowerCase().includes("monster");
   const { gridBadgeColor: badgeColor } = getCardTheme(type);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   return (
     <Link
@@ -37,7 +38,7 @@ export default function CardGridItem({
       <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-video items-center justify-center overflow-hidden border-b">
         {imageUrlCropped ? (
           <img
-            src={`/api/${imageUrlCropped}`}
+            src={`${apiBaseUrl}/api/${imageUrlCropped}`}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-500"
           />

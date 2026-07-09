@@ -78,6 +78,7 @@ export default function CardDetail(): React.JSX.Element {
 
   const { bgGradient, badgeVariant, type: cardThemeType } = getCardTheme(card.type);
   const isMonster = cardThemeType === "monster";
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
@@ -112,7 +113,7 @@ export default function CardDetail(): React.JSX.Element {
             >
               {card.imageUrl ? (
                 <img
-                  src={`/api/${card.imageUrl}`}
+                  src={`${apiBaseUrl}/api/${card.imageUrl}`}
                   alt={card.name}
                   className="h-full w-full object-cover"
                 />
