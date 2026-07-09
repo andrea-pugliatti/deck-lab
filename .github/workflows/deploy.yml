@@ -54,7 +54,8 @@ jobs:
             --add-cloudsql-instances=${{ secrets.GCP_CLOUDSQL_CONNECTION_NAME }}
             --add-volume=name=card-images-volume,type=cloud-storage,bucket=${{ secrets.GCP_IMAGE_BUCKET_NAME }}
             --add-volume-mount=volume=card-images-volume,mount-path=/app/data/images
-            --set-env-vars=^##^POSTGRES_USER=${{ secrets.DB_USER }}##SPRING_DATASOURCE_URL=jdbc:postgresql:///deck-lab?cloudSqlInstance=${{ secrets.GCP_CLOUDSQL_CONNECTION_NAME }}&socketFactory=com.google.cloud.sql.postgres.SocketFactory##ALLOWED_CORS_ORIGINS=${{ secrets.ALLOWED_CORS_ORIGINS }}##IMAGE_UPLOAD_DIR=/app/data/images##COOKIE_SAME_SITE=None
+            --service-account=backend-runner@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+            --set-env-vars=^##^POSTGRES_USER=${{ secrets.DB_USER }}##SPRING_DATASOURCE_URL=jdbc:postgresql:///deck-lab?cloudSqlInstance=${{ secrets.GCP_CLOUDSQL_CONNECTION_NAME }}&socketFactory=com.google.cloud.sql.postgres.SocketFactory##ALLOWED_CORS_ORIGINS=${{ secrets.ALLOWED_CORS_ORIGINS }}##IMAGE_UPLOAD_DIR=/app/data/images##COOKIE_SAME_SITE=Lax##APP_SEED_CARDS=false##APP_SEED_USERS=false
             --set-secrets=POSTGRES_PASSWORD=DECK_LAB_DB_PASSWORD:latest,GEMINI_API_KEY=DECK_LAB_GEMINI_API_KEY:latest,JWT_SECRET=DECK_LAB_JWT_SECRET:latest
 
       - name: Setup pnpm
@@ -72,7 +73,7 @@ jobs:
       - name: Install Frontend Dependencies & Build
         working-directory: ./frontend
         env:
-          VITE_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+          VITE_API_URL: ""
         run: |
           pnpm install --frozen-lockfile
           pnpm build

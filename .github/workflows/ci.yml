@@ -12,6 +12,21 @@ jobs:
   backend:
     name: Backend tests and build
     runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: deck-lab
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -41,6 +56,50 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw -B package -DskipTests
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Install Bruno CLI
+        run: npm install -g @usebruno/cli
+
+      - name: Start backend
+        working-directory: backend
+        run: java -jar target/*.jar > backend.log 2>&1 &
+
+      - name: Wait for backend readiness
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: http://localhost:8080/api/decks
+          responseCode: 200
+          timeout: 60000
+          interval: 2000
+
+      - name: Print backend logs on failure
+        if: failure()
+        run: cat backend/backend.log
+
+      - name: Run Bruno API tests
+        working-directory: bruno
+        run: bru run --env Local --reporter-junit results.xml --reporter-json results.json
+
+      - name: Upload Bruno Test Results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: bruno-test-results
+          path: |
+            bruno/results.xml
+            bruno/results.json
+
+      - name: Upload Backend Logs
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: backend-logs
+          path: backend/backend.log
 
   frontend:
     name: Frontend tests and build
