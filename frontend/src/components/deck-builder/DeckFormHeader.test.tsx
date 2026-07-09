@@ -34,6 +34,22 @@ describe("DeckFormHeader component", () => {
     });
   });
 
+  it("should display the character counter with the correct length", () => {
+    render(
+      <DeckFormHeader
+        name="Test Deck"
+        setName={mockSetName}
+        description="A great strategy"
+        setDescription={mockSetDescription}
+        formatName="TCG"
+        setFormatName={mockSetFormatName}
+        formats={formats}
+      />,
+    );
+
+    expect(screen.getByText("16 / 255")).toBeInTheDocument();
+  });
+
   it("should trigger callbacks when changing values", () => {
     mockSetName.mockClear();
     mockSetDescription.mockClear();

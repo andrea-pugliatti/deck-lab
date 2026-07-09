@@ -143,6 +143,44 @@ class GenerationServiceTest {
     }
 
     @Test
+    void testGenerateDeck_DescriptionTruncated() {
+        // Arrange
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "None");
+        Prompt mockDraftPrompt = new Prompt("draft");
+        when(promptBuilder.buildDraftPrompt(eq(request), any())).thenReturn(mockDraftPrompt);
+
+        String rawResponse = "raw response";
+        when(aiClient.call(mockDraftPrompt)).thenReturn(rawResponse);
+
+        String longDescription = "a".repeat(300);
+        DeckGenerateAiResponseDto parsed = new DeckGenerateAiResponseDto("AI Lightsworn", longDescription, List.of());
+        when(responseParser.parseGenerationResponse(rawResponse)).thenReturn(parsed);
+
+        List<ResolvedCardEntry> resolved = List.of();
+        when(cardResolver.resolveCards(parsed.getCards())).thenReturn(resolved);
+
+        Deck deck = new Deck();
+        deck.setName("AI Lightsworn");
+        deck.setDescription(longDescription);
+        when(deckAssembler.assembleDeck("AI Lightsworn", "Edison", resolved)).thenReturn(deck);
+
+        List<DeckCardDto> cardDtos = List.of();
+        when(deckAssembler.toDeckCardDtos(resolved)).thenReturn(cardDtos);
+
+        List<String> warnings = List.of();
+        when(validationAdapter.validate(any())).thenReturn(warnings);
+
+        // Act
+        DeckGenerationResponseDto responseDto = deckGenerationService.generateDeck(request);
+
+        // Assert
+        assertNotNull(responseDto);
+        assertEquals("AI Lightsworn", responseDto.getName());
+        assertEquals(255, responseDto.getDescription().length());
+        assertEquals("a".repeat(255), responseDto.getDescription());
+    }
+
+    @Test
     void testGenerateDeck_WithRefinement() {
         // Arrange
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "None");

@@ -104,6 +104,40 @@ describe("useDeckState hook", () => {
     expect(saveDeckService).not.toHaveBeenCalled();
   });
 
+  it("should clamp description to 255 characters", () => {
+    const { result } = renderHook(() => useDeckState());
+
+    act(() => {
+      result.current.setDescription("a".repeat(300));
+    });
+
+    expect(result.current.description).toHaveLength(255);
+  });
+
+  it("should fail saveDeck if description is longer than 255 characters", async () => {
+    const mockDeck = {
+      id: 12,
+      name: "Existing Deck",
+      description: "a".repeat(300),
+      formatName: "TCG",
+      deckCards: [],
+    };
+    vi.mocked(getDeck).mockResolvedValueOnce(mockDeck as any);
+
+    const { result } = renderHook(() => useDeckState("12"));
+
+    await waitFor(() => {
+      expect(result.current.name).toBe("Existing Deck");
+    });
+
+    await act(async () => {
+      await result.current.saveDeck();
+    });
+
+    expect(result.current.submitError).toBe("Strategy/notes must be 255 characters or less.");
+    expect(saveDeckService).not.toHaveBeenCalled();
+  });
+
   it("should validate and save deck successfully", async () => {
     const onSaveSuccessMock = vi.fn();
     vi.mocked(validateDeck).mockResolvedValueOnce({ ok: true });

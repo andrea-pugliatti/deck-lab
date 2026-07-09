@@ -57,6 +57,7 @@ public class PromptBuilder {
                 3. The Side Deck must contain up to 15 cards.
                 4. A deck cannot contain more than 3 copies of any card across the Main, Extra, and Side decks combined.
                 5. Use EXACT official English Yu-Gi-Oh! card names. Do not make up cards.
+                6. The description/notes text of the deck MUST NOT exceed 255 characters. Keep it brief.
 
                 AVAILABLE TOOLS FOR PRECISION BUILDING:
                 You have access to database tools to search and verify card details. Use them to ensure zero spelling mistakes or legality errors:
@@ -131,6 +132,7 @@ public class PromptBuilder {
                 3. The Side Deck is optional and can contain up to 15 cards.
                 4. A deck cannot contain more than 3 copies of any card across the Main, Extra, and Side decks combined.
                 5. Use EXACT official English Yu-Gi-Oh! card names. Do not make up cards.
+                6. The description/notes text of the deck MUST NOT exceed 255 characters. Keep it brief.
 
                 CURRENT STATE OF THE DECK:
 

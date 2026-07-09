@@ -19,9 +19,9 @@ import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.service.generation.AiClient;
 import com.deck.lab.backend.service.generation.CardResolver;
-import com.deck.lab.backend.service.generation.ResolvedCardEntry;
 import com.deck.lab.backend.service.generation.DeckAssembler;
 import com.deck.lab.backend.service.generation.PromptBuilder;
+import com.deck.lab.backend.service.generation.ResolvedCardEntry;
 import com.deck.lab.backend.service.generation.ResponseParser;
 import com.deck.lab.backend.service.generation.ValidationAdapter;
 
@@ -119,10 +119,15 @@ public class GenerationService {
 
                 List<DeckCardDto> matchedCards = deckAssembler.toDeckCardDtos(resolved);
 
+                String description = aiDeck != null && aiDeck.getDescription() != null
+                                ? aiDeck.getDescription()
+                                : "AI generated deck.";
+
                 return new DeckGenerationResponseDto(
                                 deckName,
-                                aiDeck != null && aiDeck.getDescription() != null ? aiDeck.getDescription()
-                                                : "AI generated deck.",
+                                description.length() > 255
+                                                ? description.substring(0, 255)
+                                                : description,
                                 request.getFormatName(),
                                 matchedCards,
                                 warnings);

@@ -65,11 +65,17 @@ export default function DeckFormHeader({
         </div>
 
         <div className="md:col-span-12">
-          <Label>Strategy / Notes (Optional)</Label>
+          <div className="flex items-center justify-between">
+            <Label>Strategy / Notes (Optional)</Label>
+            <span className={`mb-1 text-[10px] font-semibold tracking-wider ${description.length >= 255 ? "text-red-500" : "text-slate-500"}`}>
+              {description.length} / 255
+            </span>
+          </div>
           <Textarea
             placeholder="Write notes about your deck build, key combos, or strategy..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            maxLength={255}
           />
         </div>
       </div>

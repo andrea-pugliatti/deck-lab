@@ -79,7 +79,7 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
   }, []);
 
   const setDescription = useCallback((description: string) => {
-    dispatch({ type: "SET_DESCRIPTION", description });
+    dispatch({ type: "SET_DESCRIPTION", description: description.slice(0, 255) });
   }, []);
 
   const setFormatName = useCallback((formatName: string) => {
@@ -127,6 +127,11 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
   const saveDeck = useCallback(async () => {
     if (!state.name.trim()) {
       dispatch({ type: "SET_SUBMIT_ERROR", error: "Deck name is required." });
+      return;
+    }
+
+    if (state.description.length > 255) {
+      dispatch({ type: "SET_SUBMIT_ERROR", error: "Strategy/notes must be 255 characters or less." });
       return;
     }
 
