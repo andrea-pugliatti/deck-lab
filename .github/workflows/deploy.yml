@@ -83,6 +83,7 @@ jobs:
           path: ./frontend/dist/
           destination: ${{ env.FRONTEND_BUCKET_NAME }}
           parent: false
+          process_gcloudignore: false
 
       - name: Invalidate Cloud CDN Cache
         run: |

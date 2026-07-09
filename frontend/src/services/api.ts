@@ -148,12 +148,16 @@ export async function parseResponseError(response: Response): Promise<Error> {
  * @throws {Error} If refreshing the token fails or session expires.
  */
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const targetUrl = url.startsWith("/api") ? `${apiBaseUrl}${url}` : url;
+  console.log(`[apiFetch] url: ${url} -> targetUrl: ${targetUrl} (base: ${apiBaseUrl})`);
+
   const headers = {
     ...options.headers,
   } as Record<string, string>;
 
   // Ensure cookies are sent (HttpOnly refresh token)
-  options.credentials = "same-origin";
+  options.credentials = "include";
 
   if (accessToken && !isAuthUrl(url)) {
     headers["Authorization"] = `Bearer ${accessToken}`;
@@ -165,7 +169,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
 
   options.headers = headers;
 
-  const response = await fetch(url, options);
+  const response = await fetch(targetUrl, options);
 
   const isLogin = url.endsWith("/api/auth/login");
   const isRegister = url.endsWith("/api/auth/register");
@@ -236,7 +240,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
             ...options,
             headers: retryHeaders,
           };
-          fetch(url, retryOptions).then(resolve).catch(reject);
+          fetch(targetUrl, retryOptions).then(resolve).catch(reject);
         },
         (err) => {
           reject(err);
