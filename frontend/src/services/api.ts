@@ -150,7 +150,6 @@ export async function parseResponseError(response: Response): Promise<Error> {
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const apiBaseUrl = import.meta.env.VITE_API_URL || "";
   const targetUrl = url.startsWith("/api") ? `${apiBaseUrl}${url}` : url;
-  console.log(`[apiFetch] url: ${url} -> targetUrl: ${targetUrl} (base: ${apiBaseUrl})`);
 
   const headers = {
     ...options.headers,

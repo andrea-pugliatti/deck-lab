@@ -106,7 +106,7 @@ describe("auth service", () => {
         "/api/auth/logout",
         expect.objectContaining({
           method: "POST",
-          credentials: "same-origin",
+          credentials: "include",
         }),
       );
     });
