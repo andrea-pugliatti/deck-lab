@@ -1,12 +1,13 @@
 package com.deck.lab.backend.seeder;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -14,6 +15,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.UserRepository;
+
+import jakarta.annotation.PreDestroy;
 
 /**
  * Component orchestrating the initial database seeding sequence during
@@ -52,6 +55,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final CardImporter cardImporter;
     private final BanlistImporter banlistImporter;
     private final DeckSeeder deckSeeder;
+    private final ThreadPoolTaskExecutor databaseSeederExecutor;
+
+    private Future<?> seedingTask;
 
     @Value("${app.seed.cards:true}")
     private boolean seedCardsEnabled;
@@ -65,13 +71,23 @@ public class DatabaseSeeder implements CommandLineRunner {
             PlatformTransactionManager transactionManager,
             CardImporter cardImporter,
             BanlistImporter banlistImporter,
-            DeckSeeder deckSeeder) {
+            DeckSeeder deckSeeder,
+            ThreadPoolTaskExecutor databaseSeederExecutor) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.cardImporter = cardImporter;
         this.banlistImporter = banlistImporter;
         this.deckSeeder = deckSeeder;
+        this.databaseSeederExecutor = databaseSeederExecutor;
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        logger.info("DatabaseSeeder shutdown initiated. Cancelling seeding task...");
+        if (seedingTask != null) {
+            seedingTask.cancel(true);
+        }
     }
 
     @Override
@@ -86,13 +102,27 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
 
         if (seedCardsEnabled) {
-            CompletableFuture.runAsync(() -> {
+            seedingTask = databaseSeederExecutor.submit(() -> {
                 try {
                     logger.info("Starting background database seeding...");
                     cardImporter.seedCardsFromApi();
+
+                    if (Thread.currentThread().isInterrupted()) {
+                        logger.info("Database seeder interrupted before seeding banlists. Exiting.");
+                        return;
+                    }
                     banlistImporter.seedBanlistsFromApi();
+
+                    if (Thread.currentThread().isInterrupted()) {
+                        logger.info("Database seeder interrupted before seeding historical banlists. Exiting.");
+                        return;
+                    }
                     banlistImporter.seedHistoricalBanlists();
 
+                    if (Thread.currentThread().isInterrupted()) {
+                        logger.info("Database seeder interrupted before seeding sample decks. Exiting.");
+                        return;
+                    }
                     transactionTemplate.executeWithoutResult(status -> {
                         deckSeeder.seedSampleDecks();
                     });

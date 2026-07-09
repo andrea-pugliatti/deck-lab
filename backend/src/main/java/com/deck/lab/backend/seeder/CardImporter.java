@@ -7,12 +7,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -74,7 +74,7 @@ public class CardImporter {
     private final CardRepository cardRepository;
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
-    private final ExecutorService imageDownloadExecutor;
+    private final Executor imageDownloadExecutor;
 
     @Value("${app.ygoprodeck.api-url:https://db.ygoprodeck.com/api/v7/cardinfo.php}")
     private String apiUrl;
@@ -92,19 +92,15 @@ public class CardImporter {
     private String uploadDir;
 
     public CardImporter(CardRepository cardRepository,
-            PlatformTransactionManager transactionManager) {
+            PlatformTransactionManager transactionManager,
+            Executor imageDownloadExecutor) {
         this.cardRepository = cardRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.restClient = RestClient.builder()
-                .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                .defaultHeader("User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
-        this.imageDownloadExecutor = Executors.newFixedThreadPool(5);
-    }
-
-    @PreDestroy
-    public void shutdownExecutor() {
-        logger.info("Shutting down card image downloader executor...");
-        imageDownloadExecutor.shutdown();
+        this.imageDownloadExecutor = imageDownloadExecutor;
     }
 
     public List<Card> fetchAllCards(
@@ -118,6 +114,11 @@ public class CardImporter {
         logger.info("Starting full card fetch from YGOProDeck API (batch size: {})", batchSize);
 
         while (true) {
+            if (Thread.currentThread().isInterrupted()) {
+                logger.info("Fetch all cards interrupted. Aborting.");
+                break;
+            }
+
             URI uri = UriComponentsBuilder.fromUriString(apiUrl)
                     .queryParam("num", batchSize)
                     .queryParam("offset", offset)
@@ -143,6 +144,9 @@ public class CardImporter {
             }
 
             for (Map<String, Object> apiCard : dataList) {
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
                 Card card = mapApiResponseToCard(apiCard);
                 if (card != null) {
                     allCards.add(card);
@@ -159,6 +163,7 @@ public class CardImporter {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                break;
             }
         }
 
@@ -239,16 +244,19 @@ public class CardImporter {
     }
 
     private void triggerImageDownloads(Long apiId, String remoteImageUrl, String remoteImageUrlCropped) {
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
         if (remoteImageUrl != null) {
             Path fullPath = Paths.get(uploadDir, apiId + ".jpg");
             if (!Files.exists(fullPath)) {
-                imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrl, fullPath));
+                imageDownloadExecutor.execute(() -> downloadImage(remoteImageUrl, fullPath));
             }
         }
         if (remoteImageUrlCropped != null) {
             Path croppedPath = Paths.get(uploadDir, "cropped", apiId + ".jpg");
             if (!Files.exists(croppedPath)) {
-                imageDownloadExecutor.submit(() -> downloadImage(remoteImageUrlCropped, croppedPath));
+                imageDownloadExecutor.execute(() -> downloadImage(remoteImageUrlCropped, croppedPath));
             }
         }
     }
@@ -288,6 +296,11 @@ public class CardImporter {
                     .collect(Collectors.toMap(c -> c.getName().toLowerCase(), c -> c, (a, b) -> a));
 
             for (Card apiCard : apiCards) {
+                if (Thread.currentThread().isInterrupted()) {
+                    logger.info("Card seeding interrupted. Aborting.");
+                    break;
+                }
+
                 Card existingByName = existingCardsByName.get(apiCard.getName().toLowerCase());
                 if (existingByName != null) {
                     boolean updated = false;
@@ -335,13 +348,16 @@ public class CardImporter {
                 created++;
 
                 if (toSave.size() >= 500) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        break;
+                    }
                     final List<Card> batch = new ArrayList<>(toSave);
                     transactionTemplate.executeWithoutResult(status -> cardRepository.saveAll(batch));
                     toSave.clear();
                 }
             }
 
-            if (!toSave.isEmpty()) {
+            if (!toSave.isEmpty() && !Thread.currentThread().isInterrupted()) {
                 final List<Card> batch = new ArrayList<>(toSave);
                 transactionTemplate.executeWithoutResult(status -> cardRepository.saveAll(batch));
             }

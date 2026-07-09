@@ -1,6 +1,11 @@
 package com.deck.lab.backend.seeder;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -9,10 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.SimpleTransactionStatus;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.UserRepository;
@@ -38,6 +44,9 @@ class DatabaseSeederTest {
     @Mock
     private DeckSeeder deckSeeder;
 
+    @Mock
+    private ThreadPoolTaskExecutor databaseSeederExecutor;
+
     private DatabaseSeeder databaseSeeder;
 
     @BeforeEach
@@ -48,8 +57,8 @@ class DatabaseSeederTest {
                 transactionManager,
                 cardImporter,
                 banlistImporter,
-                deckSeeder
-        );
+                deckSeeder,
+                databaseSeederExecutor);
     }
 
     @Test
@@ -57,7 +66,7 @@ class DatabaseSeederTest {
         // Arrange
         ReflectionTestUtils.setField(databaseSeeder, "seedUsersEnabled", true);
         ReflectionTestUtils.setField(databaseSeeder, "seedCardsEnabled", false);
-        
+
         when(transactionManager.getTransaction(any())).thenReturn(new SimpleTransactionStatus());
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
