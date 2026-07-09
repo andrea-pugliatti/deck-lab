@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
+import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.Format;
 
 /**
@@ -31,12 +33,6 @@ import com.deck.lab.backend.model.Format;
 @Component
 public class DeckMapper {
 
-    private final DeckCardMapper deckCardMapper;
-
-    public DeckMapper(DeckCardMapper deckCardMapper) {
-        this.deckCardMapper = deckCardMapper;
-    }
-
     /**
      * Maps a {@link Deck} database entity to an API-friendly
      * {@link DeckResponseDto}.
@@ -47,10 +43,14 @@ public class DeckMapper {
      */
     public DeckResponseDto toDto(Deck deck) {
         List<DeckCardDto> cardDtos = deck.getDeckCards() != null
-                ? deck.getDeckCards().stream().map(deckCardMapper::toDto).toList()
+                ? deck.getDeckCards().stream().map(this::toDeckCardDto).toList()
                 : new ArrayList<>();
         String formatStr = deck.getFormatName() != null ? deck.getFormatName().getValue() : null;
-        DeckResponseDto dto = new DeckResponseDto(deck.getId(), deck.getName(), deck.getDescription(), formatStr,
+        DeckResponseDto dto = new DeckResponseDto(
+                deck.getId(),
+                deck.getName(),
+                deck.getDescription(),
+                formatStr,
                 cardDtos);
         dto.setUpdatedAt(deck.getUpdatedAt());
         if (deck.getUser() != null) {
@@ -61,9 +61,7 @@ public class DeckMapper {
 
     /**
      * Converts a incoming {@link DeckResponseDto} payload into a new {@link Deck}
-     * JPA
-     * entity.
-     * Safe-handles invalid format strings.
+     * JPA entity. Safe-handles invalid format strings.
      *
      * @param dto the DTO data received from client API request
      * @return a new transient (unsaved) Deck entity populated with the DTO values
@@ -102,5 +100,38 @@ public class DeckMapper {
         } catch (IllegalArgumentException e) {
             deck.setFormatName(null);
         }
+    }
+
+    DeckCardDto toDeckCardDto(DeckCard dc) {
+        if (dc == null) {
+            return null;
+        }
+        Card c = dc.getCard();
+        if (c == null) {
+            return new DeckCardDto(
+                    dc.getId(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    dc.getSection() != null ? dc.getSection().getValue() : null,
+                    dc.getQuantity());
+        }
+        return new DeckCardDto(
+                dc.getId(),
+                c.getId(),
+                c.getName(),
+                c.getType() != null ? c.getType().getValue() : null,
+                c.getDescription(),
+                c.getRace() != null ? c.getRace().getValue() : null,
+                c.getAttribute() != null ? c.getAttribute().getValue() : null,
+                c.getArchetype(),
+                c.getImageUrl(),
+                dc.getSection() != null ? dc.getSection().getValue() : null,
+                dc.getQuantity());
     }
 }

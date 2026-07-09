@@ -324,7 +324,8 @@ public class CardImporter {
     public void seedCardsFromApi() {
         long existingCount = cardRepository.count();
         if (existingCount > 100) {
-            logger.info("Database already contains {} cards. Skipping full API import.", existingCount);
+            logger.info("Database already contains {} cards. Skipping full API import. Checking for missing images...", existingCount);
+            checkAndDownloadMissingImages();
             return;
         }
 
@@ -418,6 +419,62 @@ public class CardImporter {
                     fromLocal ? "local JSON" : "API", created, skipped);
         } catch (Exception e) {
             logger.error("Failed to seed cards.", e);
+        }
+    }
+
+    /**
+     * Iterates through all cards currently present in the database to verify if their
+     * full and cropped artwork image files exist in local storage.
+     *
+     * <p>
+     * Any missing card illustrations are queued for background download asynchronously
+     * using the {@code imageDownloadExecutor} thread pool.
+     * </p>
+     */
+    private void checkAndDownloadMissingImages() {
+        List<Card> allCards = cardRepository.findAll();
+        logger.info("Checking images for {} cards in database...", allCards.size());
+        
+        int missingFullCount = 0;
+        int missingCroppedCount = 0;
+
+        for (Card card : allCards) {
+            if (Thread.currentThread().isInterrupted()) {
+                logger.info("Image check interrupted. Exiting.");
+                break;
+            }
+
+            String imageUrl = card.getImageUrl();
+            String imageUrlCropped = card.getImageUrlCropped();
+
+            if (imageUrl != null) {
+                String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+                Path fullPath = Paths.get(uploadDir, fileName);
+                if (!Files.exists(fullPath)) {
+                    missingFullCount++;
+                    String apiIdStr = fileName.replace(".jpg", "");
+                    String remoteUrl = "https://images.ygoprodeck.com/images/cards/" + apiIdStr + ".jpg";
+                    imageDownloadExecutor.execute(() -> downloadImage(remoteUrl, fullPath));
+                }
+            }
+
+            if (imageUrlCropped != null) {
+                String fileName = imageUrlCropped.substring(imageUrlCropped.lastIndexOf("/") + 1);
+                Path croppedPath = Paths.get(uploadDir, "cropped", fileName);
+                if (!Files.exists(croppedPath)) {
+                    missingCroppedCount++;
+                    String apiIdStr = fileName.replace(".jpg", "");
+                    String remoteUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + apiIdStr + ".jpg";
+                    imageDownloadExecutor.execute(() -> downloadImage(remoteUrl, croppedPath));
+                }
+            }
+        }
+
+        if (missingFullCount > 0 || missingCroppedCount > 0) {
+            logger.info("Queued downloads for missing images: {} full, {} cropped.", 
+                    missingFullCount, missingCroppedCount);
+        } else {
+            logger.info("All card images are present on disk.");
         }
     }
 

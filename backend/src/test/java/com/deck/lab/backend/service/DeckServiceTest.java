@@ -238,6 +238,28 @@ class DeckServiceTest {
     }
 
     @Test
+    void updateDeck_withPopulatedIds_doesNotThrowLockingException() {
+        List<DeckCardDto> validCards = createValidDeckCards();
+        DeckResponseDto updateRequest = new DeckResponseDto();
+        updateRequest.setName("ServiceTest Deck Initial");
+        updateRequest.setDescription("Initial state");
+        updateRequest.setFormatName("TCG");
+        updateRequest.setDeckCards(validCards);
+
+        DeckResponseDto firstResult = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
+        assertNotNull(firstResult.getDeckCards().get(0).getId());
+
+        firstResult.getDeckCards().get(0).setQuantity(2);
+
+        assertDoesNotThrow(() -> {
+            deckService.updateDeck(testDeck.getId(), firstResult, testUser);
+        });
+
+        DeckResponseDto finalResult = deckService.getDeckById(testDeck.getId());
+        assertEquals(2, finalResult.getDeckCards().get(0).getQuantity());
+    }
+
+    @Test
     void updateDeck_whenUnauthorized_throwsNoSuchElementException() {
         DeckResponseDto request = new DeckResponseDto();
         request.setName("Hacked Deck");

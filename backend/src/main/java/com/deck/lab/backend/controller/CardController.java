@@ -1,11 +1,18 @@
 package com.deck.lab.backend.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +67,9 @@ public class CardController {
 
     private final CardService service;
     private final CardMapper mapper;
+
+    @Value("${app.upload-dir:data/images}")
+    private String uploadDir;
 
     CardController(
             CardService cardService,
@@ -201,4 +211,67 @@ public class CardController {
     public ResponseEntity<List<String>> getTypes() {
         return ResponseEntity.ok(service.findDistinctTypes());
     }
+
+    /**
+     * Serves the full card artwork image from the local storage.
+     *
+     * @param fileName the name of the image file to retrieve
+     * @return 200 OK with the image resource, 404 Not Found if missing, or 403
+     *         Forbidden on path traversal
+     */
+    @GetMapping("/images/{fileName:.+}")
+    public ResponseEntity<Resource> getFullImage(@PathVariable String fileName) {
+        return serveImage(fileName, false);
+    }
+
+    /**
+     * Serves the cropped card artwork image from the local storage.
+     *
+     * @param fileName the name of the cropped image file to retrieve
+     * @return 200 OK with the image resource, 404 Not Found if missing, or 403
+     *         Forbidden on path traversal
+     */
+    @GetMapping("/images/cropped/{fileName:.+}")
+    public ResponseEntity<Resource> getCroppedImage(@PathVariable String fileName) {
+        return serveImage(fileName, true);
+    }
+
+    /**
+     * Resolves the request filename against the local image directory, performs
+     * path traversal checks, and returns the image resource if it exists.
+     *
+     * @param fileName the name of the file to resolve
+     * @param cropped  true if fetching from the cropped subfolder, false for the
+     *                 full image
+     * @return ResponseEntity holding the requested resource or an appropriate error
+     *         status
+     */
+    private ResponseEntity<Resource> serveImage(String fileName, boolean cropped) {
+        try {
+            Path targetDir = cropped ? Paths.get(uploadDir, "cropped") : Paths.get(uploadDir);
+            Path filePath = targetDir.resolve(fileName).normalize();
+
+            Path baseUploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+            Path absoluteFilePath = filePath.toAbsolutePath().normalize();
+            if (!absoluteFilePath.startsWith(baseUploadPath)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
+            if (!Files.exists(absoluteFilePath)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Resource resource = new UrlResource(absoluteFilePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

@@ -16,11 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.response.DeckCardDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
-import com.deck.lab.backend.mapper.DeckCardMapper;
+import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
+import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.DeckRepository;
@@ -56,16 +57,13 @@ import com.deck.lab.backend.repository.specification.DeckSpecification;
 public class DeckService {
     private final DeckRepository deckRepository;
     private final DeckMapper deckMapper;
-    private final DeckCardMapper deckCardMapper;
     private final DeckValidationService deckValidationService;
 
     public DeckService(DeckRepository deckRepository,
             DeckMapper deckMapper,
-            DeckCardMapper deckCardMapper,
             DeckValidationService deckValidationService) {
         this.deckRepository = deckRepository;
         this.deckMapper = deckMapper;
-        this.deckCardMapper = deckCardMapper;
         this.deckValidationService = deckValidationService;
     }
 
@@ -188,8 +186,8 @@ public class DeckService {
     }
 
     /**
-     * Helper method to map and synchronize DeckCard items.
-     * Clears old references and saves the newly mapped list.
+     * Helper method to map and synchronize DeckCard items. Clears old references
+     * and saves the newly mapped list.
      *
      * @param deck     the target Deck entity
      * @param cardDtos the list of DeckCardDto items to map
@@ -198,19 +196,63 @@ public class DeckService {
      *                                  from cardMap
      */
     public void saveDeckCards(Deck deck, List<DeckCardDto> cardDtos, Map<Long, Card> cardMap) {
-        List<DeckCard> newDeckCards = new ArrayList<>();
+        List<DeckCard> existingCards = deck.getDeckCards();
+        List<DeckCard> cardsToKeep = new ArrayList<>();
+
         if (cardDtos != null && !cardDtos.isEmpty()) {
             for (DeckCardDto cardDto : cardDtos) {
                 Card card = cardMap.get(cardDto.getCardId());
                 if (card == null) {
                     throw new IllegalArgumentException("Card not found with ID: " + cardDto.getCardId());
                 }
-                newDeckCards.add(deckCardMapper.toEntity(cardDto, deck, card));
+
+                DeckSection sectionEnum = null;
+                try {
+                    sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection()) : null;
+                } catch (IllegalArgumentException e) {
+                    // Fallback/ignore invalid section
+                }
+
+                // Try to find an existing DeckCard matching by ID, or by (cardId + section)
+                DeckCard existingMatch = null;
+                if (cardDto.getId() != null) {
+                    existingMatch = existingCards.stream()
+                            .filter(dc -> cardDto.getId().equals(dc.getId()))
+                            .findFirst()
+                            .orElse(null);
+                }
+
+                // Fallback matching by cardId and section if ID matches weren't found or
+                // weren't provided
+                if (existingMatch == null) {
+                    final DeckSection finalSectionEnum = sectionEnum;
+                    existingMatch = existingCards.stream()
+                            .filter(dc -> card.getId().equals(dc.getCard().getId())
+                                    && finalSectionEnum == dc.getSection())
+                            .findFirst()
+                            .orElse(null);
+                }
+
+                if (existingMatch != null) {
+                    // Update properties on the existing managed instance
+                    existingMatch.setQuantity(cardDto.getQuantity());
+                    existingMatch.setSection(sectionEnum);
+                    cardsToKeep.add(existingMatch);
+                } else {
+                    // Create a new instance
+                    DeckCard newDc = new DeckCard(deck, card, sectionEnum, cardDto.getQuantity());
+                    cardsToKeep.add(newDc);
+                }
             }
         }
 
-        deck.getDeckCards().clear();
-        deck.getDeckCards().addAll(newDeckCards);
+        // Mutate the collection in-place so orphanRemoval deletes removed cards cleanly
+        existingCards.removeIf(dc -> !cardsToKeep.contains(dc));
+        for (DeckCard dc : cardsToKeep) {
+            if (!existingCards.contains(dc)) {
+                existingCards.add(dc);
+            }
+        }
     }
 
     /**

@@ -29,7 +29,7 @@ class DeckMapperTest {
 
     @BeforeEach
     void setUp() {
-        deckMapper = new DeckMapper(new DeckCardMapper());
+        deckMapper = new DeckMapper();
     }
 
     @Test
@@ -156,5 +156,59 @@ class DeckMapperTest {
         assertEquals("Updated Name", deck.getName());
         assertEquals("Updated Desc", deck.getDescription());
         assertEquals(Format.GOAT, deck.getFormatName());
+    }
+
+    @Test
+    void toDeckCardDto_withValidDeckCard_mapsAllFieldsCorrectly() {
+        Deck deck = new Deck();
+        deck.setId(1L);
+
+        Card card = new Card();
+        card.setId(10L);
+        card.setName("Dark Magician");
+        card.setType(CardType.NORMAL_MONSTER);
+        card.setDescription("The ultimate wizard.");
+        card.setRace(CardRace.SPELLCASTER);
+        card.setAttribute(CardAttribute.DARK);
+        card.setArchetype("Dark Magician");
+        card.setImageUrl("images/10.jpg");
+
+        DeckCard deckCard = new DeckCard(deck, card, DeckSection.MAIN, 3);
+        deckCard.setId(100L);
+
+        DeckCardDto dto = deckMapper.toDeckCardDto(deckCard);
+
+        assertNotNull(dto);
+        assertEquals(100L, dto.getId());
+        assertEquals(10L, dto.getCardId());
+        assertEquals("Dark Magician", dto.getName());
+        assertEquals("Normal Monster", dto.getType());
+        assertEquals("The ultimate wizard.", dto.getDescription());
+        assertEquals("Spellcaster", dto.getRace());
+        assertEquals("DARK", dto.getAttribute());
+        assertEquals("Dark Magician", dto.getArchetype());
+        assertEquals("images/10.jpg", dto.getImageUrl());
+        assertEquals("MAIN", dto.getSection());
+        assertEquals(3, dto.getQuantity());
+    }
+
+    @Test
+    void toDeckCardDto_withNullCard_mapsWithoutCardInfo() {
+        DeckCard deckCard = new DeckCard(null, null, DeckSection.SIDE, 1);
+        deckCard.setId(200L);
+
+        DeckCardDto dto = deckMapper.toDeckCardDto(deckCard);
+
+        assertNotNull(dto);
+        assertEquals(200L, dto.getId());
+        assertNull(dto.getCardId());
+        assertNull(dto.getName());
+        assertEquals("SIDE", dto.getSection());
+        assertEquals(1, dto.getQuantity());
+    }
+
+    @Test
+    void toDeckCardDto_withNullDeckCard_returnsNull() {
+        assertNull(deckMapper.toDeckCardDto(null));
     }
 }
