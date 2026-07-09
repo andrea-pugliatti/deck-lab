@@ -131,7 +131,10 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
     }
 
     if (state.description.length > 255) {
-      dispatch({ type: "SET_SUBMIT_ERROR", error: "Strategy/notes must be 255 characters or less." });
+      dispatch({
+        type: "SET_SUBMIT_ERROR",
+        error: "Strategy/notes must be 255 characters or less.",
+      });
       return;
     }
 

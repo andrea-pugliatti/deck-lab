@@ -52,7 +52,11 @@ export default function EditorCardListItem({
       <div className="flex min-w-0 items-center gap-2.5">
         <div className={imgWrapperClass}>
           {imageUrl ? (
-            <img src={`${apiBaseUrl}/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
+            <img
+              src={`${apiBaseUrl}/api/${imageUrl}`}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <span className="text-[7px] font-bold text-slate-600 uppercase">YuGi</span>
           )}
