@@ -53,13 +53,14 @@ export default function SearchCardListItem({
   const totalInDeck = deckCards
     .filter((dc) => dc.cardId === cardId)
     .reduce((sum, dc) => sum + dc.quantity, 0);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={containerClass}>
       <div className="flex min-w-0 items-center gap-2.5">
         <div className={imgWrapperClass}>
           {imageUrl ? (
-            <img src={`/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
+            <img src={`${apiBaseUrl}/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
           ) : (
             <span className="text-[8px] font-bold text-slate-600 uppercase">YuGi</span>
           )}

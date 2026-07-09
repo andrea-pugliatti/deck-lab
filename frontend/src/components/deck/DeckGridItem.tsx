@@ -28,6 +28,7 @@ export default function DeckGridItem({
   quantity,
 }: DeckGridItemProps) {
   const { deckBadgeColor: badgeColor } = getCardTheme(type);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   return (
     <Link
@@ -37,7 +38,7 @@ export default function DeckGridItem({
       <div className="border-border-dim/40 relative flex aspect-video w-full items-center justify-center overflow-hidden border-b bg-slate-900">
         {imageUrl ? (
           <img
-            src={`/api/${imageUrl}`}
+            src={`${apiBaseUrl}/api/${imageUrl}`}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

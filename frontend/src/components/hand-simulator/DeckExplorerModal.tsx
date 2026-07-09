@@ -32,6 +32,7 @@ export default function DeckExplorerModal({
 }: DeckExplorerModalProps) {
   const [deckSearchQuery, setDeckSearchQuery] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -122,7 +123,7 @@ export default function DeckExplorerModal({
                     >
                       {card.imageUrl ? (
                         <img
-                          src={`/api/${card.imageUrl}`}
+                          src={`${apiBaseUrl}/api/${card.imageUrl}`}
                           alt={card.name}
                           className="h-full w-full object-cover"
                         />

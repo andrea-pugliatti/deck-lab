@@ -34,6 +34,7 @@ export default function SimulatorCard({
 }: SimulatorCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   const { borderColor, glowColor } = getCardTheme(card.type);
 
@@ -69,7 +70,7 @@ export default function SimulatorCard({
       >
         {card.imageUrl ? (
           <img
-            src={`/api/${card.imageUrl}`}
+            src={`${apiBaseUrl}/api/${card.imageUrl}`}
             alt={card.name}
             className="h-full w-full object-cover"
             loading="lazy"

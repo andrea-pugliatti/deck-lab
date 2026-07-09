@@ -32,13 +32,14 @@ export default function SearchCardGridItem({
   const totalInDeck = deckCards
     .filter((dc) => dc.cardId === cardId)
     .reduce((sum, dc) => sum + dc.quantity, 0);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent/50 group relative flex min-h-36 flex-col overflow-hidden rounded-xl border p-2 text-center backdrop-blur-sm transition-all duration-200 hover:shadow-md">
       <div className="border-border-dim/40 relative mx-auto flex aspect-4/5 w-full items-center justify-center overflow-hidden rounded bg-slate-900">
         {imageUrl ? (
           <img
-            src={`/api/${imageUrl}`}
+            src={`${apiBaseUrl}/api/${imageUrl}`}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
