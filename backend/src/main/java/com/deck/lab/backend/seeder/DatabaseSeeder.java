@@ -1,6 +1,7 @@
 package com.deck.lab.backend.seeder;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,16 +79,27 @@ public class DatabaseSeeder implements CommandLineRunner {
         });
 
         if (seedCardsEnabled) {
-            cardImporter.seedCardsFromApi();
-            banlistImporter.seedBanlistsFromApi();
-            banlistImporter.seedHistoricalBanlists();
+            CompletableFuture.runAsync(() -> {
+                try {
+                    logger.info("Starting background database seeding...");
+                    cardImporter.seedCardsFromApi();
+                    banlistImporter.seedBanlistsFromApi();
+                    banlistImporter.seedHistoricalBanlists();
+
+                    transactionTemplate.executeWithoutResult(status -> {
+                        deckSeeder.seedSampleDecks();
+                    });
+                    logger.info("Background database seeding completed successfully.");
+                } catch (Exception e) {
+                    logger.error("Error during background database seeding", e);
+                }
+            });
         } else {
             logger.info("Card seeding is disabled (app.seed.cards=false). Skipping.");
+            transactionTemplate.executeWithoutResult(status -> {
+                deckSeeder.seedSampleDecks();
+            });
         }
-
-        transactionTemplate.executeWithoutResult(status -> {
-            deckSeeder.seedSampleDecks();
-        });
     }
 
     private void seedUser(String username, String password, String email) {
