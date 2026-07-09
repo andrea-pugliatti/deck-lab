@@ -74,7 +74,7 @@ jobs:
         with:
           url: http://localhost:8080/api/decks
           responseCode: 200
-          timeout: 60000
+          timeout: 180000
           interval: 2000
 
       - name: Print backend logs on failure
