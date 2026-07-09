@@ -23,25 +23,58 @@ import jakarta.annotation.PreDestroy;
  * application startup.
  *
  * <p>
- * <strong>Spring Boot Startup Hooks:</strong>
+ * <strong>Spring Boot Startup Hooks &amp; Non-Blocking Seeding:</strong>
  * </p>
  * <ul>
  * <li>{@link CommandLineRunner}: A callback interface provided by Spring Boot.
  * Beans implementing this interface have their {@code run} method invoked
- * automatically after the application context is fully loaded and before the
- * startup sequence finishes. This makes it ideal for bootstrap tasks like
- * verification and database seeding.</li>
+ * automatically after the application context is fully loaded.</li>
+ * <li>To prevent blocking the startup thread (which could cause port binding or
+ * health check timeouts on environments like GCP Cloud Run), card and banlist
+ * seeding are offloaded to an asynchronous task executor
+ * ({@code databaseSeederExecutor}).</li>
  * </ul>
  *
  * <p>
  * <strong>Programmatic Transaction Management:</strong>
  * </p>
  * <p>
- * Instead of declarative {@code @Transactional} annotations, this class uses
- * {@link TransactionTemplate} to manage transactions programmatically. This
- * ensures that seeding users, importing cards, and writing sample decks occur
- * in isolated, controlled transactional scopes, preventing bulk seeding errors
- * from corrupting partial database elements.
+ * Uses {@link TransactionTemplate} to manage transactions programmatically,
+ * ensuring
+ * that seeding users, importing cards, and writing sample decks occur in
+ * isolated,
+ * controlled transactional scopes.
+ * </p>
+ *
+ * <p>
+ * <strong>Seeding Pipeline Phases:</strong>
+ * <ol>
+ * <li><strong>Users:</strong> Seeds default administration and test users
+ * synchronously.</li>
+ * <li><strong>Cards:</strong> Initiates asynchronous API data fetching and
+ * mappings via {@link CardImporter}. Remote card artwork is concurrently queued
+ * to {@code imageDownloadExecutor} (throttled gracefully via CallerRunsPolicy).
+ * Mapped cards are written to the database in transactional batches of
+ * 500.</li>
+ * <li><strong>Banlists &amp; Formats:</strong> Resolves legality constraints
+ * (Forbidden, Limited, Semi-Limited) for OCG/TCG formats from the API.</li>
+ * <li><strong>Historical Formats:</strong> Configures static classic formats
+ * (Goat, Edison, Tengu Plant, HAT) from local parameters.</li>
+ * <li><strong>Sample Decks:</strong> Generates starter decks for seeded
+ * users.</li>
+ * </ol>
+ * </p>
+ *
+ * <p>
+ * <strong>Graceful Shutdown &amp; Interruption:</strong>
+ * </p>
+ * <p>
+ * When the container receives a termination signal (e.g., SIGTERM during Cloud
+ * Run scale-down or redeployments), the {@code @PreDestroy} shutdown hook calls
+ * {@code cancel(true)} on the running {@code Future<?>} task. This immediately
+ * interrupts the seeder thread, which checks
+ * {@code Thread.currentThread().isInterrupted()} between phases and during card
+ * import batch loops to exit cleanly.
  * </p>
  */
 @Component
