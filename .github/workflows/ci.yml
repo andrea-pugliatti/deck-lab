@@ -67,10 +67,25 @@ jobs:
 
       - name: Start backend
         working-directory: backend
-        run: java -jar target/*.jar > backend.log 2>&1 &
+        run: java -jar target/*.jar --spring.profiles.active=ci > backend.log 2>&1 &
 
       - name: Wait for backend readiness
         run: npx wait-on tcp:localhost:8080 --timeout 60000
+
+      - name: Wait for database seeding to complete
+        run: |
+          echo "Waiting for database seeding to complete..."
+          timeout 180s bash -c '
+            until grep -q -E "Background database seeding completed successfully.|Error during background database seeding" backend/backend.log; do
+              sleep 2
+            done
+          '
+          if grep -q "Error during background database seeding" backend/backend.log; then
+            echo "Database seeding failed! Printing logs:"
+            cat backend/backend.log
+            exit 1
+          fi
+          echo "Database seeding completed successfully!"
 
       - name: Print backend logs on failure
         if: failure()
