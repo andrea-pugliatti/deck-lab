@@ -8,5 +8,5 @@
   "oxc.fmt.configPath": ".oxfmtrc.json",
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
-  },
+  }
 }
