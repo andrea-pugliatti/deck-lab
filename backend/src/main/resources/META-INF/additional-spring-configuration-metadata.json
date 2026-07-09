@@ -6,6 +6,11 @@
       "description": "Switch to seed database from API"
     },
     {
+      "name": "app.seed.users",
+      "type": "java.lang.String",
+      "description": "Switch to seed admin and sample users on startup"
+    },
+    {
       "name": "app.upload-dir",
       "type": "java.lang.String",
       "description": "Image upload directory"
@@ -59,6 +64,16 @@
       "name": "refresh-token.rate-limit.cleanup-schedule",
       "type": "java.lang.String",
       "description": "Cleanup schedule for refresh tokens in window map"
+    },
+    {
+      "name": "app.cookie.same-site",
+      "type": "java.lang.String",
+      "description": "Configuration for CORS same-site"
+    },
+    {
+      "name": "app.cookie.secure",
+      "type": "java.lang.String",
+      "description": "Configuration for CORS security"
     }
   ]
 }

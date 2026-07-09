@@ -56,6 +56,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Value("${app.seed.cards:true}")
     private boolean seedCardsEnabled;
 
+    @Value("${app.seed.users:true}")
+    private boolean seedUsersEnabled;
+
     public DatabaseSeeder(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -73,10 +76,14 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        transactionTemplate.executeWithoutResult(status -> {
-            seedUser("admin", "12345678", "admin@example.com");
-            seedUser("yugi", "12345678", "yugi@example.com");
-        });
+        if (seedUsersEnabled) {
+            transactionTemplate.executeWithoutResult(status -> {
+                seedUser("admin", "12345678", "admin@example.com");
+                seedUser("yugi", "12345678", "yugi@example.com");
+            });
+        } else {
+            logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
+        }
 
         if (seedCardsEnabled) {
             CompletableFuture.runAsync(() -> {
