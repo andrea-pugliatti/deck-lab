@@ -1,15 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import EditorCardItem from "./EditorCardItem";
+import EditorCardListItem from "./EditorCardListItem";
 
-describe("EditorCardItem component", () => {
+describe("EditorCardListItem component", () => {
   const mockUpdateQty = vi.fn();
   const mockRemove = vi.fn();
 
   it("should render card details correctly with image", () => {
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"
@@ -33,7 +33,7 @@ describe("EditorCardItem component", () => {
 
   it("should render placeholder text if no image is provided", () => {
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"
@@ -52,7 +52,7 @@ describe("EditorCardItem component", () => {
   it("should call updateQty with delta -1 when minus button is clicked", () => {
     mockUpdateQty.mockClear();
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"
@@ -73,7 +73,7 @@ describe("EditorCardItem component", () => {
   it("should call updateQty with delta 1 when plus button is clicked", () => {
     mockUpdateQty.mockClear();
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"
@@ -93,7 +93,7 @@ describe("EditorCardItem component", () => {
 
   it("should disable plus button when quantity is 3 or more", () => {
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"
@@ -112,7 +112,7 @@ describe("EditorCardItem component", () => {
   it("should call remove when delete button is clicked", () => {
     mockRemove.mockClear();
     render(
-      <EditorCardItem
+      <EditorCardListItem
         cardId={1}
         name="Blue-Eyes White Dragon"
         type="Normal Monster"

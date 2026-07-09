@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
 import { useFetch } from "../../hooks/useFetch";
+import { useViewPreference } from "../../hooks/useViewPreference";
 import { getFormatsEndpoint } from "../../services/deck";
-import DeckCard from "../deck/DeckCard";
+import DeckGridCard from "../deck/DeckGridCard";
+import DeckListCard from "../deck/DeckListCard";
 import EmptyState from "../EmptyState";
 import ErrorAlert from "../ErrorAlert";
 import LoadingSpinner from "../LoadingSpinner";
@@ -13,6 +15,7 @@ import Pagination from "../Pagination";
 import ShowingPageIndicator from "../ShowingPageIndicator";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
+import ViewToggle from "../ui/ViewToggle";
 
 /**
  * Props for the {@link DeckSelector} component.
@@ -35,6 +38,7 @@ const PAGE_SIZE = 6;
 export default function DeckSelector({ onSelect }: DeckSelectorProps) {
   const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState<"my-decks" | "community">("community");
+  const [viewMode, setViewMode] = useViewPreference("hand-simulator-decks-view-mode", "grid");
 
   const [prevIsAuthenticated, setPrevIsAuthenticated] = useState(isAuthenticated);
 
@@ -157,6 +161,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
               ))}
             </select>
           </div>
+          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
         </div>
 
         {isLoading ? (
@@ -176,25 +181,48 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
               itemType="deck"
               className="mb-6"
             />
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {filteredDecks.map((deck) => {
-                const cardCount =
-                  deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
-                return (
-                  <DeckCard
-                    key={deck.id}
-                    id={deck.id}
-                    name={deck.name}
-                    description={deck.description}
-                    formatName={deck.formatName}
-                    cardCount={cardCount}
-                    updatedAt={deck.updatedAt}
-                    creatorUsername={deck.creatorUsername}
-                    onSelect={onSelect}
-                  />
-                );
-              })}
-            </div>
+
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {filteredDecks.map((deck) => {
+                  const cardCount =
+                    deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+                  return (
+                    <DeckGridCard
+                      key={deck.id}
+                      id={deck.id}
+                      name={deck.name}
+                      description={deck.description}
+                      formatName={deck.formatName}
+                      cardCount={cardCount}
+                      updatedAt={deck.updatedAt}
+                      creatorUsername={deck.creatorUsername}
+                      onSelect={onSelect}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredDecks.map((deck) => {
+                  const cardCount =
+                    deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+                  return (
+                    <DeckListCard
+                      key={deck.id}
+                      id={deck.id}
+                      name={deck.name}
+                      description={deck.description}
+                      formatName={deck.formatName}
+                      cardCount={cardCount}
+                      updatedAt={deck.updatedAt}
+                      creatorUsername={deck.creatorUsername}
+                      onSelect={onSelect}
+                    />
+                  );
+                })}
+              </div>
+            )}
 
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
           </>

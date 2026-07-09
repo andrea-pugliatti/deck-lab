@@ -2,7 +2,8 @@ import { BookOpen, Layers, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 
-import DeckCard from "../components/deck/DeckCard";
+import DeckGridCard from "../components/deck/DeckGridCard";
+import DeckListCard from "../components/deck/DeckListCard";
 import FormatSelector from "../components/deck/FormatSelector";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
@@ -12,9 +13,11 @@ import Pagination from "../components/Pagination";
 import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import Input from "../components/ui/Input";
+import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useDeckSearch } from "../hooks/useDeckSearch";
 import { useFetch } from "../hooks/useFetch";
+import { useViewPreference } from "../hooks/useViewPreference";
 import { deleteDeck, getFormatsEndpoint } from "../services/deck";
 
 /**
@@ -42,6 +45,7 @@ const PAGE_SIZE = 9;
 export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Element {
   const { isAuthenticated, user } = useAuth();
   const [tab, setTab] = useState<"all" | "user">(initialTab);
+  const [viewMode, setViewMode] = useViewPreference("decks-view-mode", "grid");
 
   const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
   const formats = formatsData
@@ -126,6 +130,8 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             icon={<Search className="h-4 w-4" />}
             className="bg-dark-surface w-full px-4 py-2 md:max-w-xs"
           />
+
+          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
         </div>
 
         {isAuthenticated && (
@@ -170,25 +176,49 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
         />
       ) : decks.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {decks.map((deck) => {
-              const cardCount = deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
-              return (
-                <DeckCard
-                  key={deck.id}
-                  id={deck.id}
-                  name={deck.name}
-                  description={deck.description}
-                  formatName={deck.formatName}
-                  cardCount={cardCount}
-                  updatedAt={deck.updatedAt}
-                  creatorUsername={deck.creatorUsername}
-                  showActions={isAuthenticated && user?.username === deck.creatorUsername}
-                  onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
-                />
-              );
-            })}
-          </div>
+          {viewMode === "grid" ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {decks.map((deck) => {
+                const cardCount =
+                  deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+                return (
+                  <DeckGridCard
+                    key={deck.id}
+                    id={deck.id}
+                    name={deck.name}
+                    description={deck.description}
+                    formatName={deck.formatName}
+                    cardCount={cardCount}
+                    updatedAt={deck.updatedAt}
+                    creatorUsername={deck.creatorUsername}
+                    showActions={isAuthenticated && user?.username === deck.creatorUsername}
+                    onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {decks.map((deck) => {
+                const cardCount =
+                  deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
+                return (
+                  <DeckListCard
+                    key={deck.id}
+                    id={deck.id}
+                    name={deck.name}
+                    description={deck.description}
+                    formatName={deck.formatName}
+                    cardCount={cardCount}
+                    updatedAt={deck.updatedAt}
+                    creatorUsername={deck.creatorUsername}
+                    showActions={isAuthenticated && user?.username === deck.creatorUsername}
+                    onDelete={(id) => setDeckToDelete({ id, name: deck.name })}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </>

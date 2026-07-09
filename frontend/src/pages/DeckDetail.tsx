@@ -3,13 +3,16 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
 import DeckGridItem from "../components/deck/DeckGridItem";
+import DeckListItem from "../components/deck/DeckListItem";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useFetch } from "../hooks/useFetch";
+import { useViewPreference } from "../hooks/useViewPreference";
 import { deleteDeck, getDeckEndpoint } from "../services/deck";
 import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
@@ -31,6 +34,7 @@ export default function DeckDetail(): React.JSX.Element {
   const [deleteError, setDeleteError] = useState<string>();
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useViewPreference("deck-detail-view-mode", "grid");
 
   const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : undefined);
 
@@ -298,6 +302,10 @@ export default function DeckDetail(): React.JSX.Element {
         </aside>
 
         <div className="space-y-8 lg:col-span-8">
+          <div className="flex justify-end px-2">
+            <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          </div>
+
           <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
             <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
               <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
@@ -310,18 +318,33 @@ export default function DeckDetail(): React.JSX.Element {
             </div>
 
             {mainCards.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {mainCards.map((dc) => (
-                  <DeckGridItem
-                    key={dc.id || dc.cardId}
-                    cardId={dc.cardId}
-                    name={dc.name}
-                    type={dc.type}
-                    imageUrl={dc.imageUrl}
-                    quantity={dc.quantity}
-                  />
-                ))}
-              </div>
+              viewMode === "grid" ? (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                  {mainCards.map((dc) => (
+                    <DeckGridItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {mainCards.map((dc) => (
+                    <DeckListItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              )
             ) : (
               <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Main Deck.
@@ -341,18 +364,33 @@ export default function DeckDetail(): React.JSX.Element {
             </div>
 
             {extraCards.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {extraCards.map((dc) => (
-                  <DeckGridItem
-                    key={dc.id || dc.cardId}
-                    cardId={dc.cardId}
-                    name={dc.name}
-                    type={dc.type}
-                    imageUrl={dc.imageUrl}
-                    quantity={dc.quantity}
-                  />
-                ))}
-              </div>
+              viewMode === "grid" ? (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                  {extraCards.map((dc) => (
+                    <DeckGridItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {extraCards.map((dc) => (
+                    <DeckListItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              )
             ) : (
               <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Extra Deck.
@@ -372,18 +410,33 @@ export default function DeckDetail(): React.JSX.Element {
             </div>
 
             {sideCards.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {sideCards.map((dc) => (
-                  <DeckGridItem
-                    key={dc.id || dc.cardId}
-                    cardId={dc.cardId}
-                    name={dc.name}
-                    type={dc.type}
-                    imageUrl={dc.imageUrl}
-                    quantity={dc.quantity}
-                  />
-                ))}
-              </div>
+              viewMode === "grid" ? (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                  {sideCards.map((dc) => (
+                    <DeckGridItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {sideCards.map((dc) => (
+                    <DeckListItem
+                      key={dc.id || dc.cardId}
+                      cardId={dc.cardId}
+                      name={dc.name}
+                      type={dc.type}
+                      imageUrl={dc.imageUrl}
+                      quantity={dc.quantity}
+                    />
+                  ))}
+                </div>
+              )
             ) : (
               <div className="py-8 text-center text-sm text-slate-500">
                 No cards added to the Side Deck.

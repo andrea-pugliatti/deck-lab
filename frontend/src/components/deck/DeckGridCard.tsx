@@ -6,9 +6,9 @@ import Badge from "../ui/Badge";
 import Button, { getButtonClasses } from "../ui/Button";
 
 /**
- * Properties for the {@link DeckCard} component.
+ * Properties for the {@link DeckGridCard} component.
  */
-export interface DeckCardProps {
+export interface DeckGridCardProps {
   id: number;
   name: string;
   description?: string;
@@ -22,7 +22,7 @@ export interface DeckCardProps {
 }
 
 /**
- * DeckCard component renders a visual card summarizing a deck's details,
+ * DeckGridCard component renders a visual card summarizing a deck's details,
  * including format, name, description, card count, and last updated time.
  *
  * It supports standard navigation to the deck details or inline selection/actions.
@@ -30,7 +30,7 @@ export interface DeckCardProps {
  * @param props - The component properties.
  * @returns The rendered deck card.
  */
-export default function DeckCard({
+export default function DeckGridCard({
   id,
   name,
   description,
@@ -41,7 +41,7 @@ export default function DeckCard({
   showActions = false,
   onDelete,
   onSelect,
-}: DeckCardProps) {
+}: DeckGridCardProps) {
   const navigate = useNavigate();
   const formatLabel = formatName || "Unknown";
   const badgeVariant = formatLabel.toLowerCase().includes("tcg") ? "cyan" : "gold";

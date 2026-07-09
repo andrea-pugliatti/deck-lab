@@ -2,7 +2,7 @@ import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
 
 import CardGridItem from "../components/card/CardGridItem";
-import DeckCard from "../components/deck/DeckCard";
+import DeckGridCard from "../components/deck/DeckGridCard";
 import HeroCardShowcase from "../components/HeroCardShowcase";
 import SearchBar from "../components/SearchBar";
 import { useFetch } from "../hooks/useFetch";
@@ -183,7 +183,7 @@ export default function Home(): React.JSX.Element {
                 const cardCount =
                   deck.deckCards?.reduce((acc, c) => acc + (c.quantity || 0), 0) || 0;
                 return (
-                  <DeckCard
+                  <DeckGridCard
                     key={deck.id}
                     id={deck.id}
                     name={deck.name}

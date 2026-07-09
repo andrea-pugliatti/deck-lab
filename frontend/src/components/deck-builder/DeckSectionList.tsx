@@ -1,7 +1,8 @@
 import { getFormatRules } from "../../reducers/deckReducer";
 import type { CardSection, DeckCardItem } from "../../types";
 import Badge from "../ui/Badge";
-import EditorCardItem from "./EditorCardItem";
+import EditorCardGridItem from "./EditorCardGridItem";
+import EditorCardListItem from "./EditorCardListItem";
 
 /**
  * Props for the {@link DeckSectionList} component.
@@ -12,12 +13,13 @@ export interface DeckSectionListProps {
   formatName: string;
   updateQuantity: (cardId: number, section: CardSection, delta: number) => void;
   removeCard: (cardId: number, section: CardSection) => void;
+  viewMode?: "grid" | "list";
 }
 
 /**
  * DeckSectionList renders the list of cards belonging to a specific section
  * (Main, Extra, or Side) of the deck, showing counts, section limits, validation state,
- * and individual card controls.
+ * and individual card controls in either list or grid layouts.
  *
  * @param props - The component props.
  * @returns The rendered DeckSectionList component.
@@ -28,6 +30,7 @@ export default function DeckSectionList({
   formatName,
   updateQuantity,
   removeCard,
+  viewMode = "list",
 }: DeckSectionListProps) {
   const cards = deckCards.filter((c) => c.section === section);
   const count = cards.reduce((acc, c) => acc + c.quantity, 0);
@@ -68,21 +71,39 @@ export default function DeckSectionList({
       </div>
 
       {cards.length > 0 ? (
-        <div className="space-y-2">
-          {cards.map((c) => (
-            <EditorCardItem
-              key={c.cardId}
-              cardId={c.cardId}
-              name={c.name}
-              type={c.type}
-              imageUrl={c.imageUrl}
-              section={section}
-              quantity={c.quantity}
-              updateQty={updateQuantity}
-              remove={removeCard}
-            />
-          ))}
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+            {cards.map((c) => (
+              <EditorCardGridItem
+                key={c.cardId}
+                cardId={c.cardId}
+                name={c.name}
+                type={c.type}
+                imageUrl={c.imageUrl}
+                section={section}
+                quantity={c.quantity}
+                updateQty={updateQuantity}
+                remove={removeCard}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {cards.map((c) => (
+              <EditorCardListItem
+                key={c.cardId}
+                cardId={c.cardId}
+                name={c.name}
+                type={c.type}
+                imageUrl={c.imageUrl}
+                section={section}
+                quantity={c.quantity}
+                updateQty={updateQuantity}
+                remove={removeCard}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="border-border-dim rounded-xl border border-dashed py-6 text-center text-xs text-slate-500">
           {emptyMessage}

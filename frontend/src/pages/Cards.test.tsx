@@ -22,6 +22,10 @@ vi.mock("../components/card/CardGridItem", () => ({
   default: ({ name }: { name: string }) => <div data-testid="card-grid-item">{name}</div>,
 }));
 
+vi.mock("../components/card/CardListItem", () => ({
+  default: ({ name }: { name: string }) => <div data-testid="card-list-item">{name}</div>,
+}));
+
 describe("Cards page component", () => {
   beforeEach(() => {
     vi.mocked(useCardMetadata).mockReturnValue({

@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import type { Card } from "../../types";
-import SearchCardItem from "./SearchCardItem";
+import SearchCardGridItem from "./SearchCardGridItem";
 
-describe("SearchCardItem component", () => {
+describe("SearchCardGridItem component", () => {
   const mockAddCard = vi.fn();
   const mockCard: Card = {
     id: 101,
@@ -16,9 +16,9 @@ describe("SearchCardItem component", () => {
     imageUrlCropped: "dm.jpg",
   };
 
-  it("should render card details and add buttons correctly", () => {
+  it("should render card details correctly", () => {
     render(
-      <SearchCardItem
+      <SearchCardGridItem
         cardId={101}
         name="Dark Magician"
         type="Spellcaster Monster"
@@ -29,12 +29,9 @@ describe("SearchCardItem component", () => {
       />,
     );
 
-    expect(screen.getByText("Dark Magician")).toBeInTheDocument();
+    expect(screen.getAllByText("Dark Magician")[0]).toBeInTheDocument();
     // Badge removes " Monster" and " Card"
     expect(screen.getByText("Spellcaster")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "+ Main" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "+ Extra" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "+ Side" })).toBeInTheDocument();
 
     const img = screen.getByAltText("Dark Magician") as HTMLImageElement;
     expect(img).toBeInTheDocument();
@@ -43,7 +40,7 @@ describe("SearchCardItem component", () => {
 
   it("should render added quantity badge if card is in deck", () => {
     render(
-      <SearchCardItem
+      <SearchCardGridItem
         cardId={101}
         name="Dark Magician"
         type="Spellcaster Monster"
@@ -60,7 +57,7 @@ describe("SearchCardItem component", () => {
   it("should call addCard when Main or Side buttons are clicked for a Main Deck card", () => {
     mockAddCard.mockClear();
     render(
-      <SearchCardItem
+      <SearchCardGridItem
         cardId={101}
         name="Dark Magician"
         type="Spellcaster Monster"
@@ -71,7 +68,7 @@ describe("SearchCardItem component", () => {
       />,
     );
 
-    // Main button should be enabled, Extra should be disabled
+    // Overlay buttons might only appear on hover, but testing-library can find them in DOM
     const mainBtn = screen.getByRole("button", { name: "+ Main" });
     const extraBtn = screen.getByRole("button", { name: "+ Extra" });
     const sideBtn = screen.getByRole("button", { name: "+ Side" });
@@ -89,7 +86,7 @@ describe("SearchCardItem component", () => {
 
   it("should disable buttons when totalInDeck is 3 or more", () => {
     render(
-      <SearchCardItem
+      <SearchCardGridItem
         cardId={101}
         name="Dark Magician"
         type="Spellcaster Monster"
@@ -109,7 +106,7 @@ describe("SearchCardItem component", () => {
     const fusionCard = { ...mockCard, type: "Fusion Monster" };
 
     render(
-      <SearchCardItem
+      <SearchCardGridItem
         cardId={101}
         name="Blue-Eyes Ultimate Dragon"
         type="Fusion Monster"

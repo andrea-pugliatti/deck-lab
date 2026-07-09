@@ -17,12 +17,20 @@ vi.mock("../components/HeroCardShowcase", () => ({
   default: () => <div data-testid="showcase">HeroCardShowcase</div>,
 }));
 
-vi.mock("../components/deck/DeckCard", () => ({
-  default: ({ name }: { name: string }) => <div data-testid="deck-card">{name}</div>,
+vi.mock("../components/deck/DeckGridCard", () => ({
+  default: ({ name }: { name: string }) => <div data-testid="deck-grid-card">{name}</div>,
+}));
+
+vi.mock("../components/deck/DeckListCard", () => ({
+  default: ({ name }: { name: string }) => <div data-testid="deck-list-card">{name}</div>,
 }));
 
 vi.mock("../components/card/CardGridItem", () => ({
-  default: ({ card }: { card: any }) => <div data-testid="card-grid-item">{card.name}</div>,
+  default: ({ name }: { name: string }) => <div data-testid="card-grid-item">{name}</div>,
+}));
+
+vi.mock("../components/card/CardListItem", () => ({
+  default: ({ name }: { name: string }) => <div data-testid="card-list-item">{name}</div>,
 }));
 
 describe("Home page component", () => {
@@ -75,6 +83,6 @@ describe("Home page component", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByTestId("deck-card")).toHaveTextContent("Spellcaster Power");
+    expect(screen.getByTestId("deck-grid-card")).toHaveTextContent("Spellcaster Power");
   });
 });

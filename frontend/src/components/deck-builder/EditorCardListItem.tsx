@@ -6,9 +6,9 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
 /**
- * Props for the {@link EditorCardItem} component.
+ * Props for the {@link EditorCardListItem} component.
  */
-export interface EditorCardItemProps {
+export interface EditorCardListItemProps {
   cardId: number;
   name: string;
   type?: string;
@@ -20,13 +20,13 @@ export interface EditorCardItemProps {
 }
 
 /**
- * EditorCardItem renders a single card entry in the deck editor lists, providing
+ * EditorCardListItem renders a single card entry in the deck editor lists, providing
  * quantity increments, decrements, and removal actions, alongside the card image and type badge.
  *
  * @param props - The component props.
- * @returns The rendered EditorCardItem component.
+ * @returns The rendered EditorCardListItem component.
  */
-export default function EditorCardItem({
+export default function EditorCardListItem({
   cardId,
   name,
   type,
@@ -35,8 +35,9 @@ export default function EditorCardItem({
   quantity,
   updateQty,
   remove,
-}: EditorCardItemProps) {
+}: EditorCardListItemProps) {
   const { badgeVariant } = getCardTheme(type);
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
 
   const containerClass =
     "flex bg-dark-surface-elevated/40 border border-border-dim rounded-xl items-center justify-between gap-3 group p-2";
@@ -51,7 +52,7 @@ export default function EditorCardItem({
       <div className="flex min-w-0 items-center gap-2.5">
         <div className={imgWrapperClass}>
           {imageUrl ? (
-            <img src={`/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
+            <img src={`${apiBaseUrl}/api/${imageUrl}`} alt={name} className="h-full w-full object-cover" />
           ) : (
             <span className="text-[7px] font-bold text-slate-600 uppercase">YuGi</span>
           )}

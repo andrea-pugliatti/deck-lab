@@ -2,6 +2,7 @@ import { BookOpen, Search } from "lucide-react";
 
 import CardFilters from "../components/card/CardFilters";
 import CardGridItem from "../components/card/CardGridItem";
+import CardListItem from "../components/card/CardListItem";
 import EmptyState from "../components/EmptyState";
 import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -9,8 +10,10 @@ import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import ShowingPageIndicator from "../components/ShowingPageIndicator";
 import Input from "../components/ui/Input";
+import ViewToggle from "../components/ui/ViewToggle";
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useCatalogSearch } from "../hooks/useCatalogSearch";
+import { useViewPreference } from "../hooks/useViewPreference";
 
 /**
  * Number of cards to display per page in the pagination grid.
@@ -26,6 +29,7 @@ const PAGE_SIZE = 21;
  * @returns {React.JSX.Element} The Cards page component containing search input, filters sidebar, and card grid.
  */
 export default function Cards(): React.JSX.Element {
+  const [viewMode, setViewMode] = useViewPreference("cards-view-mode", "grid");
   const {
     searchPage: page,
     setSearchPage: handlePageChange,
@@ -63,21 +67,28 @@ export default function Cards(): React.JSX.Element {
         </aside>
 
         <div className="space-y-6 lg:col-span-3">
-          <Input
-            type="text"
-            placeholder="Search card name, type, description, or archetype..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="h-5 w-5" />}
-            className="bg-dark-surface px-4 py-2.5"
-          />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <Input
+                type="text"
+                placeholder="Search card name, type, description, or archetype..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                icon={<Search className="h-5 w-5" />}
+                className="bg-dark-surface w-full px-4 py-2.5"
+              />
+            </div>
+            <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          </div>
 
-          <ShowingPageIndicator
-            page={page}
-            pageSize={PAGE_SIZE}
-            totalElements={totalElements}
-            itemType="card"
-          />
+          <div className="flex items-center justify-between gap-4">
+            <ShowingPageIndicator
+              page={page}
+              pageSize={PAGE_SIZE}
+              totalElements={totalElements}
+              itemType="card"
+            />
+          </div>
 
           {loading ? (
             <LoadingSpinner />
@@ -89,11 +100,19 @@ export default function Cards(): React.JSX.Element {
             />
           ) : cards.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {cards.map((card) => (
-                  <CardGridItem key={card.id} {...card} />
-                ))}
-              </div>
+              {viewMode === "grid" ? (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {cards.map((card) => (
+                    <CardGridItem key={card.id} {...card} />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {cards.map((card) => (
+                    <CardListItem key={card.id} {...card} />
+                  ))}
+                </div>
+              )}
 
               <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
             </>

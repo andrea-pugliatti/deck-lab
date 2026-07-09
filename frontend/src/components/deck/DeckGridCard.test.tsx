@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import DeckCard from "./DeckCard";
+import DeckGridCard from "./DeckGridCard";
 
 // Mock useNavigate from react-router
 vi.mock("react-router", async (importOriginal) => {
@@ -13,7 +13,7 @@ vi.mock("react-router", async (importOriginal) => {
   };
 });
 
-describe("DeckCard component", () => {
+describe("DeckGridCard component", () => {
   const navigateMock = vi.fn();
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe("DeckCard component", () => {
   it("renders basic deck details correctly", () => {
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} />
+        <DeckGridCard {...defaultProps} />
       </MemoryRouter>,
     );
 
@@ -51,7 +51,7 @@ describe("DeckCard component", () => {
   it("renders placeholder description and creator if not provided", () => {
     render(
       <MemoryRouter>
-        <DeckCard id={12} name="Simple Deck" formatName="Speed Duel" cardCount={20} />
+        <DeckGridCard id={12} name="Simple Deck" formatName="Speed Duel" cardCount={20} />
       </MemoryRouter>,
     );
 
@@ -62,7 +62,7 @@ describe("DeckCard component", () => {
   it("renders as a Link to the deck detail page by default", () => {
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} />
+        <DeckGridCard {...defaultProps} />
       </MemoryRouter>,
     );
 
@@ -74,7 +74,7 @@ describe("DeckCard component", () => {
     const handleSelect = vi.fn();
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} onSelect={handleSelect} />
+        <DeckGridCard {...defaultProps} onSelect={handleSelect} />
       </MemoryRouter>,
     );
 
@@ -92,7 +92,7 @@ describe("DeckCard component", () => {
     const handleSelect = vi.fn();
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} onSelect={handleSelect} />
+        <DeckGridCard {...defaultProps} onSelect={handleSelect} />
       </MemoryRouter>,
     );
 
@@ -104,7 +104,7 @@ describe("DeckCard component", () => {
   it("navigates to deck page when container is clicked (when showActions is true)", () => {
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} showActions={true} />
+        <DeckGridCard {...defaultProps} showActions={true} />
       </MemoryRouter>,
     );
 
@@ -117,7 +117,7 @@ describe("DeckCard component", () => {
   it("navigates when enter or space key is pressed on container", () => {
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} showActions={true} />
+        <DeckGridCard {...defaultProps} showActions={true} />
       </MemoryRouter>,
     );
 
@@ -137,7 +137,7 @@ describe("DeckCard component", () => {
     const handleDelete = vi.fn();
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} showActions={true} onDelete={handleDelete} />
+        <DeckGridCard {...defaultProps} showActions={true} onDelete={handleDelete} />
       </MemoryRouter>,
     );
 
@@ -159,7 +159,7 @@ describe("DeckCard component", () => {
   it("does not navigate when edit link is clicked", () => {
     render(
       <MemoryRouter>
-        <DeckCard {...defaultProps} showActions={true} />
+        <DeckGridCard {...defaultProps} showActions={true} />
       </MemoryRouter>,
     );
 

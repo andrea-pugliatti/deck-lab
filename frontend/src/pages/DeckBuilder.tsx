@@ -12,8 +12,10 @@ import DeckValidationErrors from "../components/deck-builder/DeckValidationError
 import Pagination from "../components/Pagination";
 import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import ViewToggle from "../components/ui/ViewToggle";
 import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
 import { useDeckState } from "../hooks/useDeckState";
+import { useViewPreference } from "../hooks/useViewPreference";
 import type { AiGeneratedDeck } from "../types";
 
 /**
@@ -32,6 +34,12 @@ function DeckBuilderContent(): React.JSX.Element {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+
+  const [libraryViewMode, setLibraryViewMode] = useViewPreference(
+    "deck-builder-library-view",
+    "list",
+  );
+  const [editorViewMode, setEditorViewMode] = useViewPreference("deck-builder-editor-view", "list");
 
   const {
     isEditMode,
@@ -149,10 +157,12 @@ function DeckBuilderContent(): React.JSX.Element {
 
       <form onSubmit={handleSave} className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="bg-dark-surface border-border-dim flex h-[82vh] flex-col rounded-2xl border p-5 lg:col-span-5">
-          <h2 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-sm font-bold text-white">
-            <Sparkles className="text-cyan-accent h-4 w-4" />
-            Card Database Library
-          </h2>
+          <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
+            <h2 className="font-display flex items-center gap-2 text-sm font-bold text-white">
+              <Sparkles className="text-cyan-accent h-4 w-4" />
+              Card Database Library
+            </h2>
+          </div>
 
           <DeckBuilderFilters
             searchQuery={searchQuery}
@@ -165,12 +175,20 @@ function DeckBuilderContent(): React.JSX.Element {
             archetypes={archetypes}
           />
 
-          <div ref={listContainerRef} className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="border-border-dim/40 mt-3 flex items-center justify-end gap-4 border-t pt-3">
+            <ViewToggle viewMode={libraryViewMode} onViewModeChange={setLibraryViewMode} />
+          </div>
+
+          <div
+            ref={listContainerRef}
+            className="mt-4 min-h-0 flex-1 scrollbar-none overflow-y-auto pr-1"
+          >
             <DeckBuilderCardList
               libraryLoading={libraryLoading}
               libraryCards={libraryCards}
               deckCards={deckCards}
               addCard={addCard}
+              viewMode={libraryViewMode}
             />
           </div>
 
@@ -208,6 +226,7 @@ function DeckBuilderContent(): React.JSX.Element {
                 formatName={formatName}
                 updateQuantity={updateQuantity}
                 removeCard={removeCard}
+                viewMode={editorViewMode}
               />
             ))}
           </div>
@@ -215,16 +234,19 @@ function DeckBuilderContent(): React.JSX.Element {
           <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
 
           <div className="bg-dark-surface border-border-dim flex items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={validateDeckPayload}
-              isLoading={isValidating}
-              disabled={deckCards.length === 0}
-              className="hover:text-cyan-accent px-5 py-2.5 font-semibold text-slate-300"
-            >
-              Run Validate Check
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={validateDeckPayload}
+                isLoading={isValidating}
+                disabled={deckCards.length === 0}
+                className="hover:text-cyan-accent px-5 py-2.5 font-semibold text-slate-300"
+              >
+                Run Validate Check
+              </Button>
+              <ViewToggle viewMode={editorViewMode} onViewModeChange={setEditorViewMode} />
+            </div>
 
             <div className="flex items-center gap-3">
               <Button
