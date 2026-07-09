@@ -1,5 +1,6 @@
 package com.deck.lab.backend.seeder;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -27,6 +29,8 @@ import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PreDestroy;
 
@@ -75,6 +79,7 @@ public class CardImporter {
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
     private final Executor imageDownloadExecutor;
+    private final ObjectMapper objectMapper;
 
     @Value("${app.ygoprodeck.api-url:https://db.ygoprodeck.com/api/v7/cardinfo.php}")
     private String apiUrl;
@@ -101,6 +106,7 @@ public class CardImporter {
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
         this.imageDownloadExecutor = imageDownloadExecutor;
+        this.objectMapper = new ObjectMapper();
     }
 
     public List<Card> fetchAllCards(
@@ -276,6 +282,45 @@ public class CardImporter {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private List<Card> loadCardsFromLocalJson() {
+        try {
+            ClassPathResource resource = new ClassPathResource("cards_full.json");
+            if (!resource.exists()) {
+                logger.info("Local cards JSON resource not found at classpath:cards_full.json");
+                return null;
+            }
+            logger.info("Loading cards from local JSON resource classpath:cards_full.json...");
+            try (InputStream is = resource.getInputStream()) {
+                Map<String, Object> response = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
+                });
+                if (response == null || !response.containsKey("data")) {
+                    logger.warn("Invalid local cards JSON content: 'data' key missing");
+                    return null;
+                }
+                List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.get("data");
+                if (dataList == null || dataList.isEmpty()) {
+                    return null;
+                }
+                List<Card> cards = new ArrayList<>();
+                for (Map<String, Object> apiCard : dataList) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        break;
+                    }
+                    Card card = mapApiResponseToCard(apiCard);
+                    if (card != null) {
+                        cards.add(card);
+                    }
+                }
+                logger.info("Successfully loaded {} cards from local JSON", cards.size());
+                return cards;
+            }
+        } catch (Exception e) {
+            logger.error("Failed to load cards from local JSON resource", e);
+            return null;
+        }
+    }
+
     public void seedCardsFromApi() {
         long existingCount = cardRepository.count();
         if (existingCount > 100) {
@@ -283,9 +328,16 @@ public class CardImporter {
             return;
         }
 
-        logger.info("Seeding cards from YGOProDeck API...");
+        logger.info("Seeding cards...");
         try {
-            List<Card> apiCards = fetchAllCards(apiUrl, batchSize, connectTimeout, readTimeout);
+            List<Card> apiCards = loadCardsFromLocalJson();
+            boolean fromLocal = true;
+            if (apiCards == null || apiCards.isEmpty()) {
+                logger.info("Falling back to YGOProDeck API for card seeding...");
+                apiCards = fetchAllCards(apiUrl, batchSize, connectTimeout, readTimeout);
+                fromLocal = false;
+            }
+
             int created = 0;
             int skipped = 0;
 
@@ -362,9 +414,10 @@ public class CardImporter {
                 transactionTemplate.executeWithoutResult(status -> cardRepository.saveAll(batch));
             }
 
-            logger.info("Card seeding complete: {} created, {} skipped (already existed)", created, skipped);
+            logger.info("Card seeding complete (from {}): {} created, {} skipped (already existed)",
+                    fromLocal ? "local JSON" : "API", created, skipped);
         } catch (Exception e) {
-            logger.error("Failed to seed cards from YGOProDeck API.", e);
+            logger.error("Failed to seed cards.", e);
         }
     }
 

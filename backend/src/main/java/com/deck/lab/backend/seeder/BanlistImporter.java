@@ -1,5 +1,6 @@
 package com.deck.lab.backend.seeder;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,7 +25,8 @@ import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
-import com.google.api.client.util.Value;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Importer class responsible for seeding Yu-Gi-Oh! format legality and banlist
@@ -61,6 +65,7 @@ public class BanlistImporter {
 
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
+    private final ObjectMapper objectMapper;
 
     @Value("${app.ygoprodeck.api-url:https://db.ygoprodeck.com/api/v7/cardinfo.php}")
     private String apiUrl;
@@ -72,17 +77,43 @@ public class BanlistImporter {
         this.formatRulesRepository = formatRulesRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.restClient = RestClient.builder()
-                .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                .defaultHeader("User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
+        this.objectMapper = new ObjectMapper();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> loadLocalCardsData() {
+        try {
+            ClassPathResource resource = new ClassPathResource("cards_full.json");
+            if (!resource.exists()) {
+                logger.info("Local cards JSON resource not found at classpath:cards_full.json");
+                return null;
+            }
+            logger.info("Reading local cards JSON for banlist seeding...");
+            try (InputStream is = resource.getInputStream()) {
+                Map<String, Object> response = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
+                });
+                if (response != null && response.containsKey("data")) {
+                    return (List<Map<String, Object>>) response.get("data");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to read local cards JSON for banlist seeding", e);
+        }
+        return null;
     }
 
     public void seedBanlistsFromApi() {
-        logger.info("Seeding banlists from YGOProDeck API...");
+        logger.info("Seeding banlists...");
 
         Map<String, String> apiFormatMapping = Map.of(
                 "tcg", "TCG",
                 "ocg", "OCG",
                 "goat", "Goat");
+
+        List<Map<String, Object>> localData = loadLocalCardsData();
 
         for (Map.Entry<String, String> entry : apiFormatMapping.entrySet()) {
             String apiFormat = entry.getKey();
@@ -97,24 +128,47 @@ public class BanlistImporter {
                     continue;
                 }
 
-                URI uri = UriComponentsBuilder.fromUriString(apiUrl)
-                        .queryParam("banlist", apiFormat)
-                        .build()
-                        .toUri();
+                List<Map<String, Object>> dataList = null;
+                boolean fromLocal = false;
 
-                @SuppressWarnings("rawtypes")
-                ResponseEntity<Map> response = restClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .toEntity(Map.class);
-
-                if (response == null || response.getBody() == null || !response.getBody().containsKey("data")) {
-                    logger.warn("No data returned for banlist format: {}", apiFormat);
-                    continue;
+                if (localData != null) {
+                    dataList = new ArrayList<>();
+                    for (Map<String, Object> card : localData) {
+                        if (card.containsKey("banlist_info")) {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> banlistInfo = (Map<String, Object>) card.get("banlist_info");
+                            if (banlistInfo != null && banlistInfo.containsKey("ban_" + apiFormat)) {
+                                dataList.add(card);
+                            }
+                        }
+                    }
+                    fromLocal = true;
+                    logger.info("Extracted {} banlist entries for {} from local JSON", dataList.size(), localFormat);
                 }
 
-                @SuppressWarnings("unchecked")
-                List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.getBody().get("data");
+                if (dataList == null) {
+                    logger.info("Fetching banlist for {} from API...", localFormat);
+                    URI uri = UriComponentsBuilder.fromUriString(apiUrl)
+                            .queryParam("banlist", apiFormat)
+                            .build()
+                            .toUri();
+
+                    @SuppressWarnings("rawtypes")
+                    ResponseEntity<Map> response = restClient.get()
+                            .uri(uri)
+                            .retrieve()
+                            .toEntity(Map.class);
+
+                    if (response == null || response.getBody() == null || !response.getBody().containsKey("data")) {
+                        logger.warn("No data returned for banlist format: {}", apiFormat);
+                        continue;
+                    }
+
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> apiData = (List<Map<String, Object>>) response.getBody().get("data");
+                    dataList = apiData;
+                }
+
                 if (dataList == null || dataList.isEmpty()) {
                     continue;
                 }
@@ -166,7 +220,7 @@ public class BanlistImporter {
                     transactionTemplate.executeWithoutResult(txStatus -> formatRulesRepository.saveAll(batch));
                 }
 
-                logger.info("Seeded banlist rules for {}", localFormat);
+                logger.info("Seeded banlist rules for {} (from {})", localFormat, fromLocal ? "local JSON" : "API");
             } catch (Exception e) {
                 logger.warn("Failed to seed banlist for {}", localFormat, e);
             }
