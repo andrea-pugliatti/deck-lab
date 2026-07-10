@@ -2,16 +2,6 @@ import type { Card, Page } from "../types";
 import { apiFetch, parseResponseError } from "./api";
 
 /**
- * Generates the API endpoint URL for fetching a single card by its ID.
- *
- * @param id - The unique ID of the card.
- * @returns The resolved endpoint path.
- */
-export function getCardEndpoint(id: string | number): string {
-  return `/api/cards/${id}`;
-}
-
-/**
  * Generates the API endpoint URL for searching/paging cards.
  *
  * @param params - The URLSearchParams containing filtering, sorting, or pagination settings.
@@ -29,27 +19,6 @@ export function getCardsEndpoint(params: URLSearchParams): string {
  */
 export function getCardSuggestionsEndpoint(query: string): string {
   return `/api/cards?q=${encodeURIComponent(query)}&size=5`;
-}
-
-/**
- * Generates the API endpoint URL for querying distinct card metadata collections.
- *
- * @param type - The metadata category to retrieve.
- * @returns The resolved endpoint path.
- */
-export function getCardMetadataEndpoint(
-  type: "types" | "attributes" | "races" | "archetypes",
-): string {
-  return `/api/cards/${type}`;
-}
-
-/**
- * Generates the API endpoint URL for querying supported Yu-Gi-Oh! deck formats.
- *
- * @returns The resolved endpoint path.
- */
-export function getDeckFormatsEndpoint(): string {
-  return "/api/decks/formats";
 }
 
 /**

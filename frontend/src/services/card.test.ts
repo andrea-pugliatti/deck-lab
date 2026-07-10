@@ -1,14 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { apiFetch } from "./api";
-import {
-  getCardEndpoint,
-  getCardsEndpoint,
-  getCardSuggestionsEndpoint,
-  getCardMetadataEndpoint,
-  getDeckFormatsEndpoint,
-  getCard,
-} from "./card";
+import { getCardsEndpoint, getCardSuggestionsEndpoint, getCard } from "./card";
 
 vi.mock("./api", () => ({
   apiFetch: vi.fn(),
@@ -17,11 +10,6 @@ vi.mock("./api", () => ({
 
 describe("card service", () => {
   describe("endpoint builders", () => {
-    it("should build card detail endpoint", () => {
-      expect(getCardEndpoint(123)).toBe("/api/cards/123");
-      expect(getCardEndpoint("abc")).toBe("/api/cards/abc");
-    });
-
     it("should build card list endpoint with query params", () => {
       const params = new URLSearchParams({ page: "1", size: "10" });
       expect(getCardsEndpoint(params)).toBe("/api/cards?page=1&size=10");
@@ -29,15 +17,6 @@ describe("card service", () => {
 
     it("should build autocomplete card suggestions endpoint", () => {
       expect(getCardSuggestionsEndpoint("dark mag")).toBe("/api/cards?q=dark%20mag&size=5");
-    });
-
-    it("should build metadata endpoints", () => {
-      expect(getCardMetadataEndpoint("races")).toBe("/api/cards/races");
-      expect(getCardMetadataEndpoint("archetypes")).toBe("/api/cards/archetypes");
-    });
-
-    it("should build deck formats endpoint", () => {
-      expect(getDeckFormatsEndpoint()).toBe("/api/decks/formats");
     });
   });
 
@@ -51,7 +30,7 @@ describe("card service", () => {
 
       const card = await getCard(123);
       expect(card).toEqual(mockCard);
-      expect(apiFetch).toHaveBeenCalledWith("/api/cards/123");
+      expect(apiFetch).toHaveBeenCalledWith("/api/cards/123", { signal: undefined });
     });
 
     it("should throw error if fetch response is not ok", async () => {

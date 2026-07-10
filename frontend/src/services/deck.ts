@@ -10,38 +10,6 @@ import type {
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
 
 /**
- * Generates the API endpoint URL for fetching all supported deck formats.
- *
- * @returns The resolved formats endpoint path.
- */
-export function getFormatsEndpoint(): string {
-  return "/api/decks/formats";
-}
-
-/**
- * Generates the API endpoint URL for fetching a single deck by its ID.
- *
- * @param id - The unique identifier of the deck.
- * @returns The resolved deck endpoint path.
- */
-export function getDeckEndpoint(id: string | number): string {
-  return `/api/decks/${id}`;
-}
-
-/**
- * Generates the API endpoint URL for querying decks (optionally filtered by username).
- *
- * @param username - The optional username filter.
- * @returns The resolved decks search path.
- */
-export function getDecksEndpoint(username?: string): string {
-  if (username) {
-    return `/api/decks?username=${encodeURIComponent(username)}`;
-  }
-  return "/api/decks";
-}
-
-/**
  * Generates the API endpoint URL with query parameters for search/paging decks.
  *
  * @param params - The URLSearchParams parameters.

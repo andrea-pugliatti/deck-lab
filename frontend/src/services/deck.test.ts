@@ -2,9 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import { apiFetch } from "./api";
 import {
-  getFormatsEndpoint,
-  getDeckEndpoint,
-  getDecksEndpoint,
   getDecksQueryEndpoint,
   getDeck,
   validateDeck,
@@ -22,19 +19,6 @@ vi.mock("./api", () => ({
 
 describe("deck service", () => {
   describe("endpoint builders", () => {
-    it("should build formats endpoint", () => {
-      expect(getFormatsEndpoint()).toBe("/api/decks/formats");
-    });
-
-    it("should build deck details endpoint", () => {
-      expect(getDeckEndpoint(456)).toBe("/api/decks/456");
-    });
-
-    it("should build decks list endpoint", () => {
-      expect(getDecksEndpoint()).toBe("/api/decks");
-      expect(getDecksEndpoint("usernameA")).toBe("/api/decks?username=usernameA");
-    });
-
     it("should build decks list from URLSearchParams", () => {
       const params = new URLSearchParams({ search: "Blue-Eyes" });
       expect(getDecksQueryEndpoint(params)).toBe("/api/decks?search=Blue-Eyes");
@@ -51,7 +35,7 @@ describe("deck service", () => {
 
       const deck = await getDeck("1");
       expect(deck).toEqual(mockDeck);
-      expect(apiFetch).toHaveBeenCalledWith("/api/decks/1");
+      expect(apiFetch).toHaveBeenCalledWith("/api/decks/1", { signal: undefined });
     });
 
     it("should throw standard loading error when not ok", async () => {
@@ -59,7 +43,7 @@ describe("deck service", () => {
         ok: false,
       } as Response);
 
-      await expect(getDeck("1")).rejects.toThrow("Failed to load deck.");
+      await expect(getDeck("1")).rejects.toThrow("Mocked parsing error");
     });
   });
 
