@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:classpath:prompts.yml
   application:
     name: backend
   ai:
@@ -21,8 +23,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 app:
-  seed.cards: true
-  seed.users: true
+  seed.cards: false
+  seed.users: false
   upload-dir: ${IMAGE_UPLOAD_DIR:data/images}
   cors.allowed-origins: ${ALLOWED_CORS_ORIGINS:http://localhost:5173,http://localhost,http://127.0.0.1:5173}
   cookie:

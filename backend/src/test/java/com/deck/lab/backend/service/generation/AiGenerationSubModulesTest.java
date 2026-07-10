@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.deck.lab.backend.config.PromptConfig;
 import com.deck.lab.backend.dto.CardEntryDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
@@ -54,7 +55,22 @@ class AiGenerationSubModulesTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        promptBuilder = new PromptBuilder(cardRepository);
+        PromptConfig promptConfig = new PromptConfig();
+        promptConfig.setFormats(Map.of(
+                "EDISON", "- Format: Edison Format (2010 rules, anchored as of July 2026).",
+                "DEFAULT", "- Format: Modern TCG rules (anchored as of July 2026)."));
+        promptConfig.setPlaystyles(Map.of(
+                "combo", "- Playstyle Guideline: Combo",
+                "milling", "- Playstyle Guideline: Milling",
+                "DEFAULT", "- Playstyle Guideline: Standard / Balanced."));
+        PromptConfig.SystemTemplates systemTemplates = new PromptConfig.SystemTemplates();
+        systemTemplates.setDraft(
+                "Archetype: {archetype}, Strategy: {strategy}, Custom: {customPrompt}, Rules: {formatRules}, Playstyle: {playstyleGuide}, Extra: %s");
+        systemTemplates.setRefinement(
+                "Archetype: {archetype}, Strategy: {strategy}, Custom: {customPrompt}, Rules: {formatRules}, Playstyle: {playstyleGuide}, Resolved: {resolvedCards}, Unresolved: {unresolvedCards}, Warnings: {validationWarnings}, Extra: %s");
+        systemTemplates.setSuggestion("Rules: {formatRules}, Current: {currentCards}, Extra: %s");
+        promptConfig.setSystem(systemTemplates);
+        promptBuilder = new PromptBuilder(cardRepository, promptConfig);
         responseParser = new ResponseParser();
         cardResolver = new CardResolver(cardRepository);
         deckAssembler = new DeckAssembler();
