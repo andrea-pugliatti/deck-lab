@@ -183,7 +183,7 @@ public class DeckSeeder {
     private void seedDivaHeroDeck(User user) {
         List<CardEntryDto> cards = new ArrayList<>();
         cards.add(new CardEntryDto("Deep Sea Diva", "MAIN", 3));
-        cards.add(new CardEntryDto("Spiny Gillman", "MAIN", 2));
+        cards.add(new CardEntryDto("Spined Gillman", "MAIN", 2));
         cards.add(new CardEntryDto("Elemental HERO Stratos", "MAIN", 1));
         cards.add(new CardEntryDto("Destiny HERO - Malicious", "MAIN", 2));
         cards.add(new CardEntryDto("Destiny HERO - Diamond Dude", "MAIN", 2));

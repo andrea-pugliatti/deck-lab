@@ -104,7 +104,7 @@ jobs:
         run: bru run --env CI --reporter-junit results.xml --reporter-json results.json
 
       - name: Upload Bruno Test Results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: bruno-test-results
@@ -113,7 +113,7 @@ jobs:
             bruno/results.json
 
       - name: Upload Backend Logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: backend-logs

@@ -20,78 +20,7 @@ http:
         "name": "My First Deck",
         "description": "A test deck created via API",
         "formatName": "TCG",
-        "deckCards": [
-          {
-            "cardId": 100,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 2313,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 14,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 41,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 5,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 642,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 7,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 832,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 91,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 10,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 5151,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 124,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 1133,
-            "section": "MAIN",
-            "quantity": 3
-          },
-          {
-            "cardId": 1415,
-            "section": "MAIN",
-            "quantity": 3
-          }
-        ]
+        "deckCards": {{lastUsedDeckCards}}
       }
   auth: inherit
 
@@ -102,19 +31,101 @@ runtime:
   scripts:
     - type: before-request
       code: |-
-        let validIds = bru.getVar("validCardIds");
-        if (validIds && validIds.length >= 14) {
-          let deckCards = [];
-          for (let i = 0; i < 14; i++) {
-            deckCards.push({
-              cardId: validIds[i],
-              section: "MAIN",
-              quantity: 3
-            });
+        const axios = require("axios");
+        const baseUrl = bru.getVar("baseUrl") || "http://localhost:8080";
+        try {
+          const res = await axios.get(`${baseUrl}/api/cards?type=Normal%20Monster&size=100`);
+          const cards = res.data.content;
+          if (cards && cards.length >= 14) {
+            const validIds = cards.map(c => c.id);
+            let deckCards = [];
+            for (let i = 0; i < 14; i++) {
+              deckCards.push({
+                cardId: validIds[i],
+                section: "MAIN",
+                quantity: 3
+              });
+            }
+            let body = req.getBody();
+            body.deckCards = deckCards;
+            req.setBody(body);
+            bru.setVar("lastUsedDeckCards", deckCards);
           }
-          let body = req.getBody();
-          body.deckCards = deckCards;
-          req.setBody(body);
+        } catch (err) {
+          const cards = [
+            {
+              "cardId": 100,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 2313,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 14,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 41,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 5,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 642,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 7,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 832,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 91,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 10,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 5151,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 124,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 1133,
+              "section": "MAIN",
+              "quantity": 3
+            },
+            {
+              "cardId": 1415,
+              "section": "MAIN",
+              "quantity": 3
+            }
+          ];
+          bru.setVar("lastUsedDeckCards", cards);
+          console.error("Failed to fetch cards in before-request script:", err.message);
         }
         if (!bru.getVar("createdCardId")) {
           bru.setVar("createdCardId", 1);

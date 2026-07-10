@@ -102,19 +102,27 @@ runtime:
   scripts:
     - type: before-request
       code: |-
-        let validIds = bru.getVar("validCardIds");
-        if (validIds && validIds.length >= 14) {
-          let deckCards = [];
-          for (let i = 0; i < 14; i++) {
-            deckCards.push({
-              cardId: validIds[i],
-              section: "MAIN",
-              quantity: i === 13 ? 2 : 3
-            });
+        const axios = require("axios");
+        const baseUrl = bru.getVar("baseUrl") || "http://localhost:8080";
+        try {
+          const res = await axios.get(`${baseUrl}/api/cards?type=Normal%20Monster&size=100`);
+          const cards = res.data.content;
+          if (cards && cards.length >= 14) {
+            const validIds = cards.map(c => c.id);
+            let deckCards = [];
+            for (let i = 0; i < 14; i++) {
+              deckCards.push({
+                cardId: validIds[i],
+                section: "MAIN",
+                quantity: i === 13 ? 2 : 3
+              });
+            }
+            let body = req.getBody();
+            body.deckCards = deckCards;
+            req.setBody(body);
           }
-          let body = req.getBody();
-          body.deckCards = deckCards;
-          req.setBody(body);
+        } catch (err) {
+          console.error("Failed to fetch cards in before-request script:", err.message);
         }
         if (!bru.getVar("createdDeckId")) {
           bru.setVar("createdDeckId", 1);
