@@ -102,6 +102,20 @@ runtime:
   scripts:
     - type: before-request
       code: |-
+        let validIds = bru.getVar("validCardIds");
+        if (validIds && validIds.length >= 14) {
+          let deckCards = [];
+          for (let i = 0; i < 14; i++) {
+            deckCards.push({
+              cardId: validIds[i],
+              section: "MAIN",
+              quantity: i === 13 ? 2 : 3
+            });
+          }
+          let body = req.getBody();
+          body.deckCards = deckCards;
+          req.setBody(body);
+        }
         if (!bru.getVar("createdDeckId")) {
           bru.setVar("createdDeckId", 1);
         }

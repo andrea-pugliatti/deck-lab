@@ -5,30 +5,10 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/api/cards?q=Dark Magician"
+  url: "{{baseUrl}}/api/cards?size=100"
   headers:
     - name: accept
       value: application/json
-  params:
-    - name: q
-      value: Dark Magician
-      type: query
-    - name: type
-      value: Normal Monster
-      type: query
-      disabled: true
-    - name: attribute
-      value: DARK
-      type: query
-      disabled: true
-    - name: race
-      value: Spellcaster
-      type: query
-      disabled: true
-    - name: archetype
-      value: Dark Magician
-      type: query
-      disabled: true
 
 runtime:
   variables:
@@ -43,6 +23,11 @@ runtime:
         test("Response should be an object containing an array", function() {
           expect(res.body.content).to.exist;
           expect(res.body.content).to.be.an('array');
+          const cards = res.body.content;
+          if (cards && cards.length > 0) {
+            const ids = cards.map(c => c.id).filter(id => id != null);
+            bru.setVar("validCardIds", ids);
+          }
         });
 
 settings:

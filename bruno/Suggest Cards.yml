@@ -96,6 +96,22 @@ runtime:
     - name: baseUrl
       value: http://localhost:8080
   scripts:
+    - type: before-request
+      code: |-
+        let validIds = bru.getVar("validCardIds");
+        if (validIds && validIds.length >= 14) {
+          let currentCards = [];
+          for (let i = 0; i < 14; i++) {
+            currentCards.push({
+              cardId: validIds[i],
+              section: "MAIN",
+              quantity: i === 13 ? 2 : 3
+            });
+          }
+          let body = req.getBody();
+          body.currentCards = currentCards;
+          req.setBody(body);
+        }
     - type: tests
       code: |-
         test("Response should be 200 OK", function() {
