@@ -1,18 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../../context/AuthContext";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
-import { useFetch } from "../../hooks/useFetch";
 import DeckSelector from "./DeckSelector";
 
 vi.mock("../../context/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock("../../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: vi.fn(),
 }));
 
 vi.mock("../../hooks/useDeckSearch", () => ({
@@ -63,9 +63,9 @@ describe("DeckSelector component", () => {
       loading: false,
     });
 
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: ["TCG", "OCG", "Goat"],
-      loading: false,
+      isLoading: false,
       error: null,
       refetch: vi.fn(),
     } as any);

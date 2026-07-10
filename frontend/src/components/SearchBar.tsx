@@ -1,9 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useDebounce } from "../hooks/useDebounce";
-import { useFetch } from "../hooks/useFetch";
+import { getSuggestions } from "../services/card";
 import { getCardSuggestionsEndpoint } from "../services/card";
 
 /**
@@ -34,7 +35,11 @@ export default function SearchBar() {
       ? getCardSuggestionsEndpoint(debouncedQuery.trim())
       : undefined;
 
-  const { data, loading } = useFetch<{ content: SuggestionCard[] }>(fetchUrl);
+  const { data, isLoading: loading } = useQuery<{ content: SuggestionCard[] }>({
+    queryKey: ["suggestions", fetchUrl],
+    queryFn: ({ signal }) => getSuggestions(fetchUrl!, signal),
+    enabled: !!fetchUrl,
+  });
   const cardSuggestions = data?.content || [];
 
   const staticSuggestions = [

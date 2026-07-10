@@ -1,9 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, HelpCircle, Sparkles, Wand2, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-import { useFetch } from "../../../hooks/useFetch";
-import { getCardMetadataEndpoint } from "../../../services/card";
-import { generateAiDeck, getFormatsEndpoint } from "../../../services/deck";
+import { getMetadata } from "../../../services/card";
+import { generateAiDeck, getFormats } from "../../../services/deck";
 import type { DeckCardItem } from "../../../types";
 import Button from "../../ui/Button";
 import Label from "../../ui/Label";
@@ -52,8 +52,14 @@ export default function AiDeckWizard({
   const [warnings, setWarnings] = useState<string[]>([]);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const { data: archetypesData } = useFetch<string[]>(getCardMetadataEndpoint("archetypes"));
-  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
+  const { data: archetypesData } = useQuery<string[]>({
+    queryKey: ["metadata", "archetypes"],
+    queryFn: ({ signal }) => getMetadata("archetypes", signal),
+  });
+  const { data: formatsData } = useQuery<string[]>({
+    queryKey: ["formats"],
+    queryFn: ({ signal }) => getFormats(signal),
+  });
   const formats = formatsData || ["TCG", "OCG", "Goat", "Edison"];
 
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);

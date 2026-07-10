@@ -1,11 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Globe, Search, Shuffle, User } from "lucide-react";
 import { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useDeckSearch } from "../../hooks/useDeckSearch";
-import { useFetch } from "../../hooks/useFetch";
 import { useViewPreference } from "../../hooks/useViewPreference";
-import { getFormatsEndpoint } from "../../services/deck";
+import { getFormats } from "../../services/deck";
 import DeckGridCard from "../deck/DeckGridCard";
 import DeckListCard from "../deck/DeckListCard";
 import EmptyState from "../EmptyState";
@@ -47,7 +47,10 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     setActiveTab(isAuthenticated ? "my-decks" : "community");
   }
 
-  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
+  const { data: formatsData } = useQuery<string[]>({
+    queryKey: ["formats"],
+    queryFn: ({ signal }) => getFormats(signal),
+  });
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];

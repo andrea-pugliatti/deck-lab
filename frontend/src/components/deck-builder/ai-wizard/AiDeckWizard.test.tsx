@@ -1,22 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useFetch } from "../../../hooks/useFetch";
 import { generateAiDeck } from "../../../services/deck";
 import AiDeckWizard from "./AiDeckWizard";
 
-// Mock hooks
-vi.mock("../../../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
-
 // Mock services
-vi.mock("../../../services/card", () => ({
-  getCardMetadataEndpoint: vi.fn((type) => `/api/cards/metadata/${type}`),
-}));
-
 vi.mock("../../../services/deck", () => ({
-  getFormatsEndpoint: vi.fn(() => "/api/decks/formats"),
   generateAiDeck: vi.fn(),
 }));
 
@@ -39,15 +29,16 @@ describe("AiDeckWizard component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Default mock implementation for useFetch
-    vi.mocked(useFetch).mockImplementation((url?: string) => {
-      if (url?.includes("archetypes")) {
-        return { data: ["Blue-Eyes", "Dark Magician"], loading: false } as any;
+    // Default mock implementation for useQuery
+    vi.mocked(useQuery).mockImplementation((options: any) => {
+      const queryKey = options?.queryKey || [];
+      if (queryKey.includes("archetypes")) {
+        return { data: ["Blue-Eyes", "Dark Magician"], isLoading: false } as any;
       }
-      if (url?.includes("formats")) {
-        return { data: ["TCG", "OCG", "Goat", "Edison"], loading: false } as any;
+      if (queryKey.includes("formats")) {
+        return { data: ["TCG", "OCG", "Goat", "Edison"], isLoading: false } as any;
       }
-      return { data: null, loading: false } as any;
+      return { data: null, isLoading: false } as any;
     });
   });
 

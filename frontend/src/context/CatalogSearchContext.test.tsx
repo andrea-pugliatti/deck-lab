@@ -1,9 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useCatalogSearch } from "../hooks/useCatalogSearch";
-import { useFetch } from "../hooks/useFetch";
 import { CatalogSearchProvider, useCatalogSearchContext } from "./CatalogSearchContext";
 
 vi.mock("../hooks/useCatalogSearch", () => ({
@@ -12,10 +12,6 @@ vi.mock("../hooks/useCatalogSearch", () => ({
 
 vi.mock("../hooks/useCardMetadata", () => ({
   useCardMetadata: vi.fn(),
-}));
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
 }));
 
 function ContextConsumer() {
@@ -52,7 +48,7 @@ describe("CatalogSearchContext", () => {
       archetypes: [],
     });
 
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: ["TCG", "Goat"],
     } as any);
 

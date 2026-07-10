@@ -1,13 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useFetch } from "../hooks/useFetch";
 import SearchBar from "./SearchBar";
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
 
 vi.mock("../hooks/useDebounce", () => ({
   useDebounce: vi.fn((q) => q),
@@ -27,14 +23,14 @@ describe("SearchBar component", () => {
   beforeEach(() => {
     navigateMock.mockReset();
     vi.mocked(useNavigate).mockReturnValue(navigateMock);
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: {
         content: [
           { id: 1, name: "Blue-Eyes White Dragon", type: "Normal Monster" },
           { id: 2, name: "Blue-Eyes Alternative", type: "Effect Monster" },
         ],
       },
-      loading: false,
+      isLoading: false,
     } as any);
   });
 
