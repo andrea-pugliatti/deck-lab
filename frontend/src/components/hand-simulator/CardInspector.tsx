@@ -20,7 +20,7 @@ interface CardInspectorProps {
  * @returns A JSX element containing the detailed card inspector UI.
  */
 export default function CardInspector({ inspectedCard }: CardInspectorProps) {
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface border-border-dim relative flex min-h-112.5 flex-col rounded-2xl border p-5 shadow-lg">

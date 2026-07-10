@@ -32,7 +32,7 @@ export default function DeckExplorerModal({
 }: DeckExplorerModalProps) {
   const [deckSearchQuery, setDeckSearchQuery] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   useEffect(() => {
     const dialog = dialogRef.current;

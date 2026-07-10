@@ -34,7 +34,7 @@ export default function SimulatorCard({
 }: SimulatorCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   const { borderColor, glowColor } = getCardTheme(card.type);
 

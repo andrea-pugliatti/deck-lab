@@ -1,5 +1,29 @@
 import { apiFetch } from "./api";
 
+/** Current JWT access token stored in memory. */
+let accessToken: string | undefined = undefined;
+
+/**
+ * Retrieves the currently active in-memory access token.
+ *
+ * @returns The active JWT access token, or undefined if not authenticated.
+ */
+export function getAccessToken(): string | undefined {
+  return accessToken;
+}
+
+/**
+ * Sets the active in-memory access token.
+ *
+ * @param token - The new JWT access token, or undefined to clear.
+ */
+export function setAccessToken(token?: string): void {
+  accessToken = token;
+  if (typeof window !== "undefined" && window.dispatchEvent) {
+    window.dispatchEvent(new CustomEvent("auth-token-update", { detail: token }));
+  }
+}
+
 /**
  * Authenticates a user by username or email and retrieves the JWT tokens.
  *

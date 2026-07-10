@@ -5,35 +5,13 @@
  * and unified response error parsing.
  */
 
-/** Current JWT access token stored in memory. */
-let accessToken: string | undefined = undefined;
+import { getAccessToken, setAccessToken } from "./auth";
 
 /** Flag indicating if an access token refresh operation is currently in progress. */
 let isRefreshing = false;
 
 /** Subscriber queue for requests waiting for the token refresh to complete. */
 let refreshSubscribers: { resolve: (token: string) => void; reject: (err: unknown) => void }[] = [];
-
-/**
- * Retrieves the currently active in-memory access token.
- *
- * @returns The active JWT access token, or undefined if not authenticated.
- */
-export function getAccessToken(): string | undefined {
-  return accessToken;
-}
-
-/**
- * Sets the active in-memory access token.
- *
- * @param token - The new JWT access token, or undefined to clear.
- */
-export function setAccessToken(token?: string): void {
-  accessToken = token;
-  if (typeof window !== "undefined" && window.dispatchEvent) {
-    window.dispatchEvent(new CustomEvent("auth-token-update", { detail: token }));
-  }
-}
 
 /**
  * Helper to check if a URL is an authentication endpoint.
@@ -148,7 +126,7 @@ export async function parseResponseError(response: Response): Promise<Error> {
  * @throws {Error} If refreshing the token fails or session expires.
  */
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
   const targetUrl = url.startsWith("/api") ? `${apiBaseUrl}${url}` : url;
 
   const headers = {
@@ -158,8 +136,8 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   // Ensure cookies are sent (HttpOnly refresh token)
   options.credentials = "include";
 
-  if (accessToken && !isAuthUrl(url)) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
+  if (getAccessToken() && !isAuthUrl(url)) {
+    headers["Authorization"] = `Bearer ${getAccessToken()}`;
   }
 
   if (options.body && !headers["Content-Type"] && !(options.body instanceof FormData)) {
@@ -211,7 +189,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
           if (refreshRes.ok) {
             // accessToken is updated by the interceptor during the successful apiFetch refresh call.
             isRefreshing = false;
-            onRefreshed(accessToken || "");
+            onRefreshed(getAccessToken() || "");
           } else {
             const err = new Error("Session expired");
             isRefreshing = false;

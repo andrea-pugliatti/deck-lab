@@ -37,7 +37,7 @@ export default function AiSuggestionItem({
 
   const rules = getFormatRules(formatName);
   const isMaxCopies = countInDeck >= rules.maxCopiesPerCard;
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border-border-dim/40 hover:border-border-dim flex items-center gap-3 rounded-xl border p-3">

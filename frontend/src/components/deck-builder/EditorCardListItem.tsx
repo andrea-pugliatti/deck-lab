@@ -37,7 +37,7 @@ export default function EditorCardListItem({
   remove,
 }: EditorCardListItemProps) {
   const { badgeVariant } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   const containerClass =
     "flex bg-dark-surface-elevated/40 border border-border-dim rounded-xl items-center justify-between gap-3 group p-2";

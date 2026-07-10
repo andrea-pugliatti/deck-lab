@@ -32,7 +32,7 @@ export default function SearchCardGridItem({
   const totalInDeck = deckCards
     .filter((dc) => dc.cardId === cardId)
     .reduce((sum, dc) => sum + dc.quantity, 0);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent/50 group relative flex min-h-36 flex-col overflow-hidden rounded-xl border p-2 text-center backdrop-blur-sm transition-all duration-200 hover:shadow-md">

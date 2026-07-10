@@ -53,7 +53,7 @@ export default function SearchCardListItem({
   const totalInDeck = deckCards
     .filter((dc) => dc.cardId === cardId)
     .reduce((sum, dc) => sum + dc.quantity, 0);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={containerClass}>

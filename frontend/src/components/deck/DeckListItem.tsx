@@ -20,7 +20,7 @@ export default function DeckListItem({
   quantity,
 }: DeckGridItemProps) {
   const { badgeVariant } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <Link

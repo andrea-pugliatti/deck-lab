@@ -25,7 +25,7 @@ export default function CardListItem({
 }: Card) {
   const isMonster = type?.toLowerCase().includes("monster");
   const { gridBadgeColor: badgeColor } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <Link

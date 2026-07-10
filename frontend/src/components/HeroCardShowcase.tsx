@@ -99,7 +99,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
           const isTrap = card?.type.toLowerCase().includes("trap");
           const isMonster = !isSpell && !isTrap;
           const croppedUrl = card?.imageUrlCropped;
-          const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+          const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
           const FallbackIcon = isSpell ? Sparkles : isTrap ? Zap : Flame;
           const fallbackIconColor = isSpell
             ? "text-emerald-400"

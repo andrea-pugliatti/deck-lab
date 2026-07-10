@@ -28,7 +28,7 @@ export default function DeckGridItem({
   quantity,
 }: DeckGridItemProps) {
   const { deckBadgeColor: badgeColor } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <Link
