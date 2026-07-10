@@ -1,8 +1,10 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useReducer } from "react";
 
 import { deckReducer, initialState } from "../reducers/deckReducer";
-import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
-import type { Card, CardSection, Deck, DeckCardItem } from "../types";
+import { getDeck } from "../services/deck";
+import { saveDeck as saveDeckService, validateDeck } from "../services/deck";
+import type { Card, CardSection, Deck, DeckCardItem, DeckPayload } from "../types";
 
 /**
  * Private helper function to format the deck configuration state into a simplified payload model
@@ -46,33 +48,33 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
 
   const [state, dispatch] = useReducer(deckReducer, initialState);
 
+  const queryClient = useQueryClient();
+
   // Fetch Deck for Edit Mode
+  const { data: deckData } = useQuery<Deck>({
+    queryKey: ["deck", id],
+    queryFn: ({ signal }) => getDeck(id!, signal),
+    enabled: isEditMode && !!id,
+  });
+
   useEffect(() => {
-    if (isEditMode && id) {
-      const fetchDeck = async () => {
-        try {
-          const deckData = await getDeck(id);
-          dispatch({
-            type: "LOAD_DECK",
-            name: deckData.name,
-            description: deckData.description || "",
-            formatName: deckData.formatName,
-            deckCards: (deckData.deckCards || []).map((dc) => ({
-              cardId: dc.cardId,
-              name: dc.name,
-              quantity: dc.quantity,
-              type: dc.type,
-              imageUrl: dc.imageUrl,
-              section: dc.section || "MAIN",
-            })),
-          });
-        } catch (err) {
-          console.error("Failed to load deck for editing:", err);
-        }
-      };
-      fetchDeck();
+    if (deckData) {
+      dispatch({
+        type: "LOAD_DECK",
+        name: deckData.name,
+        description: deckData.description || "",
+        formatName: deckData.formatName,
+        deckCards: (deckData.deckCards || []).map((dc) => ({
+          cardId: dc.cardId,
+          name: dc.name,
+          quantity: dc.quantity,
+          type: dc.type,
+          imageUrl: dc.imageUrl,
+          section: dc.section || "MAIN",
+        })),
+      });
     }
-  }, [isEditMode, id]);
+  }, [deckData]);
 
   const setName = useCallback((name: string) => {
     dispatch({ type: "SET_NAME", name });
@@ -124,6 +126,26 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
     }
   }, [state.name, state.description, state.formatName, state.deckCards]);
 
+  const saveDeckMutation = useMutation({
+    mutationFn: async (payload: DeckPayload) => {
+      return saveDeckService(payload, id);
+    },
+    onSuccess: (savedDeck) => {
+      queryClient.invalidateQueries({ queryKey: ["deck", id] });
+      queryClient.invalidateQueries({ queryKey: ["decks"] });
+      dispatch({ type: "SET_SAVE_RESULT" });
+      if (onSaveSuccess) {
+        onSaveSuccess(savedDeck);
+      }
+    },
+    onError: (err) => {
+      dispatch({
+        type: "SET_SAVE_RESULT",
+        error: err instanceof Error ? err.message : "An error occurred while saving the deck.",
+      });
+    },
+  });
+
   const saveDeck = useCallback(async () => {
     if (!state.name.trim()) {
       dispatch({ type: "SET_SUBMIT_ERROR", error: "Deck name is required." });
@@ -155,26 +177,14 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
       state.deckCards,
     );
 
-    try {
-      const savedDeck = await saveDeckService(payload, id);
-      dispatch({ type: "SET_SAVE_RESULT" });
-      if (onSaveSuccess) {
-        onSaveSuccess(savedDeck);
-      }
-    } catch (err) {
-      dispatch({
-        type: "SET_SAVE_RESULT",
-        error: err instanceof Error ? err.message : "An error occurred while saving the deck.",
-      });
-    }
+    saveDeckMutation.mutate(payload);
   }, [
-    id,
     state.name,
     state.description,
     state.formatName,
     state.deckCards,
     validateDeckPayload,
-    onSaveSuccess,
+    saveDeckMutation,
   ]);
 
   return {

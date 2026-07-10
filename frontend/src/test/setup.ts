@@ -15,8 +15,6 @@ if (typeof window !== "undefined" && !window.matchMedia) {
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(), // Deprecated
-      removeListener: vi.fn(), // Deprecated
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
@@ -41,3 +39,21 @@ if (typeof window !== "undefined" && !window.ResizeObserver) {
 if (typeof globalThis.fetch === "undefined") {
   globalThis.fetch = vi.fn();
 }
+
+// Mock @tanstack/react-query globally
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: vi.fn().mockReturnValue({}),
+  useMutation: vi.fn().mockReturnValue({
+    mutate: vi.fn(),
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isLoading: false,
+  }),
+  useQueryClient: vi.fn().mockReturnValue({
+    invalidateQueries: vi.fn(),
+  }),
+  QueryClient: class {
+    clear = vi.fn();
+  },
+  QueryClientProvider: ({ children }: any) => children,
+}));

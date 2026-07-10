@@ -1,16 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import { useSearchParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useCatalogSearch } from "./useCatalogSearch";
-import { useFetch } from "./useFetch";
 
 vi.mock("react-router", () => ({
   useSearchParams: vi.fn(),
 }));
 
-vi.mock("./useFetch", () => ({
-  useFetch: vi.fn(),
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: vi.fn(),
 }));
 
 vi.mock("./useDebounce", () => ({
@@ -27,13 +27,13 @@ describe("useCatalogSearch hook", () => {
     mockSearchParams = new URLSearchParams();
     vi.mocked(useSearchParams).mockReturnValue([mockSearchParams, setSearchParamsMock]);
 
-    vi.mocked(useFetch).mockReset();
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReset();
+    vi.mocked(useQuery).mockReturnValue({
       data: {
         content: [{ id: 1, name: "Card A" }],
         page: { totalPages: 5, totalElements: 40 },
       },
-      loading: false,
+      isLoading: false,
       error: undefined,
       refetch: vi.fn(),
     } as any);

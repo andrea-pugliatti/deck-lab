@@ -1,8 +1,20 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
 import { useDeckState } from "./useDeckState";
+
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: vi.fn().mockReturnValue({}),
+  useMutation: vi.fn().mockReturnValue({
+    mutate: vi.fn(),
+    mutateAsync: vi.fn(),
+  }),
+  useQueryClient: vi.fn().mockReturnValue({
+    invalidateQueries: vi.fn(),
+  }),
+}));
 
 vi.mock("../services/deck", () => ({
   getDeck: vi.fn(),
@@ -15,6 +27,23 @@ describe("useDeckState hook", () => {
     vi.mocked(getDeck).mockReset();
     vi.mocked(saveDeckService).mockReset();
     vi.mocked(validateDeck).mockReset();
+    vi.mocked(useQuery).mockReset();
+    vi.mocked(useQuery).mockReturnValue({} as any);
+    vi.mocked(useMutation).mockReset();
+    vi.mocked(useMutation).mockImplementation(
+      (options: any) =>
+        ({
+          mutate: vi.fn(async (payload) => {
+            try {
+              const res = await options.mutationFn(payload);
+              options.onSuccess?.(res);
+            } catch (err) {
+              options.onError?.(err);
+            }
+          }),
+          mutateAsync: vi.fn(),
+        }) as any,
+    );
   });
 
   it("should initialize in draft (creation) mode by default", () => {
@@ -45,7 +74,9 @@ describe("useDeckState hook", () => {
         },
       ],
     };
-    vi.mocked(getDeck).mockResolvedValueOnce(mockDeck as any);
+    vi.mocked(useQuery).mockReturnValue({
+      data: mockDeck,
+    } as any);
 
     const { result } = renderHook(() => useDeckState("12"));
 
@@ -122,7 +153,9 @@ describe("useDeckState hook", () => {
       formatName: "TCG",
       deckCards: [],
     };
-    vi.mocked(getDeck).mockResolvedValueOnce(mockDeck as any);
+    vi.mocked(useQuery).mockReturnValue({
+      data: mockDeck,
+    } as any);
 
     const { result } = renderHook(() => useDeckState("12"));
 

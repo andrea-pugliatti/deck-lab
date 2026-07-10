@@ -1,8 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 
+import { apiFetch, parseResponseError } from "../services/api";
 import { useDebounce } from "./useDebounce";
-import { useFetch } from "./useFetch";
 
 /**
  * Configuration options for the generic useSearch hook.
@@ -198,7 +199,26 @@ export function useSearch<TData, TFilters>(
 
   // Execute fetch
   const fetchUrl = endpointBuilder(debouncedQuery, activePage, activeFilters);
-  const { data, loading, error, refetch } = useFetch<TData>(fetchUrl);
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<TData>({
+    queryKey: [fetchUrl],
+    queryFn: async ({ signal }) => {
+      if (!fetchUrl) return undefined as unknown as TData;
+      const res = await apiFetch(fetchUrl, { signal });
+      if (!res.ok) {
+        throw await parseResponseError(res);
+      }
+      if (res.status === 204) {
+        return undefined as unknown as TData;
+      }
+      return res.json() as Promise<TData>;
+    },
+    enabled: !!fetchUrl,
+  });
 
   return {
     page: activePage,
