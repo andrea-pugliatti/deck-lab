@@ -5,6 +5,9 @@
 
 import { useState } from "react";
 
+/**
+ * Represents the available layout options for displaying card catalogs or deck grids.
+ */
 export type ViewMode = "grid" | "list";
 
 /**

@@ -33,6 +33,12 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
         this.secure = secure;
     }
 
+    /**
+     * Serializes the refresh token value into an HttpOnly, Secure cookie string.
+     *
+     * @param token the refresh token value to set
+     * @return the serialized ResponseCookie header string
+     */
     @Override
     public String createCookie(String token) {
         return ResponseCookie.from("refreshToken", token)
@@ -45,6 +51,11 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
                 .toString();
     }
 
+    /**
+     * Generates a clearing cookie header string with max-age equal to 0.
+     *
+     * @return the serialized cookie clearing header string
+     */
     @Override
     public String clearCookie() {
         return ResponseCookie.from("refreshToken", "")

@@ -5,6 +5,15 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class loading LLM prompting templates and guidelines from
+ * application properties.
+ *
+ * <p>
+ * Binds properties under the prefix {@code app.prompts} containing specific
+ * guidelines for deck formats, playstyles, and general system templates.
+ * </p>
+ */
 @Configuration
 @ConfigurationProperties(prefix = "app.prompts")
 public class PromptConfig {
@@ -36,6 +45,10 @@ public class PromptConfig {
         this.system = system;
     }
 
+    /**
+     * Inner class mapping target raw system template prompts for different AI
+     * workflows.
+     */
     public static class SystemTemplates {
         private String draft;
         private String refinement;

@@ -30,6 +30,13 @@ public class InMemoryRateLimiter implements RateLimiter {
         this.windowMs = windowMs;
     }
 
+    /**
+     * Checks if the request limit for the given key (e.g. client IP) is exceeded.
+     * Increments the attempt counter and throws {@link ResponseStatusException}
+     * with HTTP 429 status code if the threshold is violated.
+     *
+     * @param key the unique identifier to rate limit (typically client IP address)
+     */
     @Override
     public void checkLimit(String key) {
         long now = System.currentTimeMillis();
