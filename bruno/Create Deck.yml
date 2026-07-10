@@ -38,6 +38,7 @@ runtime:
           const res = await axios.get(`${baseUrl}/api/cards?type=Normal%20Monster&size=100`);
           let cards = res.data.content || [];
           const needed = 14;
+          let createdCardIds = bru.getVar("createdCardIds") || [];
           if (cards.length < needed) {
             const createCount = needed - cards.length;
             for (let i = 0; i < createCount; i++) {
@@ -67,8 +68,10 @@ runtime:
               );
               if (cardRes.data && cardRes.data.id) {
                 cards.push(cardRes.data);
+                createdCardIds.push(cardRes.data.id);
               }
             }
+            bru.setVar("createdCardIds", createdCardIds);
           }
           if (cards.length >= needed) {
             const validIds = cards.map(c => c.id);

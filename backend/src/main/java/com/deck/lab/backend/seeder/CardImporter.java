@@ -198,6 +198,11 @@ public class CardImporter {
             logger.warn("Unknown card type: {}", type);
         }
 
+        if (name == null || name.isBlank() || cardType == null) {
+            logger.warn("Skipping card '{}' (id: {}) due to missing or invalid name/type. Type: {}", name, apiId, type);
+            return null;
+        }
+
         FrameType frameTypeEnum = null;
         try {
             frameTypeEnum = FrameType.fromString(frameType);

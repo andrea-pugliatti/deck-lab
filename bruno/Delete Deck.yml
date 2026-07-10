@@ -23,6 +23,28 @@ runtime:
         if (!bru.getVar("createdDeckId")) {
           bru.setVar("createdDeckId", 1);
         }
+    - type: after-response
+      code: |-
+        const axios = require("axios");
+        const baseUrl = bru.getVar("baseUrl") || "http://localhost:8080";
+        const token = bru.getVar("accessToken");
+        const createdCardIds = bru.getVar("createdCardIds");
+        if (createdCardIds && createdCardIds.length > 0) {
+          console.log(`Cleaning up ${createdCardIds.length} dynamically created cards...`);
+          for (const cardId of createdCardIds) {
+            try {
+              await axios.delete(`${baseUrl}/api/cards/${cardId}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+              console.log(`Successfully deleted card ID ${cardId}`);
+            } catch (err) {
+              console.error(`Failed to delete card ID ${cardId}:`, err.message);
+            }
+          }
+          bru.setVar("createdCardIds", []);
+        }
     - type: tests
       code: |-
         test("Response should be 204 No Content or 404 Not Found", function() {

@@ -33,7 +33,7 @@ public enum CardType {
     PENDULUM_NORMAL_MONSTER("Pendulum Normal Monster"),
     SYNCHRO_PENDULUM_EFFECT_MONSTER("Synchro Pendulum Effect Monster"),
     XYZ_PENDULUM_EFFECT_MONSTER("XYZ Pendulum Effect Monster"),
-    FUSION_PENDULUM_EFFECT_MONSTER("Fusion Pendulum Effect Monster"),
+    PENDULUM_EFFECT_FUSION_MONSTER("Pendulum Effect Fusion Monster"),
     TUNER_MONSTER("Tuner Monster"),
     GEMINI_MONSTER("Gemini Monster"),
     SPIRIT_MONSTER("Spirit Monster"),
@@ -41,11 +41,13 @@ public enum CardType {
     UNION_EFFECT_MONSTER("Union Effect Monster"),
     FLIP_EFFECT_MONSTER("Flip Effect Monster"),
     FLIP_TUNER_EFFECT_MONSTER("Flip Tuner Effect Monster"),
-    PENDULUM_EFFECT_TUNER_MONSTER("Pendulum Effect Tuner Monster"),
+    PENDULUM_TUNER_EFFECT_MONSTER("Pendulum Tuner Effect Monster"),
     SPECIAL_SUMMON_MONSTER("Special Summon Monster"),
     PENDULUM_FLIP_EFFECT_MONSTER("Pendulum Flip Effect Monster"),
     PENDULUM_EFFECT_SPECIAL_SUMMON_MONSTER("Pendulum Effect Special Summon Monster"),
-    SYNCHRO_TUNER_MONSTER("Synchro Tuner Monster");
+    SYNCHRO_TUNER_MONSTER("Synchro Tuner Monster"),
+    NORMAL_TUNER_MONSTER("Normal Tuner Monster"),
+    PENDULUM_EFFECT_RITUAL_MONSTER("Pendulum Effect Ritual Monster");
 
     private final String value;
 
@@ -69,7 +71,7 @@ public enum CardType {
     public boolean isExtraDeck() {
         return this == FUSION_MONSTER || this == SYNCHRO_MONSTER || this == XYZ_MONSTER || this == LINK_MONSTER
                 || this == SYNCHRO_TUNER_MONSTER || this == SYNCHRO_PENDULUM_EFFECT_MONSTER
-                || this == XYZ_PENDULUM_EFFECT_MONSTER || this == FUSION_PENDULUM_EFFECT_MONSTER;
+                || this == XYZ_PENDULUM_EFFECT_MONSTER || this == PENDULUM_EFFECT_FUSION_MONSTER;
     }
 
     @JsonCreator
