@@ -55,6 +55,11 @@ public enum CardType {
         this.value = value;
     }
 
+    /**
+     * Gets the string representation of the card type.
+     *
+     * @return the serialized card type string
+     */
     @JsonValue
     public String getValue() {
         return value;
@@ -74,6 +79,13 @@ public enum CardType {
                 || this == XYZ_PENDULUM_EFFECT_MONSTER || this == PENDULUM_EFFECT_FUSION_MONSTER;
     }
 
+    /**
+     * Resolves a card type from its string representation (case-insensitive).
+     *
+     * @param value the card type string
+     * @return the resolved CardType enum
+     * @throws IllegalArgumentException if the string is unknown
+     */
     @JsonCreator
     public static CardType fromString(String value) {
         if (value == null || value.isBlank()) {

@@ -73,11 +73,23 @@ public enum CardRace {
         this.value = value;
     }
 
+    /**
+     * Gets the string representation of the card race or subtype.
+     *
+     * @return the serialized race or subtype string
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Resolves a card race or subtype from its string representation (case-insensitive).
+     *
+     * @param value the race or subtype string
+     * @return the resolved CardRace enum
+     * @throws IllegalArgumentException if the string is unknown
+     */
     @JsonCreator
     public static CardRace fromString(String value) {
         if (value == null || value.isBlank()) {

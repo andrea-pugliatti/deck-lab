@@ -105,6 +105,11 @@ public class BanlistImporter {
         return null;
     }
 
+    /**
+     * Seeds the standard active formats (e.g. TCG, OCG, Goat) banlist rules into
+     * the database, querying local JSON if available or falling back to the
+     * YGOProDeck API.
+     */
     public void seedBanlistsFromApi() {
         logger.info("Seeding banlists...");
 
@@ -227,6 +232,10 @@ public class BanlistImporter {
         }
     }
 
+    /**
+     * Seeds static rules for historical retro formats (Edison, Tengu Plant, HAT,
+     * etc.) if they do not already exist.
+     */
     public void seedHistoricalBanlists() {
         seedHistoricalFormatIfEmpty("Edison", Map.of(
                 "Pot of Greed", CardStatus.FORBIDDEN,

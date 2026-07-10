@@ -115,6 +115,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.databaseSeederExecutor = databaseSeederExecutor;
     }
 
+    /**
+     * Shutdown hook executed when the Spring context is destroyed.
+     * Cancels any active background seeding tasks.
+     */
     @PreDestroy
     public void shutdown() {
         logger.info("DatabaseSeeder shutdown initiated. Cancelling seeding task...");
@@ -123,6 +127,12 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
     }
 
+    /**
+     * Executes the user and database seeding process upon application startup.
+     *
+     * @param args command-line arguments
+     * @throws Exception if seeding encounters an error
+     */
     @Override
     public void run(String... args) throws Exception {
         if (seedUsersEnabled) {

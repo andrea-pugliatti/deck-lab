@@ -31,11 +31,23 @@ public enum CardAttribute {
         this.value = value;
     }
 
+    /**
+     * Gets the string representation of the card attribute.
+     *
+     * @return the serialized card attribute string
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Resolves a card attribute from its string representation (case-insensitive).
+     *
+     * @param value the card attribute string
+     * @return the resolved CardAttribute enum
+     * @throws IllegalArgumentException if the string is unknown
+     */
     @JsonCreator
     public static CardAttribute fromString(String value) {
         if (value == null || value.isBlank()) {

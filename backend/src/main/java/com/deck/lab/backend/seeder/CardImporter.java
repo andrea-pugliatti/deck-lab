@@ -109,6 +109,16 @@ public class CardImporter {
         this.objectMapper = new ObjectMapper();
     }
 
+    /**
+     * Connects to the external YGOPRODeck API to fetch and download all cards.
+     * Maps them to local entity representations.
+     *
+     * @param apiUrl         the external API URL
+     * @param batchSize      offset/limit page sizes to fetch from the API
+     * @param connectTimeout network connection timeout in milliseconds
+     * @param readTimeout    network read timeout in milliseconds
+     * @return the list of fetched Card entities
+     */
     public List<Card> fetchAllCards(
             String apiUrl,
             int batchSize,
@@ -326,10 +336,15 @@ public class CardImporter {
         }
     }
 
+    /**
+     * Seeds the cards into the database, loading from local JSON resource if
+     * available, or falling back to query the YGOProDeck API.
+     */
     public void seedCardsFromApi() {
         long existingCount = cardRepository.count();
         if (existingCount > 100) {
-            logger.info("Database already contains {} cards. Skipping full API import. Checking for missing images...", existingCount);
+            logger.info("Database already contains {} cards. Skipping full API import. Checking for missing images...",
+                    existingCount);
             checkAndDownloadMissingImages();
             return;
         }
@@ -428,18 +443,20 @@ public class CardImporter {
     }
 
     /**
-     * Iterates through all cards currently present in the database to verify if their
+     * Iterates through all cards currently present in the database to verify if
+     * their
      * full and cropped artwork image files exist in local storage.
      *
      * <p>
-     * Any missing card illustrations are queued for background download asynchronously
+     * Any missing card illustrations are queued for background download
+     * asynchronously
      * using the {@code imageDownloadExecutor} thread pool.
      * </p>
      */
     private void checkAndDownloadMissingImages() {
         List<Card> allCards = cardRepository.findAll();
         logger.info("Checking images for {} cards in database...", allCards.size());
-        
+
         int missingFullCount = 0;
         int missingCroppedCount = 0;
 
@@ -476,7 +493,7 @@ public class CardImporter {
         }
 
         if (missingFullCount > 0 || missingCroppedCount > 0) {
-            logger.info("Queued downloads for missing images: {} full, {} cropped.", 
+            logger.info("Queued downloads for missing images: {} full, {} cropped.",
                     missingFullCount, missingCroppedCount);
         } else {
             logger.info("All card images are present on disk.");

@@ -29,11 +29,23 @@ public enum DeckSection {
         this.value = value;
     }
 
+    /**
+     * Gets the string representation of the deck section.
+     *
+     * @return the serialized deck section string
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Resolves a deck section from its string representation (case-insensitive).
+     *
+     * @param value the deck section string
+     * @return the resolved DeckSection enum
+     * @throws IllegalArgumentException if the string is unknown
+     */
     @JsonCreator
     public static DeckSection fromString(String value) {
         if (value == null || value.isBlank()) {

@@ -36,11 +36,23 @@ public enum Format {
         this.value = value;
     }
 
+    /**
+     * Gets the string value of the format.
+     *
+     * @return the serialized string representation
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Resolves a format from its string representation (case-insensitive).
+     *
+     * @param value the format string
+     * @return the resolved Format enum
+     * @throws IllegalArgumentException if the format string is unknown
+     */
     @JsonCreator
     public static Format fromString(String value) {
         if (value == null || value.isBlank()) {

@@ -51,11 +51,23 @@ public enum FrameType {
         this.value = value;
     }
 
+    /**
+     * Gets the string representation of the frame type.
+     *
+     * @return the serialized frame type string
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Resolves a frame type from its string representation (case-insensitive).
+     *
+     * @param value the frame type string
+     * @return the resolved FrameType enum
+     * @throws IllegalArgumentException if the frame type string is unknown
+     */
     @JsonCreator
     public static FrameType fromString(String value) {
         if (value == null || value.isBlank()) {
