@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Calendar, Layers } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 
@@ -7,8 +8,7 @@ import SimulatorWorkspace from "../components/hand-simulator/SimulatorWorkspace"
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageHeader from "../components/PageHeader";
 import Button from "../components/ui/Button";
-import { useFetch } from "../hooks/useFetch";
-import { getDeckEndpoint } from "../services/deck";
+import { getDeck } from "../services/deck";
 import type { Deck } from "../types";
 import { formatRelativeTime } from "../utils/date";
 
@@ -28,9 +28,13 @@ export default function HandSimulator(): React.JSX.Element {
 
   const {
     data: deck,
-    loading,
+    isLoading: loading,
     error,
-  } = useFetch<Deck>(deckId ? getDeckEndpoint(deckId) : undefined);
+  } = useQuery<Deck>({
+    queryKey: ["deck", deckId],
+    queryFn: ({ signal }) => getDeck(deckId!, signal),
+    enabled: !!deckId,
+  });
 
   const mainCardsCount =
     deck?.deckCards

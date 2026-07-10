@@ -20,7 +20,6 @@ vi.mock("../services/deck", async (importOriginal) => {
   return {
     ...actual,
     deleteDeck: vi.fn(),
-    getFormatsEndpoint: vi.fn().mockReturnValue("/api/formats"),
   };
 });
 

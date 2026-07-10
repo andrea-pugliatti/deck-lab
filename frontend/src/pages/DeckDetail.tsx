@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Calendar, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -11,9 +12,8 @@ import Button from "../components/ui/Button";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
-import { useFetch } from "../hooks/useFetch";
 import { useViewPreference } from "../hooks/useViewPreference";
-import { deleteDeck, getDeckEndpoint } from "../services/deck";
+import { deleteDeck, getDeck } from "../services/deck";
 import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
@@ -36,7 +36,15 @@ export default function DeckDetail(): React.JSX.Element {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [viewMode, setViewMode] = useViewPreference("deck-detail-view-mode", "grid");
 
-  const { data: deck, loading, error } = useFetch<Deck>(id ? getDeckEndpoint(id) : undefined);
+  const {
+    data: deck,
+    isLoading: loading,
+    error,
+  } = useQuery<Deck>({
+    queryKey: ["deck", id],
+    queryFn: ({ signal }) => getDeck(id!, signal),
+    enabled: !!id,
+  });
 
   /**
    * Performs the deletion of the deck by calling the deleteDeck service.

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
 import { useRef, useState, type MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -6,8 +7,7 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
-import { useFetch } from "../hooks/useFetch";
-import { getCardEndpoint } from "../services/card";
+import { getCard } from "../services/card";
 import type { Card } from "../types";
 import { getCardTheme } from "../utils/card";
 
@@ -57,7 +57,15 @@ export default function CardDetail(): React.JSX.Element {
     setRotateY(0);
   };
 
-  const { data: card, loading, error } = useFetch<Card>(id ? getCardEndpoint(id) : undefined);
+  const {
+    data: card,
+    isLoading: loading,
+    error,
+  } = useQuery<Card>({
+    queryKey: ["card", id],
+    queryFn: ({ signal }) => getCard(id!, signal),
+    enabled: !!id,
+  });
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;
@@ -78,7 +86,7 @@ export default function CardDetail(): React.JSX.Element {
 
   const { bgGradient, badgeVariant, type: cardThemeType } = getCardTheme(card.type);
   const isMonster = cardThemeType === "monster";
-  const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>

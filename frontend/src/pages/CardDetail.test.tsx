@@ -1,13 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useFetch } from "../hooks/useFetch";
 import CardDetail from "./CardDetail";
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
 
 vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
@@ -28,7 +24,7 @@ describe("CardDetail page component", () => {
   });
 
   it("should render card detail page correctly", () => {
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: {
         id: 100,
         name: "Summoned Skull",
@@ -41,7 +37,7 @@ describe("CardDetail page component", () => {
         def: 1200,
         imageUrl: "",
       },
-      loading: false,
+      isLoading: false,
       error: undefined,
     } as any);
 

@@ -1,13 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useSearchParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useFetch } from "../hooks/useFetch";
 import HandSimulator from "./HandSimulator";
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
 
 vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
@@ -34,9 +30,9 @@ describe("HandSimulator page component", () => {
   });
 
   it("should render DeckSelector when no deckId query parameter exists", () => {
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: undefined,
-      loading: false,
+      isLoading: false,
     } as any);
 
     render(
@@ -52,7 +48,7 @@ describe("HandSimulator page component", () => {
     const params = new URLSearchParams({ deckId: "44" });
     vi.mocked(useSearchParams).mockReturnValue([params, setSearchParamsMock]);
 
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: {
         id: 44,
         name: "Test Deck",
@@ -60,7 +56,7 @@ describe("HandSimulator page component", () => {
         deckCards: [],
         updatedAt: "",
       },
-      loading: false,
+      isLoading: false,
     } as any);
 
     render(

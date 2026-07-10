@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Layers, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -16,9 +17,8 @@ import Input from "../components/ui/Input";
 import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useDeckSearch } from "../hooks/useDeckSearch";
-import { useFetch } from "../hooks/useFetch";
 import { useViewPreference } from "../hooks/useViewPreference";
-import { deleteDeck, getFormatsEndpoint } from "../services/deck";
+import { deleteDeck, getFormats } from "../services/deck";
 
 /**
  * Properties for the Decks page component.
@@ -47,7 +47,10 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
   const [tab, setTab] = useState<"all" | "user">(initialTab);
   const [viewMode, setViewMode] = useViewPreference("decks-view-mode", "grid");
 
-  const { data: formatsData } = useFetch<string[]>(getFormatsEndpoint());
+  const { data: formatsData } = useQuery<string[]>({
+    queryKey: ["formats"],
+    queryFn: ({ signal }) => getFormats(signal),
+  });
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];

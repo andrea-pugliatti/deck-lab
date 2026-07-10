@@ -1,14 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../context/AuthContext";
-import { useFetch } from "../hooks/useFetch";
 import DeckDetail from "./DeckDetail";
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
 
 vi.mock("../context/AuthContext", () => ({
   useAuth: vi.fn(),
@@ -37,7 +33,7 @@ describe("DeckDetail page component", () => {
   });
 
   it("should render mock deck and compute counts", () => {
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: {
         id: 1,
         name: "Yugi Ultimate Deck",
@@ -54,7 +50,7 @@ describe("DeckDetail page component", () => {
           { cardId: 11, name: "Monster Reborn", quantity: 1, section: "MAIN", type: "Spell Card" },
         ],
       },
-      loading: false,
+      isLoading: false,
     } as any);
 
     render(
