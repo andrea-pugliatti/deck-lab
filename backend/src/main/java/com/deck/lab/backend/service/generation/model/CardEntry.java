@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.model;
 
 /**
  * Data Transfer Object (DTO) mapping raw card entries returned from the AI LLM

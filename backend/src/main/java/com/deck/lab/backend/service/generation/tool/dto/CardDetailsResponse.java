@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool.dto;
 
 /**
  * Response record containing complete card statistics and resource details.

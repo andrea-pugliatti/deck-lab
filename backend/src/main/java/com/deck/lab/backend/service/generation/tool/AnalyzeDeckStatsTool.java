@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +9,8 @@ import java.util.function.Function;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.repository.CardRepository;
+import com.deck.lab.backend.service.generation.tool.dto.DeckStatsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.DeckStatsResponse;
 
 /**
  * Tool function enabling the AI model to analyze distributions and metrics

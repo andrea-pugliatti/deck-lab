@@ -14,6 +14,8 @@ import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
+import com.deck.lab.backend.service.generation.model.CardEntry;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
  * Pure component responsible for constructing Spring AI prompts from request

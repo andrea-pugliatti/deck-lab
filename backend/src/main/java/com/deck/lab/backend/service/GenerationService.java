@@ -16,12 +16,12 @@ import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.service.generation.AiClient;
-import com.deck.lab.backend.service.generation.CardEntry;
+import com.deck.lab.backend.service.generation.model.CardEntry;
 import com.deck.lab.backend.service.generation.CardResolver;
 import com.deck.lab.backend.service.generation.DeckAssembler;
-import com.deck.lab.backend.service.generation.DeckGenerateAiResponse;
+import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
 import com.deck.lab.backend.service.generation.PromptBuilder;
-import com.deck.lab.backend.service.generation.ResolvedCardEntry;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 import com.deck.lab.backend.service.generation.ResponseParser;
 import com.deck.lab.backend.service.generation.ValidationAdapter;
 

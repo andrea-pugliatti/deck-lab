@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,9 @@ import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.FormatRulesRepository;
 import com.deck.lab.backend.validation.rules.FormatDeckLimits;
 import com.deck.lab.backend.validation.rules.DeckSizeLimits;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRulesRequest;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRulesResponse;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRuleInfo;
 
 /**
  * Tool function enabling the AI model to query database rules (banlists) for a

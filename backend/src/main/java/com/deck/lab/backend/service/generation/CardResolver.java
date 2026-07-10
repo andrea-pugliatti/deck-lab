@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
+import com.deck.lab.backend.service.generation.model.CardEntry;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
  * Service responsible for mapping AI-generated card names to actual database

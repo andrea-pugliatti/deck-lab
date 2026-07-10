@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool;
 
 import java.util.List;
 import java.util.function.Function;
@@ -8,6 +8,9 @@ import org.springframework.data.jpa.domain.Specification;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.specification.CardSpecification;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsResponse;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardInfo;
 
 /**
  * Tool function enabling the AI model to query all cards matching a specific

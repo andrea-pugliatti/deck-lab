@@ -17,7 +17,7 @@ import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.UserRepository;
-import com.deck.lab.backend.service.generation.CardEntry;
+import com.deck.lab.backend.service.generation.model.CardEntry;
 
 /**
  * Seeder class responsible for populating the database with sample, competitive

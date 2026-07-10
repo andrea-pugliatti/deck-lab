@@ -4,6 +4,7 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Component;
 
 import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
+import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
 
 /**
  * Pure parsing component that converts string responses from AI into structured

@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
+import com.deck.lab.backend.service.generation.tool.dto.CardDetailsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.CardDetailsResponse;
 
 /**
  * Tool function enabling the AI model to query full details (ATK, DEF, effect

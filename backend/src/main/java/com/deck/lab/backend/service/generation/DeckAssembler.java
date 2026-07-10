@@ -13,6 +13,7 @@ import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
  * Service mapping resolved card inputs into transient Deck models and data

@@ -1,10 +1,13 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.tool;
 
 import java.util.List;
 import java.util.function.Function;
 
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchRequest;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchResponse;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchResult;
 
 /**
  * Tool function enabling the AI model to query authentic Yu-Gi-Oh! cards from

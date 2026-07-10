@@ -1,4 +1,4 @@
-package com.deck.lab.backend.service.generation;
+package com.deck.lab.backend.service.generation.model;
 
 import java.util.ArrayList;
 import java.util.List;

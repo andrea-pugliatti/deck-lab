@@ -8,6 +8,16 @@ import org.springframework.stereotype.Service;
 
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
+import com.deck.lab.backend.service.generation.tool.CardSearchTool;
+import com.deck.lab.backend.service.generation.tool.CardDetailsTool;
+import com.deck.lab.backend.service.generation.tool.GetFormatRulesTool;
+import com.deck.lab.backend.service.generation.tool.GetArchetypeCardsTool;
+import com.deck.lab.backend.service.generation.tool.AnalyzeDeckStatsTool;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchRequest;
+import com.deck.lab.backend.service.generation.tool.dto.CardDetailsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRulesRequest;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.DeckStatsRequest;
 
 /**
  * Service serving as a thin wrapper around Spring AI ChatModel and ChatClient,
