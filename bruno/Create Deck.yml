@@ -33,13 +33,47 @@ runtime:
       code: |-
         const axios = require("axios");
         const baseUrl = bru.getVar("baseUrl") || "http://localhost:8080";
+        const token = bru.getVar("accessToken");
         try {
           const res = await axios.get(`${baseUrl}/api/cards?type=Normal%20Monster&size=100`);
-          const cards = res.data.content;
-          if (cards && cards.length >= 14) {
+          let cards = res.data.content || [];
+          const needed = 14;
+          if (cards.length < needed) {
+            const createCount = needed - cards.length;
+            for (let i = 0; i < createCount; i++) {
+              const cardRes = await axios.post(
+                `${baseUrl}/api/cards`,
+                {
+                  name: `Normal Monster ${Date.now()}_${i}`,
+                  type: "Normal Monster",
+                  description: "A normal monster card generated dynamically for testing",
+                  race: "Spellcaster",
+                  attribute: "DARK",
+                  archetype: "Dark Magician",
+                  imageUrl: "card.jpg",
+                  imageUrlCropped: "card_cropped.jpg",
+                  frameType: "normal",
+                  atk: 1000 + i,
+                  def: 1000 + i,
+                  level: 4
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  }
+                }
+              );
+              if (cardRes.data && cardRes.data.id) {
+                cards.push(cardRes.data);
+              }
+            }
+          }
+          if (cards.length >= needed) {
             const validIds = cards.map(c => c.id);
             let deckCards = [];
-            for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < needed; i++) {
               deckCards.push({
                 cardId: validIds[i],
                 section: "MAIN",
@@ -50,9 +84,12 @@ runtime:
             body.deckCards = deckCards;
             req.setBody(body);
             bru.setVar("lastUsedDeckCards", deckCards);
+          } else {
+            throw new Error(`Failed to create enough cards. Have ${cards.length}, need ${needed}`);
           }
         } catch (err) {
-          const cards = [
+          console.error("Failed to fetch/create cards in before-request script:", err.response ? err.response.data : err.message);
+          const fallbackCards = [
             {
               "cardId": 100,
               "section": "MAIN",
@@ -124,8 +161,7 @@ runtime:
               "quantity": 3
             }
           ];
-          bru.setVar("lastUsedDeckCards", cards);
-          console.error("Failed to fetch cards in before-request script:", err.message);
+          bru.setVar("lastUsedDeckCards", fallbackCards);
         }
         if (!bru.getVar("createdCardId")) {
           bru.setVar("createdCardId", 1);
