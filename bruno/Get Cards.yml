@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/api/cards?size=100"
+  url: "{{baseUrl}}/api/cards?type=Normal%20Monster&size=100"
   headers:
     - name: accept
       value: application/json

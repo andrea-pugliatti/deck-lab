@@ -67,7 +67,15 @@ jobs:
 
       - name: Start backend
         working-directory: backend
-        run: java -jar target/*.jar --spring.profiles.active=ci > backend.log 2>&1 &
+        run: |
+          java -jar target/*.jar --spring.profiles.active=ci \
+            --ai-generation.rate-limit.max-attempts=1000 \
+            --auth.login.rate-limit.max-attempts=1000 \
+            --auth.register.rate-limit.max-attempts=1000 \
+            --deck.validate.rate-limit.max-attempts=1000 \
+            --deck.save.rate-limit.max-attempts=1000 \
+            --refresh-token.rate-limit.max-attempts=1000 \
+            > backend.log 2>&1 &
 
       - name: Wait for backend readiness
         run: npx wait-on tcp:localhost:8080 --timeout 60000
