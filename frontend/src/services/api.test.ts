@@ -1,12 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  apiFetch,
-  getAccessToken,
-  parseResponseError,
-  parseResponseErrors,
-  setAccessToken,
-} from "./api";
+import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
+import { getAccessToken, setAccessToken } from "./auth";
 
 describe("api service", () => {
   const fetchSpy = vi.spyOn(globalThis, "fetch");
