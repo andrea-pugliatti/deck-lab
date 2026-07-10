@@ -12,7 +12,7 @@ describe("Footer component", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("DECKLAB")).toBeInTheDocument();
+    expect(screen.getByText("DeckLab")).toBeInTheDocument();
     expect(screen.getByText("Public Decks")).toBeInTheDocument();
     expect(screen.getByText("Card Database")).toBeInTheDocument();
     expect(screen.getByText("Hand Simulator")).toBeInTheDocument();

@@ -48,7 +48,7 @@ describe("Home page component", () => {
     );
 
     expect(screen.getByText("Step Into Your")).toBeInTheDocument();
-    expect(screen.getByText("Deck Lab")).toBeInTheDocument();
+    expect(screen.getByText("DeckLab")).toBeInTheDocument();
     expect(screen.getByTestId("searchbar")).toBeInTheDocument();
     expect(screen.getByTestId("showcase")).toBeInTheDocument();
   });

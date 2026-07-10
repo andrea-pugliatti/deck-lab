@@ -66,7 +66,7 @@ describe("useViewPreference hook", () => {
     expect(result.current[0]).toBe("grid");
     expect(warnSpy).toHaveBeenCalledWith(
       "localStorage view preference read failed:",
-      expect.any(Error)
+      expect.any(Error),
     );
 
     getItemSpy.mockRestore();
@@ -87,7 +87,7 @@ describe("useViewPreference hook", () => {
     expect(result.current[0]).toBe("list");
     expect(warnSpy).toHaveBeenCalledWith(
       "localStorage view preference write failed:",
-      expect.any(Error)
+      expect.any(Error),
     );
 
     setItemSpy.mockRestore();
