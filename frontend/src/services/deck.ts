@@ -4,6 +4,7 @@ import type {
   DeckCardItem,
   DeckPayload,
   ErrorPayload,
+  Page,
   Suggestion,
 } from "../types";
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
@@ -57,12 +58,34 @@ export function getDecksQueryEndpoint(params: URLSearchParams): string {
  * @returns A promise resolving to the Deck details.
  * @throws {Error} If the request fails.
  */
-export async function getDeck(id: string): Promise<Deck> {
-  const res = await apiFetch(`/api/decks/${id}`);
+export async function getDeck(id: string | number, signal?: AbortSignal): Promise<Deck> {
+  const res = await apiFetch(`/api/decks/${id}`, { signal });
   if (!res.ok) {
-    throw new Error("Failed to load deck.");
+    throw await parseResponseError(res);
   }
-  return res.json();
+  return res.json() as Promise<Deck>;
+}
+
+/**
+ * Fetches all supported formats.
+ */
+export async function getFormats(signal?: AbortSignal): Promise<string[]> {
+  const res = await apiFetch("/api/decks/formats", { signal });
+  if (!res.ok) {
+    throw await parseResponseError(res);
+  }
+  return res.json() as Promise<string[]>;
+}
+
+/**
+ * Fetches a paginated page of Deck blueprints.
+ */
+export async function getDecks(fetchUrl: string, signal?: AbortSignal): Promise<Page<Deck>> {
+  const res = await apiFetch(fetchUrl, { signal });
+  if (!res.ok) {
+    throw await parseResponseError(res);
+  }
+  return res.json() as Promise<Page<Deck>>;
 }
 
 /**

@@ -1,13 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useFetch } from "../hooks/useFetch";
 import Home from "./Home";
-
-vi.mock("../hooks/useFetch", () => ({
-  useFetch: vi.fn(),
-}));
 
 vi.mock("../components/SearchBar", () => ({
   default: () => <div data-testid="searchbar">SearchBar</div>,
@@ -35,13 +31,13 @@ vi.mock("../components/card/CardListItem", () => ({
 
 describe("Home page component", () => {
   beforeEach(() => {
-    vi.mocked(useFetch).mockReset();
+    vi.mocked(useQuery).mockReset();
   });
 
   it("should render hero headings, searchbar, and showcase", () => {
-    vi.mocked(useFetch).mockReturnValue({
+    vi.mocked(useQuery).mockReturnValue({
       data: undefined,
-      loading: true,
+      isLoading: true,
       error: undefined,
     } as any);
 
@@ -62,18 +58,13 @@ describe("Home page component", () => {
     // Call 1: Decks fetch
     // Call 2: Cards spotlight fetch
     // Call 3: Hero cards showcase fetch
-    vi.mocked(useFetch).mockImplementation((url?: string) => {
-      if (url?.includes("decks")) {
-        return {
-          data: {
-            content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
-          },
-          loading: false,
-        } as any;
-      }
+    vi.mocked(useQuery).mockImplementation(() => {
+      // Return value can be based on queryKey if needed, but since it returns mock values:
       return {
-        data: { content: [] },
-        loading: false,
+        data: {
+          content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
+        },
+        isLoading: false,
       } as any;
     });
 

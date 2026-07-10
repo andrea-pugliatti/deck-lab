@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
 
@@ -5,9 +6,8 @@ import CardGridItem from "../components/card/CardGridItem";
 import DeckGridCard from "../components/deck/DeckGridCard";
 import HeroCardShowcase from "../components/HeroCardShowcase";
 import SearchBar from "../components/SearchBar";
-import { useFetch } from "../hooks/useFetch";
-import { getCardsEndpoint } from "../services/card";
-import { getDecksQueryEndpoint } from "../services/deck";
+import { getCards, getCardsEndpoint } from "../services/card";
+import { getDecks, getDecksQueryEndpoint } from "../services/deck";
 import type { Card, Deck, Page } from "../types";
 
 /**
@@ -25,18 +25,33 @@ const heroShowcaseParams = new URLSearchParams({ q: "", type: "Effect Monster", 
  * @returns {React.JSX.Element} The rendered Home landing page.
  */
 export default function Home(): React.JSX.Element {
+  const decksUrl = getDecksQueryEndpoint(new URLSearchParams({ size: "6" }));
+  const spotlightUrl = getCardsEndpoint(spotlightParams);
+  const heroShowcaseUrl = getCardsEndpoint(new URLSearchParams(heroShowcaseParams));
+
   const {
     data: decksData,
-    loading: decksLoading,
+    isLoading: decksLoading,
     error: decksError,
-  } = useFetch<Page<Deck>>(getDecksQueryEndpoint(new URLSearchParams({ size: "6" })));
+  } = useQuery<Page<Deck>>({
+    queryKey: ["decks", decksUrl],
+    queryFn: ({ signal }) => getDecks(decksUrl, signal),
+  });
+
   const {
     data: cardsData,
-    loading: cardsLoading,
+    isLoading: cardsLoading,
     error: cardsError,
-  } = useFetch<Page<Card>>(getCardsEndpoint(spotlightParams));
-  const { data: heroShowcaseCardsData, loading: heroShowcaseCardsLoading } = useFetch<Page<Card>>(
-    getCardsEndpoint(new URLSearchParams(heroShowcaseParams)),
+  } = useQuery<Page<Card>>({
+    queryKey: ["cards", spotlightUrl],
+    queryFn: ({ signal }) => getCards(spotlightUrl, signal),
+  });
+
+  const { data: heroShowcaseCardsData, isLoading: heroShowcaseCardsLoading } = useQuery<Page<Card>>(
+    {
+      queryKey: ["cards", heroShowcaseUrl],
+      queryFn: ({ signal }) => getCards(heroShowcaseUrl, signal),
+    },
   );
 
   const decks = decksData?.content || [];
