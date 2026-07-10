@@ -1,6 +1,7 @@
 package com.deck.lab.backend.service.generation;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -9,7 +10,6 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Component;
 
 import com.deck.lab.backend.config.PromptConfig;
-import com.deck.lab.backend.dto.CardEntryDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.model.Card;
@@ -30,6 +30,14 @@ public class PromptBuilder {
         this.promptConfig = promptConfig;
     }
 
+    /**
+     * Builds a Spring AI Prompt for the initial deck drafting phase.
+     *
+     * @param request            the deck generation request parameters
+     * @param formatInstructions format-specific syntax constraints/rules for JSON
+     *                           output
+     * @return the constructed Prompt object
+     */
     public Prompt buildDraftPrompt(DeckGenerateRequestDto request, String formatInstructions) {
         String systemInstruction = null;
         if (promptConfig != null && promptConfig.getSystem() != null) {
@@ -105,6 +113,20 @@ public class PromptBuilder {
         return new Prompt(List.of(systemMessage, userMessage));
     }
 
+    /**
+     * Builds a Spring AI Prompt for the deck refinement phase, addressing
+     * unresolved cards and validation warnings.
+     *
+     * @param request            the original deck generation request parameters
+     * @param resolvedCards      list of successfully database-resolved cards from
+     *                           draft
+     * @param unresolvedNames    list of card names that could not be resolved in
+     *                           database
+     * @param validationWarnings list of format legality warning messages
+     * @param formatInstructions format-specific syntax constraints/rules for JSON
+     *                           output
+     * @return the constructed Prompt object
+     */
     public Prompt buildRefinementPrompt(
             DeckGenerateRequestDto request,
             List<ResolvedCardEntry> resolvedCards,
@@ -243,6 +265,16 @@ public class PromptBuilder {
                 .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Builds a Spring AI Prompt for generating card suggestions based on the
+     * current deck composition.
+     *
+     * @param request            the deck suggestion request containing the current
+     *                           cards list and format
+     * @param formatInstructions format-specific syntax constraints/rules for JSON
+     *                           output
+     * @return the constructed Prompt object
+     */
     public Prompt buildSuggestionPrompt(DeckSuggestRequestDto request, String formatInstructions) {
         String systemInstruction = null;
         if (promptConfig != null && promptConfig.getSystem() != null) {
@@ -315,26 +347,32 @@ public class PromptBuilder {
         return "<custom_instructions>\n" + sanitized + "\n</custom_instructions>";
     }
 
-    private String formatSuggestionCurrentCards(List<CardEntryDto> currentCards) {
+    private String formatSuggestionCurrentCards(List<CardEntry> currentCards) {
         if (currentCards == null || currentCards.isEmpty()) {
             return "(Empty Deck)";
         }
         return currentCards.stream()
                 .map(c -> {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("- ").append(c.getName())
-                      .append(" (").append(c.getSection() != null ? c.getSection().toUpperCase() : "MAIN").append(") x").append(c.getQuantity() != null ? c.getQuantity() : 1);
+                    sb.append("- ")
+                            .append(c.getName())
+                            .append(" (")
+                            .append(c.getSection() != null ? c.getSection().toUpperCase() : "MAIN")
+                            .append(") x")
+                            .append(c.getQuantity() != null ? c.getQuantity() : 1);
 
                     if (c.getName() != null) {
-                        java.util.Optional<com.deck.lab.backend.model.Card> dbCardOpt = cardRepository.findByName(c.getName().trim());
+                        Optional<Card> dbCardOpt = cardRepository
+                                .findByName(c.getName().trim());
                         if (dbCardOpt.isEmpty()) {
-                            List<com.deck.lab.backend.model.Card> fallbacks = cardRepository.findByNameContainingIgnoreCase(c.getName().trim());
+                            List<Card> fallbacks = cardRepository
+                                    .findByNameContainingIgnoreCase(c.getName().trim());
                             if (!fallbacks.isEmpty()) {
-                                dbCardOpt = java.util.Optional.of(fallbacks.get(0));
+                                dbCardOpt = Optional.of(fallbacks.get(0));
                             }
                         }
                         if (dbCardOpt.isPresent()) {
-                            com.deck.lab.backend.model.Card card = dbCardOpt.get();
+                            Card card = dbCardOpt.get();
                             if (card.getType() != null) {
                                 sb.append(", Type: ").append(card.getType().getValue());
                             }

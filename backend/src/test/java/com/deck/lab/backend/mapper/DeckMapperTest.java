@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -81,11 +81,12 @@ class DeckMapperTest {
         assertEquals(deck.getFormatName().getValue(), dto.getFormatName());
         assertEquals("yugi", dto.getCreatorUsername());
 
-        List<DeckCardDto> cardDtos = dto.getDeckCards();
+        List<DeckCardResponseDto> cardDtos = dto.getCards();
         assertNotNull(cardDtos);
         assertEquals(2, cardDtos.size());
 
-        DeckCardDto cardDto1 = cardDtos.stream().filter(c -> c.getCardId().equals(100L)).findFirst().orElseThrow();
+        DeckCardResponseDto cardDto1 = cardDtos.stream().filter(c -> c.getCardId().equals(100L)).findFirst()
+                .orElseThrow();
         assertEquals(500L, cardDto1.getId());
         assertEquals("Dark Magician", cardDto1.getName());
         assertEquals("Normal Monster", cardDto1.getType());
@@ -97,7 +98,8 @@ class DeckMapperTest {
         assertEquals("MAIN", cardDto1.getSection());
         assertEquals(3, cardDto1.getQuantity());
 
-        DeckCardDto cardDto2 = cardDtos.stream().filter(c -> c.getCardId().equals(101L)).findFirst().orElseThrow();
+        DeckCardResponseDto cardDto2 = cardDtos.stream().filter(c -> c.getCardId().equals(101L)).findFirst()
+                .orElseThrow();
         assertEquals(501L, cardDto2.getId());
         assertEquals("Blue-Eyes White Dragon", cardDto2.getName());
         assertEquals("Dragon", cardDto2.getRace());
@@ -121,13 +123,17 @@ class DeckMapperTest {
         assertEquals("Empty Deck", dto.getName());
         assertEquals("No cards inside", dto.getDescription());
         assertEquals("Speed Duel", dto.getFormatName());
-        assertNotNull(dto.getDeckCards());
-        assertTrue(dto.getDeckCards().isEmpty());
+        assertNotNull(dto.getCards());
+        assertTrue(dto.getCards().isEmpty());
     }
 
     @Test
     void toEntity_withValidDto_mapsFieldsCorrectly() {
-        DeckResponseDto dto = new DeckResponseDto(30L, "New Deck", "Some description", "Goat", new ArrayList<>());
+        DeckResponseDto dto = new DeckResponseDto();
+        dto.setId(30L);
+        dto.setName("New Deck");
+        dto.setDescription("Some description");
+        dto.setFormatName("Goat");
 
         Deck deck = deckMapper.toEntity(dto);
 
@@ -148,7 +154,11 @@ class DeckMapperTest {
         Deck deck = new Deck("Old Name", "Old Desc", Format.TCG, null);
         deck.setId(40L);
 
-        DeckResponseDto dto = new DeckResponseDto(50L, "Updated Name", "Updated Desc", "Goat", new ArrayList<>());
+        DeckResponseDto dto = new DeckResponseDto();
+        dto.setId(50L);
+        dto.setName("Updated Name");
+        dto.setDescription("Updated Desc");
+        dto.setFormatName("Goat");
 
         deckMapper.updateEntityFromDto(dto, deck);
 
@@ -176,7 +186,7 @@ class DeckMapperTest {
         DeckCard deckCard = new DeckCard(deck, card, DeckSection.MAIN, 3);
         deckCard.setId(100L);
 
-        DeckCardDto dto = deckMapper.toDeckCardDto(deckCard);
+        DeckCardResponseDto dto = deckMapper.toDeckCardDto(deckCard);
 
         assertNotNull(dto);
         assertEquals(100L, dto.getId());
@@ -197,7 +207,7 @@ class DeckMapperTest {
         DeckCard deckCard = new DeckCard(null, null, DeckSection.SIDE, 1);
         deckCard.setId(200L);
 
-        DeckCardDto dto = deckMapper.toDeckCardDto(deckCard);
+        DeckCardResponseDto dto = deckMapper.toDeckCardDto(deckCard);
 
         assertNotNull(dto);
         assertEquals(200L, dto.getId());

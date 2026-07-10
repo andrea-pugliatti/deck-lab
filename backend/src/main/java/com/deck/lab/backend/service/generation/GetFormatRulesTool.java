@@ -11,9 +11,10 @@ import com.deck.lab.backend.validation.rules.FormatDeckLimits;
 import com.deck.lab.backend.validation.rules.DeckSizeLimits;
 
 /**
- * Tool function enabling the AI model to query database rules (banlists) for a format.
+ * Tool function enabling the AI model to query database rules (banlists) for a
+ * format.
  */
-public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRulesRequest, GetFormatRulesTool.FormatRulesResponse> {
+public class GetFormatRulesTool implements Function<FormatRulesRequest, FormatRulesResponse> {
 
     private final FormatRulesRepository formatRulesRepository;
 
@@ -21,6 +22,13 @@ public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRul
         this.formatRulesRepository = formatRulesRepository;
     }
 
+    /**
+     * Executes the format rules retrieval tool, querying database rules and deck
+     * sizes.
+     *
+     * @param request the format rules request containing the target format name
+     * @return a structured FormatRulesResponse containing banlist data and sizes
+     */
     @Override
     public FormatRulesResponse apply(FormatRulesRequest request) {
         if (request.format() == null || request.format().isBlank()) {
@@ -31,7 +39,8 @@ public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRul
         try {
             format = Format.fromString(request.format().trim());
         } catch (IllegalArgumentException e) {
-            return new FormatRulesResponse(request.format(), List.of(), "Unknown format: " + request.format() + ". Supported: GOAT, EDISON, TENGU_PLANT, HAT, OCG, TCG.");
+            return new FormatRulesResponse(request.format(), List.of(),
+                    "Unknown format: " + request.format() + ". Supported: GOAT, EDISON, TENGU_PLANT, HAT, OCG, TCG.");
         }
 
         List<FormatRules> rules = formatRulesRepository.findByFormatName(format);
@@ -41,8 +50,7 @@ public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRul
                 if (rule.getCard() != null) {
                     ruleInfos.add(new FormatRuleInfo(
                             rule.getCard().getName(),
-                            rule.getStatus() != null ? rule.getStatus().name() : "UNKNOWN"
-                    ));
+                            rule.getStatus() != null ? rule.getStatus().name() : "UNKNOWN"));
                 }
             }
         }
@@ -56,25 +64,6 @@ public class GetFormatRulesTool implements Function<GetFormatRulesTool.FormatRul
                 limits.maxMainSize(),
                 limits.maxExtraSize(),
                 limits.maxSideSize(),
-                null
-        );
-    }
-
-    public record FormatRulesRequest(String format) {}
-
-    public record FormatRuleInfo(String cardName, String status) {}
-
-    public record FormatRulesResponse(
-            String format,
-            List<FormatRuleInfo> rules,
-            Integer minMainSize,
-            Integer maxMainSize,
-            Integer maxExtraSize,
-            Integer maxSideSize,
-            String error
-    ) {
-        public FormatRulesResponse(String format, List<FormatRuleInfo> rules, String error) {
-            this(format, rules, null, null, null, null, error);
-        }
+                null);
     }
 }

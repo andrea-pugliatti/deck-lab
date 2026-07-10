@@ -19,13 +19,12 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.deck.lab.backend.config.PromptConfig;
-import com.deck.lab.backend.dto.CardEntryDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
-import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
-import com.deck.lab.backend.dto.response.DeckCardDto;
-import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
+import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardType;
@@ -131,7 +130,7 @@ class AiGenerationSubModulesTest {
     @Test
     void testResponseParser() {
         String rawGenResponse = "{\"name\": \"Lightsworn Mill\", \"description\": \"Fast milling deck\", \"cards\": [{\"name\": \"Judgment Dragon\", \"section\": \"MAIN\", \"quantity\": 3}]}";
-        DeckGenerateAiResponseDto genResponse = responseParser.parseGenerationResponse(rawGenResponse);
+        DeckGenerateAiResponse genResponse = responseParser.parseGenerationResponse(rawGenResponse);
 
         assertNotNull(genResponse);
         assertEquals("Lightsworn Mill", genResponse.getName());
@@ -139,7 +138,7 @@ class AiGenerationSubModulesTest {
         assertEquals("Judgment Dragon", genResponse.getCards().get(0).getName());
 
         String rawSuggestResponse = "{\"suggestions\": [{\"name\": \"Solar Recharge\", \"section\": \"MAIN\", \"synergyReason\": \"Draw and mill.\"}]}";
-        CardSuggestionsAiResponseDto suggestResponse = responseParser.parseSuggestionResponse(rawSuggestResponse);
+        CardSuggestionListResponseDto suggestResponse = responseParser.parseSuggestionResponse(rawSuggestResponse);
 
         assertNotNull(suggestResponse);
         assertEquals(1, suggestResponse.getSuggestions().size());
@@ -155,9 +154,9 @@ class AiGenerationSubModulesTest {
 
         when(cardRepository.findByName("Judgment Dragon")).thenReturn(Optional.of(jdCard));
 
-        List<CardEntryDto> rawEntries = List.of(
-                new CardEntryDto("Judgment Dragon", "MAIN", 3),
-                new CardEntryDto("Unknown Card", "EXTRA", 1));
+        List<CardEntry> rawEntries = List.of(
+                new CardEntry("Judgment Dragon", "MAIN", 3),
+                new CardEntry("Unknown Card", "EXTRA", 1));
 
         List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
 
@@ -192,8 +191,8 @@ class AiGenerationSubModulesTest {
 
         when(cardRepository.findByNameContainingIgnoreCase("Honest")).thenReturn(List.of(card));
 
-        CardSearchTool.CardSearchResponse response = cardSearchTool
-                .apply(new CardSearchTool.CardSearchRequest("Honest"));
+        CardSearchResponse response = cardSearchTool
+                .apply(new CardSearchRequest("Honest"));
 
         assertNotNull(response);
         assertEquals(1, response.results().size());
@@ -219,7 +218,7 @@ class AiGenerationSubModulesTest {
         assertEquals(DeckSection.MAIN, deck.getDeckCards().get(0).getSection());
         assertEquals(3, deck.getDeckCards().get(0).getQuantity());
 
-        List<DeckCardDto> dtos = deckAssembler.toDeckCardDtos(resolved);
+        List<DeckCardResponseDto> dtos = deckAssembler.toDeckCardDtos(resolved);
         assertEquals(1, dtos.size());
         assertEquals("Judgment Dragon", dtos.get(0).getName());
         assertEquals(3, dtos.get(0).getQuantity());
@@ -231,9 +230,8 @@ class AiGenerationSubModulesTest {
         card.setId(5L);
         card.setName("Judgment Dragon");
 
-        List<DeckCardDto> dtos = List.of(
-                new DeckCardDto(1L, 5L, "Judgment Dragon", "Effect Monster", "Desc", "Dragon", "Light", "None", "url",
-                        "MAIN", 3));
+        List<DeckCardRequestDto> dtos = List.of(
+                new DeckCardRequestDto(1L, 5L, "MAIN", 3));
         Map<Long, Card> cardMap = Map.of(5L, card);
 
         Deck deck = deckAssembler.assembleDeckFromDtos("Test Deck", "Edison", dtos, cardMap);
@@ -281,7 +279,7 @@ class AiGenerationSubModulesTest {
         when(cardRepository.findByName("Honest")).thenReturn(Optional.of(detailsCard));
 
         CardDetailsTool tool = new CardDetailsTool(cardRepository);
-        CardDetailsTool.CardDetailsResponse response = tool.apply(new CardDetailsTool.CardDetailsRequest("Honest"));
+        CardDetailsResponse response = tool.apply(new CardDetailsRequest("Honest"));
 
         assertNotNull(response);
         assertEquals("Honest", response.name());
@@ -303,8 +301,8 @@ class AiGenerationSubModulesTest {
         when(formatRulesRepository.findByFormatName(Format.EDISON)).thenReturn(List.of(rule));
 
         GetFormatRulesTool tool = new GetFormatRulesTool(formatRulesRepository);
-        GetFormatRulesTool.FormatRulesResponse response = tool
-                .apply(new GetFormatRulesTool.FormatRulesRequest("Edison"));
+        FormatRulesResponse response = tool
+                .apply(new FormatRulesRequest("Edison"));
 
         assertNotNull(response);
         assertEquals("EDISON", response.format());
@@ -324,8 +322,8 @@ class AiGenerationSubModulesTest {
                 .thenReturn(List.of(card));
 
         GetArchetypeCardsTool tool = new GetArchetypeCardsTool(cardRepository);
-        GetArchetypeCardsTool.ArchetypeCardsResponse response = tool
-                .apply(new GetArchetypeCardsTool.ArchetypeCardsRequest("Lightsworn"));
+        ArchetypeCardsResponse response = tool
+                .apply(new ArchetypeCardsRequest("Lightsworn"));
 
         assertNotNull(response);
         assertEquals("Lightsworn", response.archetype());
@@ -356,8 +354,8 @@ class AiGenerationSubModulesTest {
         when(cardRepository.findByName("Beckoning Light")).thenReturn(Optional.of(trap));
 
         AnalyzeDeckStatsTool tool = new AnalyzeDeckStatsTool(cardRepository);
-        AnalyzeDeckStatsTool.DeckStatsResponse response = tool.apply(
-                new AnalyzeDeckStatsTool.DeckStatsRequest(
+        DeckStatsResponse response = tool.apply(
+                new DeckStatsRequest(
                         List.of("Judgment Dragon", "Solar Recharge", "Beckoning Light")));
 
         assertNotNull(response);
@@ -378,9 +376,9 @@ class AiGenerationSubModulesTest {
         assertTrue(cardResolver.resolveCards(List.of()).isEmpty());
         assertTrue(cardResolver.resolveSuggestions(List.of()).isEmpty());
 
-        List<CardEntryDto> rawEntries = List.of(
-                new CardEntryDto(null, "MAIN", 3),
-                new CardEntryDto("  ", "MAIN", 3));
+        List<CardEntry> rawEntries = List.of(
+                new CardEntry(null, "MAIN", 3),
+                new CardEntry("  ", "MAIN", 3));
         assertTrue(cardResolver.resolveCards(rawEntries).isEmpty());
     }
 
@@ -393,11 +391,11 @@ class AiGenerationSubModulesTest {
 
         when(cardRepository.findByName("Sangan")).thenReturn(Optional.of(card));
 
-        List<CardEntryDto> rawEntries = List.of(
-                new CardEntryDto("Sangan", "MAIN", null),
-                new CardEntryDto("Sangan", "MAIN", 0),
-                new CardEntryDto("Sangan", "MAIN", -5),
-                new CardEntryDto("Sangan", "MAIN", 5));
+        List<CardEntry> rawEntries = List.of(
+                new CardEntry("Sangan", "MAIN", null),
+                new CardEntry("Sangan", "MAIN", 0),
+                new CardEntry("Sangan", "MAIN", -5),
+                new CardEntry("Sangan", "MAIN", 5));
 
         List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
         assertEquals(4, resolved.size());
@@ -406,11 +404,11 @@ class AiGenerationSubModulesTest {
         assertEquals(1, resolved.get(2).quantity());
         assertEquals(3, resolved.get(3).quantity());
 
-        List<CardEntryDto> sectionEntries = List.of(
-                new CardEntryDto("Sangan", null, 1),
-                new CardEntryDto("Sangan", "INVALID_SECTION", 1),
-                new CardEntryDto("Sangan", "side", 1),
-                new CardEntryDto("Sangan", "EXTRA", 1));
+        List<CardEntry> sectionEntries = List.of(
+                new CardEntry("Sangan", null, 1),
+                new CardEntry("Sangan", "INVALID_SECTION", 1),
+                new CardEntry("Sangan", "side", 1),
+                new CardEntry("Sangan", "EXTRA", 1));
 
         List<ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
         assertEquals(4, resolvedSections.size());

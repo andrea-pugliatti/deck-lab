@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
@@ -63,11 +64,11 @@ public class DeckAssembler {
      * map.
      * Useful for eliminating duplication in validation routines.
      */
-    public Deck assembleDeckFromDtos(String name, String formatName, List<DeckCardDto> cardDtos,
+    public Deck assembleDeckFromDtos(String name, String formatName, List<DeckCardRequestDto> cardDtos,
             Map<Long, Card> cardMap) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
         if (cardDtos != null && cardMap != null) {
-            for (DeckCardDto dto : cardDtos) {
+            for (DeckCardRequestDto dto : cardDtos) {
                 Card card = cardMap.get(dto.getCardId());
                 if (card != null) {
                     resolved.add(new ResolvedCardEntry(card, dto.getSection(), dto.getQuantity()));
@@ -83,8 +84,8 @@ public class DeckAssembler {
      * @param resolvedCards list of database resolved cards
      * @return a list of mapped DeckCardDto objects
      */
-    public List<DeckCardDto> toDeckCardDtos(List<ResolvedCardEntry> resolvedCards) {
-        List<DeckCardDto> dtos = new ArrayList<>();
+    public List<DeckCardResponseDto> toDeckCardDtos(List<ResolvedCardEntry> resolvedCards) {
+        List<DeckCardResponseDto> dtos = new ArrayList<>();
         if (resolvedCards == null) {
             return dtos;
         }
@@ -92,7 +93,7 @@ public class DeckAssembler {
         long tempIdCounter = 1;
         for (ResolvedCardEntry entry : resolvedCards) {
             Card card = entry.card();
-            dtos.add(new DeckCardDto(
+            dtos.add(new DeckCardResponseDto(
                     tempIdCounter++,
                     card.getId(),
                     card.getName(),

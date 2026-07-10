@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.Card;
@@ -59,10 +59,10 @@ class DeckValidationServiceTest {
         testCard = testCards.get(0);
     }
 
-    private List<DeckCardDto> createValidDeckCards() {
-        List<DeckCardDto> cardDtos = new ArrayList<>();
+    private List<DeckCardRequestDto> createValidDeckCards() {
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-            DeckCardDto cardDto = new DeckCardDto();
+            DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
             cardDto.setSection("MAIN");
             cardDto.setQuantity(3);

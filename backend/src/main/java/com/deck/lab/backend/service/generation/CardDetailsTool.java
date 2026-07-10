@@ -8,9 +8,10 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
 
 /**
- * Tool function enabling the AI model to query full details (ATK, DEF, effect text, etc.) of a card.
+ * Tool function enabling the AI model to query full details (ATK, DEF, effect
+ * text, etc.) of a card.
  */
-public class CardDetailsTool implements Function<CardDetailsTool.CardDetailsRequest, CardDetailsTool.CardDetailsResponse> {
+public class CardDetailsTool implements Function<CardDetailsRequest, CardDetailsResponse> {
 
     private final CardRepository cardRepository;
 
@@ -18,10 +19,19 @@ public class CardDetailsTool implements Function<CardDetailsTool.CardDetailsRequ
         this.cardRepository = cardRepository;
     }
 
+    /**
+     * Executes the card details retrieval tool, fetching complete statistics and
+     * descriptions of a card by name.
+     *
+     * @param request the card details request containing the target card name
+     * @return a structured CardDetailsResponse containing full card properties or
+     *         an error message
+     */
     @Override
     public CardDetailsResponse apply(CardDetailsRequest request) {
         if (request.name() == null || request.name().isBlank()) {
-            return new CardDetailsResponse(null, null, null, "Card name is empty.", null, null, null, null, null, null, null, null, null, null);
+            return new CardDetailsResponse(null, null, null, "Card name is empty.", null, null, null, null, null, null,
+                    null, null, null, null);
         }
 
         // Try exact match first
@@ -35,7 +45,8 @@ public class CardDetailsTool implements Function<CardDetailsTool.CardDetailsRequ
         }
 
         if (cardOpt.isEmpty()) {
-            return new CardDetailsResponse(null, null, null, "Card not found: " + request.name(), null, null, null, null, null, null, null, null, null, null);
+            return new CardDetailsResponse(null, null, null, "Card not found: " + request.name(), null, null, null,
+                    null, null, null, null, null, null, null);
         }
 
         Card c = cardOpt.get();
@@ -53,26 +64,6 @@ public class CardDetailsTool implements Function<CardDetailsTool.CardDetailsRequ
                 c.getLinkVal(),
                 c.getScale(),
                 c.getImageUrl(),
-                c.getImageUrlCropped()
-        );
+                c.getImageUrlCropped());
     }
-
-    public record CardDetailsRequest(String name) {}
-
-    public record CardDetailsResponse(
-            Long id,
-            String name,
-            String type,
-            String description,
-            String race,
-            String attribute,
-            String archetype,
-            Integer atk,
-            Integer def,
-            Integer level,
-            Integer linkVal,
-            Integer scale,
-            String imageUrl,
-            String imageUrlCropped
-    ) {}
 }

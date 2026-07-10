@@ -11,7 +11,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 
 import jakarta.validation.ConstraintViolation;
@@ -65,67 +65,67 @@ class DeckDtoValidationTest {
 
     @Test
     void validate_withNullCardId_failsValidation() {
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(null); // Invalid
         cardDto.setSection("MAIN");
         cardDto.setQuantity(2);
 
-        Set<ConstraintViolation<DeckCardDto>> violations = validator.validate(cardDto);
+        Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
         assertEquals(1, violations.size());
         assertEquals("Card ID is required", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withBlankSection_failsValidation() {
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
         cardDto.setSection(""); // Invalid
         cardDto.setQuantity(2);
 
-        Set<ConstraintViolation<DeckCardDto>> violations = validator.validate(cardDto);
+        Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
         assertEquals(1, violations.size());
         assertEquals("Section is required", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withQuantityTooLow_failsValidation() {
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
         cardDto.setSection("MAIN");
         cardDto.setQuantity(0); // Invalid (min 1)
 
-        Set<ConstraintViolation<DeckCardDto>> violations = validator.validate(cardDto);
+        Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
         assertEquals(1, violations.size());
         assertEquals("Quantity must be at least 1", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withQuantityTooHigh_failsValidation() {
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
         cardDto.setSection("MAIN");
         cardDto.setQuantity(4); // Invalid (max 3)
 
-        Set<ConstraintViolation<DeckCardDto>> violations = validator.validate(cardDto);
+        Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
         assertEquals(1, violations.size());
         assertEquals("Quantity cannot exceed 3", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withNullQuantity_failsValidation() {
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
         cardDto.setSection("MAIN");
         cardDto.setQuantity(null); // Invalid
 
-        Set<ConstraintViolation<DeckCardDto>> violations = validator.validate(cardDto);
+        Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
         assertEquals(1, violations.size());
         assertEquals("Quantity is required", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withNestedInvalidCard_failsValidation() {
-        DeckCardDto invalidCardDto = new DeckCardDto();
+        DeckCardRequestDto invalidCardDto = new DeckCardRequestDto();
         invalidCardDto.setCardId(1L);
         invalidCardDto.setSection("MAIN");
         invalidCardDto.setQuantity(5); // Invalid quantity (>3)

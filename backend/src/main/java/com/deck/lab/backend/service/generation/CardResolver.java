@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.deck.lab.backend.dto.CardEntryDto;
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.repository.CardRepository;
@@ -31,13 +30,13 @@ public class CardResolver {
      * @return a list of resolved card entries containing the database entity and
      *         quantity
      */
-    public List<ResolvedCardEntry> resolveCards(List<CardEntryDto> entries) {
+    public List<ResolvedCardEntry> resolveCards(List<CardEntry> entries) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
         if (entries == null) {
             return resolved;
         }
 
-        for (CardEntryDto entry : entries) {
+        for (CardEntry entry : entries) {
             if (entry.getName() == null || entry.getName().isBlank()) {
                 continue;
             }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
@@ -23,17 +25,17 @@ import jakarta.validation.constraints.NotBlank;
  * </p>
  *
  * <p>
- * <strong>Recursive Validation with {@code @Valid}:</strong>
+ * <strong>Dual-role field design:</strong>
  * </p>
- * <p>
- * By placing the {@code @Valid} annotation on the {@code deckCards} collection
- * field, we instruct the Spring validation engine to recursively descend and
- * execute validation constraints declared on each {@link DeckCardDto} element
- * in the list. If any card inside the list violates its validation constraints
- * (e.g. quantity exceeding 3), the parent object will fail validation, and
- * Spring will raise a {@code MethodArgumentNotValidException} before executing
- * the controller code.
- * </p>
+ * <ul>
+ * <li>{@code deckCards}: Inbound field. Accepts the client request payload —
+ * only {@code cardId}, {@code section}, and {@code quantity} are read from this
+ * list. Decorated with {@code @Valid} to trigger recursive bean validation on
+ * each {@link DeckCardRequestDto} element.</li>
+ * <li>{@code cards}: Outbound field. Populated by the mapper when building the
+ * server response — includes enriched card attributes (name, type, imageUrl,
+ * etc.) resolved from the database.</li>
+ * </ul>
  */
 public class DeckResponseDto {
 
@@ -47,22 +49,22 @@ public class DeckResponseDto {
     @NotBlank(message = "Format name is required")
     private String formatName;
 
+    /**
+     * Inbound card slots from the client request. Validated on write operations.
+     */
     @Valid
-    private List<DeckCardDto> deckCards = new ArrayList<>();
+    private List<DeckCardRequestDto> deckCards = new ArrayList<>();
+
+    /**
+     * Outbound enriched card details populated by the server on read operations.
+     */
+    private List<DeckCardResponseDto> cards = new ArrayList<>();
 
     private LocalDateTime updatedAt;
 
     private String creatorUsername;
 
     public DeckResponseDto() {
-    }
-
-    public DeckResponseDto(Long id, String name, String description, String formatName, List<DeckCardDto> deckCards) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.formatName = formatName;
-        this.deckCards = deckCards;
     }
 
     public Long getId() {
@@ -97,12 +99,20 @@ public class DeckResponseDto {
         this.formatName = formatName;
     }
 
-    public List<DeckCardDto> getDeckCards() {
+    public List<DeckCardRequestDto> getDeckCards() {
         return deckCards;
     }
 
-    public void setDeckCards(List<DeckCardDto> deckCards) {
+    public void setDeckCards(List<DeckCardRequestDto> deckCards) {
         this.deckCards = deckCards;
+    }
+
+    public List<DeckCardResponseDto> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<DeckCardResponseDto> cards) {
+        this.cards = cards;
     }
 
     public LocalDateTime getUpdatedAt() {

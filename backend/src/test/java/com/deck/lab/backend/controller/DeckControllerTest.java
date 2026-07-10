@@ -28,7 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -134,8 +134,8 @@ public class DeckControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("ControllerTest Deck")))
                 .andExpect(jsonPath("$.formatName", is("TCG")))
-                .andExpect(jsonPath("$.deckCards", hasSize(1)))
-                .andExpect(jsonPath("$.deckCards[0].cardId", is(testCard.getId().intValue())));
+                .andExpect(jsonPath("$.cards", hasSize(1)))
+                .andExpect(jsonPath("$.cards[0].cardId", is(testCard.getId().intValue())));
     }
 
     @Test
@@ -155,10 +155,10 @@ public class DeckControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private List<DeckCardDto> createValidDeckCards() {
-        List<DeckCardDto> cardDtos = new ArrayList<>();
+    private List<DeckCardRequestDto> createValidDeckCards() {
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-            DeckCardDto cardDto = new DeckCardDto();
+            DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
             cardDto.setSection("MAIN");
             cardDto.setQuantity(3);
@@ -230,15 +230,15 @@ public class DeckControllerTest {
 
     @Test
     void testUpdateDeckAuthorized() throws Exception {
-        List<DeckCardDto> cardDtos = new ArrayList<>();
-        DeckCardDto sideCard = new DeckCardDto();
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
+        DeckCardRequestDto sideCard = new DeckCardRequestDto();
         sideCard.setCardId(testCards.get(0).getId());
         sideCard.setSection("SIDE");
         sideCard.setQuantity(1);
         cardDtos.add(sideCard);
 
         for (int i = 1; i <= 14; i++) {
-            DeckCardDto mainCard = new DeckCardDto();
+            DeckCardRequestDto mainCard = new DeckCardRequestDto();
             mainCard.setCardId(testCards.get(i).getId());
             mainCard.setSection("MAIN");
             mainCard.setQuantity(3);
@@ -259,8 +259,8 @@ public class DeckControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("ControllerTest Deck Updated")))
                 .andExpect(jsonPath("$.formatName", is("Edison")))
-                .andExpect(jsonPath("$.deckCards[0].quantity", is(1)))
-                .andExpect(jsonPath("$.deckCards[0].section", is("SIDE")));
+                .andExpect(jsonPath("$.cards[0].quantity", is(1)))
+                .andExpect(jsonPath("$.cards[0].section", is("SIDE")));
     }
 
     @Test

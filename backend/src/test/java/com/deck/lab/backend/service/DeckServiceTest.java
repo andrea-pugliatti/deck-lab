@@ -20,7 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.Card;
@@ -103,10 +104,10 @@ class DeckServiceTest {
         testDeck = deckRepository.save(testDeck);
     }
 
-    private List<DeckCardDto> createValidDeckCards() {
-        List<DeckCardDto> cardDtos = new ArrayList<>();
+    private List<DeckCardRequestDto> createValidDeckCards() {
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-            DeckCardDto cardDto = new DeckCardDto();
+            DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
             cardDto.setSection("MAIN");
             cardDto.setQuantity(3);
@@ -134,8 +135,8 @@ class DeckServiceTest {
         assertNotNull(result);
         assertEquals(testDeck.getId(), result.getId());
         assertEquals("ServiceTest Deck", result.getName());
-        assertEquals(1, result.getDeckCards().size());
-        assertEquals(testCard.getId(), result.getDeckCards().get(0).getCardId());
+        assertEquals(1, result.getCards().size());
+        assertEquals(testCard.getId(), result.getCards().get(0).getCardId());
     }
 
     @Test
@@ -157,8 +158,8 @@ class DeckServiceTest {
         assertNotNull(result.getId());
         assertEquals("New Created Deck", result.getName());
         assertEquals("Goat", result.getFormatName());
-        assertEquals(14, result.getDeckCards().size());
-        assertEquals(3, result.getDeckCards().get(0).getQuantity());
+        assertEquals(14, result.getCards().size());
+        assertEquals(3, result.getCards().get(0).getQuantity());
 
         Optional<Deck> savedDeck = deckRepository.findById(result.getId());
         assertTrue(savedDeck.isPresent());
@@ -167,7 +168,7 @@ class DeckServiceTest {
 
     @Test
     void createDeck_whenCardNotFound_throwsDeckValidationException() {
-        List<DeckCardDto> cardDtos = createValidDeckCards();
+        List<DeckCardRequestDto> cardDtos = createValidDeckCards();
         cardDtos.get(0).setCardId(999999L); // Replace first card with non-existent ID
 
         DeckResponseDto requestDto = new DeckResponseDto();
@@ -183,7 +184,7 @@ class DeckServiceTest {
     @Test
     void createDeck_whenDeckSizeInvalid_throwsDeckValidationException() {
         // Only 1 card (qty 3) = size 3, which is less than 40
-        DeckCardDto cardDto = new DeckCardDto();
+        DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(testCard.getId());
         cardDto.setSection("MAIN");
         cardDto.setQuantity(3);
@@ -200,18 +201,18 @@ class DeckServiceTest {
 
     @Test
     void updateDeck_whenAuthorized_updatesDeckFieldsAndCards() {
-        List<DeckCardDto> validCards = createValidDeckCards();
+        List<DeckCardRequestDto> validCards = createValidDeckCards();
         // Modify the first card's quantity to 1 (still total = 42 - 2 = 40 cards, which
         // is valid)
         validCards.get(0).setQuantity(1);
 
         // Add a Fusion Monster in EXTRA section
-        DeckCardDto extraCardDto = new DeckCardDto();
+        DeckCardRequestDto extraCardDto = new DeckCardRequestDto();
         extraCardDto.setCardId(testFusionCard.getId());
         extraCardDto.setSection("EXTRA");
         extraCardDto.setQuantity(2);
 
-        List<DeckCardDto> newCardsList = new ArrayList<>(validCards);
+        List<DeckCardRequestDto> newCardsList = new ArrayList<>(validCards);
         newCardsList.add(extraCardDto);
 
         DeckResponseDto updateRequest = new DeckResponseDto();
@@ -224,14 +225,15 @@ class DeckServiceTest {
         assertEquals("ServiceTest Deck Updated", result.getName());
         assertEquals("An updated description", result.getDescription());
         assertEquals("Edison", result.getFormatName());
-        assertEquals(15, result.getDeckCards().size());
+        assertEquals(15, result.getCards().size());
 
-        DeckCardDto resFirst = result.getDeckCards().stream().filter(c -> c.getCardId().equals(testCard.getId()))
+        DeckCardResponseDto resFirst = result.getCards().stream()
+                .filter(c -> c.getCardId().equals(testCard.getId()))
                 .findFirst().orElseThrow();
         assertEquals(1, resFirst.getQuantity());
         assertEquals("MAIN", resFirst.getSection());
 
-        DeckCardDto resSecond = result.getDeckCards().stream()
+        DeckCardResponseDto resSecond = result.getCards().stream()
                 .filter(c -> c.getCardId().equals(testFusionCard.getId())).findFirst().orElseThrow();
         assertEquals(2, resSecond.getQuantity());
         assertEquals("EXTRA", resSecond.getSection());
@@ -239,7 +241,7 @@ class DeckServiceTest {
 
     @Test
     void updateDeck_withPopulatedIds_doesNotThrowLockingException() {
-        List<DeckCardDto> validCards = createValidDeckCards();
+        List<DeckCardRequestDto> validCards = createValidDeckCards();
         DeckResponseDto updateRequest = new DeckResponseDto();
         updateRequest.setName("ServiceTest Deck Initial");
         updateRequest.setDescription("Initial state");
@@ -247,16 +249,32 @@ class DeckServiceTest {
         updateRequest.setDeckCards(validCards);
 
         DeckResponseDto firstResult = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
-        assertNotNull(firstResult.getDeckCards().get(0).getId());
+        assertNotNull(firstResult.getCards().get(0).getId());
 
-        firstResult.getDeckCards().get(0).setQuantity(2);
+        // Build a new request list from the response, adjusting quantity
+        List<DeckCardRequestDto> updatedCards = firstResult.getCards().stream()
+                .map(c -> {
+                    DeckCardRequestDto req = new DeckCardRequestDto();
+                    req.setId(c.getId());
+                    req.setCardId(c.getCardId());
+                    req.setSection(c.getSection());
+                    req.setQuantity(c.getCardId().equals(validCards.get(0).getCardId()) ? 2 : c.getQuantity());
+                    return req;
+                })
+                .toList();
+
+        DeckResponseDto secondRequest = new DeckResponseDto();
+        secondRequest.setName("ServiceTest Deck Initial");
+        secondRequest.setDescription("Initial state");
+        secondRequest.setFormatName("TCG");
+        secondRequest.setDeckCards(updatedCards);
 
         assertDoesNotThrow(() -> {
-            deckService.updateDeck(testDeck.getId(), firstResult, testUser);
+            deckService.updateDeck(testDeck.getId(), secondRequest, testUser);
         });
 
         DeckResponseDto finalResult = deckService.getDeckById(testDeck.getId());
-        assertEquals(2, finalResult.getDeckCards().get(0).getQuantity());
+        assertEquals(2, finalResult.getCards().get(0).getQuantity());
     }
 
     @Test

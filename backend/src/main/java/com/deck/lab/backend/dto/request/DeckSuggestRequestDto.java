@@ -3,7 +3,7 @@ package com.deck.lab.backend.dto.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.deck.lab.backend.dto.CardEntryDto;
+import com.deck.lab.backend.service.generation.CardEntry;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,12 +27,12 @@ public class DeckSuggestRequestDto {
     private String formatName;
 
     @NotNull(message = "Current cards list is required")
-    private List<CardEntryDto> currentCards = new ArrayList<>();
+    private List<CardEntry> currentCards = new ArrayList<>();
 
     public DeckSuggestRequestDto() {
     }
 
-    public DeckSuggestRequestDto(String formatName, List<CardEntryDto> currentCards) {
+    public DeckSuggestRequestDto(String formatName, List<CardEntry> currentCards) {
         this.formatName = formatName;
         this.currentCards = currentCards;
     }
@@ -45,11 +45,11 @@ public class DeckSuggestRequestDto {
         this.formatName = formatName;
     }
 
-    public List<CardEntryDto> getCurrentCards() {
+    public List<CardEntry> getCurrentCards() {
         return currentCards;
     }
 
-    public void setCurrentCards(List<CardEntryDto> currentCards) {
+    public void setCurrentCards(List<CardEntry> currentCards) {
         this.currentCards = currentCards;
     }
 }

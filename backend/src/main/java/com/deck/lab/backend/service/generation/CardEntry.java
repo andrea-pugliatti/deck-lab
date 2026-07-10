@@ -1,4 +1,4 @@
-package com.deck.lab.backend.dto;
+package com.deck.lab.backend.service.generation;
 
 /**
  * Data Transfer Object (DTO) mapping raw card entries returned from the AI LLM
@@ -22,7 +22,7 @@ package com.deck.lab.backend.dto;
  * internal logic from potential LLM formatting anomalies.
  * </p>
  */
-public class CardEntryDto {
+public class CardEntry {
 
     private String name;
 
@@ -33,10 +33,10 @@ public class CardEntryDto {
 
     private Integer quantity;
 
-    public CardEntryDto() {
+    public CardEntry() {
     }
 
-    public CardEntryDto(String name, String section, Integer quantity) {
+    public CardEntry(String name, String section, Integer quantity) {
         this.name = name;
         this.section = section;
         this.quantity = quantity;

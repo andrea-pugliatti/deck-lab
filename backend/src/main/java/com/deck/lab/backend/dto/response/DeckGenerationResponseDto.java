@@ -12,7 +12,8 @@ import java.util.List;
  * </p>
  * <p>
  * Unlike raw AI responses, this DTO contains fully resolved database entities
- * (translated to {@link DeckCardDto}) along with a list of validation warnings
+ * (translated to {@link DeckCardResponseDto}) along with a list of validation
+ * warnings
  * (such as card limit issues or unknown cards). Returning validation warning
  * lists directly to the client enables a rich user interface experience where
  * users can see what formatting corrections were automatically applied to their
@@ -23,14 +24,14 @@ public class DeckGenerationResponseDto {
     private String name;
     private String description;
     private String formatName;
-    private List<DeckCardDto> deckCards = new ArrayList<>();
+    private List<DeckCardResponseDto> deckCards = new ArrayList<>();
     private List<String> validationWarnings = new ArrayList<>();
 
     public DeckGenerationResponseDto() {
     }
 
     public DeckGenerationResponseDto(String name, String description, String formatName,
-            List<DeckCardDto> deckCards, List<String> validationWarnings) {
+            List<DeckCardResponseDto> deckCards, List<String> validationWarnings) {
         this.name = name;
         this.description = description;
         this.formatName = formatName;
@@ -62,11 +63,11 @@ public class DeckGenerationResponseDto {
         this.formatName = formatName;
     }
 
-    public List<DeckCardDto> getDeckCards() {
+    public List<DeckCardResponseDto> getDeckCards() {
         return deckCards;
     }
 
-    public void setDeckCards(List<DeckCardDto> deckCards) {
+    public void setDeckCards(List<DeckCardResponseDto> deckCards) {
         this.deckCards = deckCards;
     }
 

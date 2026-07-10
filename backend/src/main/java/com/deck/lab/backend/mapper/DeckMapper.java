@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
@@ -42,20 +42,20 @@ public class DeckMapper {
      * @return the populated DeckDto representation
      */
     public DeckResponseDto toDto(Deck deck) {
-        List<DeckCardDto> cardDtos = deck.getDeckCards() != null
+        List<DeckCardResponseDto> cardDtos = deck.getDeckCards() != null
                 ? deck.getDeckCards().stream().map(this::toDeckCardDto).toList()
                 : new ArrayList<>();
         String formatStr = deck.getFormatName() != null ? deck.getFormatName().getValue() : null;
-        DeckResponseDto dto = new DeckResponseDto(
-                deck.getId(),
-                deck.getName(),
-                deck.getDescription(),
-                formatStr,
-                cardDtos);
+        DeckResponseDto dto = new DeckResponseDto();
+        dto.setId(deck.getId());
+        dto.setName(deck.getName());
+        dto.setDescription(deck.getDescription());
+        dto.setFormatName(formatStr);
         dto.setUpdatedAt(deck.getUpdatedAt());
         if (deck.getUser() != null) {
             dto.setCreatorUsername(deck.getUser().getUsername());
         }
+        dto.setCards(cardDtos);
         return dto;
     }
 
@@ -102,13 +102,13 @@ public class DeckMapper {
         }
     }
 
-    DeckCardDto toDeckCardDto(DeckCard dc) {
+    DeckCardResponseDto toDeckCardDto(DeckCard dc) {
         if (dc == null) {
             return null;
         }
         Card c = dc.getCard();
         if (c == null) {
-            return new DeckCardDto(
+            return new DeckCardResponseDto(
                     dc.getId(),
                     null,
                     null,
@@ -121,7 +121,7 @@ public class DeckMapper {
                     dc.getSection() != null ? dc.getSection().getValue() : null,
                     dc.getQuantity());
         }
-        return new DeckCardDto(
+        return new DeckCardResponseDto(
                 dc.getId(),
                 c.getId(),
                 c.getName(),

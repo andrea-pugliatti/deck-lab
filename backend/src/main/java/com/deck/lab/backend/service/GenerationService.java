@@ -8,18 +8,18 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.CardEntryDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
-import com.deck.lab.backend.dto.response.CardSuggestionsAiResponseDto;
-import com.deck.lab.backend.dto.response.DeckCardDto;
-import com.deck.lab.backend.dto.response.DeckGenerateAiResponseDto;
+import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.service.generation.AiClient;
+import com.deck.lab.backend.service.generation.CardEntry;
 import com.deck.lab.backend.service.generation.CardResolver;
 import com.deck.lab.backend.service.generation.DeckAssembler;
+import com.deck.lab.backend.service.generation.DeckGenerateAiResponse;
 import com.deck.lab.backend.service.generation.PromptBuilder;
 import com.deck.lab.backend.service.generation.ResolvedCardEntry;
 import com.deck.lab.backend.service.generation.ResponseParser;
@@ -78,12 +78,12 @@ public class GenerationService {
          */
         @Transactional(readOnly = true)
         public DeckGenerationResponseDto generateDeck(DeckGenerateRequestDto request) {
-                BeanOutputConverter<DeckGenerateAiResponseDto> converter = new BeanOutputConverter<>(
-                                DeckGenerateAiResponseDto.class);
+                BeanOutputConverter<DeckGenerateAiResponse> converter = new BeanOutputConverter<>(
+                                DeckGenerateAiResponse.class);
 
                 Prompt draftPrompt = promptBuilder.buildDraftPrompt(request, converter.getFormat());
                 String responseContent = aiClient.call(draftPrompt);
-                DeckGenerateAiResponseDto aiDeck = responseParser.parseGenerationResponse(responseContent);
+                DeckGenerateAiResponse aiDeck = responseParser.parseGenerationResponse(responseContent);
 
                 String deckName = aiDeck != null && aiDeck.getName() != null && !aiDeck.getName().isBlank()
                                 ? aiDeck.getName()
@@ -117,7 +117,7 @@ public class GenerationService {
                         warnings = getValidationWarnings(request, resolved, deckName);
                 }
 
-                List<DeckCardDto> matchedCards = deckAssembler.toDeckCardDtos(resolved);
+                List<DeckCardResponseDto> matchedCards = deckAssembler.toDeckCardDtos(resolved);
 
                 String description = aiDeck != null && aiDeck.getDescription() != null
                                 ? aiDeck.getDescription()
@@ -140,12 +140,12 @@ public class GenerationService {
          * @param cards the list of card entries suggested in the AI response
          * @return a list of unrecognized card names
          */
-        private List<String> getUnresolvedNames(List<CardEntryDto> cards) {
+        private List<String> getUnresolvedNames(List<CardEntry> cards) {
                 List<String> unresolved = new ArrayList<>();
                 if (cards == null) {
                         return unresolved;
                 }
-                for (CardEntryDto entry : cards) {
+                for (CardEntry entry : cards) {
                         if (entry.getName() == null || entry.getName().isBlank()) {
                                 continue;
                         }
@@ -181,12 +181,12 @@ public class GenerationService {
          */
         @Transactional(readOnly = true)
         public List<CardSuggestionResponseDto> suggestCards(DeckSuggestRequestDto request) {
-                BeanOutputConverter<CardSuggestionsAiResponseDto> converter = new BeanOutputConverter<>(
-                                CardSuggestionsAiResponseDto.class);
+                BeanOutputConverter<CardSuggestionListResponseDto> converter = new BeanOutputConverter<>(
+                                CardSuggestionListResponseDto.class);
 
                 Prompt prompt = promptBuilder.buildSuggestionPrompt(request, converter.getFormat());
                 String responseContent = aiClient.call(prompt);
-                CardSuggestionsAiResponseDto aiSuggestions = responseParser.parseSuggestionResponse(responseContent);
+                CardSuggestionListResponseDto aiSuggestions = responseParser.parseSuggestionResponse(responseContent);
 
                 return cardResolver.resolveSuggestions(
                                 aiSuggestions != null

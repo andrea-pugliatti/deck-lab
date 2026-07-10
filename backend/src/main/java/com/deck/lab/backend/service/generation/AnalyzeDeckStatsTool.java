@@ -11,9 +11,11 @@ import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.repository.CardRepository;
 
 /**
- * Tool function enabling the AI model to analyze distributions and metrics (Monster/Spell/Trap ratios, average ATK/DEF, levels) of a list of card names.
+ * Tool function enabling the AI model to analyze distributions and metrics
+ * (Monster/Spell/Trap ratios, average ATK/DEF, levels) of a list of card names.
  */
-public class AnalyzeDeckStatsTool implements Function<AnalyzeDeckStatsTool.DeckStatsRequest, AnalyzeDeckStatsTool.DeckStatsResponse> {
+public class AnalyzeDeckStatsTool
+        implements Function<DeckStatsRequest, DeckStatsResponse> {
 
     private final CardRepository cardRepository;
 
@@ -21,6 +23,14 @@ public class AnalyzeDeckStatsTool implements Function<AnalyzeDeckStatsTool.DeckS
         this.cardRepository = cardRepository;
     }
 
+    /**
+     * Executes the statistics analysis tool, computing attribute distributions,
+     * type percentage ratios, and averages (ATK, DEF, Level) for a list of card
+     * names.
+     *
+     * @param request the stats analysis request containing target card names
+     * @return a structured DeckStatsResponse containing computed ratios and metrics
+     */
     @Override
     public DeckStatsResponse apply(DeckStatsRequest request) {
         if (request.cardNames() == null || request.cardNames().isEmpty()) {
@@ -108,24 +118,6 @@ public class AnalyzeDeckStatsTool implements Function<AnalyzeDeckStatsTool.DeckS
                 averageDef,
                 averageLevel,
                 attributes,
-                archetypes
-        );
+                archetypes);
     }
-
-    public record DeckStatsRequest(List<String> cardNames) {}
-
-    public record DeckStatsResponse(
-            int totalCards,
-            int monsterCount,
-            double monsterPct,
-            int spellCount,
-            double spellPct,
-            int trapCount,
-            double trapPct,
-            double averageAtk,
-            double averageDef,
-            double averageLevel,
-            Map<String, Integer> attributes,
-            Map<String, Integer> archetypes
-    ) {}
 }

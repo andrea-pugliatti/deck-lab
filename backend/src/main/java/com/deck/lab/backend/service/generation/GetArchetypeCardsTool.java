@@ -10,9 +10,11 @@ import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.specification.CardSpecification;
 
 /**
- * Tool function enabling the AI model to query all cards matching a specific archetype from the database.
+ * Tool function enabling the AI model to query all cards matching a specific
+ * archetype from the database.
  */
-public class GetArchetypeCardsTool implements Function<GetArchetypeCardsTool.ArchetypeCardsRequest, GetArchetypeCardsTool.ArchetypeCardsResponse> {
+public class GetArchetypeCardsTool
+        implements Function<ArchetypeCardsRequest, ArchetypeCardsResponse> {
 
     private final CardRepository cardRepository;
 
@@ -20,6 +22,14 @@ public class GetArchetypeCardsTool implements Function<GetArchetypeCardsTool.Arc
         this.cardRepository = cardRepository;
     }
 
+    /**
+     * Executes the archetype query tool, retrieving up to 30 cards matching a
+     * target archetype.
+     *
+     * @param request the archetype cards request containing the target archetype
+     *                name
+     * @return a structured ArchetypeCardsResponse with matching card details
+     */
     @Override
     public ArchetypeCardsResponse apply(ArchetypeCardsRequest request) {
         if (request.archetype() == null || request.archetype().isBlank()) {
@@ -35,16 +45,9 @@ public class GetArchetypeCardsTool implements Function<GetArchetypeCardsTool.Arc
                 .map(c -> new ArchetypeCardInfo(
                         c.getName(),
                         c.getType() != null ? c.getType().getValue() : null,
-                        c.getAttribute() != null ? c.getAttribute().getValue() : null
-                ))
+                        c.getAttribute() != null ? c.getAttribute().getValue() : null))
                 .toList();
 
         return new ArchetypeCardsResponse(request.archetype(), cardInfos);
     }
-
-    public record ArchetypeCardsRequest(String archetype) {}
-
-    public record ArchetypeCardInfo(String name, String type, String attribute) {}
-
-    public record ArchetypeCardsResponse(String archetype, List<ArchetypeCardInfo> cards) {}
 }

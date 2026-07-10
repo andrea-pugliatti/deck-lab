@@ -9,7 +9,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
@@ -88,9 +88,9 @@ public class DeckValidationService {
         List<ValidationError> errors = new ArrayList<>();
 
         // Verify all card IDs exist
-        List<DeckCardDto> cardDtos = deckDto.getDeckCards();
+        List<DeckCardRequestDto> cardDtos = deckDto.getDeckCards();
         if (cardDtos != null) {
-            for (DeckCardDto cardDto : cardDtos) {
+            for (DeckCardRequestDto cardDto : cardDtos) {
                 if (cardDto.getCardId() != null && !cardMap.containsKey(cardDto.getCardId())) {
                     errors.add(new ValidationError("Card not found with ID: " + cardDto.getCardId(), "deckCards"));
                 }
@@ -139,7 +139,7 @@ public class DeckValidationService {
      * @param cardDtos list of deck card references
      * @return a map of database resolved Card objects keyed by ID
      */
-    public Map<Long, Card> fetchCardMap(List<DeckCardDto> cardDtos) {
+    public Map<Long, Card> fetchCardMap(List<DeckCardRequestDto> cardDtos) {
         List<Long> cardIds = cardDtos != null
                 ? cardDtos.stream()
                         .map(c -> c.getCardId())

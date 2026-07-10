@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.deck.lab.backend.dto.response.DeckCardDto;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
@@ -195,12 +195,12 @@ public class DeckService {
      * @throws IllegalArgumentException if a card specified in the DTO is missing
      *                                  from cardMap
      */
-    public void saveDeckCards(Deck deck, List<DeckCardDto> cardDtos, Map<Long, Card> cardMap) {
+    public void saveDeckCards(Deck deck, List<DeckCardRequestDto> cardDtos, Map<Long, Card> cardMap) {
         List<DeckCard> existingCards = deck.getDeckCards();
         List<DeckCard> cardsToKeep = new ArrayList<>();
 
         if (cardDtos != null && !cardDtos.isEmpty()) {
-            for (DeckCardDto cardDto : cardDtos) {
+            for (DeckCardRequestDto cardDto : cardDtos) {
                 Card card = cardMap.get(cardDto.getCardId());
                 if (card == null) {
                     throw new IllegalArgumentException("Card not found with ID: " + cardDto.getCardId());

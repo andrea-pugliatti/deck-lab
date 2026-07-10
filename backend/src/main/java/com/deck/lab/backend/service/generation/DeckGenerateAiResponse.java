@@ -1,9 +1,7 @@
-package com.deck.lab.backend.dto.response;
+package com.deck.lab.backend.service.generation;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.deck.lab.backend.dto.CardEntryDto;
 
 /**
  * Data Transfer Object (DTO) capturing the raw AI-generated deck payload
@@ -20,15 +18,15 @@ import com.deck.lab.backend.dto.CardEntryDto;
  * database to validate and resolve actual cards.
  * </p>
  */
-public class DeckGenerateAiResponseDto {
+public class DeckGenerateAiResponse {
     private String name;
     private String description;
-    private List<CardEntryDto> cards = new ArrayList<>();
+    private List<CardEntry> cards = new ArrayList<>();
 
-    public DeckGenerateAiResponseDto() {
+    public DeckGenerateAiResponse() {
     }
 
-    public DeckGenerateAiResponseDto(String name, String description, List<CardEntryDto> cards) {
+    public DeckGenerateAiResponse(String name, String description, List<CardEntry> cards) {
         this.name = name;
         this.description = description;
         this.cards = cards;
@@ -50,11 +48,11 @@ public class DeckGenerateAiResponseDto {
         this.description = description;
     }
 
-    public List<CardEntryDto> getCards() {
+    public List<CardEntry> getCards() {
         return cards;
     }
 
-    public void setCards(List<CardEntryDto> cards) {
+    public void setCards(List<CardEntry> cards) {
         this.cards = cards;
     }
 }

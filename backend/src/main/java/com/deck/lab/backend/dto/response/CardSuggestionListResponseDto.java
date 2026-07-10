@@ -18,13 +18,13 @@ import java.util.List;
  * metrics) in the future without breaking existing clients.
  * </p>
  */
-public class CardSuggestionsAiResponseDto {
+public class CardSuggestionListResponseDto {
     private List<CardSuggestionResponseDto> suggestions = new ArrayList<>();
 
-    public CardSuggestionsAiResponseDto() {
+    public CardSuggestionListResponseDto() {
     }
 
-    public CardSuggestionsAiResponseDto(List<CardSuggestionResponseDto> suggestions) {
+    public CardSuggestionListResponseDto(List<CardSuggestionResponseDto> suggestions) {
         this.suggestions = suggestions;
     }
 
