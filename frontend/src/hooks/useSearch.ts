@@ -1,3 +1,9 @@
+/**
+ * @file useSearch.ts
+ * @description Generic React hook that encapsulates searching, filtering, and paging.
+ * Supports debouncing, local vs. controlled state, and optionally syncing with URL search parameters.
+ */
+
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";

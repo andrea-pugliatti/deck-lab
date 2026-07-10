@@ -58,8 +58,8 @@ export default function Header() {
       <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" viewTransition className="flex items-center gap-2 text-white no-underline">
           <img src="/logo.webp" className="h-12 w-12 rounded-full" alt="DeckLab Logo" />
-          <span className="font-display text-gold-accent text-2xl font-bold tracking-widest">
-            DECKLAB
+          <span className="font-display text-gold-accent text-2xl font-bold tracking-wide">
+            DeckLab
           </span>
         </Link>
 

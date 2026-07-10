@@ -20,8 +20,8 @@ export default function Footer() {
         <div className="md:col-span-2">
           <Link to="/" className="mb-4 flex items-center gap-2 text-white no-underline">
             <img src="/logo.webp" className="h-20 w-20 rounded-full" alt="DeckLab Logo" />
-            <span className="font-display text-gold-accent text-4xl font-bold tracking-widest">
-              DECKLAB
+            <span className="font-display text-gold-accent text-4xl font-bold tracking-wide">
+              DeckLab
             </span>
           </Link>
           <p className="max-w-sm text-sm text-slate-400">

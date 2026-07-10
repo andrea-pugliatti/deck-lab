@@ -72,7 +72,7 @@ export default function Home(): React.JSX.Element {
                 Step Into Your{" "}
               </h1>
               <h1 className="font-display from-cyan-accent to-gold-accent bg-300% mb-6 bg-linear-to-r bg-clip-text text-6xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] sm:text-7xl lg:text-8xl">
-                Deck Lab
+                DeckLab
               </h1>
               <p className="mb-10 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">
                 Construct, analyze, and simulate Yu-Gi-Oh! decks with advanced statistics, real-time

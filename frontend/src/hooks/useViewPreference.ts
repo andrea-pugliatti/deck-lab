@@ -1,3 +1,8 @@
+/**
+ * @file useViewPreference.ts
+ * @description Custom hook to manage and persist a view layout preference (grid or list) in localStorage.
+ */
+
 import { useState } from "react";
 
 export type ViewMode = "grid" | "list";
