@@ -45,6 +45,7 @@ runtime:
             let body = req.getBody();
             body.deckCards = deckCards;
             req.setBody(body);
+            bru.setVar("lastUsedDeckCards", deckCards);
           } else {
             const res = await axios.get(`${baseUrl}/api/cards?type=Normal%20Monster&size=100`);
             let cards = res.data.content || [];
@@ -96,6 +97,7 @@ runtime:
               let body = req.getBody();
               body.deckCards = deckCards;
               req.setBody(body);
+              bru.setVar("lastUsedDeckCards", deckCards);
             } else {
               throw new Error(`Failed to create enough cards. Have ${cards.length}, need ${needed}`);
             }
@@ -190,6 +192,7 @@ runtime:
         if (res.status === 200) {
           test("Response should return the updated deck details", function() {
             expect(res.body.name).to.equal("My First Deck (Updated)");
+            expect(res.body.deckCards).to.be.an('array');
             expect(res.body.deckCards[13].quantity).to.equal(2);
           });
         }
