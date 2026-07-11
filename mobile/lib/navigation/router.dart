@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../ui/features/home/views/home_screen.dart';
 import '../ui/core/theme/theme.dart';
 
 /// Provider exposing declarative routes and guard logic managed by go_router.
@@ -22,11 +23,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return _ShellScaffold(state: state, child: child);
         },
         routes: [
-          GoRoute(
-            path: '/',
-            // builder: (context, state) => const HomeScreen(),
-            builder: (context, state) => const EmptyWidget(),
-          ),
+          GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
           GoRoute(
             path: '/decks',
             // builder: (context, state) => const DashboardScreen(),
@@ -143,26 +140,6 @@ class _ShellScaffold extends StatelessWidget {
             label: 'Simulator',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class EmptyWidget extends StatelessWidget {
-  const EmptyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Hello'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [const Text('???')],
-        ),
       ),
     );
   }
