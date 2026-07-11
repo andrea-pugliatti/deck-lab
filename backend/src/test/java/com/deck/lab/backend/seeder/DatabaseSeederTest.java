@@ -93,4 +93,34 @@ class DatabaseSeederTest {
         verify(userRepository, never()).findByUsername(anyString());
         verify(userRepository, never()).save(any(User.class));
     }
+
+    @Test
+    void whenSeedCardsEnabled_thenExecutesSeedingInCorrectOrder() throws Exception {
+        // Arrange
+        ReflectionTestUtils.setField(databaseSeeder, "seedUsersEnabled", true);
+        ReflectionTestUtils.setField(databaseSeeder, "seedCardsEnabled", true);
+
+        // Mock executor to run tasks synchronously
+        when(databaseSeederExecutor.submit(any(Runnable.class))).thenAnswer(invocation -> {
+            Runnable runnable = invocation.getArgument(0);
+            runnable.run();
+            return null;
+        });
+
+        when(transactionManager.getTransaction(any())).thenReturn(new SimpleTransactionStatus());
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
+        // Act
+        databaseSeeder.run();
+
+        // Assert/Verify call order
+        org.mockito.InOrder inOrder = org.mockito.Mockito.inOrder(cardImporter, banlistImporter, userRepository, deckSeeder);
+        inOrder.verify(cardImporter).seedCardsFromApi();
+        inOrder.verify(banlistImporter).seedBanlistsFromApi();
+        inOrder.verify(banlistImporter).seedHistoricalBanlists();
+        inOrder.verify(userRepository).findByUsername("admin");
+        inOrder.verify(userRepository).findByUsername("yugi");
+        inOrder.verify(deckSeeder).seedSampleDecks();
+    }
 }

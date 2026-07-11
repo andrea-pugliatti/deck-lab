@@ -134,8 +134,8 @@ public class DeckControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("ControllerTest Deck")))
                 .andExpect(jsonPath("$.formatName", is("TCG")))
-                .andExpect(jsonPath("$.cards", hasSize(1)))
-                .andExpect(jsonPath("$.cards[0].cardId", is(testCard.getId().intValue())));
+                .andExpect(jsonPath("$.deckCards", hasSize(1)))
+                .andExpect(jsonPath("$.deckCards[0].cardId", is(testCard.getId().intValue())));
     }
 
     @Test
@@ -259,8 +259,8 @@ public class DeckControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("ControllerTest Deck Updated")))
                 .andExpect(jsonPath("$.formatName", is("Edison")))
-                .andExpect(jsonPath("$.cards[0].quantity", is(1)))
-                .andExpect(jsonPath("$.cards[0].section", is("SIDE")));
+                .andExpect(jsonPath("$.deckCards[0].quantity", is(1)))
+                .andExpect(jsonPath("$.deckCards[0].section", is("SIDE")));
     }
 
     @Test

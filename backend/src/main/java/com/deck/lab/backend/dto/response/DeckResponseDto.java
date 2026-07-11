@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 
 import jakarta.validation.Valid;
@@ -32,9 +34,9 @@ import jakarta.validation.constraints.NotBlank;
  * only {@code cardId}, {@code section}, and {@code quantity} are read from this
  * list. Decorated with {@code @Valid} to trigger recursive bean validation on
  * each {@link DeckCardRequestDto} element.</li>
- * <li>{@code cards}: Outbound field. Populated by the mapper when building the
- * server response — includes enriched card attributes (name, type, imageUrl,
- * etc.) resolved from the database.</li>
+ * <li>{@code cards}: Outbound field. Populated by the server on read operations —
+ * includes enriched card attributes (name, type, imageUrl, etc.) resolved from
+ * the database.</li>
  * </ul>
  */
 public class DeckResponseDto {
@@ -53,11 +55,13 @@ public class DeckResponseDto {
      * Inbound card slots from the client request. Validated on write operations.
      */
     @Valid
+    @JsonIgnore
     private List<DeckCardRequestDto> deckCards = new ArrayList<>();
 
     /**
      * Outbound enriched card details populated by the server on read operations.
      */
+    @JsonIgnore
     private List<DeckCardResponseDto> cards = new ArrayList<>();
 
     private LocalDateTime updatedAt;
@@ -99,20 +103,32 @@ public class DeckResponseDto {
         this.formatName = formatName;
     }
 
+    @JsonIgnore
     public List<DeckCardRequestDto> getDeckCards() {
         return deckCards;
     }
 
+    @JsonProperty("deckCards")
     public void setDeckCards(List<DeckCardRequestDto> deckCards) {
         this.deckCards = deckCards;
     }
 
+    @JsonIgnore
     public List<DeckCardResponseDto> getCards() {
         return cards;
     }
 
+    @JsonIgnore
     public void setCards(List<DeckCardResponseDto> cards) {
         this.cards = cards;
+    }
+
+    @JsonProperty("deckCards")
+    public List<?> getJsonDeckCards() {
+        if (this.cards != null && !this.cards.isEmpty()) {
+            return this.cards;
+        }
+        return this.deckCards;
     }
 
     public LocalDateTime getUpdatedAt() {

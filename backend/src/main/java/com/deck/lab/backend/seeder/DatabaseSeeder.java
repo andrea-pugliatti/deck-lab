@@ -135,15 +135,6 @@ public class DatabaseSeeder implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        if (seedUsersEnabled) {
-            transactionTemplate.executeWithoutResult(status -> {
-                seedUser("admin", "12345678", "admin@example.com");
-                seedUser("yugi", "12345678", "yugi@example.com");
-            });
-        } else {
-            logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
-        }
-
         if (seedCardsEnabled) {
             seedingTask = databaseSeederExecutor.submit(() -> {
                 try {
@@ -163,6 +154,19 @@ public class DatabaseSeeder implements CommandLineRunner {
                     banlistImporter.seedHistoricalBanlists();
 
                     if (Thread.currentThread().isInterrupted()) {
+                        logger.info("Database seeder interrupted before seeding users. Exiting.");
+                        return;
+                    }
+                    if (seedUsersEnabled) {
+                        transactionTemplate.executeWithoutResult(status -> {
+                            seedUser("admin", "12345678", "admin@example.com");
+                            seedUser("yugi", "12345678", "yugi@example.com");
+                        });
+                    } else {
+                        logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
+                    }
+
+                    if (Thread.currentThread().isInterrupted()) {
                         logger.info("Database seeder interrupted before seeding sample decks. Exiting.");
                         return;
                     }
@@ -176,6 +180,14 @@ public class DatabaseSeeder implements CommandLineRunner {
             });
         } else {
             logger.info("Card seeding is disabled (app.seed.cards=false). Skipping.");
+            if (seedUsersEnabled) {
+                transactionTemplate.executeWithoutResult(status -> {
+                    seedUser("admin", "12345678", "admin@example.com");
+                    seedUser("yugi", "12345678", "yugi@example.com");
+                });
+            } else {
+                logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
+            }
             transactionTemplate.executeWithoutResult(status -> {
                 deckSeeder.seedSampleDecks();
             });
