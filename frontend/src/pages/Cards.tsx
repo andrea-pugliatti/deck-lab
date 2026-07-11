@@ -67,7 +67,7 @@ export default function Cards(): React.JSX.Element {
         </aside>
 
         <div className="space-y-6 lg:col-span-3">
-          <div className="flex gap-4 items-end flex-row">
+          <div className="flex flex-row items-end gap-4">
             <div className="flex-1">
               <Input
                 type="text"

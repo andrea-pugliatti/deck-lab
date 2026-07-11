@@ -233,7 +233,7 @@ function DeckBuilderContent(): React.JSX.Element {
 
           <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
 
-          <div className="bg-dark-surface border-border-dim flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
+          <div className="bg-dark-surface border-border-dim flex flex-col items-center justify-between gap-4 rounded-2xl border p-4 shadow-md sm:flex-row">
             <div className="flex items-center gap-3">
               <Button
                 type="button"
