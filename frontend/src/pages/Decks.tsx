@@ -135,18 +135,17 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
           />
 
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          {isAuthenticated && (
+            <Link
+              to="/decks/create"
+              viewTransition
+              className="bg-gold-accent hover:bg-gold-hover text-dark-bg flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] md:self-auto"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Construct New Deck</span>
+            </Link>
+          )}
         </div>
-
-        {isAuthenticated && (
-          <Link
-            to="/decks/create"
-            viewTransition
-            className="bg-gold-accent hover:bg-gold-hover text-dark-bg flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)] md:self-auto"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Construct New Deck</span>
-          </Link>
-        )}
       </div>
 
       {deleteError && (

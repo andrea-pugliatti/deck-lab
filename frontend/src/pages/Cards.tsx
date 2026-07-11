@@ -67,11 +67,11 @@ export default function Cards(): React.JSX.Element {
         </aside>
 
         <div className="space-y-6 lg:col-span-3">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="flex gap-4 items-end flex-row">
             <div className="flex-1">
               <Input
                 type="text"
-                placeholder="Search card name, type, description, or archetype..."
+                placeholder="Search cards..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 icon={<Search className="h-5 w-5" />}

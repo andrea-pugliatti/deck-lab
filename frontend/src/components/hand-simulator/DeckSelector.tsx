@@ -164,7 +164,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
               ))}
             </select>
           </div>
-          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} className="self-end" />
         </div>
 
         {isLoading ? (

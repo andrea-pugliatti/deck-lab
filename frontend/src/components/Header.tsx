@@ -54,7 +54,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-dark-bg/85 border-b-border-dim fixed top-0 z-50 min-w-full border-b backdrop-blur-md transition-all duration-200">
+    <header className="bg-dark-bg/85 border-b-border-dim fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" viewTransition className="flex items-center gap-2 text-white no-underline">
           <img src="/logo.webp" className="h-12 w-12 rounded-full" alt="DeckLab Logo" />
