@@ -67,14 +67,14 @@ export default function Home(): React.JSX.Element {
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
-            <div className="order-2 flex flex-col items-start text-left lg:order-1 lg:col-span-7">
-              <h1 className="font-display text-4xl leading-tight font-black tracking-wide text-white sm:text-5xl lg:text-6xl">
+            <div className="order-2 flex flex-col items-center lg:items-start text-center lg:text-left lg:order-1 lg:col-span-7">
+              <h1 className="font-display text-4xl leading-tight font-black tracking-wide text-white lg:text-5xl mx-4">
                 Step Into Your{" "}
               </h1>
-              <h1 className="font-display from-cyan-accent to-gold-accent bg-300% mb-6 bg-linear-to-r bg-clip-text text-6xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] sm:text-7xl lg:text-8xl">
+              <h1 className="font-display from-cyan-accent to-gold-accent bg-300% mb-6 mx-4 bg-linear-to-r bg-clip-text text-7xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] lg:text-8xl">
                 DeckLab
               </h1>
-              <p className="mb-10 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">
+              <p className="mb-10 mx-8 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">
                 Construct, analyze, and simulate Yu-Gi-Oh! decks with advanced statistics, real-time
                 archetype analysis, and community-driven insights.
               </p>
@@ -149,10 +149,10 @@ export default function Home(): React.JSX.Element {
       {/* Trending Decks Section */}
       <section className="bg-dark-bg border-b-border-dim/20 relative overflow-hidden border-b py-20">
         <div className="relative z-10 mx-auto max-w-7xl px-6">
-          <div className="border-border-dim/40 mb-10 flex items-end justify-between border-b pb-4">
+          <div className="border-border-dim/40 mb-10 flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-3">
               <div className="bg-gold-accent h-6 w-1 rounded-full"></div>
-              <h2 className="font-display flex items-center gap-2 text-2xl font-bold tracking-wider text-white">
+              <h2 className="font-display flex items-center gap-2 text-lg lg:text-2xl font-bold tracking-wider text-white">
                 <Trophy className="text-gold-accent h-5 w-5" /> Trending Decks
               </h2>
             </div>
@@ -224,10 +224,10 @@ export default function Home(): React.JSX.Element {
       {/* Card Spotlight Section */}
       <section className="bg-dark-bg relative overflow-hidden py-20">
         <div className="relative z-10 mx-auto max-w-7xl px-6">
-          <div className="border-border-dim/40 mb-10 flex items-end justify-between border-b pb-4">
+          <div className="border-border-dim/40 mb-10 flex items-center justify-between border-b pb-4">
             <div className="flex items-center gap-3">
               <div className="bg-cyan-accent h-6 w-1 rounded-full"></div>
-              <h2 className="font-display flex items-center gap-2 text-2xl font-bold tracking-wider text-white">
+              <h2 className="font-display flex items-center gap-2 text-lg lg:text-2xl font-bold tracking-wider text-white">
                 <Sparkles className="text-cyan-accent h-5 w-5" /> Card Spotlight
               </h2>
             </div>

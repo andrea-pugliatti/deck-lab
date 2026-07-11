@@ -233,7 +233,7 @@ function DeckBuilderContent(): React.JSX.Element {
 
           <AiSuggestionsPanel deckCards={deckCards} formatName={formatName} addCard={addCard} />
 
-          <div className="bg-dark-surface border-border-dim flex items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
+          <div className="bg-dark-surface border-border-dim flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border p-4 shadow-md">
             <div className="flex items-center gap-3">
               <Button
                 type="button"
@@ -243,7 +243,7 @@ function DeckBuilderContent(): React.JSX.Element {
                 disabled={deckCards.length === 0}
                 className="hover:text-cyan-accent px-5 py-2.5 font-semibold text-slate-300"
               >
-                Run Validate Check
+                Validate Deck
               </Button>
               <ViewToggle viewMode={editorViewMode} onViewModeChange={setEditorViewMode} />
             </div>
@@ -266,7 +266,7 @@ function DeckBuilderContent(): React.JSX.Element {
                 disabled={deckCards.length === 0}
                 className="px-6 py-2.5 font-bold"
               >
-                {isEditMode ? "Update Deck Blueprint" : "Save Deck Blueprint"}
+                {isEditMode ? "Update Deck" : "Save Deck"}
               </Button>
             </div>
           </div>
