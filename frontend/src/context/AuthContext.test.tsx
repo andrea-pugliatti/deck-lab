@@ -92,6 +92,7 @@ describe("AuthContext", () => {
     // Auto-login succeeds on mount
     vi.mocked(apiRefreshToken).mockResolvedValueOnce({ accessToken: "token-abc" });
     vi.mocked(apiLogout).mockResolvedValueOnce();
+    localStorage.setItem("username", "cacheduser");
 
     render(
       <AuthProvider>

@@ -55,9 +55,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const checkAuth = async () => {
+    const storedUsername = localStorage.getItem("username");
+    if (!storedUsername) {
+      handleLogoutState();
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = await apiRefreshToken();
-      const storedUsername = localStorage.getItem("username") || "";
       handleAuthSuccess(data.accessToken, storedUsername);
     } catch {
       handleLogoutState();
