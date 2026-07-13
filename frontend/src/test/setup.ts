@@ -7,6 +7,12 @@ afterEach(() => {
   cleanup();
 });
 
+// Override Node 24/26's experimental global localStorage with jsdom's window.localStorage
+if (typeof window !== "undefined") {
+  vi.stubGlobal("localStorage", window.localStorage);
+  vi.stubGlobal("sessionStorage", window.sessionStorage);
+}
+
 // Mock window.matchMedia if it doesn't exist
 if (typeof window !== "undefined" && !window.matchMedia) {
   Object.defineProperty(window, "matchMedia", {
