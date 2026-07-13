@@ -146,6 +146,19 @@ class AiGenerationSubModulesTest {
         assertNotNull(suggestResponse);
         assertEquals(1, suggestResponse.getSuggestions().size());
         assertEquals("Solar Recharge", suggestResponse.getSuggestions().get(0).getName());
+
+        // Test with trailing commas
+        String trailingCommas = "{\"name\": \"Lightsworn, Mill,\", \"description\": \"Fast mill\", \"cards\": [{\"name\": \"Judgment Dragon\", \"section\": \"MAIN\", \"quantity\": 3},]}";
+        DeckGenerateAiResponse cleanResponse1 = responseParser.parseGenerationResponse(trailingCommas);
+        assertNotNull(cleanResponse1);
+        assertEquals("Lightsworn, Mill,", cleanResponse1.getName());
+
+        // Test with markdown code blocks and duplicate commas
+        String markdownWithDuplicateCommas = "```json\n{\"name\": \"Lightsworn\", \"cards\": [{\"name\": \"JD\"}, , {\"name\": \"Lumina\"}]}\n```";
+        DeckGenerateAiResponse cleanResponse2 = responseParser.parseGenerationResponse(markdownWithDuplicateCommas);
+        assertNotNull(cleanResponse2);
+        assertEquals("Lightsworn", cleanResponse2.getName());
+        assertEquals(2, cleanResponse2.getCards().size());
     }
 
     @Test

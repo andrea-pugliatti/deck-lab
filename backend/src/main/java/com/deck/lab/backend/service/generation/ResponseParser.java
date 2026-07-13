@@ -20,9 +20,10 @@ public class ResponseParser {
      * @return the parsed DeckGenerateAiResponseDto object
      */
     public DeckGenerateAiResponse parseGenerationResponse(String rawResponse) {
+        String sanitized = sanitizeJson(rawResponse);
         BeanOutputConverter<DeckGenerateAiResponse> converter = new BeanOutputConverter<>(
                 DeckGenerateAiResponse.class);
-        return converter.convert(rawResponse);
+        return converter.convert(sanitized);
     }
 
     /**
@@ -32,8 +33,75 @@ public class ResponseParser {
      * @return the parsed CardSuggestionsAiResponseDto object
      */
     public CardSuggestionListResponseDto parseSuggestionResponse(String rawResponse) {
+        String sanitized = sanitizeJson(rawResponse);
         BeanOutputConverter<CardSuggestionListResponseDto> converter = new BeanOutputConverter<>(
                 CardSuggestionListResponseDto.class);
-        return converter.convert(rawResponse);
+        return converter.convert(sanitized);
+    }
+
+    private String extractJson(String raw) {
+        if (raw == null) return "";
+        String trimmed = raw.trim();
+        if (trimmed.startsWith("```")) {
+            int firstNewLine = trimmed.indexOf('\n');
+            int lastBackticks = trimmed.lastIndexOf("```");
+            if (firstNewLine != -1 && lastBackticks != -1 && lastBackticks > firstNewLine) {
+                trimmed = trimmed.substring(firstNewLine, lastBackticks).trim();
+            }
+        }
+        return trimmed;
+    }
+
+    private String sanitizeJson(String json) {
+        if (json == null) return "";
+        String clean = extractJson(json);
+        
+        StringBuilder sb = new StringBuilder();
+        boolean inQuote = false;
+        boolean escape = false;
+        
+        for (int i = 0; i < clean.length(); i++) {
+            char c = clean.charAt(i);
+            if (escape) {
+                sb.append(c);
+                escape = false;
+                continue;
+            }
+            if (c == '\\') {
+                sb.append(c);
+                escape = true;
+                continue;
+            }
+            if (c == '"') {
+                inQuote = !inQuote;
+                sb.append(c);
+                continue;
+            }
+            if (inQuote) {
+                sb.append(c);
+            } else {
+                if (c == ',') {
+                    int nextNonWhitespaceIdx = findNextNonWhitespace(clean, i + 1);
+                    if (nextNonWhitespaceIdx < clean.length()) {
+                        char nextChar = clean.charAt(nextNonWhitespaceIdx);
+                        if (nextChar == '}' || nextChar == ']') {
+                            continue;
+                        }
+                        if (nextChar == ',') {
+                            continue;
+                        }
+                    }
+                }
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    private int findNextNonWhitespace(String s, int start) {
+        while (start < s.length() && Character.isWhitespace(s.charAt(start))) {
+            start++;
+        }
+        return start;
     }
 }
