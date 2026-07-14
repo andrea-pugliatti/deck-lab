@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+
+import '../../domain/models/auth_session.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../core/api_client.dart';
 import '../core/session_storage.dart';
+import 'models/auth_response.dart';
 import 'models/login_request.dart';
 import 'models/register_request.dart';
-import 'models/auth_response.dart';
-import '../core/api_client.dart';
-import '../../domain/models/auth_session.dart';
 
 /// Repository abstracting user authentication network endpoints.
 ///
@@ -18,10 +19,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final SessionStorage sessionStorage;
 
   /// Default constructor for [AuthRepositoryImpl].
-  AuthRepositoryImpl({
-    required this.apiClient,
-    required this.sessionStorage,
-  });
+  AuthRepositoryImpl({required this.apiClient, required this.sessionStorage});
 
   /// Submits user credentials to POST `/api/auth/login`.
   ///
@@ -37,7 +35,9 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        final authRes = AuthResponse.fromJson(response.data as Map<String, dynamic>);
+        final authRes = AuthResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
         apiClient.setAccessToken(authRes.accessToken);
         if (authRes.username != null) {
           await sessionStorage.saveUsername(authRes.username!);
@@ -60,16 +60,26 @@ class AuthRepositoryImpl implements AuthRepository {
   /// Sets active session details upon success.
   /// Throws [Exception] with validation feedback on errors.
   @override
-  Future<AuthSession> register(String username, String password, String email) async {
+  Future<AuthSession> register(
+    String username,
+    String password,
+    String email,
+  ) async {
     try {
-      final request = RegisterRequest(username: username, password: password, email: email);
+      final request = RegisterRequest(
+        username: username,
+        password: password,
+        email: email,
+      );
       final response = await apiClient.dio.post(
         '/api/auth/register',
         data: request.toJson(),
       );
 
       if (response.statusCode == 200) {
-        final authRes = AuthResponse.fromJson(response.data as Map<String, dynamic>);
+        final authRes = AuthResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
         apiClient.setAccessToken(authRes.accessToken);
         if (authRes.username != null) {
           await sessionStorage.saveUsername(authRes.username!);
