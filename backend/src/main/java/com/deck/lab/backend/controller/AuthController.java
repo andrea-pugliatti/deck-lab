@@ -151,8 +151,8 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<?>
-           refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken,
-                   HttpServletRequest servletRequest) {
+            refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken,
+                    HttpServletRequest servletRequest) {
         if (refreshToken == null || refreshToken.isBlank()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -175,7 +175,7 @@ public class AuthController {
      */
     @PostMapping("/logout")
     public ResponseEntity<?>
-           logout(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
+            logout(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
         service.revoke(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieAdapter.clearCookie())

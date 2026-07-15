@@ -302,7 +302,8 @@ public class CardImporter {
             logger.info("Loading cards from local JSON resource classpath:cards_full.json...");
             try (InputStream is = resource.getInputStream()) {
                 Map<String, Object> response = objectMapper.readValue(is,
-                        new TypeReference<Map<String, Object>>() {});
+                        new TypeReference<Map<String, Object>>() {
+                        });
                 if (response == null || !response.containsKey("data")) {
                     logger.warn("Invalid local cards JSON content: 'data' key missing");
                     return null;

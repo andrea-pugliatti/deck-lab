@@ -41,9 +41,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("tokenRefreshRateLimiter")
-    public RateLimiter tokenRefreshRateLimiter(
-            @Value("${refresh-token.rate-limit.max-attempts:5}") int maxAttempts,
-            @Value("${refresh-token.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            tokenRefreshRateLimiter(@Value("${refresh-token.rate-limit.max-attempts:5}") int maxAttempts,
+                                    @Value("${refresh-token.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
@@ -57,9 +57,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("aiGenerationRateLimiter")
-    public RateLimiter aiGenerationRateLimiter(
-            @Value("${ai-generation.rate-limit.max-attempts:3}") int maxAttempts,
-            @Value("${ai-generation.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            aiGenerationRateLimiter(@Value("${ai-generation.rate-limit.max-attempts:3}") int maxAttempts,
+                                    @Value("${ai-generation.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
@@ -73,9 +73,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("loginRateLimiter")
-    public RateLimiter loginRateLimiter(
-            @Value("${auth.login.rate-limit.max-attempts:10}") int maxAttempts,
-            @Value("${auth.login.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            loginRateLimiter(@Value("${auth.login.rate-limit.max-attempts:10}") int maxAttempts,
+                             @Value("${auth.login.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
@@ -89,9 +89,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("registerRateLimiter")
-    public RateLimiter registerRateLimiter(
-            @Value("${auth.register.rate-limit.max-attempts:5}") int maxAttempts,
-            @Value("${auth.register.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            registerRateLimiter(@Value("${auth.register.rate-limit.max-attempts:5}") int maxAttempts,
+                                @Value("${auth.register.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
@@ -105,9 +105,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("deckValidationRateLimiter")
-    public RateLimiter deckValidationRateLimiter(
-            @Value("${deck.validate.rate-limit.max-attempts:15}") int maxAttempts,
-            @Value("${deck.validate.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            deckValidationRateLimiter(@Value("${deck.validate.rate-limit.max-attempts:15}") int maxAttempts,
+                                      @Value("${deck.validate.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
@@ -121,9 +121,9 @@ public class RateLimitConfig {
      * @return the rate limiter instance
      */
     @Bean("deckSaveRateLimiter")
-    public RateLimiter deckSaveRateLimiter(
-            @Value("${deck.save.rate-limit.max-attempts:5}") int maxAttempts,
-            @Value("${deck.save.rate-limit.window-ms:60000}") long windowMs) {
+    public RateLimiter
+            deckSaveRateLimiter(@Value("${deck.save.rate-limit.max-attempts:5}") int maxAttempts,
+                                @Value("${deck.save.rate-limit.window-ms:60000}") long windowMs) {
         InMemoryRateLimiter limiter = new InMemoryRateLimiter(maxAttempts, windowMs);
         limiters.add(limiter);
         return limiter;
