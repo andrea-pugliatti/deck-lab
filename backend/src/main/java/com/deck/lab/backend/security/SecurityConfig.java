@@ -23,45 +23,38 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Central configuration class setting up Spring Security guidelines for the
- * application.
+ * Central configuration class setting up Spring Security guidelines for the application.
  *
  * <p>
  * <strong>Spring Security Configuration:</strong>
  * </p>
  * <ul>
- * <li>{@code @Configuration}: Tells Spring that this class contains
- * {@code @Bean} definition methods that the IoC container will process to
- * generate singleton beans available across the application.</li>
- * <li>{@code @EnableWebSecurity}: Enables Spring Security's web security
- * support and integrates it with Spring MVC.</li>
- * <li>{@code @EnableScheduling}: Enables Spring's task scheduling capabilities,
- * used elsewhere to trigger background cleanups (e.g. for expired tokens).</li>
+ * <li>{@code @Configuration}: Tells Spring that this class contains {@code @Bean} definition
+ * methods that the IoC container will process to generate singleton beans available across the
+ * application.</li>
+ * <li>{@code @EnableWebSecurity}: Enables Spring Security's web security support and integrates it
+ * with Spring MVC.</li>
+ * <li>{@code @EnableScheduling}: Enables Spring's task scheduling capabilities, used elsewhere to
+ * trigger background cleanups (e.g. for expired tokens).</li>
  * </ul>
  *
  * <p>
  * <strong>Security Model Constraints:</strong>
  * </p>
  * <ul>
- * <li><strong>Stateless Session Management:</strong>
- * Since we use JWTs for authentication, we configure the session policy to
- * {@link SessionCreationPolicy#STATELESS}. The server does not store user
- * session states in memory; every request must carry its own authentication
- * token.</li>
- * <li><strong>CSRF (Cross-Site Request Forgery) Disabled:</strong>
- * CSRF protection is generally disabled for stateless APIs that do not store
- * session cookies (or leverage custom header authorization fields), as they are
- * inherently immune to CSRF exploits.</li>
- * <li><strong>Security Filter Chain:</strong>
- * Defines the HTTP request pipeline. It configures public routes (like login,
- * registration, and card catalog lists) and inserts the custom
+ * <li><strong>Stateless Session Management:</strong> Since we use JWTs for authentication, we
+ * configure the session policy to {@link SessionCreationPolicy#STATELESS}. The server does not
+ * store user session states in memory; every request must carry its own authentication token.</li>
+ * <li><strong>CSRF (Cross-Site Request Forgery) Disabled:</strong> CSRF protection is generally
+ * disabled for stateless APIs that do not store session cookies (or leverage custom header
+ * authorization fields), as they are inherently immune to CSRF exploits.</li>
+ * <li><strong>Security Filter Chain:</strong> Defines the HTTP request pipeline. It configures
+ * public routes (like login, registration, and card catalog lists) and inserts the custom
  * {@link JwtAuthenticationFilter} <i>before</i> Spring's standard
- * {@link UsernamePasswordAuthenticationFilter} to intercept and validate JWT
- * credentials.</li>
- * <li><strong>CORS (Cross-Origin Resource Sharing):</strong>
- * Restricts API access to authorized domain origins (configured via
- * {@code allowedOrigins}), specifying allowed HTTP methods and headers to
- * prevent unauthorized cross-origin browser requests.</li>
+ * {@link UsernamePasswordAuthenticationFilter} to intercept and validate JWT credentials.</li>
+ * <li><strong>CORS (Cross-Origin Resource Sharing):</strong> Restricts API access to authorized
+ * domain origins (configured via {@code allowedOrigins}), specifying allowed HTTP methods and
+ * headers to prevent unauthorized cross-origin browser requests.</li>
  * </ul>
  */
 @Configuration
@@ -79,28 +72,34 @@ public class SecurityConfig {
     }
 
     /**
-     * Defines the SecurityFilterChain mapping endpoint authorizations, stateless
-     * session state, custom auth providers, and hooks the JWT authentication
-     * filter.
+     * Defines the SecurityFilterChain mapping endpoint authorizations, stateless session state,
+     * custom auth providers, and hooks the JWT authentication filter.
      *
      * @param http the HttpSecurity builder context
      * @return the fully configured SecurityFilterChain
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrfConfigurer -> csrfConfigurer.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/cards/images/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/cards/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/decks/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/decks/validate").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated())
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/api/auth/**")
+                                .permitAll()
+                                .requestMatchers("/api/cards/images/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/cards/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/decks/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/decks/validate")
+                                .permitAll()
+                                .requestMatchers("/error")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
+                        new HttpStatusEntryPoint(
+                                HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -109,17 +108,17 @@ public class SecurityConfig {
     }
 
     /**
-     * Exposes the AuthenticationManager from configuration to authenticate
-     * username/password requests.
+     * Exposes the AuthenticationManager from configuration to authenticate username/password
+     * requests.
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 
     /**
-     * Configures CORS authorization rules mapping allowed origins, methods, and
-     * credential access.
+     * Configures CORS authorization rules mapping allowed origins, methods, and credential access.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

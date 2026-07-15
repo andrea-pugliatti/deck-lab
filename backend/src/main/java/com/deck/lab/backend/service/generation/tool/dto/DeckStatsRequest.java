@@ -5,5 +5,4 @@ import java.util.List;
 /**
  * Request record containing target card names.
  */
-public record DeckStatsRequest(List<String> cardNames) {
-}
+public record DeckStatsRequest(List<String> cardNames) {}

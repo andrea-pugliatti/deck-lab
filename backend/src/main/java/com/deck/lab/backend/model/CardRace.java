@@ -10,20 +10,19 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * <strong>Design Context:</strong>
  * </p>
  * <p>
- * In the Yu-Gi-Oh! card database, the "race" attribute is overloaded: for
- * monster cards, it represents physical races (e.g. Dragon, Spellcaster,
- * Zombie); for Spell and Trap cards, it represents mechanics sub-categories
- * (e.g. Continuous, Counter, Quick-Play).
+ * In the Yu-Gi-Oh! card database, the "race" attribute is overloaded: for monster cards, it
+ * represents physical races (e.g. Dragon, Spellcaster, Zombie); for Spell and Trap cards, it
+ * represents mechanics sub-categories (e.g. Continuous, Counter, Quick-Play).
  * </p>
  *
  * <p>
  * <strong>Serialization Annotations:</strong>
  * </p>
  * <ul>
- * <li>{@code @JsonValue}: Formats enums to human-friendly strings (e.g.
- * "Beast-Warrior", "Quick-Play") for REST transmissions.</li>
- * <li>{@code @JsonCreator}: Resolves incoming API strings case-insensitively to
- * matching enum entries.</li>
+ * <li>{@code @JsonValue}: Formats enums to human-friendly strings (e.g. "Beast-Warrior",
+ * "Quick-Play") for REST transmissions.</li>
+ * <li>{@code @JsonCreator}: Resolves incoming API strings case-insensitively to matching enum
+ * entries.</li>
  * </ul>
  */
 public enum CardRace {

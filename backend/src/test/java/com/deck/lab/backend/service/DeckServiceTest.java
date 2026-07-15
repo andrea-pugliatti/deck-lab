@@ -118,13 +118,17 @@ class DeckServiceTest {
 
     @Test
     void getDecksByUser_returnsMatchingDecks() {
-        Page<DeckResponseDto> result = deckService.findAllWithFilters(null, null, testUser.getUsername(),
+        Page<DeckResponseDto> result = deckService.findAllWithFilters(null,
+                null,
+                testUser.getUsername(),
                 PageRequest.of(0, 10));
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals("ServiceTest Deck", result.getContent().get(0).getName());
 
-        Page<DeckResponseDto> otherResult = deckService.findAllWithFilters(null, null, unauthorizedUser.getUsername(),
+        Page<DeckResponseDto> otherResult = deckService.findAllWithFilters(null,
+                null,
+                unauthorizedUser.getUsername(),
                 PageRequest.of(0, 10));
         assertTrue(otherResult.isEmpty());
     }
@@ -227,14 +231,19 @@ class DeckServiceTest {
         assertEquals("Edison", result.getFormatName());
         assertEquals(15, result.getCards().size());
 
-        DeckCardResponseDto resFirst = result.getCards().stream()
+        DeckCardResponseDto resFirst = result.getCards()
+                .stream()
                 .filter(c -> c.getCardId().equals(testCard.getId()))
-                .findFirst().orElseThrow();
+                .findFirst()
+                .orElseThrow();
         assertEquals(1, resFirst.getQuantity());
         assertEquals("MAIN", resFirst.getSection());
 
-        DeckCardResponseDto resSecond = result.getCards().stream()
-                .filter(c -> c.getCardId().equals(testFusionCard.getId())).findFirst().orElseThrow();
+        DeckCardResponseDto resSecond = result.getCards()
+                .stream()
+                .filter(c -> c.getCardId().equals(testFusionCard.getId()))
+                .findFirst()
+                .orElseThrow();
         assertEquals(2, resSecond.getQuantity());
         assertEquals("EXTRA", resSecond.getSection());
     }
@@ -248,17 +257,21 @@ class DeckServiceTest {
         updateRequest.setFormatName("TCG");
         updateRequest.setDeckCards(validCards);
 
-        DeckResponseDto firstResult = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
+        DeckResponseDto firstResult = deckService
+                .updateDeck(testDeck.getId(), updateRequest, testUser);
         assertNotNull(firstResult.getCards().get(0).getId());
 
         // Build a new request list from the response, adjusting quantity
-        List<DeckCardRequestDto> updatedCards = firstResult.getCards().stream()
+        List<DeckCardRequestDto> updatedCards = firstResult.getCards()
+                .stream()
                 .map(c -> {
                     DeckCardRequestDto req = new DeckCardRequestDto();
                     req.setId(c.getId());
                     req.setCardId(c.getCardId());
                     req.setSection(c.getSection());
-                    req.setQuantity(c.getCardId().equals(validCards.get(0).getCardId()) ? 2 : c.getQuantity());
+                    req.setQuantity(c.getCardId().equals(validCards.get(0).getCardId())
+                            ? 2
+                            : c.getQuantity());
                     return req;
                 })
                 .toList();

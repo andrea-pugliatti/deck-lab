@@ -16,19 +16,18 @@ import com.deck.lab.backend.model.User;
  * <strong>Repository Pattern (Data Access Layer)</strong>
  * </p>
  * <p>
- * Exposes persistent CRUD query routines for deck configurations. Extending
- * {@link JpaRepository} delegates SQL queries to the underlying database
- * engine, enabling saving, updating, and querying user decks.
+ * Exposes persistent CRUD query routines for deck configurations. Extending {@link JpaRepository}
+ * delegates SQL queries to the underlying database engine, enabling saving, updating, and querying
+ * user decks.
  * </p>
  *
  * <p>
- * <strong>Dynamic Query Execution with
- * {@link JpaSpecificationExecutor}:</strong>
+ * <strong>Dynamic Query Execution with {@link JpaSpecificationExecutor}:</strong>
  * </p>
  * <p>
- * Enables the repository to evaluate dynamic specifications (like matching
- * names or filtering by format and owner), combining filters dynamically in the
- * service layer to avoid declaring complex static finder permutations.
+ * Enables the repository to evaluate dynamic specifications (like matching names or filtering by
+ * format and owner), combining filters dynamically in the service layer to avoid declaring complex
+ * static finder permutations.
  * </p>
  */
 public interface DeckRepository extends JpaRepository<Deck, Long>, JpaSpecificationExecutor<Deck> {

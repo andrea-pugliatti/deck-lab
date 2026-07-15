@@ -20,28 +20,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
- * REST Controller providing API endpoints for AI-driven deck list generation
- * and card synergy recommendations.
+ * REST Controller providing API endpoints for AI-driven deck list generation and card synergy
+ * recommendations.
  *
  * <p>
  * <strong>Controller (REST API)</strong>
  * </p>
  * <p>
- * This controller orchestrates user requests to build or analyze decks using
- * Large Language Models (LLMs). It acts as an integration gateway: accepting
- * strategy requests, prompting the AI engine via {@link GenerationService},
- * resolving the resulting text suggestions against our relational database,
- * passing them through our local validation engine, and returning complete card
- * payloads alongside warning arrays explaining any rules adjustments.
+ * This controller orchestrates user requests to build or analyze decks using Large Language Models
+ * (LLMs). It acts as an integration gateway: accepting strategy requests, prompting the AI engine
+ * via {@link GenerationService}, resolving the resulting text suggestions against our relational
+ * database, passing them through our local validation engine, and returning complete card payloads
+ * alongside warning arrays explaining any rules adjustments.
  * </p>
  *
  * <p>
  * <strong>Client-Level Rate Limiting</strong>
  * </p>
  * <p>
- * To protect AI endpoints from excessive resource consumption, this controller
- * delegates rate-limiting validation to the
- * {@code @Qualifier("aiGenerationRateLimiter")} {@link RateLimiter}
+ * To protect AI endpoints from excessive resource consumption, this controller delegates
+ * rate-limiting validation to the {@code @Qualifier("aiGenerationRateLimiter")} {@link RateLimiter}
  * implementation, tracking attempts per client IP address.
  * </p>
  */
@@ -53,40 +51,38 @@ public class GenerationController {
     private final RateLimiter rateLimiter;
 
     public GenerationController(GenerationService deckGenerationService,
-            @Qualifier("aiGenerationRateLimiter") RateLimiter rateLimiter) {
+                                @Qualifier("aiGenerationRateLimiter") RateLimiter rateLimiter) {
         this.deckGenerationService = deckGenerationService;
         this.rateLimiter = rateLimiter;
     }
 
     /**
-     * Generates a fully compiled deck list based on format, archetype, strategy,
-     * and optional user instructions. Validates generated cards against rules.
+     * Generates a fully compiled deck list based on format, archetype, strategy, and optional user
+     * instructions. Validates generated cards against rules.
      *
-     * @param request DTO containing formatName, archetype, strategy, and custom
-     *                prompts
+     * @param request DTO containing formatName, archetype, strategy, and custom prompts
      * @return 200 OK with the generated deck list and any compliance warnings
      */
     @PostMapping("/generate")
-    public ResponseEntity<DeckGenerationResponseDto> generate(
-            @Valid @RequestBody DeckGenerateRequestDto request,
-            HttpServletRequest servletRequest) {
+    public ResponseEntity<DeckGenerationResponseDto>
+            generate(@Valid @RequestBody DeckGenerateRequestDto request,
+                     HttpServletRequest servletRequest) {
         String ipAddress = servletRequest.getRemoteAddr();
         rateLimiter.checkLimit(ipAddress);
         return ResponseEntity.ok(deckGenerationService.generateDeck(request));
     }
 
     /**
-     * Recommends exactly 5 card suggestions that synergize with the current
-     * partially built deck list.
+     * Recommends exactly 5 card suggestions that synergize with the current partially built deck
+     * list.
      *
-     * @param request DTO containing formatName and the current list of card
-     *                quantities
+     * @param request DTO containing formatName and the current list of card quantities
      * @return 200 OK with a list of 5 card suggestions and synergy rationales
      */
     @PostMapping("/suggest")
-    public ResponseEntity<List<CardSuggestionResponseDto>> suggest(
-            @Valid @RequestBody DeckSuggestRequestDto request,
-            HttpServletRequest servletRequest) {
+    public ResponseEntity<List<CardSuggestionResponseDto>>
+            suggest(@Valid @RequestBody DeckSuggestRequestDto request,
+                    HttpServletRequest servletRequest) {
         String ipAddress = servletRequest.getRemoteAddr();
         rateLimiter.checkLimit(ipAddress);
         return ResponseEntity.ok(deckGenerationService.suggestCards(request));

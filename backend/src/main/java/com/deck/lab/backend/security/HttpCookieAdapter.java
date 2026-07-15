@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
  * <strong>ResponseCookie Adapter</strong>
  * </p>
  * <p>
- * Translates cookie generation and clearing operations into standard, secure
- * {@link ResponseCookie} headers. Centralizes cookie configuration attributes
- * (HttpOnly, Secure, SameSite, and Path) to ensure consistency across all
- * session management endpoints.
+ * Translates cookie generation and clearing operations into standard, secure {@link ResponseCookie}
+ * headers. Centralizes cookie configuration attributes (HttpOnly, Secure, SameSite, and Path) to
+ * ensure consistency across all session management endpoints.
  * </p>
  */
 @Component
@@ -24,10 +23,9 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
     private final String sameSite;
     private final boolean secure;
 
-    public HttpCookieAdapter(
-            @Value("${refresh-token.duration-days:7}") int durationDays,
-            @Value("${app.cookie.same-site:Lax}") String sameSite,
-            @Value("${app.cookie.secure:true}") boolean secure) {
+    public HttpCookieAdapter(@Value("${refresh-token.duration-days:7}") int durationDays,
+                             @Value("${app.cookie.same-site:Lax}") String sameSite,
+                             @Value("${app.cookie.secure:true}") boolean secure) {
         this.maxAgeSeconds = durationDays * 24 * 60 * 60L;
         this.sameSite = sameSite;
         this.secure = secure;
@@ -41,7 +39,8 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
      */
     @Override
     public String createCookie(String token) {
-        return ResponseCookie.from("refreshToken", token)
+        return ResponseCookie
+                .from("refreshToken", token)
                 .httpOnly(true)
                 .secure(secure)
                 .sameSite(sameSite)
@@ -58,7 +57,8 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
      */
     @Override
     public String clearCookie() {
-        return ResponseCookie.from("refreshToken", "")
+        return ResponseCookie
+                .from("refreshToken", "")
                 .httpOnly(true)
                 .secure(secure)
                 .sameSite(sameSite)

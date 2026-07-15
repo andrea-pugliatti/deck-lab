@@ -1,17 +1,15 @@
 package com.deck.lab.backend.security;
 
 /**
- * Interface defining the execution contract for building and clearing refresh
- * token HTTP cookies.
+ * Interface defining the execution contract for building and clearing refresh token HTTP cookies.
  *
  * <p>
  * <strong>Adapter Pattern (Cookie Header Abstraction)</strong>
  * </p>
  * <p>
- * Decouples the API controllers from raw servlet header formatting. By defining
- * a clean boundary for cookie creation and revocation, the system allows
- * swapping production headers ({@code Set-Cookie} values) for simple in-memory
- * strings during automated testing.
+ * Decouples the API controllers from raw servlet header formatting. By defining a clean boundary
+ * for cookie creation and revocation, the system allows swapping production headers
+ * ({@code Set-Cookie} values) for simple in-memory strings during automated testing.
  * </p>
  */
 public interface RefreshTokenCookieAdapter {

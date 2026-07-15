@@ -29,32 +29,28 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Importer class responsible for seeding Yu-Gi-Oh! format legality and banlist
- * rules.
+ * Importer class responsible for seeding Yu-Gi-Oh! format legality and banlist rules.
  *
  * <p>
  * <strong>Rules Importer</strong>
  * </p>
  * <p>
- * Exposes functions to populate the {@code format_rules} table. Resolves card
- * restriction rules (Forbidden, Limited, Semi-Limited) through two distinct
- * mechanisms:
+ * Exposes functions to populate the {@code format_rules} table. Resolves card restriction rules
+ * (Forbidden, Limited, Semi-Limited) through two distinct mechanisms:
  * </p>
  * <ul>
- * <li><strong>API Banlist Seeding:</strong>
- * Queries the external YGOPRODeck API for current, active formats (like
- * TCG/OCG), identifying restricted cards and saving their current limitations
- * in our database.</li>
- * <li><strong>Historical Banlist Seeding:</strong>
- * Historical retro formats (like Edison, Goat, Tengu Plant, HAT) are static and
- * do not change over time. This class seeds these classic formats using local
- * predefined card restriction collections, insulating the application from API
- * downtime when loading classic game formats.</li>
+ * <li><strong>API Banlist Seeding:</strong> Queries the external YGOPRODeck API for current, active
+ * formats (like TCG/OCG), identifying restricted cards and saving their current limitations in our
+ * database.</li>
+ * <li><strong>Historical Banlist Seeding:</strong> Historical retro formats (like Edison, Goat,
+ * Tengu Plant, HAT) are static and do not change over time. This class seeds these classic formats
+ * using local predefined card restriction collections, insulating the application from API downtime
+ * when loading classic game formats.</li>
  * </ul>
  *
  * <p>
- * Runs all database operations inside programmatic {@link TransactionTemplate}
- * segments to ensure rules sets are written atomically per format.
+ * Runs all database operations inside programmatic {@link TransactionTemplate} segments to ensure
+ * rules sets are written atomically per format.
  * </p>
  */
 @Component
@@ -71,8 +67,8 @@ public class BanlistImporter {
     private String apiUrl;
 
     public BanlistImporter(CardRepository cardRepository,
-            FormatRulesRepository formatRulesRepository,
-            PlatformTransactionManager transactionManager) {
+                           FormatRulesRepository formatRulesRepository,
+                           PlatformTransactionManager transactionManager) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -93,8 +89,8 @@ public class BanlistImporter {
             }
             logger.info("Reading local cards JSON for banlist seeding...");
             try (InputStream is = resource.getInputStream()) {
-                Map<String, Object> response = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
-                });
+                Map<String, Object> response = objectMapper.readValue(is,
+                        new TypeReference<Map<String, Object>>() {});
                 if (response != null && response.containsKey("data")) {
                     return (List<Map<String, Object>>) response.get("data");
                 }
@@ -106,17 +102,13 @@ public class BanlistImporter {
     }
 
     /**
-     * Seeds the standard active formats (e.g. TCG, OCG, Goat) banlist rules into
-     * the database, querying local JSON if available or falling back to the
-     * YGOProDeck API.
+     * Seeds the standard active formats (e.g. TCG, OCG, Goat) banlist rules into the database,
+     * querying local JSON if available or falling back to the YGOProDeck API.
      */
     public void seedBanlistsFromApi() {
         logger.info("Seeding banlists...");
 
-        Map<String, String> apiFormatMapping = Map.of(
-                "tcg", "TCG",
-                "ocg", "OCG",
-                "goat", "Goat");
+        Map<String, String> apiFormatMapping = Map.of("tcg", "TCG", "ocg", "OCG", "goat", "Goat");
 
         List<Map<String, Object>> localData = loadLocalCardsData();
 
@@ -126,9 +118,11 @@ public class BanlistImporter {
 
             try {
                 Format formatEnum = Format.fromString(localFormat);
-                List<FormatRules> existingRules = formatRulesRepository.findByFormatName(formatEnum);
+                List<FormatRules> existingRules = formatRulesRepository
+                        .findByFormatName(formatEnum);
                 if (!existingRules.isEmpty()) {
-                    logger.info("Banlist for {} already seeded ({} rules). Skipping.", localFormat,
+                    logger.info("Banlist for {} already seeded ({} rules). Skipping.",
+                            localFormat,
                             existingRules.size());
                     continue;
                 }
@@ -141,14 +135,18 @@ public class BanlistImporter {
                     for (Map<String, Object> card : localData) {
                         if (card.containsKey("banlist_info")) {
                             @SuppressWarnings("unchecked")
-                            Map<String, Object> banlistInfo = (Map<String, Object>) card.get("banlist_info");
-                            if (banlistInfo != null && banlistInfo.containsKey("ban_" + apiFormat)) {
+                            Map<String, Object> banlistInfo = (Map<String, Object>) card
+                                    .get("banlist_info");
+                            if (banlistInfo != null
+                                    && banlistInfo.containsKey("ban_" + apiFormat)) {
                                 dataList.add(card);
                             }
                         }
                     }
                     fromLocal = true;
-                    logger.info("Extracted {} banlist entries for {} from local JSON", dataList.size(), localFormat);
+                    logger.info("Extracted {} banlist entries for {} from local JSON",
+                            dataList.size(),
+                            localFormat);
                 }
 
                 if (dataList == null) {
@@ -164,13 +162,17 @@ public class BanlistImporter {
                             .retrieve()
                             .toEntity(Map.class);
 
-                    if (response == null || response.getBody() == null || !response.getBody().containsKey("data")) {
+                    if (response == null
+                            || response.getBody() == null
+                            || !response.getBody().containsKey("data")) {
                         logger.warn("No data returned for banlist format: {}", apiFormat);
                         continue;
                     }
 
                     @SuppressWarnings("unchecked")
-                    List<Map<String, Object>> apiData = (List<Map<String, Object>>) response.getBody().get("data");
+                    List<Map<String, Object>> apiData = (List<Map<String, Object>>) response
+                            .getBody()
+                            .get("data");
                     dataList = apiData;
                 }
 
@@ -180,7 +182,10 @@ public class BanlistImporter {
 
                 List<Card> allCardsList = cardRepository.findAll();
                 Map<String, Card> cardsByName = allCardsList.stream()
-                        .collect(Collectors.toMap(c -> c.getName().toLowerCase(), c -> c, (a, b) -> a));
+                        .collect(
+                                Collectors.toMap(c -> c.getName().toLowerCase(),
+                                        c -> c,
+                                        (a, b) -> a));
 
                 List<FormatRules> toSave = new ArrayList<>();
 
@@ -196,7 +201,8 @@ public class BanlistImporter {
                     }
 
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> banlistInfo = (Map<String, Object>) apiCard.get("banlist_info");
+                    Map<String, Object> banlistInfo = (Map<String, Object>) apiCard
+                            .get("banlist_info");
                     if (banlistInfo == null) {
                         continue;
                     }
@@ -215,17 +221,23 @@ public class BanlistImporter {
 
                     if (toSave.size() >= 500) {
                         final List<FormatRules> batch = new ArrayList<>(toSave);
-                        transactionTemplate.executeWithoutResult(txStatus -> formatRulesRepository.saveAll(batch));
+                        transactionTemplate.executeWithoutResult(
+                                txStatus -> formatRulesRepository.saveAll(batch));
                         toSave.clear();
                     }
                 }
 
                 if (!toSave.isEmpty()) {
                     final List<FormatRules> batch = new ArrayList<>(toSave);
-                    transactionTemplate.executeWithoutResult(txStatus -> formatRulesRepository.saveAll(batch));
+                    transactionTemplate
+                            .executeWithoutResult(txStatus -> formatRulesRepository.saveAll(batch));
                 }
 
-                logger.info("Seeded banlist rules for {} (from {})", localFormat, fromLocal ? "local JSON" : "API");
+                logger.info("Seeded banlist rules for {} (from {})",
+                        localFormat,
+                        fromLocal
+                                ? "local JSON"
+                                : "API");
             } catch (Exception e) {
                 logger.warn("Failed to seed banlist for {}", localFormat, e);
             }
@@ -233,33 +245,51 @@ public class BanlistImporter {
     }
 
     /**
-     * Seeds static rules for historical retro formats (Edison, Tengu Plant, HAT,
-     * etc.) if they do not already exist.
+     * Seeds static rules for historical retro formats (Edison, Tengu Plant, HAT, etc.) if they do
+     * not already exist.
      */
     public void seedHistoricalBanlists() {
-        seedHistoricalFormatIfEmpty("Edison", Map.of(
-                "Pot of Greed", CardStatus.FORBIDDEN,
-                "Graceful Charity", CardStatus.FORBIDDEN,
-                "Delinquent Duo", CardStatus.FORBIDDEN,
-                "Monster Reborn", CardStatus.FORBIDDEN,
-                "Raigeki", CardStatus.FORBIDDEN,
-                "Exodia the Forbidden One", CardStatus.LIMITED));
+        seedHistoricalFormatIfEmpty("Edison",
+                Map.of("Pot of Greed",
+                        CardStatus.FORBIDDEN,
+                        "Graceful Charity",
+                        CardStatus.FORBIDDEN,
+                        "Delinquent Duo",
+                        CardStatus.FORBIDDEN,
+                        "Monster Reborn",
+                        CardStatus.FORBIDDEN,
+                        "Raigeki",
+                        CardStatus.FORBIDDEN,
+                        "Exodia the Forbidden One",
+                        CardStatus.LIMITED));
 
-        seedHistoricalFormatIfEmpty("Tengu Plant", Map.of(
-                "Pot of Greed", CardStatus.FORBIDDEN,
-                "Graceful Charity", CardStatus.FORBIDDEN,
-                "Delinquent Duo", CardStatus.FORBIDDEN,
-                "Monster Reborn", CardStatus.LIMITED,
-                "Raigeki", CardStatus.FORBIDDEN,
-                "Exodia the Forbidden One", CardStatus.LIMITED));
+        seedHistoricalFormatIfEmpty("Tengu Plant",
+                Map.of("Pot of Greed",
+                        CardStatus.FORBIDDEN,
+                        "Graceful Charity",
+                        CardStatus.FORBIDDEN,
+                        "Delinquent Duo",
+                        CardStatus.FORBIDDEN,
+                        "Monster Reborn",
+                        CardStatus.LIMITED,
+                        "Raigeki",
+                        CardStatus.FORBIDDEN,
+                        "Exodia the Forbidden One",
+                        CardStatus.LIMITED));
 
-        seedHistoricalFormatIfEmpty("HAT Format", Map.of(
-                "Pot of Greed", CardStatus.FORBIDDEN,
-                "Graceful Charity", CardStatus.FORBIDDEN,
-                "Delinquent Duo", CardStatus.FORBIDDEN,
-                "Monster Reborn", CardStatus.FORBIDDEN,
-                "Raigeki", CardStatus.FORBIDDEN,
-                "Exodia the Forbidden One", CardStatus.LIMITED));
+        seedHistoricalFormatIfEmpty("HAT Format",
+                Map.of("Pot of Greed",
+                        CardStatus.FORBIDDEN,
+                        "Graceful Charity",
+                        CardStatus.FORBIDDEN,
+                        "Delinquent Duo",
+                        CardStatus.FORBIDDEN,
+                        "Monster Reborn",
+                        CardStatus.FORBIDDEN,
+                        "Raigeki",
+                        CardStatus.FORBIDDEN,
+                        "Exodia the Forbidden One",
+                        CardStatus.LIMITED));
     }
 
     private void seedHistoricalFormatIfEmpty(String formatName, Map<String, CardStatus> rules) {
@@ -281,10 +311,13 @@ public class BanlistImporter {
         for (Map.Entry<String, CardStatus> entry : rules.entrySet()) {
             Optional<Card> cardOpt = cardRepository.findByName(entry.getKey());
             if (cardOpt.isPresent()) {
-                formatRulesRepository.save(new FormatRules(formatEnum, cardOpt.get(), entry.getValue()));
+                formatRulesRepository
+                        .save(new FormatRules(formatEnum, cardOpt.get(), entry.getValue()));
                 seeded++;
             } else {
-                logger.warn("Card '{}' not found in DB for historical banlist {}", entry.getKey(), formatName);
+                logger.warn("Card '{}' not found in DB for historical banlist {}",
+                        entry.getKey(),
+                        formatName);
             }
         }
         logger.info("Seeded {} historical banlist rules for {}", seeded, formatName);

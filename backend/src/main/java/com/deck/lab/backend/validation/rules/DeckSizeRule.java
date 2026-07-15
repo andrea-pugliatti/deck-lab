@@ -21,10 +21,9 @@ import com.deck.lab.backend.validation.ValidationError;
  * <strong>Concrete Rule Strategy (Quantity Auditing)</strong>
  * </p>
  * <p>
- * Annotated with {@link Component} so that it registers automatically into the
- * Spring container. This class evaluates the cumulative quantity of cards
- * located in each of the three card boundaries (Main Deck, Extra Deck, and Side
- * Deck) based on the format-specific constraints.
+ * Annotated with {@link Component} so that it registers automatically into the Spring container.
+ * This class evaluates the cumulative quantity of cards located in each of the three card
+ * boundaries (Main Deck, Extra Deck, and Side Deck) based on the format-specific constraints.
  * </p>
  */
 @Component
@@ -37,11 +36,14 @@ public class DeckSizeRule implements DeckRule {
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();
 
-        Format format = deck != null ? deck.getFormatName() : null;
+        Format format = deck != null
+                ? deck.getFormatName()
+                : null;
         DeckSizeLimits limits = FormatDeckLimits.getLimits(format);
 
         if (deck == null || deck.getDeckCards() == null || deck.getDeckCards().isEmpty()) {
-            errors.add(new ValidationError("Main Deck must contain between " + limits.minMainSize() + " and " + limits.maxMainSize() + " cards. Current size: 0"));
+            errors.add(new ValidationError("Main Deck must contain between " + limits.minMainSize()
+                    + " and " + limits.maxMainSize() + " cards. Current size: 0"));
             return errors;
         }
 
@@ -51,7 +53,9 @@ public class DeckSizeRule implements DeckRule {
 
         for (DeckCard dc : deck.getDeckCards()) {
             DeckSection section = dc.getSection();
-            int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
+            int qty = dc.getQuantity() != null
+                    ? dc.getQuantity()
+                    : 0;
             if (qty <= 0)
                 continue;
 
@@ -63,14 +67,16 @@ public class DeckSizeRule implements DeckRule {
         }
 
         if (mainSize < limits.minMainSize() || mainSize > limits.maxMainSize()) {
-            errors.add(
-                    new ValidationError("Main Deck must contain between " + limits.minMainSize() + " and " + limits.maxMainSize() + " cards. Current size: " + mainSize));
+            errors.add(new ValidationError("Main Deck must contain between " + limits.minMainSize()
+                    + " and " + limits.maxMainSize() + " cards. Current size: " + mainSize));
         }
         if (extraSize > limits.maxExtraSize()) {
-            errors.add(new ValidationError("Extra Deck cannot exceed " + limits.maxExtraSize() + " cards. Current size: " + extraSize));
+            errors.add(new ValidationError("Extra Deck cannot exceed " + limits.maxExtraSize()
+                    + " cards. Current size: " + extraSize));
         }
         if (sideSize > limits.maxSideSize()) {
-            errors.add(new ValidationError("Side Deck cannot exceed " + limits.maxSideSize() + " cards. Current size: " + sideSize));
+            errors.add(new ValidationError("Side Deck cannot exceed " + limits.maxSideSize()
+                    + " cards. Current size: " + sideSize));
         }
 
         return errors;

@@ -80,7 +80,8 @@ public class DeckControllerRateLimitTest {
 
         testUser = new User("ctrl-rate-user", "password", "ctrl-rate-user@example.com");
         testUser = userRepository.save(testUser);
-        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());
+        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null,
+                Collections.emptyList());
 
         testCards = new ArrayList<>();
         for (int i = 1; i <= 15; i++) {

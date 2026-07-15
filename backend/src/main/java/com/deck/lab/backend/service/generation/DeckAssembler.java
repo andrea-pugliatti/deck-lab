@@ -16,8 +16,7 @@ import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
- * Service mapping resolved card inputs into transient Deck models and data
- * transfer objects.
+ * Service mapping resolved card inputs into transient Deck models and data transfer objects.
  */
 @Service
 public class DeckAssembler {
@@ -30,7 +29,9 @@ public class DeckAssembler {
      * @param resolvedCards list of database-resolved cards
      * @return an assembled Deck entity ready for validation or persistence
      */
-    public Deck assembleDeck(String name, String formatName, List<ResolvedCardEntry> resolvedCards) {
+    public Deck assembleDeck(String name,
+                             String formatName,
+                             List<ResolvedCardEntry> resolvedCards) {
         Deck deck = new Deck();
         deck.setName(name);
 
@@ -61,12 +62,13 @@ public class DeckAssembler {
     }
 
     /**
-     * Helper to assemble a transient Deck from raw DTO lists and pre-resolved Card
-     * map.
-     * Useful for eliminating duplication in validation routines.
+     * Helper to assemble a transient Deck from raw DTO lists and pre-resolved Card map. Useful for
+     * eliminating duplication in validation routines.
      */
-    public Deck assembleDeckFromDtos(String name, String formatName, List<DeckCardRequestDto> cardDtos,
-            Map<Long, Card> cardMap) {
+    public Deck assembleDeckFromDtos(String name,
+                                     String formatName,
+                                     List<DeckCardRequestDto> cardDtos,
+                                     Map<Long, Card> cardMap) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
         if (cardDtos != null && cardMap != null) {
             for (DeckCardRequestDto dto : cardDtos) {
@@ -94,14 +96,19 @@ public class DeckAssembler {
         long tempIdCounter = 1;
         for (ResolvedCardEntry entry : resolvedCards) {
             Card card = entry.card();
-            dtos.add(new DeckCardResponseDto(
-                    tempIdCounter++,
+            dtos.add(new DeckCardResponseDto(tempIdCounter++,
                     card.getId(),
                     card.getName(),
-                    card.getType() != null ? card.getType().getValue() : null,
+                    card.getType() != null
+                            ? card.getType().getValue()
+                            : null,
                     card.getDescription(),
-                    card.getRace() != null ? card.getRace().getValue() : null,
-                    card.getAttribute() != null ? card.getAttribute().getValue() : null,
+                    card.getRace() != null
+                            ? card.getRace().getValue()
+                            : null,
+                    card.getAttribute() != null
+                            ? card.getAttribute().getValue()
+                            : null,
                     card.getArchetype(),
                     card.getImageUrl(),
                     entry.section(),

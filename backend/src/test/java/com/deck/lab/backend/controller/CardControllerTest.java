@@ -60,7 +60,8 @@ public class CardControllerTest {
     void setUp() {
         testUser = new User("card-test-user", "password", "card-test-user@example.com");
         testUser = userRepository.save(testUser);
-        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());
+        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null,
+                Collections.emptyList());
 
         testCard = new Card();
         testCard.setName("MyUniqueCard");

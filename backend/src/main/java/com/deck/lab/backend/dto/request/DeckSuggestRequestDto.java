@@ -9,17 +9,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Data Transfer Object (DTO) representing an incoming request payload to
- * suggest card additions/removals for a deck.
+ * Data Transfer Object (DTO) representing an incoming request payload to suggest card
+ * additions/removals for a deck.
  *
  * <p>
  * <strong>Request DTO</strong>
  * </p>
  * <p>
- * This object encapsulates client payload parameters required for suggesting
- * deck improvements. Decouples controller parameters from persistent deck
- * entities, allowing clients to send unsaved deck configurations directly for
- * analysis.
+ * This object encapsulates client payload parameters required for suggesting deck improvements.
+ * Decouples controller parameters from persistent deck entities, allowing clients to send unsaved
+ * deck configurations directly for analysis.
  * </p>
  */
 public class DeckSuggestRequestDto {

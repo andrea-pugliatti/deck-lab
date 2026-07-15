@@ -22,16 +22,13 @@ import com.deck.lab.backend.validation.ValidationError;
  * <strong>Concrete Rule Strategy (Banlist Verification Strategy)</strong>
  * </p>
  * <p>
- * Annotated with {@link stereotype.Component} for autowired loading. This
- * strategy evaluates card counts against the database-configured banlist
- * definitions for a chosen format:
+ * Annotated with {@link stereotype.Component} for autowired loading. This strategy evaluates card
+ * counts against the database-configured banlist definitions for a chosen format:
  * <ul>
- * <li>{@link CardStatus#FORBIDDEN}: Enforces that the total card count across
- * all sections (Main, Extra, Side) must be exactly 0.</li>
- * <li>{@link CardStatus#LIMITED}: Enforces that the total count must not exceed
- * 1.</li>
- * <li>{@link CardStatus#SEMI_LIMITED}: Enforces that the total count must not
- * exceed 2.</li>
+ * <li>{@link CardStatus#FORBIDDEN}: Enforces that the total card count across all sections (Main,
+ * Extra, Side) must be exactly 0.</li>
+ * <li>{@link CardStatus#LIMITED}: Enforces that the total count must not exceed 1.</li>
+ * <li>{@link CardStatus#SEMI_LIMITED}: Enforces that the total count must not exceed 2.</li>
  * </ul>
  * Any excess cards are logged as validation errors.
  * </p>
@@ -45,7 +42,10 @@ public class FormatLegalityRule implements DeckRule {
     @Override
     public List<ValidationError> evaluate(Deck deck, Map<Long, CardStatus> formatLimits) {
         List<ValidationError> errors = new ArrayList<>();
-        if (deck == null || deck.getDeckCards() == null || formatLimits == null || formatLimits.isEmpty()) {
+        if (deck == null
+                || deck.getDeckCards() == null
+                || formatLimits == null
+                || formatLimits.isEmpty()) {
             return errors;
         }
 
@@ -62,9 +62,12 @@ public class FormatLegalityRule implements DeckRule {
                 continue;
             }
             Long cardId = dc.getCard().getId();
-            int qty = dc.getQuantity() != null ? dc.getQuantity() : 0;
-            if (qty <= 0)
+            int qty = dc.getQuantity() != null
+                    ? dc.getQuantity()
+                    : 0;
+            if (qty <= 0) {
                 continue;
+            }
 
             cardQuantities.put(cardId, cardQuantities.getOrDefault(cardId, 0) + qty);
             cards.put(cardId, dc.getCard());
@@ -83,11 +86,13 @@ public class FormatLegalityRule implements DeckRule {
                 };
                 if (totalQty > limit) {
                     Card card = cards.get(cardId);
-                    String cardName = card != null ? card.getName() : "Unknown Card";
+                    String cardName = card != null
+                            ? card.getName()
+                            : "Unknown Card";
                     String statusLabel = status.name().toLowerCase().replace('_', '-');
-                    errors.add(new ValidationError(
-                            "Card '" + cardName + "' is " + statusLabel + " in format '" + format.getValue()
-                                    + "' (max " + limit + " copies allowed, found " + totalQty + ")"));
+                    errors.add(new ValidationError("Card '" + cardName + "' is " + statusLabel
+                            + " in format '" + format.getValue() + "' (max " + limit
+                            + " copies allowed, found " + totalQty + ")"));
                 }
             }
         }

@@ -10,12 +10,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * <strong>Deck Construction Context:</strong>
  * </p>
  * <ul>
- * <li>{@code MAIN}: The primary deck containing Spell, Trap, and Main Deck
- * Monster cards. Usually sized between 40 and 60 cards.</li>
- * <li>{@code EXTRA}: The repository containing special Fusion, Synchro, Xyz,
- * and Link monsters. Usually limited to 15 cards.</li>
- * <li>{@code SIDE}: A secondary card pool used for mid-match adjustments
- * between games. Usually limited to 15 cards.</li>
+ * <li>{@code MAIN}: The primary deck containing Spell, Trap, and Main Deck Monster cards. Usually
+ * sized between 40 and 60 cards.</li>
+ * <li>{@code EXTRA}: The repository containing special Fusion, Synchro, Xyz, and Link monsters.
+ * Usually limited to 15 cards.</li>
+ * <li>{@code SIDE}: A secondary card pool used for mid-match adjustments between games. Usually
+ * limited to 15 cards.</li>
  * </ul>
  */
 public enum DeckSection {

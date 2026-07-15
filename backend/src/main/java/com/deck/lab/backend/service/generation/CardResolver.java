@@ -13,8 +13,7 @@ import com.deck.lab.backend.service.generation.model.CardEntry;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
- * Service responsible for mapping AI-generated card names to actual database
- * card records.
+ * Service responsible for mapping AI-generated card names to actual database card records.
  */
 @Service
 public class CardResolver {
@@ -29,8 +28,7 @@ public class CardResolver {
      * Resolves card names to database records and normalizes quantity/sections.
      *
      * @param entries list of raw card entries from the AI response
-     * @return a list of resolved card entries containing the database entity and
-     *         quantity
+     * @return a list of resolved card entries containing the database entity and quantity
      */
     public List<ResolvedCardEntry> resolveCards(List<CardEntry> entries) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
@@ -47,7 +45,9 @@ public class CardResolver {
             if (dbCardOpt.isPresent()) {
                 Card card = dbCardOpt.get();
 
-                String section = entry.getSection() != null ? entry.getSection().toUpperCase() : "MAIN";
+                String section = entry.getSection() != null
+                        ? entry.getSection().toUpperCase()
+                        : "MAIN";
                 if (!List.of("MAIN", "EXTRA", "SIDE").contains(section)) {
                     section = "MAIN";
                 }
@@ -66,13 +66,13 @@ public class CardResolver {
     }
 
     /**
-     * Resolves card suggestions by mapping suggested names to real database
-     * records.
+     * Resolves card suggestions by mapping suggested names to real database records.
      *
      * @param suggestions list of suggestions from the AI response
      * @return a list of resolved card suggestions containing database attributes
      */
-    public List<CardSuggestionResponseDto> resolveSuggestions(List<CardSuggestionResponseDto> suggestions) {
+    public List<CardSuggestionResponseDto>
+            resolveSuggestions(List<CardSuggestionResponseDto> suggestions) {
         List<CardSuggestionResponseDto> resolved = new ArrayList<>();
         if (suggestions == null) {
             return resolved;
@@ -86,13 +86,17 @@ public class CardResolver {
             Optional<Card> dbCardOpt = lookupCard(suggestion.getName());
             if (dbCardOpt.isPresent()) {
                 Card card = dbCardOpt.get();
-                resolved.add(new CardSuggestionResponseDto(
-                        card.getName(),
-                        suggestion.getSection() != null ? suggestion.getSection().toUpperCase() : "MAIN",
-                        suggestion.getSynergyReason() != null ? suggestion.getSynergyReason()
+                resolved.add(new CardSuggestionResponseDto(card.getName(),
+                        suggestion.getSection() != null
+                                ? suggestion.getSection().toUpperCase()
+                                : "MAIN",
+                        suggestion.getSynergyReason() != null
+                                ? suggestion.getSynergyReason()
                                 : "Provides good synergy.",
                         card.getId(),
-                        card.getType() != null ? card.getType().getValue() : null,
+                        card.getType() != null
+                                ? card.getType().getValue()
+                                : null,
                         card.getImageUrlCropped()));
             }
         }
@@ -100,8 +104,7 @@ public class CardResolver {
     }
 
     /**
-     * Resolves a card by exact matching name, or falls back to case-insensitive
-     * substring search.
+     * Resolves a card by exact matching name, or falls back to case-insensitive substring search.
      */
     public Optional<Card> lookupCard(String name) {
         Optional<Card> cardOpt = cardRepository.findByName(name.trim());

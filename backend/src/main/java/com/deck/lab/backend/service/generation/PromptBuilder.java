@@ -18,8 +18,7 @@ import com.deck.lab.backend.service.generation.model.CardEntry;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 /**
- * Pure component responsible for constructing Spring AI prompts from request
- * DTOs.
+ * Pure component responsible for constructing Spring AI prompts from request DTOs.
  */
 @Component
 public class PromptBuilder {
@@ -36,8 +35,7 @@ public class PromptBuilder {
      * Builds a Spring AI Prompt for the initial deck drafting phase.
      *
      * @param request            the deck generation request parameters
-     * @param formatInstructions format-specific syntax constraints/rules for JSON
-     *                           output
+     * @param formatInstructions format-specific syntax constraints/rules for JSON output
      * @return the constructed Prompt object
      */
     public Prompt buildDraftPrompt(DeckGenerateRequestDto request, String formatInstructions) {
@@ -116,25 +114,21 @@ public class PromptBuilder {
     }
 
     /**
-     * Builds a Spring AI Prompt for the deck refinement phase, addressing
-     * unresolved cards and validation warnings.
+     * Builds a Spring AI Prompt for the deck refinement phase, addressing unresolved cards and
+     * validation warnings.
      *
      * @param request            the original deck generation request parameters
-     * @param resolvedCards      list of successfully database-resolved cards from
-     *                           draft
-     * @param unresolvedNames    list of card names that could not be resolved in
-     *                           database
+     * @param resolvedCards      list of successfully database-resolved cards from draft
+     * @param unresolvedNames    list of card names that could not be resolved in database
      * @param validationWarnings list of format legality warning messages
-     * @param formatInstructions format-specific syntax constraints/rules for JSON
-     *                           output
+     * @param formatInstructions format-specific syntax constraints/rules for JSON output
      * @return the constructed Prompt object
      */
-    public Prompt buildRefinementPrompt(
-            DeckGenerateRequestDto request,
-            List<ResolvedCardEntry> resolvedCards,
-            List<String> unresolvedNames,
-            List<String> validationWarnings,
-            String formatInstructions) {
+    public Prompt buildRefinementPrompt(DeckGenerateRequestDto request,
+                                        List<ResolvedCardEntry> resolvedCards,
+                                        List<String> unresolvedNames,
+                                        List<String> validationWarnings,
+                                        String formatInstructions) {
 
         String systemInstruction = null;
         if (promptConfig != null && promptConfig.getSystem() != null) {
@@ -236,45 +230,46 @@ public class PromptBuilder {
     }
 
     private String formatResolvedCards(List<ResolvedCardEntry> resolved) {
-        return resolved.stream()
-                .map(entry -> {
-                    Card card = entry.card();
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("- ").append(card.getName())
-                            .append(" (").append(entry.section()).append(") x").append(entry.quantity());
-                    if (card.getType() != null) {
-                        sb.append(", Type: ").append(card.getType().getValue());
-                    }
-                    if (card.getRace() != null) {
-                        sb.append(", Race: ").append(card.getRace().getValue());
-                    }
-                    if (card.getAttribute() != null) {
-                        sb.append(", Attribute: ").append(card.getAttribute().name());
-                    }
-                    if (card.getLevel() != null) {
-                        sb.append(", Level: ").append(card.getLevel());
-                    } else if (card.getLinkVal() != null) {
-                        sb.append(", Link: ").append(card.getLinkVal());
-                    }
-                    if (card.getAtk() != null) {
-                        sb.append(", ATK: ").append(card.getAtk());
-                    }
-                    if (card.getDef() != null) {
-                        sb.append(", DEF: ").append(card.getDef());
-                    }
-                    return sb.toString();
-                })
-                .collect(Collectors.joining("\n"));
+        return resolved.stream().map(entry -> {
+            Card card = entry.card();
+            StringBuilder sb = new StringBuilder();
+            sb.append("- ")
+                    .append(card.getName())
+                    .append(" (")
+                    .append(entry.section())
+                    .append(") x")
+                    .append(entry.quantity());
+            if (card.getType() != null) {
+                sb.append(", Type: ").append(card.getType().getValue());
+            }
+            if (card.getRace() != null) {
+                sb.append(", Race: ").append(card.getRace().getValue());
+            }
+            if (card.getAttribute() != null) {
+                sb.append(", Attribute: ").append(card.getAttribute().name());
+            }
+            if (card.getLevel() != null) {
+                sb.append(", Level: ").append(card.getLevel());
+            } else if (card.getLinkVal() != null) {
+                sb.append(", Link: ").append(card.getLinkVal());
+            }
+            if (card.getAtk() != null) {
+                sb.append(", ATK: ").append(card.getAtk());
+            }
+            if (card.getDef() != null) {
+                sb.append(", DEF: ").append(card.getDef());
+            }
+            return sb.toString();
+        }).collect(Collectors.joining("\n"));
     }
 
     /**
-     * Builds a Spring AI Prompt for generating card suggestions based on the
-     * current deck composition.
+     * Builds a Spring AI Prompt for generating card suggestions based on the current deck
+     * composition.
      *
-     * @param request            the deck suggestion request containing the current
-     *                           cards list and format
-     * @param formatInstructions format-specific syntax constraints/rules for JSON
-     *                           output
+     * @param request            the deck suggestion request containing the current cards list and
+     *                               format
+     * @param formatInstructions format-specific syntax constraints/rules for JSON output
      * @return the constructed Prompt object
      */
     public Prompt buildSuggestionPrompt(DeckSuggestRequestDto request, String formatInstructions) {
@@ -353,53 +348,54 @@ public class PromptBuilder {
         if (currentCards == null || currentCards.isEmpty()) {
             return "(Empty Deck)";
         }
-        return currentCards.stream()
-                .map(c -> {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("- ")
-                            .append(c.getName())
-                            .append(" (")
-                            .append(c.getSection() != null ? c.getSection().toUpperCase() : "MAIN")
-                            .append(") x")
-                            .append(c.getQuantity() != null ? c.getQuantity() : 1);
+        return currentCards.stream().map(c -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append("- ")
+                    .append(c.getName())
+                    .append(" (")
+                    .append(c.getSection() != null
+                            ? c.getSection().toUpperCase()
+                            : "MAIN")
+                    .append(") x")
+                    .append(c.getQuantity() != null
+                            ? c.getQuantity()
+                            : 1);
 
-                    if (c.getName() != null) {
-                        Optional<Card> dbCardOpt = cardRepository
-                                .findByName(c.getName().trim());
-                        if (dbCardOpt.isEmpty()) {
-                            List<Card> fallbacks = cardRepository
-                                    .findByNameContainingIgnoreCase(c.getName().trim());
-                            if (!fallbacks.isEmpty()) {
-                                dbCardOpt = Optional.of(fallbacks.get(0));
-                            }
-                        }
-                        if (dbCardOpt.isPresent()) {
-                            Card card = dbCardOpt.get();
-                            if (card.getType() != null) {
-                                sb.append(", Type: ").append(card.getType().getValue());
-                            }
-                            if (card.getRace() != null) {
-                                sb.append(", Race: ").append(card.getRace().getValue());
-                            }
-                            if (card.getAttribute() != null) {
-                                sb.append(", Attribute: ").append(card.getAttribute().name());
-                            }
-                            if (card.getLevel() != null) {
-                                sb.append(", Level: ").append(card.getLevel());
-                            } else if (card.getLinkVal() != null) {
-                                sb.append(", Link: ").append(card.getLinkVal());
-                            }
-                            if (card.getAtk() != null) {
-                                sb.append(", ATK: ").append(card.getAtk());
-                            }
-                            if (card.getDef() != null) {
-                                sb.append(", DEF: ").append(card.getDef());
-                            }
-                        }
+            if (c.getName() != null) {
+                Optional<Card> dbCardOpt = cardRepository.findByName(c.getName().trim());
+                if (dbCardOpt.isEmpty()) {
+                    List<Card> fallbacks = cardRepository
+                            .findByNameContainingIgnoreCase(c.getName().trim());
+                    if (!fallbacks.isEmpty()) {
+                        dbCardOpt = Optional.of(fallbacks.get(0));
                     }
-                    return sb.toString();
-                })
-                .collect(Collectors.joining("\n"));
+                }
+                if (dbCardOpt.isPresent()) {
+                    Card card = dbCardOpt.get();
+                    if (card.getType() != null) {
+                        sb.append(", Type: ").append(card.getType().getValue());
+                    }
+                    if (card.getRace() != null) {
+                        sb.append(", Race: ").append(card.getRace().getValue());
+                    }
+                    if (card.getAttribute() != null) {
+                        sb.append(", Attribute: ").append(card.getAttribute().name());
+                    }
+                    if (card.getLevel() != null) {
+                        sb.append(", Level: ").append(card.getLevel());
+                    } else if (card.getLinkVal() != null) {
+                        sb.append(", Link: ").append(card.getLinkVal());
+                    }
+                    if (card.getAtk() != null) {
+                        sb.append(", ATK: ").append(card.getAtk());
+                    }
+                    if (card.getDef() != null) {
+                        sb.append(", DEF: ").append(card.getDef());
+                    }
+                }
+            }
+            return sb.toString();
+        }).collect(Collectors.joining("\n"));
     }
 
     private String getFormatRules(String formatName) {
@@ -429,7 +425,8 @@ public class PromptBuilder {
         if (strategy == null) {
             strategy = "None";
         }
-        String normalized = strategy.trim().toLowerCase()
+        String normalized = strategy.trim()
+                .toLowerCase()
                 .replace("_", "")
                 .replace("-", "")
                 .replace("/", "")

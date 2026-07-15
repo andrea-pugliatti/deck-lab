@@ -16,39 +16,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * HTTP Security Filter that intercepts incoming REST API requests to inspect
- * and authorize requests containing JWT tokens.
+ * HTTP Security Filter that intercepts incoming REST API requests to inspect and authorize requests
+ * containing JWT tokens.
  *
  * <p>
- * <strong>Filter (Chain of Responsibility / Intercepting Filter
- * Pattern)</strong>
+ * <strong>Filter (Chain of Responsibility / Intercepting Filter Pattern)</strong>
  * </p>
  * <p>
- * This filter sits in front of the application controllers. It intercepts HTTP
- * requests, extracts the token, validates it, and updates Spring Security's
- * internal session context. It implements the Chain of Responsibility pattern:
- * once it finishes inspection, it delegates down the pipeline by calling
- * {@code filterChain.doFilter(request, response)}.
+ * This filter sits in front of the application controllers. It intercepts HTTP requests, extracts
+ * the token, validates it, and updates Spring Security's internal session context. It implements
+ * the Chain of Responsibility pattern: once it finishes inspection, it delegates down the pipeline
+ * by calling {@code filterChain.doFilter(request, response)}.
  * </p>
  *
  * <p>
  * <strong>Spring Security Components:</strong>
  * </p>
  * <ul>
- * <li>{@code OncePerRequestFilter}: A base class provided by Spring Security.
- * Unlike standard servlet filters, which can trigger multiple times during a
- * single request (due to internal forwards or redirects),
- * {@code OncePerRequestFilter} guarantees a single execution block per request
- * dispatch, ensuring consistency and saving processing cycles.</li>
- * <li>Authorization Header Parsing: It searches for the HTTP request header
- * {@code Authorization} matching the {@code Bearer <token>} format.</li>
- * <li>{@code SecurityContextHolder}: Spring Security's core context store. If
- * the token is valid, this class builds an
- * {@link UsernamePasswordAuthenticationToken} principal and stores it inside
- * {@link SecurityContextHolder#getContext()}. This is backed by a
- * {@code ThreadLocal} store, meaning the authenticated state is automatically
- * made available to all downstream services executing on the current request
- * processing thread.</li>
+ * <li>{@code OncePerRequestFilter}: A base class provided by Spring Security. Unlike standard
+ * servlet filters, which can trigger multiple times during a single request (due to internal
+ * forwards or redirects), {@code OncePerRequestFilter} guarantees a single execution block per
+ * request dispatch, ensuring consistency and saving processing cycles.</li>
+ * <li>Authorization Header Parsing: It searches for the HTTP request header {@code Authorization}
+ * matching the {@code Bearer <token>} format.</li>
+ * <li>{@code SecurityContextHolder}: Spring Security's core context store. If the token is valid,
+ * this class builds an {@link UsernamePasswordAuthenticationToken} principal and stores it inside
+ * {@link SecurityContextHolder#getContext()}. This is backed by a {@code ThreadLocal} store,
+ * meaning the authenticated state is automatically made available to all downstream services
+ * executing on the current request processing thread.</li>
  * </ul>
  */
 @Component
@@ -66,13 +61,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Inspects the Authorization header, verifies JWT validity, and maps user auth
-     * to the SecurityContext.
+     * Inspects the Authorization header, verifies JWT validity, and maps user auth to the
+     * SecurityContext.
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
@@ -97,10 +92,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (jwtService.validateToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (Exception e) {

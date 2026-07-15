@@ -20,19 +20,17 @@ import com.deck.lab.backend.repository.UserRepository;
 import com.deck.lab.backend.service.generation.model.CardEntry;
 
 /**
- * Seeder class responsible for populating the database with sample, competitive
- * deck lists.
+ * Seeder class responsible for populating the database with sample, competitive deck lists.
  *
  * <p>
  * <strong>Design Pattern: Demo Data Bootstrapper</strong>
  * </p>
  * <p>
- * To help users and developers test features right after starting the
- * application, this component bootstraps real, historically accurate Yu-Gi-Oh!
- * deck lists (like Frog OTK, Frog Monarch, Diva Hero, and Lightsworn). It
- * locates database {@link Card} entities matching card names, maps them to
- * transient {@link DeckCard} instances, links them to seeded user profiles
- * (e.g. "yugi" or "admin"), and saves them through the {@link DeckRepository}.
+ * To help users and developers test features right after starting the application, this component
+ * bootstraps real, historically accurate Yu-Gi-Oh! deck lists (like Frog OTK, Frog Monarch, Diva
+ * Hero, and Lightsworn). It locates database {@link Card} entities matching card names, maps them
+ * to transient {@link DeckCard} instances, links them to seeded user profiles (e.g. "yugi" or
+ * "admin"), and saves them through the {@link DeckRepository}.
  * </p>
  */
 @Component
@@ -44,17 +42,16 @@ public class DeckSeeder {
     private final UserRepository userRepository;
     private final DeckRepository deckRepository;
 
-    public DeckSeeder(CardRepository cardRepository,
-            UserRepository userRepository,
-            DeckRepository deckRepository) {
+    public DeckSeeder(CardRepository cardRepository, UserRepository userRepository,
+                      DeckRepository deckRepository) {
         this.cardRepository = cardRepository;
         this.userRepository = userRepository;
         this.deckRepository = deckRepository;
     }
 
     /**
-     * Seeds historically accurate competitive deck blueprints for standard seeded
-     * users (e.g. yugi, admin).
+     * Seeds historically accurate competitive deck blueprints for standard seeded users (e.g. yugi,
+     * admin).
      */
     public void seedSampleDecks() {
         userRepository.findByUsername("yugi").ifPresent(yugi -> {
@@ -102,7 +99,11 @@ public class DeckSeeder {
         cards.add(new CardEntry("Magical Android", "EXTRA", 2));
         cards.add(new CardEntry("Stardust Dragon", "EXTRA", 2));
         cards.add(new CardEntry("Black Rose Dragon", "EXTRA", 2));
-        seedDeck("Frog OTK", "Historical OTK using Substitoad and Mass Driver.", "Edison", user, cards);
+        seedDeck("Frog OTK",
+                "Historical OTK using Substitoad and Mass Driver.",
+                "Edison",
+                user,
+                cards);
     }
 
     private void seedFrogMonarchDeck(User user) {
@@ -139,7 +140,11 @@ public class DeckSeeder {
         cards.add(new CardEntry("Colossal Fighter", "EXTRA", 2));
         cards.add(new CardEntry("Mist Wurm", "EXTRA", 1));
         cards.add(new CardEntry("Gaia Knight, the Force of Earth", "EXTRA", 2));
-        seedDeck("Frog Monarch", "Classic tribute deck abusing Treeborn Frog.", "Edison", user, cards);
+        seedDeck("Frog Monarch",
+                "Classic tribute deck abusing Treeborn Frog.",
+                "Edison",
+                user,
+                cards);
     }
 
     private void seedVayuTurboDeck(User user) {
@@ -223,7 +228,11 @@ public class DeckSeeder {
         cards.add(new CardEntry("Colossal Fighter", "EXTRA", 2));
         cards.add(new CardEntry("Tempest Magician", "EXTRA", 1));
         cards.add(new CardEntry("Mist Wurm", "EXTRA", 1));
-        seedDeck("Diva Hero", "HERO deck leveraging Deep Sea Diva for Synchros and Fusions.", "Edison", user, cards);
+        seedDeck("Diva Hero",
+                "HERO deck leveraging Deep Sea Diva for Synchros and Fusions.",
+                "Edison",
+                user,
+                cards);
     }
 
     private void seedLightswornDeck(User user) {
@@ -255,7 +264,10 @@ public class DeckSeeder {
         cards.add(new CardEntry("Black Rose Dragon", "EXTRA", 2));
         cards.add(new CardEntry("Ally of Justice Catastor", "EXTRA", 2));
         cards.add(new CardEntry("Colossal Fighter", "EXTRA", 2));
-        seedDeck("Lightsworn", "Milling strategy using Lightsworn monsters to summon Judgment Dragon.", "Edison", user,
+        seedDeck("Lightsworn",
+                "Milling strategy using Lightsworn monsters to summon Judgment Dragon.",
+                "Edison",
+                user,
                 cards);
     }
 
@@ -292,12 +304,20 @@ public class DeckSeeder {
         cards.add(new CardEntry("Brionac, Dragon of the Ice Barrier", "EXTRA", 1));
         cards.add(new CardEntry("Ally of Justice Catastor", "EXTRA", 2));
         cards.add(new CardEntry("Colossal Fighter", "EXTRA", 2));
-        seedDeck("Quickdraw Dandywarrior", "Synchro deck utilizing Dandylion tokens and Quickdraw Synchron.", "Edison",
-                user, cards);
+        seedDeck("Quickdraw Dandywarrior",
+                "Synchro deck utilizing Dandylion tokens and Quickdraw Synchron.",
+                "Edison",
+                user,
+                cards);
     }
 
-    private void seedDeck(String name, String description, String formatName, User user, List<CardEntry> cardInfos) {
-        deckRepository.findByUser(user).stream()
+    private void seedDeck(String name,
+                          String description,
+                          String formatName,
+                          User user,
+                          List<CardEntry> cardInfos) {
+        deckRepository.findByUser(user)
+                .stream()
                 .filter(d -> d.getName().equalsIgnoreCase(name))
                 .forEach(d -> deckRepository.delete(d));
 
@@ -310,7 +330,9 @@ public class DeckSeeder {
                 DeckSection sectionEnum = DeckSection.fromString(info.getSection());
                 deckCards.add(new DeckCard(deck, cardOpt.get(), sectionEnum, info.getQuantity()));
             } else {
-                logger.warn("Card '{}' not found in database. Skipping for deck '{}'.", info.getName(), name);
+                logger.warn("Card '{}' not found in database. Skipping for deck '{}'.",
+                        info.getName(),
+                        name);
             }
         }
         deck.setDeckCards(deckCards);

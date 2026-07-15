@@ -57,11 +57,16 @@ class CardServiceTest {
 
     @Test
     void findAllOrWithFilters_returnsMatchingCards() {
-        Page<Card> result = cardService.findAllOrWithFilters("ServiceTest Blue-Eyes", null, null, null, null,
+        Page<Card> result = cardService.findAllOrWithFilters("ServiceTest Blue-Eyes",
+                null,
+                null,
+                null,
+                null,
                 PageRequest.of(0, 10));
         assertNotNull(result);
         assertTrue(result.getTotalElements() >= 1);
-        assertTrue(result.getContent().stream().anyMatch(c -> c.getName().equals(testCard.getName())));
+        assertTrue(
+                result.getContent().stream().anyMatch(c -> c.getName().equals(testCard.getName())));
     }
 
     @Test

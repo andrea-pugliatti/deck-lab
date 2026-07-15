@@ -31,11 +31,10 @@ import com.deck.lab.backend.validation.ValidationError;
  * <strong>Separation of Concerns (Domain Engine Delegator)</strong>
  * </p>
  * <p>
- * To keep code clean and testable, this service decouples database access from
- * raw business logic evaluation. Instead of embedding validation rules directly
- * in SQL queries or persistent entities, this class is responsible for fetching
- * context data (such as actual card properties from {@link CardRepository} and
- * banlist constraints from {@link FormatRulesRepository}), constructing
+ * To keep code clean and testable, this service decouples database access from raw business logic
+ * evaluation. Instead of embedding validation rules directly in SQL queries or persistent entities,
+ * this class is responsible for fetching context data (such as actual card properties from
+ * {@link CardRepository} and banlist constraints from {@link FormatRulesRepository}), constructing
  * transient representations, and passing them to the pure, unit-testable
  * {@link DeckValidationEngine}.
  * </p>
@@ -44,10 +43,9 @@ import com.deck.lab.backend.validation.ValidationError;
  * <strong>JPA Read-Only Optimization:</strong>
  * </p>
  * <ul>
- * <li>{@code @Transactional(readOnly = true)}: Used on retrieval methods to
- * inform the persistence provider (Hibernate) that database modifications are
- * not permitted. This allows Hibernate to optimize performance by disabling
- * dirty-checking mechanisms and bypassing session flushes.</li>
+ * <li>{@code @Transactional(readOnly = true)}: Used on retrieval methods to inform the persistence
+ * provider (Hibernate) that database modifications are not permitted. This allows Hibernate to
+ * optimize performance by disabling dirty-checking mechanisms and bypassing session flushes.</li>
  * </ul>
  */
 @Service
@@ -60,10 +58,9 @@ public class DeckValidationService {
     private final DeckAssembler deckAssembler;
 
     public DeckValidationService(CardRepository cardRepository,
-            FormatRulesRepository formatRulesRepository,
-            DeckMapper deckMapper,
-            DeckValidationEngine validationEngine,
-            DeckAssembler deckAssembler) {
+                                 FormatRulesRepository formatRulesRepository, DeckMapper deckMapper,
+                                 DeckValidationEngine validationEngine,
+                                 DeckAssembler deckAssembler) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.deckMapper = deckMapper;
@@ -72,15 +69,14 @@ public class DeckValidationService {
     }
 
     /**
-     * Validates the structure and legality of a deck based on the provided DeckDto.
-     * Fetches card definitions, checks missing IDs, converts references,
-     * queries format specific limit lists, and coordinates evaluation of rules.
+     * Validates the structure and legality of a deck based on the provided DeckDto. Fetches card
+     * definitions, checks missing IDs, converts references, queries format specific limit lists,
+     * and coordinates evaluation of rules.
      *
      * @param deckDto the DTO representing the deck to validate
-     * @return a map of database-resolved Card objects mapped by their IDs, for
-     *         subsequent save reuse
-     * @throws DeckValidationException containing all validation errors if any rules
-     *                                 are violated
+     * @return a map of database-resolved Card objects mapped by their IDs, for subsequent save
+     *             reuse
+     * @throws DeckValidationException containing all validation errors if any rules are violated
      */
     @Transactional(readOnly = true)
     public Map<Long, Card> validate(DeckResponseDto deckDto) {
@@ -92,7 +88,8 @@ public class DeckValidationService {
         if (cardDtos != null) {
             for (DeckCardRequestDto cardDto : cardDtos) {
                 if (cardDto.getCardId() != null && !cardMap.containsKey(cardDto.getCardId())) {
-                    errors.add(new ValidationError("Card not found with ID: " + cardDto.getCardId(), "deckCards"));
+                    errors.add(new ValidationError("Card not found with ID: " + cardDto.getCardId(),
+                            "deckCards"));
                 }
             }
         }
@@ -101,7 +98,11 @@ public class DeckValidationService {
         Deck deck = deckMapper.toEntity(deckDto);
 
         // Assemble using centralized DeckAssembler
-        Deck assembled = deckAssembler.assembleDeckFromDtos(deck.getName(), deckDto.getFormatName(), cardDtos, cardMap);
+        Deck assembled = deckAssembler.assembleDeckFromDtos(
+                deck.getName(),
+                deckDto.getFormatName(),
+                cardDtos,
+                cardMap);
         deck.setDeckCards(assembled.getDeckCards());
 
         // Fetch format rules if format name is set
@@ -141,10 +142,7 @@ public class DeckValidationService {
      */
     public Map<Long, Card> fetchCardMap(List<DeckCardRequestDto> cardDtos) {
         List<Long> cardIds = cardDtos != null
-                ? cardDtos.stream()
-                        .map(c -> c.getCardId())
-                        .filter(Objects::nonNull)
-                        .toList()
+                ? cardDtos.stream().map(c -> c.getCardId()).filter(Objects::nonNull).toList()
                 : List.of();
 
         Map<Long, Card> cardMap = new HashMap<>();

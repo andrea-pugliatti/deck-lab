@@ -30,29 +30,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
- * REST Controller providing API endpoints for managing user decks and
- * decklists.
+ * REST Controller providing API endpoints for managing user decks and decklists.
  *
  * <p>
  * <strong>Controller (REST API)</strong>
  * </p>
  * <p>
- * Exposes CRUD operations and validation services targeting deck resources.
- * Relies on {@link DeckService} to validate, save, query, and modify user decks
- * while translating entities to/from {@link DeckResponseDto}.
+ * Exposes CRUD operations and validation services targeting deck resources. Relies on
+ * {@link DeckService} to validate, save, query, and modify user decks while translating entities
+ * to/from {@link DeckResponseDto}.
  * </p>
  *
  * <p>
  * <strong>Spring Security Integration:</strong>
  * </p>
  * <ul>
- * <li>{@code @AuthenticationPrincipal}: Instructs Spring Security to extract
- * the currently authenticated user session principal (which is our custom
- * {@link User} entity) from the security context and bind it directly to the
- * controller method argument. This prevents manual security context lookups and
- * ensures requests are scoped to the authenticated caller.</li>
- * <li>Transactional Boundaries: Coordinates request verification with nested
- * card validation parameters before invoking service logic.</li>
+ * <li>{@code @AuthenticationPrincipal}: Instructs Spring Security to extract the currently
+ * authenticated user session principal (which is our custom {@link User} entity) from the security
+ * context and bind it directly to the controller method argument. This prevents manual security
+ * context lookups and ensures requests are scoped to the authenticated caller.</li>
+ * <li>Transactional Boundaries: Coordinates request verification with nested card validation
+ * parameters before invoking service logic.</li>
  * </ul>
  */
 @RestController
@@ -82,12 +80,12 @@ public class DeckController {
      * @return a page of matching DeckDto records
      */
     @GetMapping
-    public ResponseEntity<Page<DeckResponseDto>> index(
-            @RequestParam(value = "q", required = false) String name,
-            @RequestParam(value = "format", required = false) String format,
-            @RequestParam(value = "username", required = false) String username,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size) {
+    public ResponseEntity<Page<DeckResponseDto>>
+            index(@RequestParam(value = "q", required = false) String name,
+                  @RequestParam(value = "format", required = false) String format,
+                  @RequestParam(value = "username", required = false) String username,
+                  @RequestParam(value = "page", defaultValue = "0") int page,
+                  @RequestParam(value = "size", defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(deckService.findAllWithFilters(name, format, username, pageable));
     }
@@ -115,11 +113,11 @@ public class DeckController {
      * @throws DeckValidationException if the deck violates format or size rules
      */
     @PostMapping
-    public ResponseEntity<DeckResponseDto> create(
-            @Valid @RequestBody DeckResponseDto deckDto,
-            @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckResponseDto> create(@Valid @RequestBody DeckResponseDto deckDto,
+                                                  @AuthenticationPrincipal User user) {
         deckSaveRateLimiter.checkLimit("user:" + user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(deckService.createDeck(deckDto, user));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(deckService.createDeck(deckDto, user));
     }
 
     /**
@@ -130,11 +128,12 @@ public class DeckController {
      * @throws DeckValidationException containing validation errors if invalid
      */
     @PostMapping("/validate")
-    public ResponseEntity<Void> validate(
-            @Valid @RequestBody DeckResponseDto deckDto,
-            @AuthenticationPrincipal User user,
-            HttpServletRequest servletRequest) {
-        String key = (user != null) ? "user:" + user.getId() : "ip:" + servletRequest.getRemoteAddr();
+    public ResponseEntity<Void> validate(@Valid @RequestBody DeckResponseDto deckDto,
+                                         @AuthenticationPrincipal User user,
+                                         HttpServletRequest servletRequest) {
+        String key = (user != null)
+                ? "user:" + user.getId()
+                : "ip:" + servletRequest.getRemoteAddr();
         deckValidationRateLimiter.checkLimit(key);
         deckService.validateDeck(deckDto);
         return ResponseEntity.ok().build();
@@ -146,17 +145,14 @@ public class DeckController {
      * @param id      the ID of the deck to update
      * @param deckDto the updated deck definition data
      * @param user    the authenticated user requesting the update
-     * @return 200 OK with the updated DeckDto, or 404 Not Found if the deck doesn't
-     *         exist
-     * @throws NoSuchElementException  if the deck is not found or user is
-     *                                 unauthorized
+     * @return 200 OK with the updated DeckDto, or 404 Not Found if the deck doesn't exist
+     * @throws NoSuchElementException  if the deck is not found or user is unauthorized
      * @throws DeckValidationException if the updated deck list is invalid
      */
     @PutMapping("/{id}")
-    public ResponseEntity<DeckResponseDto> update(
-            @PathVariable Long id,
-            @Valid @RequestBody DeckResponseDto deckDto,
-            @AuthenticationPrincipal User user) {
+    public ResponseEntity<DeckResponseDto> update(@PathVariable Long id,
+                                                  @Valid @RequestBody DeckResponseDto deckDto,
+                                                  @AuthenticationPrincipal User user) {
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -170,13 +166,10 @@ public class DeckController {
      * @param id   the ID of the deck to delete
      * @param user the authenticated user requesting deletion
      * @return 24 No Content on success, or 404 Not Found if the deck doesn't exist
-     * @throws NoSuchElementException if the deck is not found or user is
-     *                                unauthorized
+     * @throws NoSuchElementException if the deck is not found or user is unauthorized
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();

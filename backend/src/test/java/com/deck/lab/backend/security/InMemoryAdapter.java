@@ -7,9 +7,9 @@ package com.deck.lab.backend.security;
  * <strong>Mock Double Pattern (InMemory Cookie Capture)</strong>
  * </p>
  * <p>
- * Captures token states in-memory during testing cycles. Allows controller
- * integration tests to assert cookie creation and invalidation payloads without
- * requiring full HTTP servlet header parsing.
+ * Captures token states in-memory during testing cycles. Allows controller integration tests to
+ * assert cookie creation and invalidation payloads without requiring full HTTP servlet header
+ * parsing.
  * </p>
  */
 public class InMemoryAdapter implements RefreshTokenCookieAdapter {

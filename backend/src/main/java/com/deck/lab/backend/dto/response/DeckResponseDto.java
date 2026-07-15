@@ -18,11 +18,10 @@ import jakarta.validation.constraints.NotBlank;
  * <strong>Data Transfer Object (DTO)</strong>
  * </p>
  * <p>
- * This DTO defines the structural API boundaries for exposing deck structures
- * to the frontend client. It contains high-level deck details (like name,
- * description, format constraints) along with its list of associated cards.
- * Using a separate DTO instead of serializing the {@link Deck} entity directly
- * prevents issues like lazy-loading exceptions, circular references with
+ * This DTO defines the structural API boundaries for exposing deck structures to the frontend
+ * client. It contains high-level deck details (like name, description, format constraints) along
+ * with its list of associated cards. Using a separate DTO instead of serializing the {@link Deck}
+ * entity directly prevents issues like lazy-loading exceptions, circular references with
  * bidirectional relationships, and leakage of user information.
  * </p>
  *
@@ -30,13 +29,11 @@ import jakarta.validation.constraints.NotBlank;
  * <strong>Dual-role field design:</strong>
  * </p>
  * <ul>
- * <li>{@code deckCards}: Inbound field. Accepts the client request payload —
- * only {@code cardId}, {@code section}, and {@code quantity} are read from this
- * list. Decorated with {@code @Valid} to trigger recursive bean validation on
- * each {@link DeckCardRequestDto} element.</li>
- * <li>{@code cards}: Outbound field. Populated by the server on read operations —
- * includes enriched card attributes (name, type, imageUrl, etc.) resolved from
- * the database.</li>
+ * <li>{@code deckCards}: Inbound field. Accepts the client request payload — only {@code cardId},
+ * {@code section}, and {@code quantity} are read from this list. Decorated with {@code @Valid} to
+ * trigger recursive bean validation on each {@link DeckCardRequestDto} element.</li>
+ * <li>{@code cards}: Outbound field. Populated by the server on read operations — includes enriched
+ * card attributes (name, type, imageUrl, etc.) resolved from the database.</li>
  * </ul>
  */
 public class DeckResponseDto {

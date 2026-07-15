@@ -35,39 +35,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PreDestroy;
 
 /**
- * Importer class responsible for fetching Yu-Gi-Oh! card catalog datasets from
- * external APIs and seeding the database.
+ * Importer class responsible for fetching Yu-Gi-Oh! card catalog datasets from external APIs and
+ * seeding the database.
  *
  * <p>
  * <strong>Card Importer</strong>
  * </p>
  * <p>
- * Retrieves card data from the YGOPRODeck REST API, converts the payload into
- * JPA entities, saves them in batches, and asynchronously downloads artwork
- * images. Relies on several Spring and Java concurrency features.
+ * Retrieves card data from the YGOPRODeck REST API, converts the payload into JPA entities, saves
+ * them in batches, and asynchronously downloads artwork images. Relies on several Spring and Java
+ * concurrency features.
  * </p>
  *
  * <ul>
- * <li><strong>REST Client:</strong>
- * Leverages Spring's {@link RestClient} to perform standard, synchronous HTTP
- * GET requests. {@code RestClient} offers an elegant fluent API interface that
+ * <li><strong>REST Client:</strong> Leverages Spring's {@link RestClient} to perform standard,
+ * synchronous HTTP GET requests. {@code RestClient} offers an elegant fluent API interface that
  * wraps default Java HTTP connections.</li>
- * <li><strong>Batch Database Transactions:</strong>
- * Inserting thousands of cards one-by-one is slow and risks table locks. This
- * importer splits data into sublists (defined by {@code batchSize}) and runs
- * each batch save inside a separate programmatic {@link TransactionTemplate}
- * boundary. This optimizes Hibernate's batch write settings.</li>
- * <li><strong>Background Image Caching:</strong>
- * Card artwork images are large. To prevent blocking the main boot thread,
- * images are queued and downloaded concurrently using a fixed-size thread pool
- * managed by {@link ExecutorService}. Downloaded files are cached locally in
- * the filesystem configuration directory so that the application serves them
- * locally.</li>
- * <li><strong>Graceful Shutdown via {@link PreDestroy}:</strong>
- * When the Spring container is stopped, the method decorated with
- * {@code @PreDestroy} is automatically invoked to shut down the image download
- * thread pool, terminating active tasks and preventing memory leaks or orphaned
- * OS threads.</li>
+ * <li><strong>Batch Database Transactions:</strong> Inserting thousands of cards one-by-one is slow
+ * and risks table locks. This importer splits data into sublists (defined by {@code batchSize}) and
+ * runs each batch save inside a separate programmatic {@link TransactionTemplate} boundary. This
+ * optimizes Hibernate's batch write settings.</li>
+ * <li><strong>Background Image Caching:</strong> Card artwork images are large. To prevent blocking
+ * the main boot thread, images are queued and downloaded concurrently using a fixed-size thread
+ * pool managed by {@link ExecutorService}. Downloaded files are cached locally in the filesystem
+ * configuration directory so that the application serves them locally.</li>
+ * <li><strong>Graceful Shutdown via {@link PreDestroy}:</strong> When the Spring container is
+ * stopped, the method decorated with {@code @PreDestroy} is automatically invoked to shut down the
+ * image download thread pool, terminating active tasks and preventing memory leaks or orphaned OS
+ * threads.</li>
  * </ul>
  */
 @Component
@@ -97,8 +92,8 @@ public class CardImporter {
     private String uploadDir;
 
     public CardImporter(CardRepository cardRepository,
-            PlatformTransactionManager transactionManager,
-            Executor imageDownloadExecutor) {
+                        PlatformTransactionManager transactionManager,
+                        Executor imageDownloadExecutor) {
         this.cardRepository = cardRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.restClient = RestClient.builder()
@@ -110,8 +105,8 @@ public class CardImporter {
     }
 
     /**
-     * Connects to the external YGOPRODeck API to fetch and download all cards.
-     * Maps them to local entity representations.
+     * Connects to the external YGOPRODeck API to fetch and download all cards. Maps them to local
+     * entity representations.
      *
      * @param apiUrl         the external API URL
      * @param batchSize      offset/limit page sizes to fetch from the API
@@ -119,11 +114,10 @@ public class CardImporter {
      * @param readTimeout    network read timeout in milliseconds
      * @return the list of fetched Card entities
      */
-    public List<Card> fetchAllCards(
-            String apiUrl,
-            int batchSize,
-            int connectTimeout,
-            int readTimeout) {
+    public List<Card> fetchAllCards(String apiUrl,
+                                    int batchSize,
+                                    int connectTimeout,
+                                    int readTimeout) {
         List<Card> allCards = new ArrayList<>();
         int offset = 0;
 
@@ -142,10 +136,7 @@ public class CardImporter {
                     .toUri();
 
             @SuppressWarnings("rawtypes")
-            ResponseEntity<Map> response = restClient.get()
-                    .uri(uri)
-                    .retrieve()
-                    .toEntity(Map.class);
+            ResponseEntity<Map> response = restClient.get().uri(uri).retrieve().toEntity(Map.class);
             if (response == null || !response.getBody().containsKey("data")) {
                 break;
             }
@@ -154,7 +145,8 @@ public class CardImporter {
             Map<String, Object> responseBody = response.getBody();
 
             @SuppressWarnings("unchecked")
-            List<Map<String, Object>> dataList = (List<Map<String, Object>>) responseBody.get("data");
+            List<Map<String, Object>> dataList = (List<Map<String, Object>>) responseBody
+                    .get("data");
             if (dataList == null || dataList.isEmpty()) {
                 break;
             }
@@ -209,7 +201,10 @@ public class CardImporter {
         }
 
         if (name == null || name.isBlank() || cardType == null) {
-            logger.warn("Skipping card '{}' (id: {}) due to missing or invalid name/type. Type: {}", name, apiId, type);
+            logger.warn("Skipping card '{}' (id: {}) due to missing or invalid name/type. Type: {}",
+                    name,
+                    apiId,
+                    type);
             return null;
         }
 
@@ -243,16 +238,16 @@ public class CardImporter {
         Integer linkVal = (Integer) apiCard.get("linkval");
         Integer scale = (Integer) apiCard.get("scale");
 
-        Card card = new Card(name, cardType, frameTypeEnum, description, cardRace, cardAttribute, archetype, imageUrl,
-                imageUrlCropped,
-                atk, def, level, linkVal, scale);
+        Card card = new Card(name, cardType, frameTypeEnum, description, cardRace, cardAttribute,
+                archetype, imageUrl, imageUrlCropped, atk, def, level, linkVal, scale);
 
         // Extract remote URLs and trigger async download
         String remoteImageUrl = null;
         String remoteImageUrlCropped = null;
         if (apiCard.containsKey("card_images")) {
             @SuppressWarnings("unchecked")
-            List<Map<String, Object>> cardImages = (List<Map<String, Object>>) apiCard.get("card_images");
+            List<Map<String, Object>> cardImages = (List<Map<String, Object>>) apiCard
+                    .get("card_images");
             if (cardImages != null && !cardImages.isEmpty()) {
                 Map<String, Object> firstImage = cardImages.get(0);
                 remoteImageUrl = (String) firstImage.get("image_url");
@@ -264,7 +259,8 @@ public class CardImporter {
         return card;
     }
 
-    private void triggerImageDownloads(Long apiId, String remoteImageUrl, String remoteImageUrlCropped) {
+    private void triggerImageDownloads(Long apiId, String remoteImageUrl,
+                                       String remoteImageUrlCropped) {
         if (Thread.currentThread().isInterrupted()) {
             return;
         }
@@ -277,7 +273,8 @@ public class CardImporter {
         if (remoteImageUrlCropped != null) {
             Path croppedPath = Paths.get(uploadDir, "cropped", apiId + ".jpg");
             if (!Files.exists(croppedPath)) {
-                imageDownloadExecutor.execute(() -> downloadImage(remoteImageUrlCropped, croppedPath));
+                imageDownloadExecutor
+                        .execute(() -> downloadImage(remoteImageUrlCropped, croppedPath));
             }
         }
     }
@@ -285,10 +282,7 @@ public class CardImporter {
     private void downloadImage(String remoteUrl, Path destinationPath) {
         try {
             Files.createDirectories(destinationPath.getParent());
-            byte[] imageBytes = restClient.get()
-                    .uri(remoteUrl)
-                    .retrieve()
-                    .body(byte[].class);
+            byte[] imageBytes = restClient.get().uri(remoteUrl).retrieve().body(byte[].class);
             if (imageBytes != null) {
                 Files.write(destinationPath, imageBytes);
             }
@@ -307,13 +301,14 @@ public class CardImporter {
             }
             logger.info("Loading cards from local JSON resource classpath:cards_full.json...");
             try (InputStream is = resource.getInputStream()) {
-                Map<String, Object> response = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
-                });
+                Map<String, Object> response = objectMapper.readValue(is,
+                        new TypeReference<Map<String, Object>>() {});
                 if (response == null || !response.containsKey("data")) {
                     logger.warn("Invalid local cards JSON content: 'data' key missing");
                     return null;
                 }
-                List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.get("data");
+                List<Map<String, Object>> dataList = (List<Map<String, Object>>) response
+                        .get("data");
                 if (dataList == null || dataList.isEmpty()) {
                     return null;
                 }
@@ -337,13 +332,14 @@ public class CardImporter {
     }
 
     /**
-     * Seeds the cards into the database, loading from local JSON resource if
-     * available, or falling back to query the YGOProDeck API.
+     * Seeds the cards into the database, loading from local JSON resource if available, or falling
+     * back to query the YGOProDeck API.
      */
     public void seedCardsFromApi() {
         long existingCount = cardRepository.count();
         if (existingCount > 100) {
-            logger.info("Database already contains {} cards. Skipping full API import. Checking for missing images...",
+            logger.info(
+                    "Database already contains {} cards. Skipping full API import. Checking for missing images...",
                     existingCount);
             checkAndDownloadMissingImages();
             return;
@@ -425,7 +421,8 @@ public class CardImporter {
                         break;
                     }
                     final List<Card> batch = new ArrayList<>(toSave);
-                    transactionTemplate.executeWithoutResult(status -> cardRepository.saveAll(batch));
+                    transactionTemplate
+                            .executeWithoutResult(status -> cardRepository.saveAll(batch));
                     toSave.clear();
                 }
             }
@@ -436,21 +433,23 @@ public class CardImporter {
             }
 
             logger.info("Card seeding complete (from {}): {} created, {} skipped (already existed)",
-                    fromLocal ? "local JSON" : "API", created, skipped);
+                    fromLocal
+                            ? "local JSON"
+                            : "API",
+                    created,
+                    skipped);
         } catch (Exception e) {
             logger.error("Failed to seed cards.", e);
         }
     }
 
     /**
-     * Iterates through all cards currently present in the database to verify if
-     * their
-     * full and cropped artwork image files exist in local storage.
+     * Iterates through all cards currently present in the database to verify if their full and
+     * cropped artwork image files exist in local storage.
      *
      * <p>
-     * Any missing card illustrations are queued for background download
-     * asynchronously
-     * using the {@code imageDownloadExecutor} thread pool.
+     * Any missing card illustrations are queued for background download asynchronously using the
+     * {@code imageDownloadExecutor} thread pool.
      * </p>
      */
     private void checkAndDownloadMissingImages() {
@@ -475,7 +474,8 @@ public class CardImporter {
                 if (!Files.exists(fullPath)) {
                     missingFullCount++;
                     String apiIdStr = fileName.replace(".jpg", "");
-                    String remoteUrl = "https://images.ygoprodeck.com/images/cards/" + apiIdStr + ".jpg";
+                    String remoteUrl = "https://images.ygoprodeck.com/images/cards/" + apiIdStr
+                            + ".jpg";
                     imageDownloadExecutor.execute(() -> downloadImage(remoteUrl, fullPath));
                 }
             }
@@ -486,7 +486,8 @@ public class CardImporter {
                 if (!Files.exists(croppedPath)) {
                     missingCroppedCount++;
                     String apiIdStr = fileName.replace(".jpg", "");
-                    String remoteUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + apiIdStr + ".jpg";
+                    String remoteUrl = "https://images.ygoprodeck.com/images/cards_cropped/"
+                            + apiIdStr + ".jpg";
                     imageDownloadExecutor.execute(() -> downloadImage(remoteUrl, croppedPath));
                 }
             }
@@ -494,7 +495,8 @@ public class CardImporter {
 
         if (missingFullCount > 0 || missingCroppedCount > 0) {
             logger.info("Queued downloads for missing images: {} full, {} cropped.",
-                    missingFullCount, missingCroppedCount);
+                    missingFullCount,
+                    missingCroppedCount);
         } else {
             logger.info("All card images are present on disk.");
         }

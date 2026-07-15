@@ -24,14 +24,14 @@ public class ValidationAdapter {
     private final FormatRulesRepository formatRulesRepository;
     private final DeckValidationEngine validationEngine;
 
-    public ValidationAdapter(FormatRulesRepository formatRulesRepository, DeckValidationEngine validationEngine) {
+    public ValidationAdapter(FormatRulesRepository formatRulesRepository,
+                             DeckValidationEngine validationEngine) {
         this.formatRulesRepository = formatRulesRepository;
         this.validationEngine = validationEngine;
     }
 
     /**
-     * Extracts card status limits based on the deck's format and runs validation
-     * rules.
+     * Extracts card status limits based on the deck's format and runs validation rules.
      *
      * @param deck transient deck entity
      * @return a list of human-readable rule validation warnings
@@ -50,8 +50,6 @@ public class ValidationAdapter {
         }
 
         List<ValidationError> errors = validationEngine.validate(deck, formatLimits);
-        return errors.stream()
-                .map(error -> error.message())
-                .collect(Collectors.toList());
+        return errors.stream().map(error -> error.message()).collect(Collectors.toList());
     }
 }

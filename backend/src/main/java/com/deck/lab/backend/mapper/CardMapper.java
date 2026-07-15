@@ -14,24 +14,20 @@ import com.deck.lab.backend.model.FrameType;
  * {@link CardResponseDto} DTO records.
  *
  * <p>
- * <b>Enums and DTO Mapping:</b>
- * Database columns often store static values as Enums (like {@code CardType} or
- * {@code CardAttribute}). However, API clients communicate in JSON strings.
- * This class orchestrates the parsing of incoming JSON strings into type-safe
- * Java Enums via their {@code fromString()} methods, and converts Enums back to
- * strings for client responses.
+ * <b>Enums and DTO Mapping:</b> Database columns often store static values as Enums (like
+ * {@code CardType} or {@code CardAttribute}). However, API clients communicate in JSON strings.
+ * This class orchestrates the parsing of incoming JSON strings into type-safe Java Enums via their
+ * {@code fromString()} methods, and converts Enums back to strings for client responses.
  *
  * <p>
- * Annotated with {@link Component} for Spring-managed automatic bean
- * registration.
+ * Annotated with {@link Component} for Spring-managed automatic bean registration.
  * </p>
  */
 @Component
 public class CardMapper {
 
     /**
-     * Translates a {@link Card} database entity to a {@link CardResponseDto} API
-     * representation.
+     * Translates a {@link Card} database entity to a {@link CardResponseDto} API representation.
      * Extracts values from Enums into displayable string representations.
      *
      * @param card database-managed Card entity
@@ -44,14 +40,26 @@ public class CardMapper {
         CardResponseDto dto = new CardResponseDto();
         dto.setId(card.getId());
         dto.setName(card.getName());
-        dto.setType(card.getType() != null ? card.getType().getValue() : null);
+        dto.setType(
+                card.getType() != null
+                        ? card.getType().getValue()
+                        : null);
         dto.setDescription(card.getDescription());
-        dto.setRace(card.getRace() != null ? card.getRace().getValue() : null);
-        dto.setAttribute(card.getAttribute() != null ? card.getAttribute().getValue() : null);
+        dto.setRace(
+                card.getRace() != null
+                        ? card.getRace().getValue()
+                        : null);
+        dto.setAttribute(
+                card.getAttribute() != null
+                        ? card.getAttribute().getValue()
+                        : null);
         dto.setArchetype(card.getArchetype());
         dto.setImageUrl(card.getImageUrl());
         dto.setImageUrlCropped(card.getImageUrlCropped());
-        dto.setFrameType(card.getFrameType() != null ? card.getFrameType().getValue() : null);
+        dto.setFrameType(
+                card.getFrameType() != null
+                        ? card.getFrameType().getValue()
+                        : null);
         dto.setAtk(card.getAtk());
         dto.setDef(card.getDef());
         dto.setLevel(card.getLevel());
@@ -61,10 +69,8 @@ public class CardMapper {
     }
 
     /**
-     * Converts a {@link CardResponseDto} API payload into a new transient
-     * {@link Card}
-     * database entity.
-     * Catches and safe-handles exceptions arising from unknown enum values.
+     * Converts a {@link CardResponseDto} API payload into a new transient {@link Card} database
+     * entity. Catches and safe-handles exceptions arising from unknown enum values.
      *
      * @param dto input DTO data
      * @return new transient Card entity, or null if parameter is null
@@ -78,7 +84,10 @@ public class CardMapper {
         card.setName(dto.getName());
 
         try {
-            card.setType(dto.getType() != null ? CardType.fromString(dto.getType()) : null);
+            card.setType(
+                    dto.getType() != null
+                            ? CardType.fromString(dto.getType())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setType(null);
         }
@@ -86,13 +95,19 @@ public class CardMapper {
         card.setDescription(dto.getDescription());
 
         try {
-            card.setRace(dto.getRace() != null ? CardRace.fromString(dto.getRace()) : null);
+            card.setRace(
+                    dto.getRace() != null
+                            ? CardRace.fromString(dto.getRace())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setRace(null);
         }
 
         try {
-            card.setAttribute(dto.getAttribute() != null ? CardAttribute.fromString(dto.getAttribute()) : null);
+            card.setAttribute(
+                    dto.getAttribute() != null
+                            ? CardAttribute.fromString(dto.getAttribute())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setAttribute(null);
         }
@@ -102,7 +117,10 @@ public class CardMapper {
         card.setImageUrlCropped(dto.getImageUrlCropped());
 
         try {
-            card.setFrameType(dto.getFrameType() != null ? FrameType.fromString(dto.getFrameType()) : null);
+            card.setFrameType(
+                    dto.getFrameType() != null
+                            ? FrameType.fromString(dto.getFrameType())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setFrameType(null);
         }
@@ -117,9 +135,8 @@ public class CardMapper {
 
     /**
      * Updates an existing database-managed {@link Card} entity with values from a
-     * {@link CardResponseDto}.
-     * Saves changes directly onto the entity instance reference while safe-handling
-     * enum conversion failures.
+     * {@link CardResponseDto}. Saves changes directly onto the entity instance reference while
+     * safe-handling enum conversion failures.
      *
      * @param dto  incoming updated DTO parameters
      * @param card the existing database entity instance to modify
@@ -131,7 +148,10 @@ public class CardMapper {
         card.setName(dto.getName());
 
         try {
-            card.setType(dto.getType() != null ? CardType.fromString(dto.getType()) : null);
+            card.setType(
+                    dto.getType() != null
+                            ? CardType.fromString(dto.getType())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setType(null);
         }
@@ -139,13 +159,19 @@ public class CardMapper {
         card.setDescription(dto.getDescription());
 
         try {
-            card.setRace(dto.getRace() != null ? CardRace.fromString(dto.getRace()) : null);
+            card.setRace(
+                    dto.getRace() != null
+                            ? CardRace.fromString(dto.getRace())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setRace(null);
         }
 
         try {
-            card.setAttribute(dto.getAttribute() != null ? CardAttribute.fromString(dto.getAttribute()) : null);
+            card.setAttribute(
+                    dto.getAttribute() != null
+                            ? CardAttribute.fromString(dto.getAttribute())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setAttribute(null);
         }
@@ -155,7 +181,10 @@ public class CardMapper {
         card.setImageUrlCropped(dto.getImageUrlCropped());
 
         try {
-            card.setFrameType(dto.getFrameType() != null ? FrameType.fromString(dto.getFrameType()) : null);
+            card.setFrameType(
+                    dto.getFrameType() != null
+                            ? FrameType.fromString(dto.getFrameType())
+                            : null);
         } catch (IllegalArgumentException e) {
             card.setFrameType(null);
         }

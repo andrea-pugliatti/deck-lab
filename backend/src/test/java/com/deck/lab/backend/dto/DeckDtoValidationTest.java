@@ -138,6 +138,7 @@ class DeckDtoValidationTest {
         // Validation of parent should cascade to nested elements annotated with @Valid
         Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Quantity cannot exceed 3")));
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getMessage().equals("Quantity cannot exceed 3")));
     }
 }

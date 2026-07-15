@@ -5,5 +5,4 @@ import java.util.List;
 /**
  * Response record containing list of matching cards.
  */
-public record ArchetypeCardsResponse(String archetype, List<ArchetypeCardInfo> cards) {
-}
+public record ArchetypeCardsResponse(String archetype, List<ArchetypeCardInfo> cards) {}

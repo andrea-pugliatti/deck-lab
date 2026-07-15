@@ -1,16 +1,16 @@
 package com.deck.lab.backend.dto.response;
 
 /**
- * Response Data Transfer Object (DTO) representing an individual card slot in
- * a deck as returned to the client.
+ * Response Data Transfer Object (DTO) representing an individual card slot in a deck as returned to
+ * the client.
  *
  * <p>
  * <strong>Response DTO</strong>
  * </p>
  * <p>
- * Combines attributes from both the {@code DeckCard} relationship (section,
- * quantity, record ID) and the referenced {@code Card} entity (name, type,
- * imageUrl, etc.) to avoid extra query roundtrips for the client.
+ * Combines attributes from both the {@code DeckCard} relationship (section, quantity, record ID)
+ * and the referenced {@code Card} entity (name, type, imageUrl, etc.) to avoid extra query
+ * roundtrips for the client.
  * </p>
  */
 public class DeckCardResponseDto {
@@ -30,8 +30,17 @@ public class DeckCardResponseDto {
     public DeckCardResponseDto() {
     }
 
-    public DeckCardResponseDto(Long id, Long cardId, String name, String type, String description, String race,
-            String attribute, String archetype, String imageUrl, String section, Integer quantity) {
+    public DeckCardResponseDto(Long id,
+                               Long cardId,
+                               String name,
+                               String type,
+                               String description,
+                               String race,
+                               String attribute,
+                               String archetype,
+                               String imageUrl,
+                               String section,
+                               Integer quantity) {
         this.id = id;
         this.cardId = cardId;
         this.name = name;

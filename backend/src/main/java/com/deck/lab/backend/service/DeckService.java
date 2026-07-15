@@ -28,29 +28,26 @@ import com.deck.lab.backend.repository.DeckRepository;
 import com.deck.lab.backend.repository.specification.DeckSpecification;
 
 /**
- * Service managing user deck configuration lifecycles, database persistence,
- * and validation audits.
+ * Service managing user deck configuration lifecycles, database persistence, and validation audits.
  *
  * <p>
  * <strong>Service Layer</strong>
  * </p>
  * <p>
  * Coordinates business workflows involving user deck list resources. Relies on
- * {@link DeckRepository} for database operations, {@link DeckValidationService}
- * to audit deck legality, and mappers to translate entity representations.
+ * {@link DeckRepository} for database operations, {@link DeckValidationService} to audit deck
+ * legality, and mappers to translate entity representations.
  * </p>
  *
  * <p>
  * <strong>Database Transaction Management with {@code @Transactional}:</strong>
  * </p>
  * <ul>
- * <li>Atomic Operations: Creating, updating, or deleting decks requires
- * modifying multiple tables concurrently (e.g., updates to {@code decks} and
- * batch deletes/inserts in {@code deck_cards}). By decorating service methods
- * with {@code @Transactional}, Spring configures a transaction proxy. If any
- * SQL write fails, or if a validation exception is raised mid-execution, Spring
- * triggers a database rollback, ensuring no partial or orphaned data corrupts
- * database consistency.</li>
+ * <li>Atomic Operations: Creating, updating, or deleting decks requires modifying multiple tables
+ * concurrently (e.g., updates to {@code decks} and batch deletes/inserts in {@code deck_cards}). By
+ * decorating service methods with {@code @Transactional}, Spring configures a transaction proxy. If
+ * any SQL write fails, or if a validation exception is raised mid-execution, Spring triggers a
+ * database rollback, ensuring no partial or orphaned data corrupts database consistency.</li>
  * </ul>
  */
 @Service
@@ -60,8 +57,8 @@ public class DeckService {
     private final DeckValidationService deckValidationService;
 
     public DeckService(DeckRepository deckRepository,
-            DeckMapper deckMapper,
-            DeckValidationService deckValidationService) {
+                       DeckMapper deckMapper,
+                       DeckValidationService deckValidationService) {
         this.deckRepository = deckRepository;
         this.deckMapper = deckMapper;
         this.deckValidationService = deckValidationService;
@@ -80,22 +77,23 @@ public class DeckService {
     }
 
     /**
-     * Finds and filters decks based on search parameters. Performs JPA Eager Card
-     * fetches.
+     * Finds and filters decks based on search parameters. Performs JPA Eager Card fetches.
      *
      * @param name     optional substring match for the deck's name
      * @param format   optional exact match for the format name
      * @param username optional exact match for the owner's username
      * @return a list of sorted, matching DeckDto objects
      */
-    public Page<DeckResponseDto> findAllWithFilters(String name, String format, String username, Pageable pageable) {
+    public Page<DeckResponseDto> findAllWithFilters(String name, String format, String username,
+                                                    Pageable pageable) {
         Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
                 .and(DeckSpecification.hasName(name))
                 .and(DeckSpecification.hasFormat(format))
                 .and(DeckSpecification.hasUser(username));
 
         if (pageable.getSort().isUnsorted()) {
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            pageable = PageRequest.of(pageable.getPageNumber(),
+                    pageable.getPageSize(),
                     Sort.by((Deck d) -> d.getUpdatedAt()).descending());
         }
 
@@ -159,15 +157,13 @@ public class DeckService {
     }
 
     /**
-     * Updates and persists changes to an existing user deck. Checks user
-     * authorization first.
+     * Updates and persists changes to an existing user deck. Checks user authorization first.
      *
      * @param id      the ID of the deck to update
      * @param deckDto the updated deck details
      * @param user    the owner user requesting the change
      * @return the updated and saved DeckDto
-     * @throws NoSuchElementException  if the deck doesn't exist or doesn't belong
-     *                                 to the user
+     * @throws NoSuchElementException  if the deck doesn't exist or doesn't belong to the user
      * @throws DeckValidationException if the updated deck list is invalid
      */
     @Transactional
@@ -186,16 +182,17 @@ public class DeckService {
     }
 
     /**
-     * Helper method to map and synchronize DeckCard items. Clears old references
-     * and saves the newly mapped list.
+     * Helper method to map and synchronize DeckCard items. Clears old references and saves the
+     * newly mapped list.
      *
      * @param deck     the target Deck entity
      * @param cardDtos the list of DeckCardDto items to map
      * @param cardMap  pre-fetched database Cards keyed by ID
-     * @throws IllegalArgumentException if a card specified in the DTO is missing
-     *                                  from cardMap
+     * @throws IllegalArgumentException if a card specified in the DTO is missing from cardMap
      */
-    public void saveDeckCards(Deck deck, List<DeckCardRequestDto> cardDtos, Map<Long, Card> cardMap) {
+    public void saveDeckCards(Deck deck,
+                              List<DeckCardRequestDto> cardDtos,
+                              Map<Long, Card> cardMap) {
         List<DeckCard> existingCards = deck.getDeckCards();
         List<DeckCard> cardsToKeep = new ArrayList<>();
 
@@ -203,12 +200,15 @@ public class DeckService {
             for (DeckCardRequestDto cardDto : cardDtos) {
                 Card card = cardMap.get(cardDto.getCardId());
                 if (card == null) {
-                    throw new IllegalArgumentException("Card not found with ID: " + cardDto.getCardId());
+                    throw new IllegalArgumentException(
+                            "Card not found with ID: " + cardDto.getCardId());
                 }
 
                 DeckSection sectionEnum = null;
                 try {
-                    sectionEnum = cardDto.getSection() != null ? DeckSection.fromString(cardDto.getSection()) : null;
+                    sectionEnum = cardDto.getSection() != null
+                            ? DeckSection.fromString(cardDto.getSection())
+                            : null;
                 } catch (IllegalArgumentException e) {
                     // Fallback/ignore invalid section
                 }
@@ -260,8 +260,7 @@ public class DeckService {
      *
      * @param id   the ID of the deck to delete
      * @param user the owner user account requesting deletion
-     * @throws NoSuchElementException if the deck is not found or user is
-     *                                unauthorized
+     * @throws NoSuchElementException if the deck is not found or user is unauthorized
      */
     @Transactional
     public void deleteDeck(Long id, User user) {

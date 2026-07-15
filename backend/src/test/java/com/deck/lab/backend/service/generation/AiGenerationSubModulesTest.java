@@ -59,12 +59,17 @@ class AiGenerationSubModulesTest {
         MockitoAnnotations.openMocks(this);
         PromptConfig promptConfig = new PromptConfig();
         promptConfig.setFormats(Map.of(
-                "EDISON", "- Format: Edison Format (2010 rules, anchored as of July 2026).",
-                "DEFAULT", "- Format: Modern TCG rules (anchored as of July 2026)."));
+                "EDISON",
+                "- Format: Edison Format (2010 rules, anchored as of July 2026).",
+                "DEFAULT",
+                "- Format: Modern TCG rules (anchored as of July 2026)."));
         promptConfig.setPlaystyles(Map.of(
-                "combo", "- Playstyle Guideline: Combo",
-                "milling", "- Playstyle Guideline: Milling",
-                "DEFAULT", "- Playstyle Guideline: Standard / Balanced."));
+                "combo",
+                "- Playstyle Guideline: Combo",
+                "milling",
+                "- Playstyle Guideline: Milling",
+                "DEFAULT",
+                "- Playstyle Guideline: Standard / Balanced."));
         PromptConfig.SystemTemplates systemTemplates = new PromptConfig.SystemTemplates();
         systemTemplates.setDraft(
                 "Archetype: {archetype}, Strategy: {strategy}, Custom: {customPrompt}, Rules: {formatRules}, Playstyle: {playstyleGuide}, Extra: %s");
@@ -76,13 +81,15 @@ class AiGenerationSubModulesTest {
         responseParser = new ResponseParser();
         cardResolver = new CardResolver(cardRepository);
         deckAssembler = new DeckAssembler();
-        validationAdapter = new ValidationAdapter(formatRulesRepository, new DeckValidationEngine());
+        validationAdapter = new ValidationAdapter(formatRulesRepository,
+                new DeckValidationEngine());
         cardSearchTool = new CardSearchTool(cardRepository);
     }
 
     @Test
     void testPromptBuilderDraft() {
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "Include JD");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
+                "Edison", "Include JD");
         Prompt prompt = promptBuilder.buildDraftPrompt(request, "formatInstructionsTemplate");
 
         assertNotNull(prompt);
@@ -98,7 +105,8 @@ class AiGenerationSubModulesTest {
 
     @Test
     void testPromptBuilderRefinement() {
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling", "Edison", "Include JD");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
+                "Edison", "Include JD");
         com.deck.lab.backend.model.Card card = new com.deck.lab.backend.model.Card();
         card.setName("Judgment Dragon");
         card.setType(com.deck.lab.backend.model.CardType.EFFECT_MONSTER);
@@ -108,7 +116,10 @@ class AiGenerationSubModulesTest {
         List<String> unresolved = List.of("UnresolvedCard");
         List<String> warnings = List.of("Warning 1");
 
-        Prompt prompt = promptBuilder.buildRefinementPrompt(request, resolved, unresolved, warnings,
+        Prompt prompt = promptBuilder.buildRefinementPrompt(request,
+                resolved,
+                unresolved,
+                warnings,
                 "formatInstructionsTemplate");
 
         assertNotNull(prompt);
@@ -141,7 +152,8 @@ class AiGenerationSubModulesTest {
         assertEquals("Judgment Dragon", genResponse.getCards().get(0).getName());
 
         String rawSuggestResponse = "{\"suggestions\": [{\"name\": \"Solar Recharge\", \"section\": \"MAIN\", \"synergyReason\": \"Draw and mill.\"}]}";
-        CardSuggestionListResponseDto suggestResponse = responseParser.parseSuggestionResponse(rawSuggestResponse);
+        CardSuggestionListResponseDto suggestResponse = responseParser
+                .parseSuggestionResponse(rawSuggestResponse);
 
         assertNotNull(suggestResponse);
         assertEquals(1, suggestResponse.getSuggestions().size());
@@ -149,13 +161,15 @@ class AiGenerationSubModulesTest {
 
         // Test with trailing commas
         String trailingCommas = "{\"name\": \"Lightsworn, Mill,\", \"description\": \"Fast mill\", \"cards\": [{\"name\": \"Judgment Dragon\", \"section\": \"MAIN\", \"quantity\": 3},]}";
-        DeckGenerateAiResponse cleanResponse1 = responseParser.parseGenerationResponse(trailingCommas);
+        DeckGenerateAiResponse cleanResponse1 = responseParser
+                .parseGenerationResponse(trailingCommas);
         assertNotNull(cleanResponse1);
         assertEquals("Lightsworn, Mill,", cleanResponse1.getName());
 
         // Test with markdown code blocks and duplicate commas
         String markdownWithDuplicateCommas = "```json\n{\"name\": \"Lightsworn\", \"cards\": [{\"name\": \"JD\"}, , {\"name\": \"Lumina\"}]}\n```";
-        DeckGenerateAiResponse cleanResponse2 = responseParser.parseGenerationResponse(markdownWithDuplicateCommas);
+        DeckGenerateAiResponse cleanResponse2 = responseParser
+                .parseGenerationResponse(markdownWithDuplicateCommas);
         assertNotNull(cleanResponse2);
         assertEquals("Lightsworn", cleanResponse2.getName());
         assertEquals(2, cleanResponse2.getCards().size());
@@ -445,7 +459,8 @@ class AiGenerationSubModulesTest {
         when(cardRepository.findByName("Cyber Dragon")).thenReturn(Optional.of(card));
 
         List<CardSuggestionResponseDto> suggestions = List.of(
-                new CardSuggestionResponseDto("Cyber Dragon", "MAIN", "Great attacker", null, null, null));
+                new CardSuggestionResponseDto("Cyber Dragon", "MAIN", "Great attacker", null, null,
+                        null));
 
         List<CardSuggestionResponseDto> resolved = cardResolver.resolveSuggestions(suggestions);
         assertEquals(1, resolved.size());
@@ -459,7 +474,8 @@ class AiGenerationSubModulesTest {
         List<CardSuggestionResponseDto> sparseSuggestions = List.of(
                 new CardSuggestionResponseDto("Cyber Dragon", null, null, null, null, null));
 
-        List<CardSuggestionResponseDto> sparseResolved = cardResolver.resolveSuggestions(sparseSuggestions);
+        List<CardSuggestionResponseDto> sparseResolved = cardResolver
+                .resolveSuggestions(sparseSuggestions);
         assertEquals(1, sparseResolved.size());
         assertEquals("MAIN", sparseResolved.get(0).getSection());
         assertEquals("Provides good synergy.", sparseResolved.get(0).getSynergyReason());

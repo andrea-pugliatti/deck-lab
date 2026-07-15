@@ -88,11 +88,14 @@ public class DeckControllerTest {
         ((InMemoryRateLimiter) deckSaveRateLimiter).reset();
         testUser = new User("controller-deck-user-1", "password", "ctrl-deck-user-1@example.com");
         testUser = userRepository.save(testUser);
-        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());
+        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null,
+                Collections.emptyList());
 
-        unauthorizedUser = new User("controller-deck-user-2", "password", "ctrl-deck-user-2@example.com");
+        unauthorizedUser = new User("controller-deck-user-2", "password",
+                "ctrl-deck-user-2@example.com");
         unauthorizedUser = userRepository.save(unauthorizedUser);
-        unauthorizedUserAuth = new UsernamePasswordAuthenticationToken(unauthorizedUser, null, Collections.emptyList());
+        unauthorizedUserAuth = new UsernamePasswordAuthenticationToken(unauthorizedUser, null,
+                Collections.emptyList());
 
         testCards = new ArrayList<>();
         for (int i = 1; i <= 15; i++) {
@@ -111,7 +114,8 @@ public class DeckControllerTest {
         }
         testCard = testCards.get(0);
 
-        testDeck = new Deck("ControllerTest Deck", "A test deck for controller", Format.TCG, testUser);
+        testDeck = new Deck("ControllerTest Deck", "A test deck for controller", Format.TCG,
+                testUser);
         DeckCard dc = new DeckCard(testDeck, testCard, DeckSection.MAIN, 3);
         testDeck.setDeckCards(new ArrayList<>(List.of(dc)));
         testDeck = deckRepository.save(testDeck);

@@ -81,7 +81,8 @@ class CardSpecificationTest {
 
     @Test
     void hasName_filtersCorrectly() {
-        List<Card> results = cardRepository.findAll(CardSpecification.hasName("SpecTest Blue-Eyes"));
+        List<Card> results = cardRepository
+                .findAll(CardSpecification.hasName("SpecTest Blue-Eyes"));
         assertTrue(results.size() >= 1);
         assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
 
@@ -142,7 +143,8 @@ class CardSpecificationTest {
     void caseInsensitiveFilters_matchCorrectly() {
         // Query for "spectest blue-eyes" (lowercase) should match "SpecTest Blue-Eyes
         // White Dragon"
-        List<Card> results = cardRepository.findAll(CardSpecification.hasName("spectest blue-eyes"));
+        List<Card> results = cardRepository
+                .findAll(CardSpecification.hasName("spectest blue-eyes"));
         assertTrue(results.size() >= 1);
         assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
 

@@ -50,7 +50,8 @@ public class GenerationControllerTest {
     void setUp() {
         ((InMemoryRateLimiter) rateLimiter).reset();
         User testUser = new User("gen-test-user", "password", "gen-test-user@example.com");
-        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null, Collections.emptyList());
+        testUserAuth = new UsernamePasswordAuthenticationToken(testUser, null,
+                Collections.emptyList());
     }
 
     @Test

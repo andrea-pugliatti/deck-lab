@@ -3,17 +3,16 @@ package com.deck.lab.backend.dto.request;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * Data Transfer Object (DTO) representing an incoming request payload to
- * generate a deck list using AI.
+ * Data Transfer Object (DTO) representing an incoming request payload to generate a deck list using
+ * AI.
  *
  * <p>
  * <strong>Request DTO</strong>
  * </p>
  * <p>
- * This object is used specifically to capture and validate user parameters
- * passed via HTTP requests targeting AI generation endpoints. By isolating this
- * validation structure from internal domain models, we protect our backend
- * logic from processing malformed data.
+ * This object is used specifically to capture and validate user parameters passed via HTTP requests
+ * targeting AI generation endpoints. By isolating this validation structure from internal domain
+ * models, we protect our backend logic from processing malformed data.
  * </p>
  */
 public class DeckGenerateRequestDto {
@@ -31,7 +30,10 @@ public class DeckGenerateRequestDto {
     public DeckGenerateRequestDto() {
     }
 
-    public DeckGenerateRequestDto(String archetype, String strategy, String formatName, String customPrompt) {
+    public DeckGenerateRequestDto(String archetype,
+                                  String strategy,
+                                  String formatName,
+                                  String customPrompt) {
         this.archetype = archetype;
         this.strategy = strategy;
         this.formatName = formatName;

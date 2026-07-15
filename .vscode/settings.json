@@ -6,7 +6,5 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "oxc.fmt.configPath": ".oxfmtrc.json",
-  "[java]": {
-    "editor.defaultFormatter": "redhat.java"
-  }
+  "java.format.settings.url": ".vscode/java-formatter.xml"
 }

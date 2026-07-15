@@ -115,7 +115,8 @@ class DatabaseSeederTest {
         databaseSeeder.run();
 
         // Assert/Verify call order
-        org.mockito.InOrder inOrder = org.mockito.Mockito.inOrder(cardImporter, banlistImporter, userRepository, deckSeeder);
+        org.mockito.InOrder inOrder = org.mockito.Mockito
+                .inOrder(cardImporter, banlistImporter, userRepository, deckSeeder);
         inOrder.verify(cardImporter).seedCardsFromApi();
         inOrder.verify(banlistImporter).seedBanlistsFromApi();
         inOrder.verify(banlistImporter).seedHistoricalBanlists();

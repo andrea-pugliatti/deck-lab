@@ -12,25 +12,20 @@ import com.deck.lab.backend.security.InMemoryRateLimiter;
 import com.deck.lab.backend.security.RateLimiter;
 
 /**
- * Spring configuration registering rate limiting strategies and scheduling task
- * sweeps.
+ * Spring configuration registering rate limiting strategies and scheduling task sweeps.
  *
  * <p>
  * Configures distinct, named beans for rate limiting different routes:
  * <ul>
- * <li>{@code tokenRefreshRateLimiter}: Applied to session refresh
- * endpoints.</li>
+ * <li>{@code tokenRefreshRateLimiter}: Applied to session refresh endpoints.</li>
  * <li>{@code aiGenerationRateLimiter}: Applied to AI generation endpoints.</li>
  * <li>{@code loginRateLimiter}: Applied to authentication login endpoints.</li>
- * <li>{@code registerRateLimiter}: Applied to authentication registration
- * endpoints.</li>
- * <li>{@code deckValidationRateLimiter}: Applied to deck validation
- * endpoints.</li>
- * <li>{@code deckSaveRateLimiter}: Applied to deck creation and update
- * endpoints.</li>
+ * <li>{@code registerRateLimiter}: Applied to authentication registration endpoints.</li>
+ * <li>{@code deckValidationRateLimiter}: Applied to deck validation endpoints.</li>
+ * <li>{@code deckSaveRateLimiter}: Applied to deck creation and update endpoints.</li>
  * </ul>
- * Also schedules a background cleanup daemon to sweep stale rate limit records
- * from memory, preventing memory leaks over time.
+ * Also schedules a background cleanup daemon to sweep stale rate limit records from memory,
+ * preventing memory leaks over time.
  * </p>
  */
 @Configuration
@@ -135,8 +130,7 @@ public class RateLimitConfig {
     }
 
     /**
-     * Periodically purges expired rate limit entries from all registered rate
-     * limiters.
+     * Periodically purges expired rate limit entries from all registered rate limiters.
      */
     @Scheduled(cron = "${rate-limit.cleanup-schedule:0 */5 * * * *}")
     public void cleanupExpiredEntries() {

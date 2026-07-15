@@ -10,8 +10,7 @@ import com.deck.lab.backend.service.generation.tool.dto.CardSearchResponse;
 import com.deck.lab.backend.service.generation.tool.dto.CardSearchResult;
 
 /**
- * Tool function enabling the AI model to query authentic Yu-Gi-Oh! cards from
- * the database.
+ * Tool function enabling the AI model to query authentic Yu-Gi-Oh! cards from the database.
  */
 public class CardSearchTool implements Function<CardSearchRequest, CardSearchResponse> {
 
@@ -22,8 +21,7 @@ public class CardSearchTool implements Function<CardSearchRequest, CardSearchRes
     }
 
     /**
-     * Executes the card search tool, querying card entries matching a target search
-     * term.
+     * Executes the card search tool, querying card entries matching a target search term.
      *
      * @param request the card search request containing the query search term
      * @return a structured CardSearchResponse with up to 15 matching card summaries
@@ -37,12 +35,15 @@ public class CardSearchTool implements Function<CardSearchRequest, CardSearchRes
         List<Card> cards = cardRepository.findByNameContainingIgnoreCase(request.query().trim());
 
         // Limit results to 15 to avoid cluttering LLM context
-        List<CardSearchResult> results = cards.stream()
+        List<CardSearchResult> results = cards
+                .stream()
                 .limit(15)
                 .map(c -> new CardSearchResult(
                         c.getId(),
                         c.getName(),
-                        c.getType() != null ? c.getType().getValue() : null,
+                        c.getType() != null
+                                ? c.getType().getValue()
+                                : null,
                         c.getArchetype()))
                 .toList();
 

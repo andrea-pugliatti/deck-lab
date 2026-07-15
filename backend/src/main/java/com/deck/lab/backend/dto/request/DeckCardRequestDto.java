@@ -6,24 +6,23 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Request Data Transfer Object (DTO) representing an individual card slot
- * submitted by the client when creating or updating a deck.
+ * Request Data Transfer Object (DTO) representing an individual card slot submitted by the client
+ * when creating or updating a deck.
  *
  * <p>
  * <strong>Request DTO</strong>
  * </p>
  * <p>
- * Only the fields required to identify and place a card in a deck section are
- * accepted from the client. Card display attributes (name, type, imageUrl,
- * etc.) are resolved server-side from the database and are never trusted from
- * the incoming payload.
+ * Only the fields required to identify and place a card in a deck section are accepted from the
+ * client. Card display attributes (name, type, imageUrl, etc.) are resolved server-side from the
+ * database and are never trusted from the incoming payload.
  * </p>
  */
 public class DeckCardRequestDto {
 
     /**
-     * Optional DeckCard record ID used to match an existing slot during updates.
-     * When null, a new DeckCard entry will be created.
+     * Optional DeckCard record ID used to match an existing slot during updates. When null, a new
+     * DeckCard entry will be created.
      */
     private Long id;
 

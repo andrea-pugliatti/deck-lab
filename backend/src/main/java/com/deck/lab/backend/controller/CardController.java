@@ -32,33 +32,29 @@ import com.deck.lab.backend.service.CardService;
 import jakarta.validation.Valid;
 
 /**
- * REST Controller providing API endpoints for querying and managing Yu-Gi-Oh!
- * Cards.
+ * REST Controller providing API endpoints for querying and managing Yu-Gi-Oh! Cards.
  *
  * <p>
  * <strong>Controller (REST API)</strong>
  * </p>
  * <p>
- * Exposes endpoints to query the card catalog. Relies on {@link CardService}
- * for data retrieval and uses MapStruct {@link CardMapper} to translate
- * database entities ({@link Card}) into client-safe DTO structures
- * ({@link CardResponseDto}).
+ * Exposes endpoints to query the card catalog. Relies on {@link CardService} for data retrieval and
+ * uses MapStruct {@link CardMapper} to translate database entities ({@link Card}) into client-safe
+ * DTO structures ({@link CardResponseDto}).
  * </p>
  *
  * <p>
  * <strong>Spring Data Pagination & Query Features:</strong>
  * </p>
  * <ul>
- * <li>{@code Pageable} & {@code Page}: Database tables containing thousands of
- * records (like card catalogs) must never be queried entirely. This controller
- * uses Spring Data's pagination mechanisms. By passing parameters like
- * {@code page} and {@code size}, Spring builds limit/offset SQL queries under
- * the hood, returning a {@link Page} structure containing both the sublist and
- * metadata (total elements, total pages) so that clients can build dynamic
- * pagination UIs.</li>
- * <li>Dynamic Filtering: API endpoints support passing optional query
- * parameters (e.g. name, type, race, attribute) which are translated into
- * database search criteria using JPA Specifications.</li>
+ * <li>{@code Pageable} & {@code Page}: Database tables containing thousands of records (like card
+ * catalogs) must never be queried entirely. This controller uses Spring Data's pagination
+ * mechanisms. By passing parameters like {@code page} and {@code size}, Spring builds limit/offset
+ * SQL queries under the hood, returning a {@link Page} structure containing both the sublist and
+ * metadata (total elements, total pages) so that clients can build dynamic pagination UIs.</li>
+ * <li>Dynamic Filtering: API endpoints support passing optional query parameters (e.g. name, type,
+ * race, attribute) which are translated into database search criteria using JPA
+ * Specifications.</li>
  * </ul>
  */
 @RestController
@@ -71,9 +67,7 @@ public class CardController {
     @Value("${app.upload-dir:data/images}")
     private String uploadDir;
 
-    CardController(
-            CardService cardService,
-            CardMapper cardMapper) {
+    CardController(CardService cardService, CardMapper cardMapper) {
         this.service = cardService;
         this.mapper = cardMapper;
     }
@@ -91,14 +85,14 @@ public class CardController {
      * @return a page of matching CardDto records
      */
     @GetMapping
-    public ResponseEntity<Page<CardResponseDto>> index(
-            @RequestParam(value = "q", required = false) String name,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "attribute", required = false) String attribute,
-            @RequestParam(value = "race", required = false) String race,
-            @RequestParam(value = "archetype", required = false) String archetype,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size) {
+    public ResponseEntity<Page<CardResponseDto>>
+            index(@RequestParam(value = "q", required = false) String name,
+                  @RequestParam(value = "type", required = false) String type,
+                  @RequestParam(value = "attribute", required = false) String attribute,
+                  @RequestParam(value = "race", required = false) String race,
+                  @RequestParam(value = "archetype", required = false) String archetype,
+                  @RequestParam(value = "page", defaultValue = "0") int page,
+                  @RequestParam(value = "size", defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CardResponseDto> cards = service
                 .findAllOrWithFilters(name, type, attribute, race, archetype, pageable)
@@ -139,11 +133,11 @@ public class CardController {
      *
      * @param id      the ID of the card to update
      * @param cardDto the updated card details
-     * @return 200 OK with the updated CardDto, or 404 Not Found if card doesn't
-     *         exist
+     * @return 200 OK with the updated CardDto, or 404 Not Found if card doesn't exist
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CardResponseDto> update(@PathVariable Long id, @Valid @RequestBody CardResponseDto cardDto) {
+    public ResponseEntity<CardResponseDto> update(@PathVariable Long id,
+                                                  @Valid @RequestBody CardResponseDto cardDto) {
         if (!service.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -169,8 +163,7 @@ public class CardController {
     }
 
     /**
-     * Retrieves all distinct card attributes present in the game (e.g. LIGHT, DARK,
-     * FIRE).
+     * Retrieves all distinct card attributes present in the game (e.g. LIGHT, DARK, FIRE).
      *
      * @return list of attribute name strings
      */
@@ -180,8 +173,7 @@ public class CardController {
     }
 
     /**
-     * Retrieves all distinct card races present in the game (e.g. Spellcaster,
-     * Dragon, Warrior).
+     * Retrieves all distinct card races present in the game (e.g. Spellcaster, Dragon, Warrior).
      *
      * @return list of race/type name strings
      */
@@ -191,8 +183,8 @@ public class CardController {
     }
 
     /**
-     * Retrieves all distinct card archetypes indexed in the database (e.g.
-     * Blue-Eyes, Elemental HERO).
+     * Retrieves all distinct card archetypes indexed in the database (e.g. Blue-Eyes, Elemental
+     * HERO).
      *
      * @return list of archetype name strings
      */
@@ -202,8 +194,8 @@ public class CardController {
     }
 
     /**
-     * Retrieves all distinct card classification types (e.g. Spell Card, Trap Card,
-     * Normal Monster).
+     * Retrieves all distinct card classification types (e.g. Spell Card, Trap Card, Normal
+     * Monster).
      *
      * @return list of card type strings
      */
@@ -216,8 +208,8 @@ public class CardController {
      * Serves the full card artwork image from the local storage.
      *
      * @param fileName the name of the image file to retrieve
-     * @return 200 OK with the image resource, 404 Not Found if missing, or 403
-     *         Forbidden on path traversal
+     * @return 200 OK with the image resource, 404 Not Found if missing, or 403 Forbidden on path
+     *             traversal
      */
     @GetMapping("/images/{fileName:.+}")
     public ResponseEntity<Resource> getFullImage(@PathVariable String fileName) {
@@ -228,8 +220,8 @@ public class CardController {
      * Serves the cropped card artwork image from the local storage.
      *
      * @param fileName the name of the cropped image file to retrieve
-     * @return 200 OK with the image resource, 404 Not Found if missing, or 403
-     *         Forbidden on path traversal
+     * @return 200 OK with the image resource, 404 Not Found if missing, or 403 Forbidden on path
+     *             traversal
      */
     @GetMapping("/images/cropped/{fileName:.+}")
     public ResponseEntity<Resource> getCroppedImage(@PathVariable String fileName) {
@@ -237,18 +229,18 @@ public class CardController {
     }
 
     /**
-     * Resolves the request filename against the local image directory, performs
-     * path traversal checks, and returns the image resource if it exists.
+     * Resolves the request filename against the local image directory, performs path traversal
+     * checks, and returns the image resource if it exists.
      *
      * @param fileName the name of the file to resolve
-     * @param cropped  true if fetching from the cropped subfolder, false for the
-     *                 full image
-     * @return ResponseEntity holding the requested resource or an appropriate error
-     *         status
+     * @param cropped  true if fetching from the cropped subfolder, false for the full image
+     * @return ResponseEntity holding the requested resource or an appropriate error status
      */
     private ResponseEntity<Resource> serveImage(String fileName, boolean cropped) {
         try {
-            Path targetDir = cropped ? Paths.get(uploadDir, "cropped") : Paths.get(uploadDir);
+            Path targetDir = cropped
+                    ? Paths.get(uploadDir, "cropped")
+                    : Paths.get(uploadDir);
             Path filePath = targetDir.resolve(fileName).normalize();
 
             Path baseUploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
@@ -263,9 +255,7 @@ public class CardController {
 
             Resource resource = new UrlResource(absoluteFilePath.toUri());
             if (resource.exists() && resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(resource);
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
             } else {
                 return ResponseEntity.notFound().build();
             }

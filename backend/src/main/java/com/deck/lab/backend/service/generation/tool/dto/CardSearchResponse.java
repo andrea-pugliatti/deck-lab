@@ -5,5 +5,4 @@ import java.util.List;
 /**
  * Response record containing list of search results.
  */
-public record CardSearchResponse(List<CardSearchResult> results) {
-}
+public record CardSearchResponse(List<CardSearchResult> results) {}

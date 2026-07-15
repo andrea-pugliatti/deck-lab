@@ -13,11 +13,10 @@ import com.deck.lab.backend.service.generation.tool.dto.DeckStatsRequest;
 import com.deck.lab.backend.service.generation.tool.dto.DeckStatsResponse;
 
 /**
- * Tool function enabling the AI model to analyze distributions and metrics
- * (Monster/Spell/Trap ratios, average ATK/DEF, levels) of a list of card names.
+ * Tool function enabling the AI model to analyze distributions and metrics (Monster/Spell/Trap
+ * ratios, average ATK/DEF, levels) of a list of card names.
  */
-public class AnalyzeDeckStatsTool
-        implements Function<DeckStatsRequest, DeckStatsResponse> {
+public class AnalyzeDeckStatsTool implements Function<DeckStatsRequest, DeckStatsResponse> {
 
     private final CardRepository cardRepository;
 
@@ -26,9 +25,8 @@ public class AnalyzeDeckStatsTool
     }
 
     /**
-     * Executes the statistics analysis tool, computing attribute distributions,
-     * type percentage ratios, and averages (ATK, DEF, Level) for a list of card
-     * names.
+     * Executes the statistics analysis tool, computing attribute distributions, type percentage
+     * ratios, and averages (ATK, DEF, Level) for a list of card names.
      *
      * @param request the stats analysis request containing target card names
      * @return a structured DeckStatsResponse containing computed ratios and metrics
@@ -36,7 +34,8 @@ public class AnalyzeDeckStatsTool
     @Override
     public DeckStatsResponse apply(DeckStatsRequest request) {
         if (request.cardNames() == null || request.cardNames().isEmpty()) {
-            return new DeckStatsResponse(0, 0, 0.0, 0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, Map.of(), Map.of());
+            return new DeckStatsResponse(0, 0, 0.0, 0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, Map.of(),
+                    Map.of());
         }
 
         int totalCards = request.cardNames().size();
@@ -100,26 +99,27 @@ public class AnalyzeDeckStatsTool
             }
         }
 
-        double monsterPct = totalCards > 0 ? (double) monsterCount / totalCards * 100 : 0.0;
-        double spellPct = totalCards > 0 ? (double) spellCount / totalCards * 100 : 0.0;
-        double trapPct = totalCards > 0 ? (double) trapCount / totalCards * 100 : 0.0;
+        double monsterPct = totalCards > 0
+                ? (double) monsterCount / totalCards * 100
+                : 0.0;
+        double spellPct = totalCards > 0
+                ? (double) spellCount / totalCards * 100
+                : 0.0;
+        double trapPct = totalCards > 0
+                ? (double) trapCount / totalCards * 100
+                : 0.0;
 
-        double averageAtk = monsterWithStatsCount > 0 ? (double) totalAtk / monsterWithStatsCount : 0.0;
-        double averageDef = monsterWithStatsCount > 0 ? (double) totalDef / monsterWithStatsCount : 0.0;
-        double averageLevel = monsterWithStatsCount > 0 ? (double) totalLevel / monsterWithStatsCount : 0.0;
+        double averageAtk = monsterWithStatsCount > 0
+                ? (double) totalAtk / monsterWithStatsCount
+                : 0.0;
+        double averageDef = monsterWithStatsCount > 0
+                ? (double) totalDef / monsterWithStatsCount
+                : 0.0;
+        double averageLevel = monsterWithStatsCount > 0
+                ? (double) totalLevel / monsterWithStatsCount
+                : 0.0;
 
-        return new DeckStatsResponse(
-                totalCards,
-                monsterCount,
-                monsterPct,
-                spellCount,
-                spellPct,
-                trapCount,
-                trapPct,
-                averageAtk,
-                averageDef,
-                averageLevel,
-                attributes,
-                archetypes);
+        return new DeckStatsResponse(totalCards, monsterCount, monsterPct, spellCount, spellPct,
+                trapCount, trapPct, averageAtk, averageDef, averageLevel, attributes, archetypes);
     }
 }

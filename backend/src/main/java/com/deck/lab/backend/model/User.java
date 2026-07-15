@@ -23,25 +23,23 @@ import jakarta.validation.constraints.NotBlank;
  * <strong>JPA Entity integrated with Spring Security UserDetails</strong>
  * </p>
  * <p>
- * This entity maps user registration records to the {@code users} table. To
- * integrate seamlessly with Spring Security, it implements the
- * {@link UserDetails} interface. This allows Spring Security to treat the
- * entity directly as a principal object during authentication, verifying
- * passwords, retrieving roles, and checking account status without requiring
- * separate security wrapper adapters.
+ * This entity maps user registration records to the {@code users} table. To integrate seamlessly
+ * with Spring Security, it implements the {@link UserDetails} interface. This allows Spring
+ * Security to treat the entity directly as a principal object during authentication, verifying
+ * passwords, retrieving roles, and checking account status without requiring separate security
+ * wrapper adapters.
  * </p>
  *
  * <p>
  * <strong>Spring Security Interface Methods:</strong>
  * </p>
  * <ul>
- * <li>{@code getAuthorities()}: Maps database or default user roles to Spring
- * Security's {@link org.springframework.security.core.GrantedAuthority}
- * instances (e.g. {@code ROLE_USER}).</li>
+ * <li>{@code getAuthorities()}: Maps database or default user roles to Spring Security's
+ * {@link org.springframework.security.core.GrantedAuthority} instances (e.g.
+ * {@code ROLE_USER}).</li>
  * <li>{@code isAccountNonExpired()}, {@code isAccountNonLocked()},
- * {@code isCredentialsNonExpired()}, and {@code isEnabled()}:
- * Represent account state flags. In this implementation, they return
- * {@code true} to specify accounts are active and unlocked.</li>
+ * {@code isCredentialsNonExpired()}, and {@code isEnabled()}: Represent account state flags. In
+ * this implementation, they return {@code true} to specify accounts are active and unlocked.</li>
  * </ul>
  */
 @Entity

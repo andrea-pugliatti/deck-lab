@@ -85,12 +85,15 @@ class DeckMapperTest {
         assertNotNull(cardDtos);
         assertEquals(2, cardDtos.size());
 
-        DeckCardResponseDto cardDto1 = cardDtos.stream().filter(c -> c.getCardId().equals(100L)).findFirst()
+        DeckCardResponseDto cardDto1 = cardDtos.stream()
+                .filter(c -> c.getCardId().equals(100L))
+                .findFirst()
                 .orElseThrow();
         assertEquals(500L, cardDto1.getId());
         assertEquals("Dark Magician", cardDto1.getName());
         assertEquals("Normal Monster", cardDto1.getType());
-        assertEquals("The ultimate wizard in terms of attack and defense.", cardDto1.getDescription());
+        assertEquals("The ultimate wizard in terms of attack and defense.",
+                cardDto1.getDescription());
         assertEquals("Spellcaster", cardDto1.getRace());
         assertEquals("DARK", cardDto1.getAttribute());
         assertEquals("Dark Magician", cardDto1.getArchetype());
@@ -98,7 +101,9 @@ class DeckMapperTest {
         assertEquals("MAIN", cardDto1.getSection());
         assertEquals(3, cardDto1.getQuantity());
 
-        DeckCardResponseDto cardDto2 = cardDtos.stream().filter(c -> c.getCardId().equals(101L)).findFirst()
+        DeckCardResponseDto cardDto2 = cardDtos.stream()
+                .filter(c -> c.getCardId().equals(101L))
+                .findFirst()
                 .orElseThrow();
         assertEquals(501L, cardDto2.getId());
         assertEquals("Blue-Eyes White Dragon", cardDto2.getName());

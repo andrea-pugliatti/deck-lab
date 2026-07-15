@@ -13,10 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
  * <strong>Sliding Time-Window Rate Limiting Strategy</strong>
  * </p>
  * <p>
- * Extends the rate-limiting contract by tracking request frequencies per IP
- * address inside a thread-safe {@link ConcurrentHashMap}. It tracks attempts
- * within a sliding time window and automatically rejects requests exceeding
- * configure thresholds.
+ * Extends the rate-limiting contract by tracking request frequencies per IP address inside a
+ * thread-safe {@link ConcurrentHashMap}. It tracks attempts within a sliding time window and
+ * automatically rejects requests exceeding configure thresholds.
  * </p>
  */
 public class InMemoryRateLimiter implements RateLimiter {
@@ -31,9 +30,9 @@ public class InMemoryRateLimiter implements RateLimiter {
     }
 
     /**
-     * Checks if the request limit for the given key (e.g. client IP) is exceeded.
-     * Increments the attempt counter and throws {@link ResponseStatusException}
-     * with HTTP 429 status code if the threshold is violated.
+     * Checks if the request limit for the given key (e.g. client IP) is exceeded. Increments the
+     * attempt counter and throws {@link ResponseStatusException} with HTTP 429 status code if the
+     * threshold is violated.
      *
      * @param key the unique identifier to rate limit (typically client IP address)
      */
@@ -71,8 +70,7 @@ public class InMemoryRateLimiter implements RateLimiter {
     }
 
     /**
-     * Internal container storing rate limit data for a single client IP
-     * address.
+     * Internal container storing rate limit data for a single client IP address.
      */
     private static class RateLimitInfo {
         int attempts;

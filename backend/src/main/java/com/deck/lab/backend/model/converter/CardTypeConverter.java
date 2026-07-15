@@ -6,13 +6,11 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 /**
- * JPA Attribute Converter mapping {@link CardType} Enums to database character
- * strings.
+ * JPA Attribute Converter mapping {@link CardType} Enums to database character strings.
  * 
  * <p>
- * <b>JPA Attribute Converter:</b>
- * Maps type-safe {@code CardType} instances (like {@code NORMAL_MONSTER}) to
- * database strings (like "Normal Monster") and back, utilizing automatic
+ * <b>JPA Attribute Converter:</b> Maps type-safe {@code CardType} instances (like
+ * {@code NORMAL_MONSTER}) to database strings (like "Normal Monster") and back, utilizing automatic
  * Hibernate database session hooks.
  * </p>
  */
@@ -20,20 +18,22 @@ import jakarta.persistence.Converter;
 public class CardTypeConverter implements AttributeConverter<CardType, String> {
 
     /**
-     * Converts a {@link CardType} Java Enum value into its string column
-     * representation for SQL storage.
+     * Converts a {@link CardType} Java Enum value into its string column representation for SQL
+     * storage.
      *
      * @param type the Enum value
      * @return DB string representation
      */
     @Override
     public String convertToDatabaseColumn(CardType type) {
-        return type != null ? type.getValue() : null;
+        return type != null
+                ? type.getValue()
+                : null;
     }
 
     /**
-     * Converts a SQL string value read from the database back into a type-safe
-     * {@link CardType} Enum.
+     * Converts a SQL string value read from the database back into a type-safe {@link CardType}
+     * Enum.
      *
      * @param dbData database string column value
      * @return resolved CardType Enum, or null if invalid/null

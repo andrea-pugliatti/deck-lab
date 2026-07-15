@@ -5,17 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * Request payload Data Transfer Object (DTO) containing registration details
- * for creating a new user account.
+ * Request payload Data Transfer Object (DTO) containing registration details for creating a new
+ * user account.
  *
  * <p>
  * <strong>Request DTO</strong>
  * </p>
  * <p>
- * This object defines the data inputs needed to register a new user in the
- * system. Separating registration input logic from the database {@link User}
- * model ensures that fields such as user roles, active status, or creation
- * timestamps cannot be manipulated by client-submitted payloads.
+ * This object defines the data inputs needed to register a new user in the system. Separating
+ * registration input logic from the database {@link User} model ensures that fields such as user
+ * roles, active status, or creation timestamps cannot be manipulated by client-submitted payloads.
  * </p>
  */
 public class RegisterRequestDto {

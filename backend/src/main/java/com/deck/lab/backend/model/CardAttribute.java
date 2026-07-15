@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * <strong>Serialization Details:</strong>
  * </p>
  * <ul>
- * <li>{@code @JsonValue}: Serializes elements as capital string tokens (e.g.
- * "LIGHT", "DARK") conforming to database structures.</li>
- * <li>{@code @JsonCreator}: Parser enabling case-insensitive parameter
- * conversions from inbound requests.</li>
+ * <li>{@code @JsonValue}: Serializes elements as capital string tokens (e.g. "LIGHT", "DARK")
+ * conforming to database structures.</li>
+ * <li>{@code @JsonCreator}: Parser enabling case-insensitive parameter conversions from inbound
+ * requests.</li>
  * </ul>
  */
 public enum CardAttribute {

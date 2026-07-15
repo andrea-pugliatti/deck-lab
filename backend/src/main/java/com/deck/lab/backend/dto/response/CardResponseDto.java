@@ -3,32 +3,28 @@ package com.deck.lab.backend.dto.response;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * Data Transfer Object (DTO) representing detailed card statistics and
- * attributes.
+ * Data Transfer Object (DTO) representing detailed card statistics and attributes.
  *
  * <p>
  * <strong>Data Transfer Object (DTO)</strong>
  * </p>
  * <p>
- * This class encapsulates card details (such as name, type, stats, image URLs)
- * and exposes them to the API client. By using a DTO instead of sending the JPA
- * database entity directly, we decouple the internal database mapping structure
- * (defined in {@link Card}) from the external JSON API contract.
+ * This class encapsulates card details (such as name, type, stats, image URLs) and exposes them to
+ * the API client. By using a DTO instead of sending the JPA database entity directly, we decouple
+ * the internal database mapping structure (defined in {@link Card}) from the external JSON API
+ * contract.
  * </p>
  *
  * <p>
  * <strong>Benefits:</strong>
  * </p>
  * <ul>
- * <li><strong>API Stability:</strong>
- * If database column structures change, the DTO interface can remain stable,
- * avoiding breaking client applications.</li>
- * <li><strong>Performance optimization:</strong>
- * Eliminates circular references or lazy-loading issues common in Hibernate/JPA
- * entities when serialized directly to JSON.</li>
- * <li><strong>Input Validation:</strong>
- * Annotations like {@code @NotBlank} are processed by Spring's validation
- * engine before any processing logic runs.</li>
+ * <li><strong>API Stability:</strong> If database column structures change, the DTO interface can
+ * remain stable, avoiding breaking client applications.</li>
+ * <li><strong>Performance optimization:</strong> Eliminates circular references or lazy-loading
+ * issues common in Hibernate/JPA entities when serialized directly to JSON.</li>
+ * <li><strong>Input Validation:</strong> Annotations like {@code @NotBlank} are processed by
+ * Spring's validation engine before any processing logic runs.</li>
  * </ul>
  */
 public class CardResponseDto {
@@ -100,9 +96,21 @@ public class CardResponseDto {
     public CardResponseDto() {
     }
 
-    public CardResponseDto(Long id, String name, String type, String description, String race, String attribute,
-            String archetype, String imageUrl, String imageUrlCropped, String frameType, Integer atk, Integer def,
-            Integer level, Integer linkVal, Integer scale) {
+    public CardResponseDto(Long id,
+                           String name,
+                           String type,
+                           String description,
+                           String race,
+                           String attribute,
+                           String archetype,
+                           String imageUrl,
+                           String imageUrlCropped,
+                           String frameType,
+                           Integer atk,
+                           Integer def,
+                           Integer level,
+                           Integer linkVal,
+                           Integer scale) {
         this.id = id;
         this.name = name;
         this.type = type;

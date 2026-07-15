@@ -13,8 +13,8 @@ import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsResponse;
 import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardInfo;
 
 /**
- * Tool function enabling the AI model to query all cards matching a specific
- * archetype from the database.
+ * Tool function enabling the AI model to query all cards matching a specific archetype from the
+ * database.
  */
 public class GetArchetypeCardsTool
         implements Function<ArchetypeCardsRequest, ArchetypeCardsResponse> {
@@ -26,11 +26,9 @@ public class GetArchetypeCardsTool
     }
 
     /**
-     * Executes the archetype query tool, retrieving up to 30 cards matching a
-     * target archetype.
+     * Executes the archetype query tool, retrieving up to 30 cards matching a target archetype.
      *
-     * @param request the archetype cards request containing the target archetype
-     *                name
+     * @param request the archetype cards request containing the target archetype name
      * @return a structured ArchetypeCardsResponse with matching card details
      */
     @Override
@@ -47,8 +45,12 @@ public class GetArchetypeCardsTool
                 .limit(30)
                 .map(c -> new ArchetypeCardInfo(
                         c.getName(),
-                        c.getType() != null ? c.getType().getValue() : null,
-                        c.getAttribute() != null ? c.getAttribute().getValue() : null))
+                        c.getType() != null
+                                ? c.getType().getValue()
+                                : null,
+                        c.getAttribute() != null
+                                ? c.getAttribute().getValue()
+                                : null))
                 .toList();
 
         return new ArchetypeCardsResponse(request.archetype(), cardInfos);

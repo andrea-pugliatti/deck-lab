@@ -19,47 +19,42 @@ import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.RefreshTokenRepository;
 
 /**
- * Service managing database-backed refresh tokens, token rotation rules,
- * and security replay protection.
+ * Service managing database-backed refresh tokens, token rotation rules, and security replay
+ * protection.
  *
  * <p>
  * <strong>Token Rotation & Replay Protection</strong>
  * </p>
  * <p>
- * Unlike stateless access tokens, refresh tokens represent a persistent
- * authorization session and are tracked in the database. To minimize the risk
- * of stolen tokens, this service implements two core security patterns:
+ * Unlike stateless access tokens, refresh tokens represent a persistent authorization session and
+ * are tracked in the database. To minimize the risk of stolen tokens, this service implements two
+ * core security patterns:
  * </p>
  * <ul>
- * <li><strong>Token Rotation:</strong>
- * Every time a client uses their refresh token to request a new access token,
- * the current refresh token is rotated (invalidated) and a new refresh token is
+ * <li><strong>Token Rotation:</strong> Every time a client uses their refresh token to request a
+ * new access token, the current refresh token is rotated (invalidated) and a new refresh token is
  * issued.</li>
- * <li><strong>Reuse Detection (Replay Protection):</strong>
- * If the system receives a refresh request for an already rotated/revoked
- * token, it implies that an attacker intercepted the token and is trying to
- * reuse it. To protect the user, the service immediately revokes the entire
- * family of tokens associated with that session, forcing the legitimate owner
- * to re-authenticate with their password.</li>
- * <li><strong>Grace Period:</strong>
- * Single-page applications (SPAs) often trigger concurrent requests. If two
- * parallel API requests try to refresh the token at the exact same millisecond,
- * token rotation could reject the second request as a reuse attempt. A short
- * configuration-defined grace period prevents these race conditions from
- * triggering false-positive security revocs.</li>
+ * <li><strong>Reuse Detection (Replay Protection):</strong> If the system receives a refresh
+ * request for an already rotated/revoked token, it implies that an attacker intercepted the token
+ * and is trying to reuse it. To protect the user, the service immediately revokes the entire family
+ * of tokens associated with that session, forcing the legitimate owner to re-authenticate with
+ * their password.</li>
+ * <li><strong>Grace Period:</strong> Single-page applications (SPAs) often trigger concurrent
+ * requests. If two parallel API requests try to refresh the token at the exact same millisecond,
+ * token rotation could reject the second request as a reuse attempt. A short configuration-defined
+ * grace period prevents these race conditions from triggering false-positive security revocs.</li>
  * </ul>
  *
  * <p>
  * <strong>IP-Based Rate Limiting & Background Cleanup:</strong>
  * </p>
  * <ul>
- * <li>In-Memory Rate Limiting: Tracks request attempts per client IP address in
- * a thread-safe {@link ConcurrentHashMap} to guard the endpoint against
- * denial-of-service or token enumeration attacks.</li>
- * <li>{@code @Scheduled} Cleanup: Database tables tracking active sessions can
- * suffer from performance bloat over time. This service runs a scheduled cron
- * job (configured via Spring's task scheduler) to periodically purge expired or
- * revoked token entries.</li>
+ * <li>In-Memory Rate Limiting: Tracks request attempts per client IP address in a thread-safe
+ * {@link ConcurrentHashMap} to guard the endpoint against denial-of-service or token enumeration
+ * attacks.</li>
+ * <li>{@code @Scheduled} Cleanup: Database tables tracking active sessions can suffer from
+ * performance bloat over time. This service runs a scheduled cron job (configured via Spring's task
+ * scheduler) to periodically purge expired or revoked token entries.</li>
  * </ul>
  */
 @Service
@@ -103,16 +98,16 @@ public class RefreshTokenService {
     }
 
     /**
-     * Creates and persists a new RefreshToken session for a user.
-     * Automatically invalidates older sessions if they exceed the max sessions per
-     * user limit.
+     * Creates and persists a new RefreshToken session for a user. Automatically invalidates older
+     * sessions if they exceed the max sessions per user limit.
      *
      * @param user the User owner of the session
      * @return the saved RefreshToken entity
      */
     @Transactional
     public RefreshToken createRefreshToken(User user) {
-        List<RefreshToken> activeTokens = refreshTokenRepository.findByUserAndRevokedFalseOrderByCreatedAtAsc(user);
+        List<RefreshToken> activeTokens = refreshTokenRepository
+                .findByUserAndRevokedFalseOrderByCreatedAtAsc(user);
         if (activeTokens.size() >= maxPerUser) {
             int toRevoke = activeTokens.size() - maxPerUser + 1;
             for (int i = 0; i < toRevoke; i++) {
@@ -132,11 +127,9 @@ public class RefreshTokenService {
     }
 
     /**
-     * Verifies that a RefreshToken has not expired or been improperly reused.
-     * Implements reuse detection: if a revoked token is accessed outside its
-     * rotation grace window,
-     * it invalidates all active sessions for the user to defend against token
-     * theft.
+     * Verifies that a RefreshToken has not expired or been improperly reused. Implements reuse
+     * detection: if a revoked token is accessed outside its rotation grace window, it invalidates
+     * all active sessions for the user to defend against token theft.
      *
      * @param token the RefreshToken entity to verify
      * @return the verified RefreshToken
@@ -146,12 +139,13 @@ public class RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(Instant.now())) {
             refreshTokenRepository.delete(token);
-            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please sign in again.");
+            throw new TokenRefreshException(token.getToken(),
+                    "Refresh token was expired. Please sign in again.");
         }
 
         if (token.isRevoked()) {
-            if (token.getRotatedAt() != null &&
-                    Instant.now().isBefore(token.getRotatedAt().plus(gracePeriodSeconds, ChronoUnit.SECONDS))) {
+            if (token.getRotatedAt() != null && Instant.now()
+                    .isBefore(token.getRotatedAt().plus(gracePeriodSeconds, ChronoUnit.SECONDS))) {
                 throw new TokenRefreshException(token.getToken(),
                         "Refresh token has already been rotated. Please use the new token.");
             }
@@ -170,8 +164,7 @@ public class RefreshTokenService {
     }
 
     /**
-     * Rotates an existing refresh token, creating a new one and revoking the old
-     * one.
+     * Rotates an existing refresh token, creating a new one and revoking the old one.
      *
      * @param tokenStr the current refresh token string
      * @return the new, rotated RefreshToken entity
@@ -180,7 +173,10 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken rotateRefreshToken(String tokenStr) {
         RefreshToken oldToken = refreshTokenRepository.findByToken(tokenStr)
-                .orElseThrow(() -> new TokenRefreshException(tokenStr, "Refresh token is not in database!"));
+                .orElseThrow(
+                        () -> new TokenRefreshException(
+                                tokenStr,
+                                "Refresh token is not in database!"));
 
         verifyExpiration(oldToken);
 
@@ -208,8 +204,7 @@ public class RefreshTokenService {
     }
 
     /**
-     * Scheduled cron job running daily to purge expired or revoked tokens from
-     * database.
+     * Scheduled cron job running daily to purge expired or revoked tokens from database.
      */
     @Scheduled(cron = "${refresh-token.cleanup-schedule:0 0 3 * * *}")
     @Transactional

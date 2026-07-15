@@ -18,32 +18,27 @@ import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.specification.CardSpecification;
 
 /**
- * Service handling query operations and persistence updates for Yu-Gi-Oh! card
- * catalog entries.
+ * Service handling query operations and persistence updates for Yu-Gi-Oh! card catalog entries.
  *
  * <p>
  * <strong>Design Pattern: Service Layer</strong>
  * </p>
  * <p>
- * Acts as an intermediary coordinator between controllers querying cards and
- * the data access layers.
- * It encapsulates read-only static listings (such as distinct card attributes,
- * archetypes, and types)
- * along with paginated database searches.
+ * Acts as an intermediary coordinator between controllers querying cards and the data access
+ * layers. It encapsulates read-only static listings (such as distinct card attributes, archetypes,
+ * and types) along with paginated database searches.
  * </p>
  *
  * <p>
  * <strong>JPA Specifications Integration:</strong>
  * </p>
  * <ul>
- * <li>Dynamic Query Building: Rather than hardcoding multiple repository
- * methods (e.g., query by name, query by type, etc.),
- * this service leverages JPA
- * {@link org.springframework.data.jpa.domain.Specification} interfaces.
- * Specifications encapsulate query criteria
- * programmatically based on the JPA Criteria API, enabling this class to
- * dynamically combine filters (AND/OR clauses) at runtime
- * depending on the parameters supplied in HTTP requests.</li>
+ * <li>Dynamic Query Building: Rather than hardcoding multiple repository methods (e.g., query by
+ * name, query by type, etc.), this service leverages JPA
+ * {@link org.springframework.data.jpa.domain.Specification} interfaces. Specifications encapsulate
+ * query criteria programmatically based on the JPA Criteria API, enabling this class to dynamically
+ * combine filters (AND/OR clauses) at runtime depending on the parameters supplied in HTTP
+ * requests.</li>
  * </ul>
  */
 @Service
@@ -85,7 +80,8 @@ public class CardService {
      * @return sorted list of unique archetype name strings
      */
     public List<String> findDistinctArchetypes() {
-        return cardRepository.findDistinctByArchetypeNotNullAndArchetypeNot("").stream()
+        return cardRepository.findDistinctByArchetypeNotNullAndArchetypeNot("")
+                .stream()
                 .map(card -> card.getArchetype())
                 .filter(a -> a != null && !a.isBlank())
                 .distinct()
@@ -99,10 +95,7 @@ public class CardService {
      * @return sorted list of card type values
      */
     public List<String> findDistinctTypes() {
-        return Stream.of(CardType.values())
-                .map(cardType -> cardType.getValue())
-                .sorted()
-                .toList();
+        return Stream.of(CardType.values()).map(cardType -> cardType.getValue()).sorted().toList();
     }
 
     /**
@@ -116,10 +109,14 @@ public class CardService {
      * @param pageable  pagination details
      * @return a page of matching Card entities
      */
-    public Page<Card> findAllOrWithFilters(String name, String type, String attribute, String race, String archetype,
-            Pageable pageable) {
-        Specification<Card> spec = Specification.where(
-                CardSpecification.hasName(name))
+    public Page<Card> findAllOrWithFilters(String name,
+                                           String type,
+                                           String attribute,
+                                           String race,
+                                           String archetype,
+                                           Pageable pageable) {
+        Specification<Card> spec = Specification
+                .where(CardSpecification.hasName(name))
                 .and(CardSpecification.hasType(type))
                 .and(CardSpecification.hasAttribute(attribute))
                 .and(CardSpecification.hasRace(race))
@@ -155,7 +152,8 @@ public class CardService {
      * @throws ResourceNotFoundException if no card matches the ID
      */
     public Card getById(Long id) {
-        return findById(id).orElseThrow(() -> new ResourceNotFoundException("Card not found with id: " + id));
+        return findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Card not found with id: " + id));
     }
 
     /**

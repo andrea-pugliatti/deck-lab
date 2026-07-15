@@ -60,7 +60,8 @@ class DeckValidationEngineTest {
         deck.setDeckCards(Collections.emptyList());
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
     }
 
     @Test
@@ -69,7 +70,8 @@ class DeckValidationEngineTest {
         Deck deck = createBaseDeck(13, 3, Format.TCG);
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
     }
 
     @Test
@@ -78,7 +80,8 @@ class DeckValidationEngineTest {
         Deck deck = createBaseDeck(21, 3, Format.TCG);
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 60")));
     }
 
     @Test
@@ -92,7 +95,8 @@ class DeckValidationEngineTest {
         Deck largeDeck = createBaseDeck(34, 3, Format.GOAT);
         List<ValidationError> largeErrors = engine.validate(largeDeck, Collections.emptyMap());
         assertFalse(largeErrors.isEmpty());
-        assertTrue(largeErrors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 100")));
+        assertTrue(largeErrors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 40 and 100")));
     }
 
     @Test
@@ -106,13 +110,15 @@ class DeckValidationEngineTest {
         Deck smallDeck = createBaseDeck(5, 3, Format.SPEED_DUEL);
         List<ValidationError> smallErrors = engine.validate(smallDeck, Collections.emptyMap());
         assertFalse(smallErrors.isEmpty());
-        assertTrue(smallErrors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 20 and 30")));
+        assertTrue(smallErrors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 20 and 30")));
 
         // Speed Duel: 11 cards * 3 = 33 cards (too many, max 30)
         Deck largeDeck = createBaseDeck(11, 3, Format.SPEED_DUEL);
         List<ValidationError> largeErrors = engine.validate(largeDeck, Collections.emptyMap());
         assertFalse(largeErrors.isEmpty());
-        assertTrue(largeErrors.stream().anyMatch(e -> e.message().contains("Main Deck must contain between 20 and 30")));
+        assertTrue(largeErrors.stream()
+                .anyMatch(e -> e.message().contains("Main Deck must contain between 20 and 30")));
     }
 
     @Test
@@ -122,11 +128,13 @@ class DeckValidationEngineTest {
         card14.setId(14L);
         card14.setName("Card 14");
         card14.setType(CardType.NORMAL_MONSTER);
-        deck.getDeckCards().add(new DeckCard(deck, card14, DeckSection.MAIN, 4)); // 4 copies of Card 14
+        deck.getDeckCards().add(new DeckCard(deck, card14, DeckSection.MAIN, 4)); // 4 copies of
+                                                                                  // Card 14
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("exceeds the limit of 3 copies")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("exceeds the limit of 3 copies")));
     }
 
     @Test
@@ -140,7 +148,8 @@ class DeckValidationEngineTest {
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("must be placed in the EXTRA section")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("must be placed in the EXTRA section")));
     }
 
     @Test
@@ -154,7 +163,8 @@ class DeckValidationEngineTest {
 
         List<ValidationError> errors = engine.validate(deck, Collections.emptyMap());
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("cannot be placed in the EXTRA section")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("cannot be placed in the EXTRA section")));
     }
 
     @Test
@@ -165,7 +175,8 @@ class DeckValidationEngineTest {
 
         List<ValidationError> errors = engine.validate(deck, limits);
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("is forbidden in format 'Goat'")));
+        assertTrue(errors.stream()
+                .anyMatch(e -> e.message().contains("is forbidden in format 'Goat'")));
     }
 
     @Test
@@ -176,6 +187,7 @@ class DeckValidationEngineTest {
 
         List<ValidationError> errors = engine.validate(deck, limits);
         assertFalse(errors.isEmpty());
-        assertTrue(errors.stream().anyMatch(e -> e.message().contains("is limited in format 'Goat'")));
+        assertTrue(
+                errors.stream().anyMatch(e -> e.message().contains("is limited in format 'Goat'")));
     }
 }

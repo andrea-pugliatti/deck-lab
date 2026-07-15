@@ -7,8 +7,7 @@ import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
 import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
 
 /**
- * Pure parsing component that converts string responses from AI into structured
- * objects.
+ * Pure parsing component that converts string responses from AI into structured objects.
  */
 @Component
 public class ResponseParser {
@@ -40,7 +39,8 @@ public class ResponseParser {
     }
 
     private String extractJson(String raw) {
-        if (raw == null) return "";
+        if (raw == null)
+            return "";
         String trimmed = raw.trim();
         if (trimmed.startsWith("```")) {
             int firstNewLine = trimmed.indexOf('\n');
@@ -53,13 +53,14 @@ public class ResponseParser {
     }
 
     private String sanitizeJson(String json) {
-        if (json == null) return "";
+        if (json == null)
+            return "";
         String clean = extractJson(json);
-        
+
         StringBuilder sb = new StringBuilder();
         boolean inQuote = false;
         boolean escape = false;
-        
+
         for (int i = 0; i < clean.length(); i++) {
             char c = clean.charAt(i);
             if (escape) {
