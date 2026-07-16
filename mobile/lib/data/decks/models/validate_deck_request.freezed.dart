@@ -15,10 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ValidateDeckRequest {
 
-/// Display name of the deck.
- String get name;/// Format category name.
- String get formatName;/// List of cards and their quantities.
- List<DeckCardResponse> get deckCards;
+ String get name; String get formatName; List<DeckCardResponse> get deckCards;
 /// Create a copy of ValidateDeckRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -217,13 +214,9 @@ class _ValidateDeckRequest implements ValidateDeckRequest {
   const _ValidateDeckRequest({required this.name, required this.formatName, required final  List<DeckCardResponse> deckCards}): _deckCards = deckCards;
   factory _ValidateDeckRequest.fromJson(Map<String, dynamic> json) => _$ValidateDeckRequestFromJson(json);
 
-/// Display name of the deck.
 @override final  String name;
-/// Format category name.
 @override final  String formatName;
-/// List of cards and their quantities.
  final  List<DeckCardResponse> _deckCards;
-/// List of cards and their quantities.
 @override List<DeckCardResponse> get deckCards {
   if (_deckCards is EqualUnmodifiableListView) return _deckCards;
   // ignore: implicit_dynamic_type

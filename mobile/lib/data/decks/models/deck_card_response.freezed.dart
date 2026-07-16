@@ -15,18 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckCardResponse {
 
-/// Unique primary key mapping of the database relationship.
- int? get id;/// Unique primary key of the associated Card catalog entry.
- int get cardId;/// Name of the card.
- String get name;/// Classification type of the card (e.g. Effect Monster, Spell Card).
- String? get type;/// Card description text detailing effects or stats.
- String? get description;/// Card monster race or sub-classification.
- String? get race;/// Monster elemental attribute.
- String? get attribute;/// Archetype group name.
- String? get archetype;/// Image URL of the card.
- String? get imageUrl;/// Assigned deck section placement (MAIN, EXTRA, or SIDE).
- String get section;/// Quantity of card copies in the deck (must be between 1 and 3).
- int get quantity;
+ int? get id; int get cardId; String get name; String? get type; String? get description; String? get race; String? get attribute; String? get archetype; String? get imageUrl; String get section; int get quantity;
 /// Create a copy of DeckCardResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -233,27 +222,16 @@ class _DeckCardResponse implements DeckCardResponse {
   const _DeckCardResponse({this.id, required this.cardId, required this.name, this.type, this.description, this.race, this.attribute, this.archetype, this.imageUrl, required this.section, required this.quantity});
   factory _DeckCardResponse.fromJson(Map<String, dynamic> json) => _$DeckCardResponseFromJson(json);
 
-/// Unique primary key mapping of the database relationship.
 @override final  int? id;
-/// Unique primary key of the associated Card catalog entry.
 @override final  int cardId;
-/// Name of the card.
 @override final  String name;
-/// Classification type of the card (e.g. Effect Monster, Spell Card).
 @override final  String? type;
-/// Card description text detailing effects or stats.
 @override final  String? description;
-/// Card monster race or sub-classification.
 @override final  String? race;
-/// Monster elemental attribute.
 @override final  String? attribute;
-/// Archetype group name.
 @override final  String? archetype;
-/// Image URL of the card.
 @override final  String? imageUrl;
-/// Assigned deck section placement (MAIN, EXTRA, or SIDE).
 @override final  String section;
-/// Quantity of card copies in the deck (must be between 1 and 3).
 @override final  int quantity;
 
 /// Create a copy of DeckCardResponse

@@ -15,11 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SimulateHandRequest {
 
-/// Total number of cards in the deck.
- int get deckSize;/// Number of target success cards present in the deck.
- int get targetCopies;/// Number of cards drawn in the starting hand (usually 5 or 6).
- int get drawSize;/// The minimum number of target cards required in the starting hand (defaults to 1).
- int get successThreshold;
+ int get deckSize; int get targetCopies; int get drawSize; int get successThreshold;
 /// Create a copy of SimulateHandRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -219,13 +215,9 @@ class _SimulateHandRequest implements SimulateHandRequest {
   const _SimulateHandRequest({required this.deckSize, required this.targetCopies, required this.drawSize, this.successThreshold = 1});
   factory _SimulateHandRequest.fromJson(Map<String, dynamic> json) => _$SimulateHandRequestFromJson(json);
 
-/// Total number of cards in the deck.
 @override final  int deckSize;
-/// Number of target success cards present in the deck.
 @override final  int targetCopies;
-/// Number of cards drawn in the starting hand (usually 5 or 6).
 @override final  int drawSize;
-/// The minimum number of target cards required in the starting hand (defaults to 1).
 @override@JsonKey() final  int successThreshold;
 
 /// Create a copy of SimulateHandRequest

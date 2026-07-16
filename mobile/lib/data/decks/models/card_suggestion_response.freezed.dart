@@ -15,13 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CardSuggestionResponse {
 
-/// Name of the card.
- String get name;/// Recommended placement section (MAIN, EXTRA, or SIDE).
- String get section;/// AI-generated text outlining synergy reasonings.
- String get synergyReason;/// Resolved database Card ID.
- int get cardId;/// Classification type of the recommended card.
- String get type;/// Image URL path pointing to card artwork.
- String? get imageUrl;
+ String get name; String get section; String get synergyReason; int get cardId; String get type; String? get imageUrl;
 /// Create a copy of CardSuggestionResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -223,17 +217,11 @@ class _CardSuggestionResponse implements CardSuggestionResponse {
   const _CardSuggestionResponse({required this.name, required this.section, required this.synergyReason, required this.cardId, required this.type, this.imageUrl});
   factory _CardSuggestionResponse.fromJson(Map<String, dynamic> json) => _$CardSuggestionResponseFromJson(json);
 
-/// Name of the card.
 @override final  String name;
-/// Recommended placement section (MAIN, EXTRA, or SIDE).
 @override final  String section;
-/// AI-generated text outlining synergy reasonings.
 @override final  String synergyReason;
-/// Resolved database Card ID.
 @override final  int cardId;
-/// Classification type of the recommended card.
 @override final  String type;
-/// Image URL path pointing to card artwork.
 @override final  String? imageUrl;
 
 /// Create a copy of CardSuggestionResponse

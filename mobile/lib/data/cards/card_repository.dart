@@ -5,16 +5,15 @@ import '../../domain/models/page.dart';
 import '../../domain/repositories/card_repository.dart';
 import '../core/api_client.dart';
 import 'models/card_response.dart';
+import 'mappers/mappers.dart';
 
 /// Repository abstracting card database search and metadata lookup.
 ///
 /// Communicates with `/api/cards/` paths to support pagination, autocomplete suggestion,
 /// filters metadata, and card CRUD.
 class CardRepositoryImpl implements CardRepository {
-  /// Mapped API Client instance.
   final ApiClient apiClient;
 
-  /// Default constructor for [CardRepositoryImpl].
   CardRepositoryImpl({required this.apiClient});
 
   /// Resolves the absolute URL string pointing to a card artwork asset.
@@ -162,62 +161,5 @@ class CardRepositoryImpl implements CardRepository {
       default:
         return 'Card query failed. Status: ${e.response?.statusCode}';
     }
-  }
-}
-
-extension CardResponseDomainMapper on CardResponse {
-  Card toDomain(String baseUrl) {
-    return Card(
-      id: id,
-      name: name,
-      type: type,
-      description: description,
-      race: race,
-      attribute: attribute,
-      archetype: archetype,
-      imageUrl: _resolveUrl(imageUrl, baseUrl),
-      imageUrlCropped: _resolveUrl(imageUrlCropped, baseUrl),
-      frameType: frameType,
-      atk: atk,
-      def: def,
-      level: level,
-      linkVal: linkVal,
-      scale: scale,
-    );
-  }
-}
-
-String? _resolveUrl(String? path, String baseUrl) {
-  if (path == null) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
-  }
-  final uri = Uri.parse(path);
-  final fileName = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : '';
-  if (fileName.isEmpty) return null;
-  final isCropped = uri.pathSegments.contains('cropped');
-  final subPath = isCropped ? 'cropped/' : '';
-  return '$baseUrl/api/cards/images/$subPath$fileName';
-}
-
-extension CardDomainDtoMapper on Card {
-  CardResponse toDto() {
-    return CardResponse(
-      id: id,
-      name: name,
-      type: type,
-      description: description,
-      race: race,
-      attribute: attribute,
-      archetype: archetype,
-      imageUrl: imageUrl,
-      imageUrlCropped: imageUrlCropped,
-      frameType: frameType,
-      atk: atk,
-      def: def,
-      level: level,
-      linkVal: linkVal,
-      scale: scale,
-    );
   }
 }

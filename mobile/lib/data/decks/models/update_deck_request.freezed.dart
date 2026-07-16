@@ -15,12 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UpdateDeckRequest {
 
-/// Unique identifier of the deck being updated.
- int get id;/// Display name of the deck.
- String get name;/// Description text detailing strategies or notes.
- String get description;/// Format category name.
- String get formatName;/// Updated list of cards and their quantities.
- List<DeckCardResponse> get deckCards;
+ int get id; String get name; String get description; String get formatName; List<DeckCardResponse> get deckCards;
 /// Create a copy of UpdateDeckRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -221,17 +216,11 @@ class _UpdateDeckRequest implements UpdateDeckRequest {
   const _UpdateDeckRequest({required this.id, required this.name, required this.description, required this.formatName, required final  List<DeckCardResponse> deckCards}): _deckCards = deckCards;
   factory _UpdateDeckRequest.fromJson(Map<String, dynamic> json) => _$UpdateDeckRequestFromJson(json);
 
-/// Unique identifier of the deck being updated.
 @override final  int id;
-/// Display name of the deck.
 @override final  String name;
-/// Description text detailing strategies or notes.
 @override final  String description;
-/// Format category name.
 @override final  String formatName;
-/// Updated list of cards and their quantities.
  final  List<DeckCardResponse> _deckCards;
-/// Updated list of cards and their quantities.
 @override List<DeckCardResponse> get deckCards {
   if (_deckCards is EqualUnmodifiableListView) return _deckCards;
   // ignore: implicit_dynamic_type

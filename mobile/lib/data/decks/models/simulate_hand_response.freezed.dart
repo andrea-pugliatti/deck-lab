@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SimulateHandResponse {
 
-/// Probability of drawing exactly the success threshold number of target cards.
- double get exactProbability;/// Probability of drawing at least the success threshold number of target cards.
- double get atLeastProbability;
+ double get exactProbability; double get atLeastProbability;
 /// Create a copy of SimulateHandResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -215,9 +213,7 @@ class _SimulateHandResponse implements SimulateHandResponse {
   const _SimulateHandResponse({required this.exactProbability, required this.atLeastProbability});
   factory _SimulateHandResponse.fromJson(Map<String, dynamic> json) => _$SimulateHandResponseFromJson(json);
 
-/// Probability of drawing exactly the success threshold number of target cards.
 @override final  double exactProbability;
-/// Probability of drawing at least the success threshold number of target cards.
 @override final  double atLeastProbability;
 
 /// Create a copy of SimulateHandResponse

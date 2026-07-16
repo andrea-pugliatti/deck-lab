@@ -15,14 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckSummaryResponse {
 
-/// Unique identifier of the deck.
- int get id;/// Display name of the deck.
- String get name;/// Strategy description of the deck.
- String? get description;/// Mapped format category name (e.g. TCG, OCG, GOAT, Edison).
- String get formatName;/// Username of the deck's creator.
- String? get creatorUsername;/// Timestamp indicating when the deck was last updated.
- String? get updatedAt;/// Collection of card reference entries.
- List<DeckCardResponse> get deckCards;
+ int get id; String get name; String? get description; String get formatName; String? get creatorUsername; String? get updatedAt; List<DeckCardResponse> get deckCards;
 /// Create a copy of DeckSummaryResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -225,21 +218,13 @@ class _DeckSummaryResponse extends DeckSummaryResponse {
   const _DeckSummaryResponse({required this.id, required this.name, this.description, required this.formatName, this.creatorUsername, this.updatedAt, final  List<DeckCardResponse> deckCards = const []}): _deckCards = deckCards,super._();
   factory _DeckSummaryResponse.fromJson(Map<String, dynamic> json) => _$DeckSummaryResponseFromJson(json);
 
-/// Unique identifier of the deck.
 @override final  int id;
-/// Display name of the deck.
 @override final  String name;
-/// Strategy description of the deck.
 @override final  String? description;
-/// Mapped format category name (e.g. TCG, OCG, GOAT, Edison).
 @override final  String formatName;
-/// Username of the deck's creator.
 @override final  String? creatorUsername;
-/// Timestamp indicating when the deck was last updated.
 @override final  String? updatedAt;
-/// Collection of card reference entries.
  final  List<DeckCardResponse> _deckCards;
-/// Collection of card reference entries.
 @override@JsonKey() List<DeckCardResponse> get deckCards {
   if (_deckCards is EqualUnmodifiableListView) return _deckCards;
   // ignore: implicit_dynamic_type

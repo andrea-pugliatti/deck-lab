@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ValidationErrorResponse {
 
-/// General summary message (e.g. "Validation failed").
- String get message;/// Collection of localized input validation messages.
- List<String> get errors;
+ String get message; List<String> get errors;
 /// Create a copy of ValidationErrorResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -215,11 +213,8 @@ class _ValidationErrorResponse implements ValidationErrorResponse {
   const _ValidationErrorResponse({required this.message, required final  List<String> errors}): _errors = errors;
   factory _ValidationErrorResponse.fromJson(Map<String, dynamic> json) => _$ValidationErrorResponseFromJson(json);
 
-/// General summary message (e.g. "Validation failed").
 @override final  String message;
-/// Collection of localized input validation messages.
  final  List<String> _errors;
-/// Collection of localized input validation messages.
 @override List<String> get errors {
   if (_errors is EqualUnmodifiableListView) return _errors;
   // ignore: implicit_dynamic_type

@@ -15,22 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CardResponse {
 
-/// Unique identifier of the card catalog entry.
- int get id;/// Display name of the card.
- String get name;/// Card classification type (e.g. Normal Monster, Spell Card).
- String get type;/// Text effect description or flavor description.
- String? get description;/// Card monster race classification (e.g. Spellcaster, Dragon).
- String? get race;/// elemental attribute classification (e.g. LIGHT, DARK).
- String? get attribute;/// Archetype group name.
- String? get archetype;/// URL path pointing to the full card artwork image.
- String? get imageUrl;/// URL path pointing to the cropped card artwork illustration.
- String? get imageUrlCropped;/// Visual frame border style color representation.
- String? get frameType;/// Monster Attack points value.
- int? get atk;/// Monster Defense points value.
- int? get def;/// Monster Level or Rank rating.
- int? get level;/// Monster Link Rating value.
- int? get linkVal;/// Monster Pendulum Scale rating.
- int? get scale;
+ int get id; String get name; String get type; String? get description; String? get race; String? get attribute; String? get archetype; String? get imageUrl; String? get imageUrlCropped; String? get frameType; int? get atk; int? get def; int? get level; int? get linkVal; int? get scale;
 /// Create a copy of CardResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -241,35 +226,20 @@ class _CardResponse implements CardResponse {
   const _CardResponse({required this.id, required this.name, required this.type, this.description, this.race, this.attribute, this.archetype, this.imageUrl, this.imageUrlCropped, this.frameType, this.atk, this.def, this.level, this.linkVal, this.scale});
   factory _CardResponse.fromJson(Map<String, dynamic> json) => _$CardResponseFromJson(json);
 
-/// Unique identifier of the card catalog entry.
 @override final  int id;
-/// Display name of the card.
 @override final  String name;
-/// Card classification type (e.g. Normal Monster, Spell Card).
 @override final  String type;
-/// Text effect description or flavor description.
 @override final  String? description;
-/// Card monster race classification (e.g. Spellcaster, Dragon).
 @override final  String? race;
-/// elemental attribute classification (e.g. LIGHT, DARK).
 @override final  String? attribute;
-/// Archetype group name.
 @override final  String? archetype;
-/// URL path pointing to the full card artwork image.
 @override final  String? imageUrl;
-/// URL path pointing to the cropped card artwork illustration.
 @override final  String? imageUrlCropped;
-/// Visual frame border style color representation.
 @override final  String? frameType;
-/// Monster Attack points value.
 @override final  int? atk;
-/// Monster Defense points value.
 @override final  int? def;
-/// Monster Level or Rank rating.
 @override final  int? level;
-/// Monster Link Rating value.
 @override final  int? linkVal;
-/// Monster Pendulum Scale rating.
 @override final  int? scale;
 
 /// Create a copy of CardResponse
