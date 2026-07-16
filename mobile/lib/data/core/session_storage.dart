@@ -7,7 +7,6 @@ class SessionStorage {
 
   final FlutterSecureStorage _secureStorage;
 
-  /// Default constructor initializing keychain storage.
   SessionStorage({FlutterSecureStorage? secureStorage})
     : _secureStorage =
           secureStorage ??

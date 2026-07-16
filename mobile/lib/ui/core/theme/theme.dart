@@ -57,12 +57,16 @@ class DeckLabTheme {
           textStyle: baseTextTheme.headlineLarge?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 36,
+            letterSpacing: 2,
           ),
         ),
         headlineMedium: GoogleFonts.cinzel(
           textStyle: baseTextTheme.headlineMedium?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 24,
+            letterSpacing: 2,
           ),
         ),
         titleLarge: GoogleFonts.cinzel(

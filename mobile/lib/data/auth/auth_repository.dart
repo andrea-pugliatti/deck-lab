@@ -12,13 +12,9 @@ import 'models/register_request.dart';
 ///
 /// Communicates directly with `/api/auth/` paths and handles token local propagation.
 class AuthRepositoryImpl implements AuthRepository {
-  /// Mapped API Client instance.
   final ApiClient apiClient;
-
-  /// Mapped credentials storage service instance.
   final SessionStorage sessionStorage;
 
-  /// Default constructor for [AuthRepositoryImpl].
   AuthRepositoryImpl({required this.apiClient, required this.sessionStorage});
 
   /// Submits user credentials to POST `/api/auth/login`.
@@ -122,7 +118,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return await sessionStorage.getUsername();
       }
     } catch (_) {
-      // Silent refresh failed, ignore and force regular login redirect
+      // Refresh failed, ignore and force regular login
     }
     return null;
   }

@@ -19,5 +19,6 @@ abstract class TokenRefreshResponse with _$TokenRefreshResponse {
   }) = _TokenRefreshResponse;
 
   /// De-serializes JSON map data into a [TokenRefreshResponse] class.
-  factory TokenRefreshResponse.fromJson(Map<String, dynamic> json) => _$TokenRefreshResponseFromJson(json);
+  factory TokenRefreshResponse.fromJson(Map<String, dynamic> json) =>
+      _$TokenRefreshResponseFromJson(json);
 }

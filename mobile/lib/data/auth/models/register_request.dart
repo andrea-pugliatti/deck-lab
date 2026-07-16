@@ -21,5 +21,6 @@ abstract class RegisterRequest with _$RegisterRequest {
   }) = _RegisterRequest;
 
   /// De-serializes JSON map data into a [RegisterRequest] class.
-  factory RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
+      _$RegisterRequestFromJson(json);
 }

@@ -16,5 +16,6 @@ abstract class AuthResponse with _$AuthResponse {
   }) = _AuthResponse;
 
   /// De-serializes JSON map data into an [AuthResponse] class.
-  factory AuthResponse.fromJson(Map<String, dynamic> json) => _$AuthResponseFromJson(json);
+  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
+      _$AuthResponseFromJson(json);
 }

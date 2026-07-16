@@ -3,16 +3,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../ui/features/home/views/home_screen.dart';
 import '../ui/core/theme/theme.dart';
+import '../ui/features/auth/view_models/auth_provider.dart';
+import '../ui/features/auth/views/login_screen.dart';
+import '../ui/features/auth/views/register_screen.dart';
+import 'routes.dart';
 
 /// Provider exposing declarative routes and guard logic managed by go_router.
 final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
   final rootNavigatorKey = GlobalKey<NavigatorState>();
   final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: '/',
+    initialLocation: AppRoutes.home,
     redirect: (context, state) {
+      final loggedIn = authState.value != null;
+      final isAuthScreen =
+          state.matchedLocation == AppRoutes.login ||
+          state.matchedLocation == AppRoutes.register;
+
+      // Guard authenticated builder paths
+      if (!loggedIn) {
+        final requiresAuth =
+            state.matchedLocation.contains(AppRoutes.deckCreate) ||
+            state.matchedLocation.endsWith('/edit') ||
+            state.matchedLocation == AppRoutes.simulator;
+        if (requiresAuth) {
+          final encodedLocation = Uri.encodeComponent(state.matchedLocation);
+          return '${AppRoutes.login}?from=$encodedLocation';
+        }
+      } else {
+        if (isAuthScreen) {
+          final from = state.uri.queryParameters['from'];
+          return from ?? AppRoutes.home;
+        }
+      }
       return null;
     },
     routes: [
@@ -23,10 +49,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           return _ShellScaffold(state: state, child: child);
         },
         routes: [
-          GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
           GoRoute(
-            path: '/decks',
-            // builder: (context, state) => const DashboardScreen(),
+            path: AppRoutes.home,
+            builder: (context, state) => const HomeScreen(),
           ),
           GoRoute(
             path: '/cards',
@@ -41,13 +66,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Overlay routes without Nav tabs
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/login',
-        // builder: (context, state) => const LoginScreen(),
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/register',
-        // builder: (context, state) => const RegisterScreen(),
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,

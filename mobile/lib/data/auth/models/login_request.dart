@@ -18,5 +18,6 @@ abstract class LoginRequest with _$LoginRequest {
   }) = _LoginRequest;
 
   /// De-serializes JSON map data into a [LoginRequest] class.
-  factory LoginRequest.fromJson(Map<String, dynamic> json) => _$LoginRequestFromJson(json);
+  factory LoginRequest.fromJson(Map<String, dynamic> json) =>
+      _$LoginRequestFromJson(json);
 }
