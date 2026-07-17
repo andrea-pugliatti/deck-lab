@@ -18,7 +18,12 @@ abstract class DeckRepository {
   });
 
   /// Queries decks created by active authenticated user.
-  Future<Page<DeckSummary>> fetchUserDecks({int page = 0, int size = 20});
+  Future<Page<DeckSummary>> fetchUserDecks({
+    String? name,
+    String? format,
+    int page = 0,
+    int size = 20,
+  });
 
   /// Queries detail of a deck by ID.
   Future<DeckDetail> fetchDeckDetail(int id);

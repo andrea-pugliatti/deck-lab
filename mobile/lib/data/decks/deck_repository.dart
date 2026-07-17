@@ -176,6 +176,8 @@ class DeckRepositoryImpl implements DeckRepository {
   /// Returns a paginated page of summaries.
   @override
   Future<Page<DeckSummary>> fetchUserDecks({
+    String? name,
+    String? format,
     int page = 0,
     int size = 20,
   }) async {
@@ -190,7 +192,13 @@ class DeckRepositoryImpl implements DeckRepository {
           totalPages: 0,
         );
       }
-      return fetchPublicDecks(username: username, page: page, size: size);
+      return fetchPublicDecks(
+        name: name,
+        format: format,
+        username: username,
+        page: page,
+        size: size,
+      );
     } catch (e) {
       throw Exception(e.toString());
     }

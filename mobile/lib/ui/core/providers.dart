@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../data/core/api_client.dart';
 import '../../data/core/session_storage.dart';
+import '../../data/decks/deck_repository.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../../domain/repositories/deck_repository.dart';
 
 /// Provider exposing the [SessionStorage] instance.
 final sessionStorageProvider = Provider<SessionStorage>((ref) {
@@ -48,3 +50,9 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     sessionStorage: ref.watch(sessionStorageProvider),
   );
 });
+
+/// Provider exposing [DeckRepository] bound to [apiClientProvider].
+final deckRepositoryProvider = Provider<DeckRepository>((ref) {
+  return DeckRepositoryImpl(apiClient: ref.watch(apiClientProvider));
+});
+

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../ui/features/home/views/home_screen.dart';
 import '../ui/core/theme/theme.dart';
 import '../ui/features/auth/view_models/auth_provider.dart';
 import '../ui/features/auth/views/login_screen.dart';
 import '../ui/features/auth/views/register_screen.dart';
+import '../ui/features/dashboard/views/dashboard_screen.dart';
 import 'routes.dart';
 
 /// Provider exposing declarative routes and guard logic managed by go_router.
@@ -51,7 +51,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: AppRoutes.home,
-            builder: (context, state) => const HomeScreen(),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: DashboardScreen()),
           ),
           GoRoute(
             path: '/cards',
@@ -129,10 +130,7 @@ class _ShellScaffold extends StatelessWidget {
         currentIndex: activeIndex,
         onTap: (index) {
           final targetPath = switch (index) {
-            0 => '/',
-            1 => '/decks',
-            2 => '/cards',
-            3 => '/simulator',
+            0 => AppRoutes.home,
             _ => null,
           };
           if (targetPath != null) {
