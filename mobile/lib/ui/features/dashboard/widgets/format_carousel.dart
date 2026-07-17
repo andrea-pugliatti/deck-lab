@@ -37,6 +37,9 @@ class FormatCarousel extends StatelessWidget {
             selectedColor: DeckLabTheme.goldAccent,
             backgroundColor: DeckLabTheme.darkSurface,
             checkmarkColor: DeckLabTheme.darkBg,
+            color: .resolveWith<Color>(
+              (_) => isSelected ? DeckLabTheme.goldAccent : Colors.transparent,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: .circular(20),
               side: const BorderSide(color: DeckLabTheme.borderDim),
