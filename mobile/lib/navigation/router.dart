@@ -5,6 +5,7 @@ import '../ui/core/theme/theme.dart';
 import '../ui/features/auth/view_models/auth_provider.dart';
 import '../ui/features/auth/views/login_screen.dart';
 import '../ui/features/auth/views/register_screen.dart';
+import '../ui/features/cards/views/card_db_screen.dart';
 import '../ui/features/dashboard/views/dashboard_screen.dart';
 import 'routes.dart';
 
@@ -55,8 +56,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 const NoTransitionPage(child: DashboardScreen()),
           ),
           GoRoute(
-            path: '/cards',
-            // builder: (context, state) => const CardDbScreen(),
+            path: AppRoutes.cards,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: CardDbScreen()),
           ),
           GoRoute(
             path: '/simulator',
@@ -118,9 +120,7 @@ class _ShellScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeIndex = switch (state.matchedLocation) {
-      '/decks' => 1,
-      '/cards' => 2,
-      '/simulator' => 3,
+      AppRoutes.cards => 1,
       _ => 0,
     };
 
@@ -131,6 +131,7 @@ class _ShellScaffold extends StatelessWidget {
         onTap: (index) {
           final targetPath = switch (index) {
             0 => AppRoutes.home,
+            1 => AppRoutes.cards,
             _ => null,
           };
           if (targetPath != null) {
@@ -142,11 +143,6 @@ class _ShellScaffold extends StatelessWidget {
         unselectedItemColor: Colors.white38,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.layers_outlined),
             activeIcon: Icon(Icons.layers),
