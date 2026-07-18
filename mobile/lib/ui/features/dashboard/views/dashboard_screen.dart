@@ -55,19 +55,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final deckState = ref.watch(deckListProvider);
     final formatsAsync = ref.watch(formatsProvider);
     final isLoggedIn = authState.value != null;
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'DeckLab',
-          style: DeckLabTheme.darkTheme.textTheme.headlineMedium!.copyWith(
-            color: DeckLabTheme.goldAccent,
-          ),
+          style: tt.headlineMedium!.copyWith(color: cs.primary),
         ),
         actions: [
           if (isLoggedIn)
             IconButton(
-              icon: const Icon(Icons.logout, color: DeckLabTheme.errorAccent),
+              icon: Icon(Icons.logout, color: cs.error),
               tooltip: 'Logout',
               onPressed: () async {
                 await ref.read(authProvider.notifier).logout();
@@ -76,10 +76,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           else
             TextButton(
               onPressed: () => context.push(AppRoutes.login),
-              child: const Text(
+              child: Text(
                 'LOGIN',
-                style: TextStyle(
-                  color: DeckLabTheme.cyanAccent,
+                style: tt.labelMedium!.copyWith(
+                  color: cs.secondary,
                   fontWeight: .bold,
                   letterSpacing: 1.0,
                 ),
@@ -138,11 +138,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   onChanged: (val) {
                     ref.read(deckListProvider.notifier).setSearchQuery(val);
                   },
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
+                  style: tt.bodyMedium!.copyWith(color: cs.onSurface),
+                  decoration: InputDecoration(
                     hintText: 'Search decks...',
-                    prefixIcon: Icon(Icons.search, color: Colors.white54),
-                    contentPadding: .symmetric(vertical: 10),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: cs.onSurface.withValues(alpha: 0.54),
+                    ),
+                    contentPadding: const .symmetric(vertical: 10),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -174,14 +177,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                       ),
                     ),
-                    error: (_, _) => const Align(
-                      alignment: .centerLeft,
+                    error: (_, _) => Align(
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Failed to load formats',
-                        style: TextStyle(
-                          color: DeckLabTheme.errorAccent,
-                          fontSize: 12,
-                        ),
+                        style: tt.bodySmall!.copyWith(color: cs.error),
                       ),
                     ),
                   ),

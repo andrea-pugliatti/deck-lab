@@ -12,6 +12,8 @@ class CardGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return InkWell(
       onTap: () => context.push(AppRoutes.cardDetail(card.id)),
       borderRadius: .circular(8),
@@ -31,17 +33,17 @@ class CardGridItem extends StatelessWidget {
                     ? Image.network(
                         card.imageUrl!,
                         fit: .cover,
-                        errorBuilder: (_, _, _) => const Center(
+                        errorBuilder: (_, _, _) => Center(
                           child: Icon(
                             Icons.broken_image,
-                            color: Colors.white24,
+                            color: cs.onSurface.withValues(alpha: 0.24),
                           ),
                         ),
                       )
-                    : const Center(
+                    : Center(
                         child: Icon(
                           Icons.image_outlined,
-                          color: Colors.white24,
+                          color: cs.onSurface.withValues(alpha: 0.24),
                         ),
                       ),
               ),
@@ -53,9 +55,8 @@ class CardGridItem extends StatelessWidget {
                 maxLines: 1,
                 overflow: .ellipsis,
                 textAlign: .center,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 11,
+                style: tt.labelSmall!.copyWith(
+                  color: cs.onSurface.withValues(alpha: 0.7),
                   fontWeight: .bold,
                 ),
               ),

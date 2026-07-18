@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../navigation/routes.dart';
-import '../../../core/theme/theme.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_input.dart';
 import '../view_models/auth_provider.dart';
@@ -57,6 +56,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
     return Scaffold(
       body: SafeArea(
@@ -81,14 +82,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Text(
                           'DeckLab',
                           textAlign: .center,
-                          style: DeckLabTheme.darkTheme.textTheme.headlineLarge!
-                              .copyWith(color: DeckLabTheme.goldAccent),
+                          style: tt.headlineLarge!.copyWith(color: cs.primary),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
+                        Text(
                           'Sign in to access and sync your decks',
                           textAlign: .center,
-                          style: TextStyle(color: Colors.white54, fontSize: 12),
+                          style: tt.bodySmall!.copyWith(
+                            color: cs.onSurface.withValues(alpha: 0.54),
+                          ),
                         ),
                         const SizedBox(height: 48),
 
@@ -130,30 +132,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               horizontal: 14,
                             ),
                             decoration: BoxDecoration(
-                              color: DeckLabTheme.errorAccent.withValues(
-                                alpha: 0.1,
-                              ),
+                              color: cs.error.withValues(alpha: 0.1),
                               border: .all(
-                                color: DeckLabTheme.errorAccent.withValues(
-                                  alpha: 0.3,
-                                ),
+                                color: cs.error.withValues(alpha: 0.3),
                               ),
                               borderRadius: .circular(8),
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.error_outline,
-                                  color: DeckLabTheme.errorAccent,
+                                  color: cs.error,
                                   size: 16,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     authState.error.toString(),
-                                    style: const TextStyle(
-                                      color: DeckLabTheme.errorAccent,
-                                      fontSize: 12,
+                                    style: tt.bodySmall!.copyWith(
+                                      color: cs.error,
                                       fontWeight: .w600,
                                     ),
                                   ),
@@ -181,10 +178,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           spacing: 8,
                           direction: .vertical,
                           children: [
-                            const Text(
+                            Text(
                               "Don't have an account?",
-                              style: TextStyle(
-                                color: Colors.white54,
+                              style: tt.bodySmall!.copyWith(
+                                color: cs.onSurface.withValues(alpha: 0.54),
                                 fontSize: 13,
                               ),
                             ),
@@ -210,7 +207,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               top: 8,
               left: 8,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white70),
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: cs.onSurface.withValues(alpha: 0.7),
+                ),
                 onPressed: () {
                   if (context.canPop()) {
                     context.pop();

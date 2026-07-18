@@ -28,12 +28,22 @@ class CustomButton extends StatelessWidget {
       _ => (12.0, 20.0, 14.0),
     };
 
+    final cs = Theme.of(context).colorScheme;
+
     final (Color bg, Color fg, BorderSide border) = switch (variant) {
-      'primary' => (DeckLabTheme.goldAccent, DeckLabTheme.darkBg, .none),
-      'secondary' => (DeckLabTheme.cyanAccent, DeckLabTheme.darkBg, .none),
+      'primary' => (
+        DeckLabTheme.goldAccent,
+        DeckLabTheme.darkBg,
+        BorderSide.none,
+      ),
+      'secondary' => (
+        DeckLabTheme.cyanAccent,
+        DeckLabTheme.darkBg,
+        BorderSide.none,
+      ),
       'outline' => (
         Colors.transparent,
-        Colors.white,
+        cs.onSurface,
         const BorderSide(color: DeckLabTheme.borderDim),
       ),
       'outline-gold' => (
@@ -51,8 +61,8 @@ class CustomButton extends StatelessWidget {
         DeckLabTheme.errorAccent,
         const BorderSide(color: DeckLabTheme.errorAccent),
       ),
-      'ghost' => (Colors.transparent, const Color(0xFF94A3B8), .none),
-      _ => (DeckLabTheme.goldAccent, DeckLabTheme.darkBg, .none),
+      'ghost' => (Colors.transparent, DeckLabTheme.mutedFg, BorderSide.none),
+      _ => (DeckLabTheme.goldAccent, DeckLabTheme.darkBg, BorderSide.none),
     };
 
     final buttonStyle = ElevatedButton.styleFrom(

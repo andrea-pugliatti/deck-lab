@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/theme.dart';
 
 /// Text form field.
 class CustomInput extends StatefulWidget {
@@ -37,15 +36,16 @@ class _CustomInputState extends State<CustomInput> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: .start,
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
-            color: DeckLabTheme.goldAccent,
+          style: tt.labelMedium!.copyWith(
+            color: cs.primary,
             fontWeight: .w600,
-            fontSize: 12,
             letterSpacing: 0.5,
           ),
         ),
@@ -58,18 +58,24 @@ class _CustomInputState extends State<CustomInput> {
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           onChanged: widget.onChanged,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: tt.bodyMedium!.copyWith(color: cs.onSurface),
           decoration: InputDecoration(
             hintText: widget.placeholder,
-            hintStyle: const TextStyle(color: Colors.white38, fontSize: 14),
+            hintStyle: tt.bodyMedium!.copyWith(
+              color: cs.onSurface.withValues(alpha: 0.38),
+            ),
             prefixIcon: widget.prefixIcon != null
-                ? Icon(widget.prefixIcon, color: Colors.white54, size: 18)
+                ? Icon(
+                    widget.prefixIcon,
+                    color: cs.onSurface.withValues(alpha: 0.54),
+                    size: 18,
+                  )
                 : null,
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(
                       _obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.white54,
+                      color: cs.onSurface.withValues(alpha: 0.54),
                       size: 18,
                     ),
                     onPressed: () {

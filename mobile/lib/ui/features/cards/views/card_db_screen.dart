@@ -84,14 +84,14 @@ class _CardDbScreenState extends ConsumerState<CardDbScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(cardDbProvider);
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Card Database',
-          style: DeckLabTheme.darkTheme.textTheme.headlineMedium!.copyWith(
-            color: DeckLabTheme.goldAccent,
-          ),
+          style: tt.headlineMedium!.copyWith(color: cs.primary),
         ),
         actions: [
           IconButton(
@@ -101,8 +101,8 @@ class _CardDbScreenState extends ConsumerState<CardDbScreen> {
                   state.type != 'All Types' ||
                       state.attribute != 'All Attributes' ||
                       state.race != 'All Properties'
-                  ? DeckLabTheme.cyanAccent
-                  : Colors.white,
+                  ? cs.secondary
+                  : cs.onSurface,
             ),
             onPressed: _openFiltersSheet,
           ),
@@ -118,11 +118,14 @@ class _CardDbScreenState extends ConsumerState<CardDbScreen> {
               onChanged: (val) {
                 ref.read(cardDbProvider.notifier).setSearchQuery(val);
               },
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
+              style: tt.bodyMedium!.copyWith(color: cs.onSurface),
+              decoration: InputDecoration(
                 hintText: 'Search card name, text descriptions...',
-                prefixIcon: Icon(Icons.search, color: Colors.white54),
-                contentPadding: .symmetric(vertical: 10),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: cs.onSurface.withValues(alpha: 0.54),
+                ),
+                contentPadding: const .symmetric(vertical: 10),
               ),
             ),
           ),

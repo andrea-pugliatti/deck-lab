@@ -16,6 +16,8 @@ class TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -31,10 +33,11 @@ class TabButton extends StatelessWidget {
         child: Text(
           label,
           textAlign: .center,
-          style: TextStyle(
-            fontSize: 12,
+          style: tt.labelSmall!.copyWith(
             fontWeight: .bold,
-            color: isActive ? Colors.white : Colors.white38,
+            color: isActive
+                ? cs.onSurface
+                : cs.onSurface.withValues(alpha: 0.38),
             letterSpacing: 1.0,
           ),
         ),

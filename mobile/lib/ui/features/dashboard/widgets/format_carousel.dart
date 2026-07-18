@@ -15,6 +15,8 @@ class FormatCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return ListView.builder(
       scrollDirection: .horizontal,
       itemCount: formatsList.length,
@@ -26,10 +28,9 @@ class FormatCarousel extends StatelessWidget {
           child: FilterChip(
             label: Text(
               format.toUpperCase(),
-              style: TextStyle(
-                color: isSelected ? DeckLabTheme.darkBg : Colors.white,
+              style: tt.labelSmall!.copyWith(
+                color: isSelected ? DeckLabTheme.darkBg : cs.onSurface,
                 fontWeight: .bold,
-                fontSize: 12,
               ),
             ),
             selected: isSelected,

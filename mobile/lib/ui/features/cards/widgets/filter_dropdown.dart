@@ -15,10 +15,12 @@ class FilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return DropdownButtonFormField<String>(
       initialValue: items.contains(active) ? active : items.first,
       dropdownColor: DeckLabTheme.darkSurface,
-      style: const TextStyle(color: Colors.white, fontSize: 13),
+      style: tt.bodySmall!.copyWith(color: cs.onSurface),
       decoration: const InputDecoration(
         contentPadding: .symmetric(horizontal: 12, vertical: 8),
       ),

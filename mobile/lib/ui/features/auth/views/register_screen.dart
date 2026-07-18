@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../navigation/routes.dart';
-import '../../../core/theme/theme.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_input.dart';
 import '../view_models/auth_provider.dart';
@@ -52,6 +51,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
 
     return Scaffold(
       body: SafeArea(
@@ -76,14 +77,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         Text(
                           'Create Account',
                           textAlign: .center,
-                          style:
-                              DeckLabTheme.darkTheme.textTheme.headlineMedium,
+                          style: tt.headlineMedium,
                         ),
                         const SizedBox(height: 8),
-                        const Text(
+                        Text(
                           'Register to access and sync Yu-Gi-Oh! decks',
                           textAlign: .center,
-                          style: TextStyle(color: Colors.white54, fontSize: 12),
+                          style: tt.bodySmall!.copyWith(
+                            color: cs.onSurface.withValues(alpha: 0.54),
+                          ),
                         ),
                         const SizedBox(height: 48),
 
@@ -151,30 +153,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               horizontal: 14,
                             ),
                             decoration: BoxDecoration(
-                              color: DeckLabTheme.errorAccent.withValues(
-                                alpha: 0.1,
-                              ),
+                              color: cs.error.withValues(alpha: 0.1),
                               border: .all(
-                                color: DeckLabTheme.errorAccent.withValues(
-                                  alpha: 0.3,
-                                ),
+                                color: cs.error.withValues(alpha: 0.3),
                               ),
                               borderRadius: .circular(8),
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.error_outline,
-                                  color: DeckLabTheme.errorAccent,
+                                  color: cs.error,
                                   size: 16,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     authState.error.toString(),
-                                    style: const TextStyle(
-                                      color: DeckLabTheme.errorAccent,
-                                      fontSize: 12,
+                                    style: tt.bodySmall!.copyWith(
+                                      color: cs.error,
                                       fontWeight: .w600,
                                     ),
                                   ),
@@ -202,10 +199,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           spacing: 8,
                           direction: .vertical,
                           children: [
-                            const Text(
+                            Text(
                               "Already have an account?",
-                              style: TextStyle(
-                                color: Colors.white54,
+                              style: tt.bodySmall!.copyWith(
+                                color: cs.onSurface.withValues(alpha: 0.54),
                                 fontSize: 13,
                               ),
                             ),
@@ -226,7 +223,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               top: 8,
               left: 8,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white70),
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: cs.onSurface.withValues(alpha: 0.7),
+                ),
                 onPressed: () {
                   if (context.canPop()) {
                     context.pop();

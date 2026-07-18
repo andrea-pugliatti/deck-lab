@@ -12,6 +12,8 @@ class DeckItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return Card(
       color: DeckLabTheme.darkSurface,
       margin: const .only(bottom: 16),
@@ -42,9 +44,8 @@ class DeckItemCard extends StatelessWidget {
                     ),
                     child: Text(
                       deck.formatName.toUpperCase(),
-                      style: const TextStyle(
-                        color: DeckLabTheme.goldAccent,
-                        fontSize: 10,
+                      style: tt.labelSmall!.copyWith(
+                        color: cs.primary,
                         fontWeight: .bold,
                         letterSpacing: 0.5,
                       ),
@@ -54,9 +55,8 @@ class DeckItemCard extends StatelessWidget {
                     child: Text(
                       'by ${deck.creatorUsername ?? "Anonymous"}',
                       overflow: .ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 11,
+                      style: tt.bodySmall!.copyWith(
+                        color: cs.onSurface.withValues(alpha: 0.38),
                       ),
                     ),
                   ),
@@ -67,11 +67,9 @@ class DeckItemCard extends StatelessWidget {
               // Title
               Text(
                 deck.name.toUpperCase(),
-                style: const TextStyle(
-                  fontFamily: 'Cinzel',
+                style: tt.titleLarge!.copyWith(
                   fontSize: 16,
-                  fontWeight: .bold,
-                  color: Colors.white,
+                  color: cs.onSurface,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -83,18 +81,16 @@ class DeckItemCard extends StatelessWidget {
                   deck.description!,
                   maxLines: 2,
                   overflow: .ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
+                  style: tt.bodySmall!.copyWith(
+                    color: cs.onSurface.withValues(alpha: 0.7),
                     height: 1.4,
                   ),
                 )
               else
-                const Text(
+                Text(
                   'No description strategies provided.',
-                  style: TextStyle(
-                    color: Colors.white30,
-                    fontSize: 13,
+                  style: tt.bodySmall!.copyWith(
+                    color: cs.onSurface.withValues(alpha: 0.3),
                     fontStyle: .italic,
                   ),
                 ),
@@ -110,18 +106,13 @@ class DeckItemCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.layers,
-                        size: 14,
-                        color: DeckLabTheme.cyanAccent,
-                      ),
+                      Icon(Icons.layers, size: 14, color: cs.secondary),
                       const SizedBox(width: 6),
                       Text(
                         '${deck.totalCardsCount} Cards',
-                        style: const TextStyle(
-                          color: DeckLabTheme.cyanAccent,
+                        style: tt.labelMedium!.copyWith(
+                          color: cs.secondary,
                           fontWeight: .bold,
-                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -129,9 +120,8 @@ class DeckItemCard extends StatelessWidget {
                   if (deck.updatedAt != null)
                     Text(
                       _formatDate(deck.updatedAt!),
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 11,
+                      style: tt.bodySmall!.copyWith(
+                        color: cs.onSurface.withValues(alpha: 0.38),
                       ),
                     ),
                 ],

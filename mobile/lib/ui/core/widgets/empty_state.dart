@@ -9,6 +9,8 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: Container(
@@ -17,21 +19,21 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: .center,
           children: [
-            Icon(icon, size: 64, color: Colors.white24),
+            Icon(icon, size: 64, color: cs.onSurface.withValues(alpha: 0.24)),
             const SizedBox(height: 16),
             Text(
               text,
-              style: TextStyle(
-                fontFamily: 'Cinzel',
+              style: tt.titleLarge!.copyWith(
                 fontSize: 18,
-                fontWeight: .bold,
-                color: Colors.white70,
+                color: cs.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Try adjusting filters or search parameters',
-              style: TextStyle(color: Colors.white38, fontSize: 13),
+              style: tt.bodySmall!.copyWith(
+                color: cs.onSurface.withValues(alpha: 0.38),
+              ),
             ),
           ],
         ),

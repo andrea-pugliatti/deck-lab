@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobile/ui/core/theme/theme.dart';
 import 'package:mobile/ui/core/widgets/custom_button.dart';
 import 'package:mobile/ui/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/ui/features/cards/view_models/card_db_provider.dart';
@@ -24,6 +23,8 @@ class FilterModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     return Padding(
       padding: const .all(20.0),
       child: SingleChildScrollView(
@@ -34,18 +35,15 @@ class FilterModal extends StatelessWidget {
             Row(
               mainAxisAlignment: .spaceBetween,
               children: [
-                Text(
-                  'Catalog Filters',
-                  style: DeckLabTheme.darkTheme.textTheme.headlineMedium!,
-                ),
+                Text('Catalog Filters', style: tt.headlineMedium),
                 TextButton(
                   onPressed: () {
                     notifier.clearFilters();
                     Navigator.of(context).pop();
                   },
-                  child: const Text(
+                  child: Text(
                     'Clear All',
-                    style: TextStyle(color: DeckLabTheme.errorAccent),
+                    style: tt.labelMedium!.copyWith(color: cs.error),
                   ),
                 ),
               ],
@@ -54,11 +52,10 @@ class FilterModal extends StatelessWidget {
             const SizedBox(height: 12),
 
             // Card Type dropdown
-            const Text(
+            Text(
               'Card Type',
-              style: TextStyle(
-                color: DeckLabTheme.goldAccent,
-                fontSize: 11,
+              style: tt.labelSmall!.copyWith(
+                color: cs.primary,
                 fontWeight: .bold,
               ),
             ),
@@ -71,19 +68,18 @@ class FilterModal extends StatelessWidget {
               ),
               loading: () =>
                   const ShimmerPlaceholder(width: .infinity, height: 40),
-              error: (_, _) => const Text(
+              error: (_, _) => Text(
                 'Error loading types',
-                style: TextStyle(color: DeckLabTheme.errorAccent),
+                style: tt.bodySmall!.copyWith(color: cs.error),
               ),
             ),
             const SizedBox(height: 16),
 
             // Attribute dropdown
-            const Text(
+            Text(
               'Monster Attribute',
-              style: TextStyle(
-                color: DeckLabTheme.goldAccent,
-                fontSize: 11,
+              style: tt.labelSmall!.copyWith(
+                color: cs.primary,
                 fontWeight: .bold,
               ),
             ),
@@ -96,19 +92,18 @@ class FilterModal extends StatelessWidget {
               ),
               loading: () =>
                   const ShimmerPlaceholder(width: .infinity, height: 40),
-              error: (_, _) => const Text(
+              error: (_, _) => Text(
                 'Error loading attributes',
-                style: TextStyle(color: DeckLabTheme.errorAccent),
+                style: tt.bodySmall!.copyWith(color: cs.error),
               ),
             ),
             const SizedBox(height: 16),
 
             // Race/Property dropdown
-            const Text(
+            Text(
               'Race / Property',
-              style: TextStyle(
-                color: DeckLabTheme.goldAccent,
-                fontSize: 11,
+              style: tt.labelSmall!.copyWith(
+                color: cs.primary,
                 fontWeight: .bold,
               ),
             ),
@@ -121,9 +116,9 @@ class FilterModal extends StatelessWidget {
               ),
               loading: () =>
                   const ShimmerPlaceholder(width: .infinity, height: 40),
-              error: (_, _) => const Text(
+              error: (_, _) => Text(
                 'Error loading properties',
-                style: TextStyle(color: DeckLabTheme.errorAccent),
+                style: tt.bodySmall!.copyWith(color: cs.error),
               ),
             ),
             const SizedBox(height: 24),

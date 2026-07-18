@@ -19,6 +19,12 @@ class DeckLabTheme {
   static const Color borderDim = Color(0xFF323A49);
   static const Color borderGlow = Color(0xFF4299E1);
   static const Color errorAccent = Color(0xFFEF4444);
+  static const Color mutedFg = Color(0xFF94A3B8);
+
+  /// Deck-section indicator colours used in builder / detail screens.
+  static const Color mainDeckAccent = Colors.tealAccent;
+  static const Color extraDeckAccent = Colors.purpleAccent;
+  static const Color sideDeckAccent = Colors.orangeAccent;
 
   // Dark theme definition for the application container.
   static ThemeData get darkTheme {
@@ -38,25 +44,25 @@ class DeckLabTheme {
         displayLarge: GoogleFonts.cinzel(
           textStyle: baseTextTheme.displayLarge?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         ),
         displayMedium: GoogleFonts.cinzel(
           textStyle: baseTextTheme.displayMedium?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         ),
         displaySmall: GoogleFonts.cinzel(
           textStyle: baseTextTheme.displaySmall?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         ),
         headlineLarge: GoogleFonts.cinzel(
           textStyle: baseTextTheme.headlineLarge?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
             fontSize: 36,
             letterSpacing: 2,
           ),
@@ -64,15 +70,33 @@ class DeckLabTheme {
         headlineMedium: GoogleFonts.cinzel(
           textStyle: baseTextTheme.headlineMedium?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
             fontSize: 24,
             letterSpacing: 2,
+          ),
+        ),
+        headlineSmall: GoogleFonts.cinzel(
+          textStyle: baseTextTheme.headlineSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: .bold,
           ),
         ),
         titleLarge: GoogleFonts.cinzel(
           textStyle: baseTextTheme.titleLarge?.copyWith(
             color: goldAccent,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
+          ),
+        ),
+        titleMedium: GoogleFonts.cinzel(
+          textStyle: baseTextTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: .bold,
+          ),
+        ),
+        titleSmall: GoogleFonts.cinzel(
+          textStyle: baseTextTheme.titleSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: .bold,
           ),
         ),
       ),
@@ -86,23 +110,23 @@ class DeckLabTheme {
         fillColor: darkSurface,
         labelStyle: const TextStyle(color: Colors.white70),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: .circular(12),
           borderSide: const BorderSide(color: borderDim),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: .circular(12),
           borderSide: const BorderSide(color: borderDim),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: .circular(12),
           borderSide: const BorderSide(color: cyanAccent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: .circular(12),
           borderSide: const BorderSide(color: errorAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: .circular(12),
           borderSide: const BorderSide(color: errorAccent, width: 1.5),
         ),
       ),
