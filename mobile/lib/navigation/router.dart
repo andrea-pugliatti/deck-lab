@@ -6,6 +6,7 @@ import '../ui/features/auth/view_models/auth_provider.dart';
 import '../ui/features/auth/views/login_screen.dart';
 import '../ui/features/auth/views/register_screen.dart';
 import '../ui/features/cards/views/card_db_screen.dart';
+import '../ui/features/cards/views/card_detail_screen.dart';
 import '../ui/features/dashboard/views/dashboard_screen.dart';
 import 'routes.dart';
 
@@ -70,12 +71,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
         path: AppRoutes.login,
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) =>
+            _fadeTransitionPage(key: state.pageKey, child: const LoginScreen()),
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
         path: AppRoutes.register,
-        builder: (context, state) => const RegisterScreen(),
+        pageBuilder: (context, state) => _fadeTransitionPage(
+          key: state.pageKey,
+          child: const RegisterScreen(),
+        ),
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
@@ -100,15 +105,36 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/cards/:id',
-        // builder: (context, state) {
-        //   final idStr = state.pathParameters['id']!;
-        //   return CardDetailScreen(cardId: int.parse(idStr));
-        // },
+        path: AppRoutes.cardDetailPattern,
+        pageBuilder: (context, state) {
+          final idStr = state.pathParameters['id']!;
+          return _fadeTransitionPage(
+            key: state.pageKey,
+            child: CardDetailScreen(cardId: int.parse(idStr)),
+          );
+        },
       ),
     ],
   );
 });
+
+Page<dynamic> _fadeTransitionPage({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<void>(
+    key: key,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 200),
+    reverseTransitionDuration: const Duration(milliseconds: 150),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+        child: child,
+      );
+    },
+  );
+}
 
 /// Private scaffold widget housing the persistent Bottom Navigation Bar.
 class _ShellScaffold extends StatelessWidget {
