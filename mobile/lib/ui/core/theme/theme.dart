@@ -103,6 +103,7 @@ class DeckLabTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: darkSurface,
         elevation: 0,
+        scrolledUnderElevation: 0,
         iconTheme: IconThemeData(color: Colors.white),
       ),
       inputDecorationTheme: InputDecorationTheme(

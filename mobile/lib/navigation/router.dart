@@ -8,6 +8,7 @@ import '../ui/features/auth/views/register_screen.dart';
 import '../ui/features/cards/views/card_db_screen.dart';
 import '../ui/features/cards/views/card_detail_screen.dart';
 import '../ui/features/dashboard/views/dashboard_screen.dart';
+import '../ui/features/dashboard/views/deck_detail_screen.dart';
 import 'routes.dart';
 
 /// Provider exposing declarative routes and guard logic managed by go_router.
@@ -89,11 +90,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/decks/:id',
-        // builder: (context, state) {
-        //   final idStr = state.pathParameters['id']!;
-        //   return DeckDetailScreen(deckId: int.parse(idStr));
-        // },
+        path: AppRoutes.deckDetailPattern,
+        pageBuilder: (context, state) {
+          final idStr = state.pathParameters['id']!;
+          return _fadeTransitionPage(
+            key: state.pageKey,
+            child: DeckDetailScreen(deckId: int.parse(idStr)),
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
