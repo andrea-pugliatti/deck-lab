@@ -190,7 +190,7 @@ class DeckDetailScreen extends ConsumerWidget {
                           deck.formatName.toUpperCase(),
                           style: tt.labelSmall!.copyWith(
                             color: cs.primary,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: .bold,
                           ),
                         ),
                       ),
@@ -198,7 +198,7 @@ class DeckDetailScreen extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           'created by ${deck.creatorUsername ?? "Anonymous"}',
-                          overflow: TextOverflow.ellipsis,
+                          overflow: .ellipsis,
                           style: tt.bodySmall!.copyWith(
                             color: cs.onSurface.withValues(alpha: 0.54),
                           ),
@@ -220,7 +220,7 @@ class DeckDetailScreen extends ConsumerWidget {
                       'No strategy description provided.',
                       style: tt.bodyMedium!.copyWith(
                         color: cs.onSurface.withValues(alpha: 0.3),
-                        fontStyle: FontStyle.italic,
+                        fontStyle: .italic,
                       ),
                     ),
                   const SizedBox(height: 20),

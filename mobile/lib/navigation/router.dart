@@ -9,6 +9,7 @@ import '../ui/features/cards/views/card_db_screen.dart';
 import '../ui/features/cards/views/card_detail_screen.dart';
 import '../ui/features/dashboard/views/dashboard_screen.dart';
 import '../ui/features/dashboard/views/deck_detail_screen.dart';
+import '../ui/features/simulator/views/hand_simulator_screen.dart';
 import 'routes.dart';
 
 /// Provider exposing declarative routes and guard logic managed by go_router.
@@ -63,8 +64,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 const NoTransitionPage(child: CardDbScreen()),
           ),
           GoRoute(
-            path: '/simulator',
-            // builder: (context, state) => const HandSimulatorScreen(),
+            path: AppRoutes.simulator,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: HandSimulatorScreen()),
           ),
         ],
       ),
@@ -151,6 +153,7 @@ class _ShellScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeIndex = switch (state.matchedLocation) {
       AppRoutes.cards => 1,
+      AppRoutes.simulator => 2,
       _ => 0,
     };
 
@@ -162,6 +165,7 @@ class _ShellScaffold extends StatelessWidget {
           final targetPath = switch (index) {
             0 => AppRoutes.home,
             1 => AppRoutes.cards,
+            2 => AppRoutes.simulator,
             _ => null,
           };
           if (targetPath != null) {

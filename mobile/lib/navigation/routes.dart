@@ -4,6 +4,7 @@ class AppRoutes {
 
   static const String home = '/';
   static const String cards = '/cards';
+  static const String simulator = '/simulator';
   static const String login = '/login';
   static const String register = '/register';
 

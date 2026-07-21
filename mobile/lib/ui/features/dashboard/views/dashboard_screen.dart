@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/core/widgets/empty_state.dart';
 import 'package:mobile/ui/features/dashboard/widgets/deck_item_card.dart';
 import 'package:mobile/ui/features/dashboard/widgets/format_carousel.dart';
-import 'package:mobile/ui/features/dashboard/widgets/tab_button.dart';
+import 'package:mobile/ui/core/widgets/tab_button.dart';
 
 import '../../../../navigation/routes.dart';
 import '../../../core/theme/theme.dart';

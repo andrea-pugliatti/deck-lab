@@ -114,10 +114,10 @@ class CardDetailScreen extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           card.type.toUpperCase(),
-                          overflow: TextOverflow.ellipsis,
+                          overflow: .ellipsis,
                           style: tt.labelSmall!.copyWith(
                             color: cs.secondary,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: .bold,
                             letterSpacing: 0.5,
                           ),
                         ),
@@ -143,7 +143,7 @@ class CardDetailScreen extends ConsumerWidget {
                             card.archetype!.toUpperCase(),
                             style: tt.labelSmall!.copyWith(
                               color: cs.primary,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: .bold,
                             ),
                           ),
                         ),
