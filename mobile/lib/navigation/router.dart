@@ -9,6 +9,7 @@ import '../ui/features/cards/views/card_db_screen.dart';
 import '../ui/features/cards/views/card_detail_screen.dart';
 import '../ui/features/dashboard/views/dashboard_screen.dart';
 import '../ui/features/dashboard/views/deck_detail_screen.dart';
+import '../ui/features/deck_builder/views/deck_builder_screen.dart';
 import '../ui/features/simulator/views/hand_simulator_screen.dart';
 import 'routes.dart';
 
@@ -87,8 +88,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/decks/create',
-        // builder: (context, state) => const DeckBuilderScreen(deckId: null),
+        path: AppRoutes.deckCreate,
+        pageBuilder: (context, state) => _fadeTransitionPage(
+          key: state.pageKey,
+          child: const DeckBuilderScreen(deckId: null),
+        ),
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
@@ -103,11 +107,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-        path: '/decks/:id/edit',
-        // builder: (context, state) {
-        //   final idStr = state.pathParameters['id']!;
-        //   return DeckBuilderScreen(deckId: int.parse(idStr));
-        // },
+        path: AppRoutes.deckEditPattern,
+        pageBuilder: (context, state) {
+          final idStr = state.pathParameters['id']!;
+          return _fadeTransitionPage(
+            key: state.pageKey,
+            child: DeckBuilderScreen(deckId: int.parse(idStr)),
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
