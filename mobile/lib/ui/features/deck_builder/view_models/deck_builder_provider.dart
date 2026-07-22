@@ -141,6 +141,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
           error: null,
         );
         triggerValidation();
+        triggerAiSuggestions();
       } catch (e) {
         state = state.copyWith(isLoading: false, error: e.toString());
       }
@@ -161,6 +162,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   void updateFormat(String formatName) {
     state = state.copyWith(formatName: formatName);
     triggerValidation();
+    triggerAiSuggestions();
   }
 
   /// Adds a card definition to a specific deck section (MAIN, EXTRA, or SIDE).
@@ -203,6 +205,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
 
     state = state.copyWith(cards: updatedCards, error: null);
     triggerValidation();
+    triggerAiSuggestions();
   }
 
   /// Decrements or removes a card copy in a section.
@@ -222,6 +225,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
       }
       state = state.copyWith(cards: updatedCards, error: null);
       triggerValidation();
+      triggerAiSuggestions();
     }
   }
 
@@ -248,6 +252,67 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
       state = state.copyWith(
         isValidating: false,
         validationErrors: [e.toString()],
+      );
+    }
+  }
+
+  /// Queries Card recommendations synergy matching current deck state.
+  Future<void> triggerAiSuggestions() async {
+    if (state.cards.isEmpty) {
+      state = state.copyWith(aiSuggestions: []);
+      return;
+    }
+
+    state = state.copyWith(isLoadingSuggestions: true);
+    try {
+      final repo = ref.read(deckRepositoryProvider);
+      final suggestions = await repo.fetchAiSuggestions(
+        formatName: state.formatName,
+        currentCards: state.cards,
+      );
+      state = state.copyWith(
+        isLoadingSuggestions: false,
+        aiSuggestions: suggestions,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingSuggestions: false,
+        error: 'Failed to load AI suggestions: $e',
+      );
+    }
+  }
+
+  /// Generates a deck list using archetype parameters via AI Wizard.
+  Future<void> triggerAiGeneration({
+    required String archetype,
+    required String strategy,
+    String? customPrompt,
+  }) async {
+    state = state.copyWith(isGenerating: true, error: null);
+    try {
+      final repo = ref.read(deckRepositoryProvider);
+      final res = await repo.generateAiDeck(
+        archetype: archetype,
+        strategy: strategy,
+        formatName: state.formatName,
+        customPrompt: customPrompt,
+      );
+
+      state = state.copyWith(
+        isGenerating: false,
+        name: res.name,
+        description: res.description,
+        cards: res.deckCards,
+        generationWarnings: res.validationWarnings,
+        error: null,
+      );
+
+      triggerValidation();
+      triggerAiSuggestions();
+    } catch (e) {
+      state = state.copyWith(
+        isGenerating: false,
+        error: 'Failed to generate AI deck: $e',
       );
     }
   }

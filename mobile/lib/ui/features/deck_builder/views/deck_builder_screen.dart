@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/ui/features/deck_builder/widgets/ai_suggestions_panel.dart';
 import 'package:mobile/ui/features/deck_builder/widgets/builder_section.dart';
 import 'package:mobile/ui/features/deck_builder/widgets/cards_catalog.dart';
+import 'package:mobile/ui/features/deck_builder/widgets/generating_state.dart';
 import 'package:mobile/ui/features/deck_builder/widgets/validation_errors.dart';
 import '../../../core/theme/theme.dart';
 import '../view_models/deck_builder_provider.dart';
@@ -10,6 +12,7 @@ import '../../dashboard/view_models/deck_list_provider.dart';
 import '../../cards/view_models/card_db_provider.dart';
 import '../../../core/widgets/custom_input.dart';
 import '../../../core/widgets/shimmer_placeholder.dart';
+import '../widgets/ai_wizard_modal.dart';
 import '../../../../navigation/routes.dart';
 
 /// Interactive workspace for compiling, editing, and saving deck blueprints.
@@ -114,6 +117,10 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
     final extraCount = extraCards.fold(0, (sum, c) => sum + c.quantity);
     final sideCount = sideCards.fold(0, (sum, c) => sum + c.quantity);
 
+    if (builderState.isGenerating) {
+      return Scaffold(body: Center(child: GeneratingState()));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -123,6 +130,14 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
           ).textTheme.titleMedium!.copyWith(letterSpacing: 1.5, fontSize: 16),
         ),
         actions: [
+          IconButton(
+            icon: Icon(
+              Icons.auto_awesome,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            tooltip: 'AI Wizard',
+            onPressed: () => AiWizardModal.show(context),
+          ),
           if (builderState.isSaving)
             Padding(
               padding: const .symmetric(horizontal: 16.0),
@@ -362,6 +377,13 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
                         ],
                       ),
                     ),
+
+                    // AI Suggestions Panel
+                    if (builderState.aiSuggestions.isNotEmpty)
+                      AiSuggestionsPanel(
+                        suggestions: builderState.aiSuggestions,
+                        notifier: ref.read(deckBuilderProvider.notifier),
+                      ),
 
                     // Cards results list
                     Expanded(
