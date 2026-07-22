@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.Strategy;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.security.InMemoryRateLimiter;
 import com.deck.lab.backend.security.RateLimiter;
@@ -57,9 +59,9 @@ public class GenerationControllerTest {
     @Test
     void testAiGenerationRateLimiting() throws Exception {
         DeckGenerateRequestDto request = new DeckGenerateRequestDto();
-        request.setFormatName("TCG");
+        request.setFormatName(Format.TCG);
         request.setArchetype("Blue-Eyes");
-        request.setStrategy("Aggro");
+        request.setStrategy(Strategy.AGGRO);
         request.setCustomPrompt("");
 
         // The limit is configured to 3 attempts

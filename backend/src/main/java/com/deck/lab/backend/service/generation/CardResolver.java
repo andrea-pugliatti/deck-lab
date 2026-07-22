@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.service.generation.model.CardEntry;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
@@ -45,12 +46,9 @@ public class CardResolver {
             if (dbCardOpt.isPresent()) {
                 Card card = dbCardOpt.get();
 
-                String section = entry.getSection() != null
-                        ? entry.getSection().toUpperCase()
-                        : "MAIN";
-                if (!List.of("MAIN", "EXTRA", "SIDE").contains(section)) {
-                    section = "MAIN";
-                }
+                DeckSection section = entry.getSection() != null
+                        ? entry.getSection()
+                        : DeckSection.MAIN;
 
                 Integer quantity = entry.getQuantity();
                 if (quantity == null || quantity < 1) {
@@ -88,15 +86,13 @@ public class CardResolver {
                 Card card = dbCardOpt.get();
                 resolved.add(new CardSuggestionResponseDto(card.getName(),
                         suggestion.getSection() != null
-                                ? suggestion.getSection().toUpperCase()
-                                : "MAIN",
+                                ? suggestion.getSection()
+                                : DeckSection.MAIN,
                         suggestion.getSynergyReason() != null
                                 ? suggestion.getSynergyReason()
                                 : "Provides good synergy.",
                         card.getId(),
-                        card.getType() != null
-                                ? card.getType().getValue()
-                                : null,
+                        card.getType(),
                         card.getImageUrlCropped()));
             }
         }

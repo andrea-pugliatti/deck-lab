@@ -3,25 +3,16 @@ package com.deck.lab.backend.dto.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deck.lab.backend.model.Format;
+
 /**
  * Data Transfer Object (DTO) representing the response payload for a successfully generated deck
  * list.
- *
- * <p>
- * <strong>Response DTO</strong>
- * </p>
- * <p>
- * Unlike raw AI responses, this DTO contains fully resolved database entities (translated to
- * {@link DeckCardResponseDto}) along with a list of validation warnings (such as card limit issues
- * or unknown cards). Returning validation warning lists directly to the client enables a rich user
- * interface experience where users can see what formatting corrections were automatically applied
- * to their AI-generated deck list.
- * </p>
  */
 public class DeckGenerationResponseDto {
     private String name;
     private String description;
-    private String formatName;
+    private Format formatName;
     private List<DeckCardResponseDto> deckCards = new ArrayList<>();
     private List<String> validationWarnings = new ArrayList<>();
 
@@ -30,7 +21,7 @@ public class DeckGenerationResponseDto {
 
     public DeckGenerationResponseDto(String name,
                                      String description,
-                                     String formatName,
+                                     Format formatName,
                                      List<DeckCardResponseDto> deckCards,
                                      List<String> validationWarnings) {
         this.name = name;
@@ -56,11 +47,11 @@ public class DeckGenerationResponseDto {
         this.description = description;
     }
 
-    public String getFormatName() {
+    public Format getFormatName() {
         return formatName;
     }
 
-    public void setFormatName(String formatName) {
+    public void setFormatName(Format formatName) {
         this.formatName = formatName;
     }
 

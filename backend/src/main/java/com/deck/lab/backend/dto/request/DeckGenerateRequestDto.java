@@ -1,29 +1,23 @@
 package com.deck.lab.backend.dto.request;
 
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.Strategy;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Data Transfer Object (DTO) representing an incoming request payload to generate a deck list using
  * AI.
- *
- * <p>
- * <strong>Request DTO</strong>
- * </p>
- * <p>
- * This object is used specifically to capture and validate user parameters passed via HTTP requests
- * targeting AI generation endpoints. By isolating this validation structure from internal domain
- * models, we protect our backend logic from processing malformed data.
- * </p>
  */
 public class DeckGenerateRequestDto {
     @NotBlank(message = "Archetype is required")
     private String archetype;
 
-    @NotBlank(message = "Strategy is required")
-    private String strategy;
+    @NotNull(message = "Strategy is required")
+    private Strategy strategy;
 
-    @NotBlank(message = "Format name is required")
-    private String formatName;
+    @NotNull(message = "Format name is required")
+    private Format formatName;
 
     private String customPrompt;
 
@@ -31,12 +25,22 @@ public class DeckGenerateRequestDto {
     }
 
     public DeckGenerateRequestDto(String archetype,
-                                  String strategy,
-                                  String formatName,
+                                  Strategy strategy,
+                                  Format formatName,
                                   String customPrompt) {
         this.archetype = archetype;
         this.strategy = strategy;
         this.formatName = formatName;
+        this.customPrompt = customPrompt;
+    }
+
+    public DeckGenerateRequestDto(String archetype,
+                                  String strategy,
+                                  String formatName,
+                                  String customPrompt) {
+        this.archetype = archetype;
+        this.strategy = Strategy.fromString(strategy);
+        this.formatName = Format.fromString(formatName);
         this.customPrompt = customPrompt;
     }
 
@@ -48,19 +52,19 @@ public class DeckGenerateRequestDto {
         this.archetype = archetype;
     }
 
-    public String getStrategy() {
+    public Strategy getStrategy() {
         return strategy;
     }
 
-    public void setStrategy(String strategy) {
+    public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
     }
 
-    public String getFormatName() {
+    public Format getFormatName() {
         return formatName;
     }
 
-    public void setFormatName(String formatName) {
+    public void setFormatName(Format formatName) {
         this.formatName = formatName;
     }
 

@@ -327,7 +327,7 @@ public class DeckSeeder {
         for (CardEntry info : cardInfos) {
             Optional<Card> cardOpt = cardRepository.findByName(info.getName());
             if (cardOpt.isPresent()) {
-                DeckSection sectionEnum = DeckSection.fromString(info.getSection());
+                DeckSection sectionEnum = info.getSection();
                 deckCards.add(new DeckCard(deck, cardOpt.get(), sectionEnum, info.getQuantity()));
             } else {
                 logger.warn("Card '{}' not found in database. Skipping for deck '{}'.",

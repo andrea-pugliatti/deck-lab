@@ -109,7 +109,7 @@ class DeckServiceTest {
         for (int i = 0; i < 14; i++) {
             DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
-            cardDto.setSection("MAIN");
+            cardDto.setSection(DeckSection.MAIN);
             cardDto.setQuantity(3);
             cardDtos.add(cardDto);
         }
@@ -155,13 +155,13 @@ class DeckServiceTest {
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("New Created Deck");
         requestDto.setDescription("Freshly created");
-        requestDto.setFormatName("Goat");
+        requestDto.setFormatName(Format.GOAT);
         requestDto.setDeckCards(createValidDeckCards());
 
         DeckResponseDto result = deckService.createDeck(requestDto, testUser);
         assertNotNull(result.getId());
         assertEquals("New Created Deck", result.getName());
-        assertEquals("Goat", result.getFormatName());
+        assertEquals(Format.GOAT, result.getFormatName());
         assertEquals(14, result.getCards().size());
         assertEquals(3, result.getCards().get(0).getQuantity());
 
@@ -177,7 +177,7 @@ class DeckServiceTest {
 
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Invalid Deck");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(cardDtos);
 
         assertThrows(DeckValidationException.class, () -> {
@@ -190,12 +190,12 @@ class DeckServiceTest {
         // Only 1 card (qty 3) = size 3, which is less than 40
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(testCard.getId());
-        cardDto.setSection("MAIN");
+        cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(3);
 
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Size Invalid Deck");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of(cardDto));
 
         assertThrows(DeckValidationException.class, () -> {
@@ -206,14 +206,12 @@ class DeckServiceTest {
     @Test
     void updateDeck_whenAuthorized_updatesDeckFieldsAndCards() {
         List<DeckCardRequestDto> validCards = createValidDeckCards();
-        // Modify the first card's quantity to 1 (still total = 42 - 2 = 40 cards, which
-        // is valid)
         validCards.get(0).setQuantity(1);
 
         // Add a Fusion Monster in EXTRA section
         DeckCardRequestDto extraCardDto = new DeckCardRequestDto();
         extraCardDto.setCardId(testFusionCard.getId());
-        extraCardDto.setSection("EXTRA");
+        extraCardDto.setSection(DeckSection.EXTRA);
         extraCardDto.setQuantity(2);
 
         List<DeckCardRequestDto> newCardsList = new ArrayList<>(validCards);
@@ -222,13 +220,13 @@ class DeckServiceTest {
         DeckResponseDto updateRequest = new DeckResponseDto();
         updateRequest.setName("ServiceTest Deck Updated");
         updateRequest.setDescription("An updated description");
-        updateRequest.setFormatName("Edison");
+        updateRequest.setFormatName(Format.EDISON);
         updateRequest.setDeckCards(newCardsList);
 
         DeckResponseDto result = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
         assertEquals("ServiceTest Deck Updated", result.getName());
         assertEquals("An updated description", result.getDescription());
-        assertEquals("Edison", result.getFormatName());
+        assertEquals(Format.EDISON, result.getFormatName());
         assertEquals(15, result.getCards().size());
 
         DeckCardResponseDto resFirst = result.getCards()
@@ -237,7 +235,7 @@ class DeckServiceTest {
                 .findFirst()
                 .orElseThrow();
         assertEquals(1, resFirst.getQuantity());
-        assertEquals("MAIN", resFirst.getSection());
+        assertEquals(DeckSection.MAIN, resFirst.getSection());
 
         DeckCardResponseDto resSecond = result.getCards()
                 .stream()
@@ -245,7 +243,7 @@ class DeckServiceTest {
                 .findFirst()
                 .orElseThrow();
         assertEquals(2, resSecond.getQuantity());
-        assertEquals("EXTRA", resSecond.getSection());
+        assertEquals(DeckSection.EXTRA, resSecond.getSection());
     }
 
     @Test
@@ -254,7 +252,7 @@ class DeckServiceTest {
         DeckResponseDto updateRequest = new DeckResponseDto();
         updateRequest.setName("ServiceTest Deck Initial");
         updateRequest.setDescription("Initial state");
-        updateRequest.setFormatName("TCG");
+        updateRequest.setFormatName(Format.TCG);
         updateRequest.setDeckCards(validCards);
 
         DeckResponseDto firstResult = deckService
@@ -279,7 +277,7 @@ class DeckServiceTest {
         DeckResponseDto secondRequest = new DeckResponseDto();
         secondRequest.setName("ServiceTest Deck Initial");
         secondRequest.setDescription("Initial state");
-        secondRequest.setFormatName("TCG");
+        secondRequest.setFormatName(Format.TCG);
         secondRequest.setDeckCards(updatedCards);
 
         assertDoesNotThrow(() -> {
@@ -294,7 +292,7 @@ class DeckServiceTest {
     void updateDeck_whenUnauthorized_throwsNoSuchElementException() {
         DeckResponseDto request = new DeckResponseDto();
         request.setName("Hacked Deck");
-        request.setFormatName("TCG");
+        request.setFormatName(Format.TCG);
 
         assertThrows(NoSuchElementException.class, () -> {
             deckService.updateDeck(testDeck.getId(), request, unauthorizedUser);
@@ -323,7 +321,7 @@ class DeckServiceTest {
     void validateDeck_withValidDeck_doesNotThrow() {
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Valid Deck");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
 
         assertDoesNotThrow(() -> {
@@ -336,7 +334,7 @@ class DeckServiceTest {
         // Less than 40 cards
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Too Small");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of());
 
         assertThrows(DeckValidationException.class, () -> {

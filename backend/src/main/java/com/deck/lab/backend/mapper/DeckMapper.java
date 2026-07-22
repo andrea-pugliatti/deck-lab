@@ -10,30 +10,16 @@ import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
-import com.deck.lab.backend.model.Format;
 
 /**
  * Mapper component that translates between {@link Deck} JPA Entities and {@link DeckResponseDto}
  * Data Transfer Objects.
- * 
- * <p>
- * <b>Mapper Pattern:</b> Database entities (like {@code Deck}) map directly to SQL tables and
- * column definitions. However, exposing database classes directly to API clients is dangerous (it
- * leaks database structure and makes schema refactoring difficult). This class solves that by
- * mapping entities to decoupled DTOs (like {@code DeckDto}) which define the exact API payload
- * format expected by the frontend.
- * 
- * <p>
- * Annotated with {@link Component} so Spring automatically manages its lifecycle and makes it
- * available for injection in other services.
- * </p>
  */
 @Component
 public class DeckMapper {
 
     /**
-     * Maps a {@link Deck} database entity to an API-friendly {@link DeckResponseDto}. Translates
-     * child entity relations and resolves format names.
+     * Maps a {@link Deck} database entity to an API-friendly {@link DeckResponseDto}.
      *
      * @param deck the database-managed Deck entity
      * @return the populated DeckDto representation
@@ -44,14 +30,11 @@ public class DeckMapper {
                         .map(this::toDeckCardDto)
                         .toList()
                 : new ArrayList<>();
-        String formatStr = deck.getFormatName() != null
-                ? deck.getFormatName().getValue()
-                : null;
         DeckResponseDto dto = new DeckResponseDto();
         dto.setId(deck.getId());
         dto.setName(deck.getName());
         dto.setDescription(deck.getDescription());
-        dto.setFormatName(formatStr);
+        dto.setFormatName(deck.getFormatName());
         dto.setUpdatedAt(deck.getUpdatedAt());
         if (deck.getUser() != null) {
             dto.setCreatorUsername(deck.getUser().getUsername());
@@ -61,8 +44,7 @@ public class DeckMapper {
     }
 
     /**
-     * Converts a incoming {@link DeckResponseDto} payload into a new {@link Deck} JPA entity.
-     * Safe-handles invalid format strings.
+     * Converts an incoming {@link DeckResponseDto} payload into a new {@link Deck} JPA entity.
      *
      * @param dto the DTO data received from client API request
      * @return a new transient (unsaved) Deck entity populated with the DTO values
@@ -75,19 +57,13 @@ public class DeckMapper {
         deck.setId(dto.getId());
         deck.setName(dto.getName());
         deck.setDescription(dto.getDescription());
-        try {
-            deck.setFormatName(dto.getFormatName() != null
-                    ? Format.fromString(dto.getFormatName())
-                    : null);
-        } catch (IllegalArgumentException e) {
-            deck.setFormatName(null);
-        }
+        deck.setFormatName(dto.getFormatName());
         return deck;
     }
 
     /**
      * Updates an existing database-managed {@link Deck} entity with new parameters from a request
-     * DTO, preserving database primary keys and references.
+     * DTO.
      *
      * @param dto  the incoming updated DTO parameters
      * @param deck the existing database entity to update
@@ -98,13 +74,7 @@ public class DeckMapper {
         }
         deck.setName(dto.getName());
         deck.setDescription(dto.getDescription());
-        try {
-            deck.setFormatName(dto.getFormatName() != null
-                    ? Format.fromString(dto.getFormatName())
-                    : null);
-        } catch (IllegalArgumentException e) {
-            deck.setFormatName(null);
-        }
+        deck.setFormatName(dto.getFormatName());
     }
 
     DeckCardResponseDto toDeckCardDto(DeckCard dc) {
@@ -122,29 +92,19 @@ public class DeckMapper {
                     null,
                     null,
                     null,
-                    dc.getSection() != null
-                            ? dc.getSection().getValue()
-                            : null,
+                    dc.getSection(),
                     dc.getQuantity());
         }
         return new DeckCardResponseDto(dc.getId(),
                 c.getId(),
                 c.getName(),
-                c.getType() != null
-                        ? c.getType().getValue()
-                        : null,
+                c.getType(),
                 c.getDescription(),
-                c.getRace() != null
-                        ? c.getRace().getValue()
-                        : null,
-                c.getAttribute() != null
-                        ? c.getAttribute().getValue()
-                        : null,
+                c.getRace(),
+                c.getAttribute(),
                 c.getArchetype(),
                 c.getImageUrl(),
-                dc.getSection() != null
-                        ? dc.getSection().getValue()
-                        : null,
+                dc.getSection(),
                 dc.getQuantity());
     }
 }

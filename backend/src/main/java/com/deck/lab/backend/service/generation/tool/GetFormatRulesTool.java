@@ -7,11 +7,11 @@ import java.util.function.Function;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FormatRules;
 import com.deck.lab.backend.repository.FormatRulesRepository;
-import com.deck.lab.backend.validation.rules.FormatDeckLimits;
-import com.deck.lab.backend.validation.rules.DeckSizeLimits;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRuleInfo;
 import com.deck.lab.backend.service.generation.tool.dto.FormatRulesRequest;
 import com.deck.lab.backend.service.generation.tool.dto.FormatRulesResponse;
-import com.deck.lab.backend.service.generation.tool.dto.FormatRuleInfo;
+import com.deck.lab.backend.validation.rules.DeckSizeLimits;
+import com.deck.lab.backend.validation.rules.FormatDeckLimits;
 
 /**
  * Tool function enabling the AI model to query database rules (banlists) for a format.

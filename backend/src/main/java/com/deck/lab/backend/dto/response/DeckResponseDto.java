@@ -4,37 +4,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.model.Format;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Data Transfer Object (DTO) representing a compiled deck list.
- *
- * <p>
- * <strong>Data Transfer Object (DTO)</strong>
- * </p>
- * <p>
- * This DTO defines the structural API boundaries for exposing deck structures to the frontend
- * client. It contains high-level deck details (like name, description, format constraints) along
- * with its list of associated cards. Using a separate DTO instead of serializing the {@link Deck}
- * entity directly prevents issues like lazy-loading exceptions, circular references with
- * bidirectional relationships, and leakage of user information.
- * </p>
- *
- * <p>
- * <strong>Dual-role field design:</strong>
- * </p>
- * <ul>
- * <li>{@code deckCards}: Inbound field. Accepts the client request payload — only {@code cardId},
- * {@code section}, and {@code quantity} are read from this list. Decorated with {@code @Valid} to
- * trigger recursive bean validation on each {@link DeckCardRequestDto} element.</li>
- * <li>{@code cards}: Outbound field. Populated by the server on read operations — includes enriched
- * card attributes (name, type, imageUrl, etc.) resolved from the database.</li>
- * </ul>
  */
 public class DeckResponseDto {
 
@@ -45,8 +25,8 @@ public class DeckResponseDto {
 
     private String description;
 
-    @NotBlank(message = "Format name is required")
-    private String formatName;
+    @NotNull(message = "Format name is required")
+    private Format formatName;
 
     /**
      * Inbound card slots from the client request. Validated on write operations.
@@ -92,11 +72,11 @@ public class DeckResponseDto {
         this.description = description;
     }
 
-    public String getFormatName() {
+    public Format getFormatName() {
         return formatName;
     }
 
-    public void setFormatName(String formatName) {
+    public void setFormatName(Format formatName) {
         this.formatName = formatName;
     }
 

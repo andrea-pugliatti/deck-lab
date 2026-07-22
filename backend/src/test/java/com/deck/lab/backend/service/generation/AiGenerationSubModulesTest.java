@@ -19,24 +19,41 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.deck.lab.backend.config.PromptConfig;
+import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
-import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
-import com.deck.lab.backend.service.generation.tool.*;
-import com.deck.lab.backend.service.generation.tool.dto.*;
-import com.deck.lab.backend.service.generation.model.*;
-import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.Strategy;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.repository.FormatRulesRepository;
+import com.deck.lab.backend.service.generation.model.CardEntry;
+import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
+import com.deck.lab.backend.service.generation.tool.AnalyzeDeckStatsTool;
+import com.deck.lab.backend.service.generation.tool.CardDetailsTool;
+import com.deck.lab.backend.service.generation.tool.CardSearchTool;
+import com.deck.lab.backend.service.generation.tool.GetArchetypeCardsTool;
+import com.deck.lab.backend.service.generation.tool.GetFormatRulesTool;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.ArchetypeCardsResponse;
+import com.deck.lab.backend.service.generation.tool.dto.CardDetailsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.CardDetailsResponse;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchRequest;
+import com.deck.lab.backend.service.generation.tool.dto.CardSearchResponse;
+import com.deck.lab.backend.service.generation.tool.dto.DeckStatsRequest;
+import com.deck.lab.backend.service.generation.tool.dto.DeckStatsResponse;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRulesRequest;
+import com.deck.lab.backend.service.generation.tool.dto.FormatRulesResponse;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 
 class AiGenerationSubModulesTest {
@@ -88,8 +105,8 @@ class AiGenerationSubModulesTest {
 
     @Test
     void testPromptBuilderDraft() {
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
-                "Edison", "Include JD");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
+                Format.EDISON, "Include JD");
         Prompt prompt = promptBuilder.buildDraftPrompt(request, "formatInstructionsTemplate");
 
         assertNotNull(prompt);
@@ -97,7 +114,7 @@ class AiGenerationSubModulesTest {
         String userContent = prompt.getInstructions().get(1).getText();
 
         assertTrue(systemContent.contains("Lightsworn"));
-        assertTrue(systemContent.contains("Milling"));
+        assertTrue(systemContent.contains("None"));
         assertTrue(systemContent.contains("Include JD"));
         assertTrue(systemContent.contains("formatInstructionsTemplate"));
         assertTrue(userContent.contains("Edison"));
@@ -105,14 +122,15 @@ class AiGenerationSubModulesTest {
 
     @Test
     void testPromptBuilderRefinement() {
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
-                "Edison", "Include JD");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
+                Format.EDISON, "Include JD");
         com.deck.lab.backend.model.Card card = new com.deck.lab.backend.model.Card();
         card.setName("Judgment Dragon");
         card.setType(com.deck.lab.backend.model.CardType.EFFECT_MONSTER);
         card.setAttribute(com.deck.lab.backend.model.CardAttribute.LIGHT);
         card.setLevel(8);
-        List<ResolvedCardEntry> resolved = List.of(new ResolvedCardEntry(card, "MAIN", 3));
+        List<ResolvedCardEntry> resolved = List
+                .of(new ResolvedCardEntry(card, DeckSection.MAIN, 3));
         List<String> unresolved = List.of("UnresolvedCard");
         List<String> warnings = List.of("Warning 1");
 
@@ -192,7 +210,7 @@ class AiGenerationSubModulesTest {
 
         assertEquals(1, resolved.size());
         assertEquals(jdCard, resolved.get(0).card());
-        assertEquals("MAIN", resolved.get(0).section());
+        assertEquals(DeckSection.MAIN, resolved.get(0).section());
         assertEquals(3, resolved.get(0).quantity());
     }
 
@@ -338,7 +356,7 @@ class AiGenerationSubModulesTest {
         assertEquals("EDISON", response.format());
         assertEquals(1, response.rules().size());
         assertEquals("Monster Reborn", response.rules().get(0).cardName());
-        assertEquals("LIMITED", response.rules().get(0).status());
+        assertEquals(CardStatus.LIMITED, response.rules().get(0).status());
     }
 
     @Test
@@ -435,17 +453,17 @@ class AiGenerationSubModulesTest {
         assertEquals(3, resolved.get(3).quantity());
 
         List<CardEntry> sectionEntries = List.of(
-                new CardEntry("Sangan", null, 1),
+                new CardEntry("Sangan", (DeckSection) null, 1),
                 new CardEntry("Sangan", "INVALID_SECTION", 1),
-                new CardEntry("Sangan", "side", 1),
-                new CardEntry("Sangan", "EXTRA", 1));
+                new CardEntry("Sangan", DeckSection.SIDE, 1),
+                new CardEntry("Sangan", DeckSection.EXTRA, 1));
 
         List<ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
         assertEquals(4, resolvedSections.size());
-        assertEquals("MAIN", resolvedSections.get(0).section());
-        assertEquals("MAIN", resolvedSections.get(1).section());
-        assertEquals("SIDE", resolvedSections.get(2).section());
-        assertEquals("EXTRA", resolvedSections.get(3).section());
+        assertEquals(DeckSection.MAIN, resolvedSections.get(0).section());
+        assertEquals(DeckSection.MAIN, resolvedSections.get(1).section());
+        assertEquals(DeckSection.SIDE, resolvedSections.get(2).section());
+        assertEquals(DeckSection.EXTRA, resolvedSections.get(3).section());
     }
 
     @Test
@@ -459,16 +477,17 @@ class AiGenerationSubModulesTest {
         when(cardRepository.findByName("Cyber Dragon")).thenReturn(Optional.of(card));
 
         List<CardSuggestionResponseDto> suggestions = List.of(
-                new CardSuggestionResponseDto("Cyber Dragon", "MAIN", "Great attacker", null, null,
+                new CardSuggestionResponseDto("Cyber Dragon", DeckSection.MAIN, "Great attacker",
+                        null, null,
                         null));
 
         List<CardSuggestionResponseDto> resolved = cardResolver.resolveSuggestions(suggestions);
         assertEquals(1, resolved.size());
         assertEquals("Cyber Dragon", resolved.get(0).getName());
-        assertEquals("MAIN", resolved.get(0).getSection());
+        assertEquals(DeckSection.MAIN, resolved.get(0).getSection());
         assertEquals("Great attacker", resolved.get(0).getSynergyReason());
         assertEquals(11L, resolved.get(0).getCardId());
-        assertEquals("Effect Monster", resolved.get(0).getType());
+        assertEquals(CardType.EFFECT_MONSTER, resolved.get(0).getType());
         assertEquals("http://images/cropped.jpg", resolved.get(0).getImageUrl());
 
         List<CardSuggestionResponseDto> sparseSuggestions = List.of(
@@ -477,7 +496,7 @@ class AiGenerationSubModulesTest {
         List<CardSuggestionResponseDto> sparseResolved = cardResolver
                 .resolveSuggestions(sparseSuggestions);
         assertEquals(1, sparseResolved.size());
-        assertEquals("MAIN", sparseResolved.get(0).getSection());
+        assertEquals(DeckSection.MAIN, sparseResolved.get(0).getSection());
         assertEquals("Provides good synergy.", sparseResolved.get(0).getSynergyReason());
     }
 
@@ -494,7 +513,7 @@ class AiGenerationSubModulesTest {
                 new ResolvedCardEntry(card, "INVALID_SECTION", 1));
         Deck assembled = deckAssembler.assembleDeck("Gorz Deck", "Edison", resolved);
         assertEquals(1, assembled.getDeckCards().size());
-        org.junit.jupiter.api.Assertions.assertNull(assembled.getDeckCards().get(0).getSection());
+        assertEquals(DeckSection.MAIN, assembled.getDeckCards().get(0).getSection());
     }
 
     @Test

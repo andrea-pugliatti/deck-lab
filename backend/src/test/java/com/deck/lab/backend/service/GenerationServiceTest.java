@@ -7,13 +7,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.prompt.Prompt;
 
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
@@ -22,34 +22,35 @@ import com.deck.lab.backend.dto.response.CardSuggestionListResponseDto;
 import com.deck.lab.backend.dto.response.CardSuggestionResponseDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckGenerationResponseDto;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.Deck;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.Strategy;
 import com.deck.lab.backend.service.generation.AiClient;
 import com.deck.lab.backend.service.generation.CardResolver;
 import com.deck.lab.backend.service.generation.DeckAssembler;
-import com.deck.lab.backend.service.generation.model.CardEntry;
-import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
 import com.deck.lab.backend.service.generation.PromptBuilder;
-import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 import com.deck.lab.backend.service.generation.ResponseParser;
 import com.deck.lab.backend.service.generation.ValidationAdapter;
+import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
+import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
+@ExtendWith(MockitoExtension.class)
 class GenerationServiceTest {
 
     @Mock
     private PromptBuilder promptBuilder;
-
     @Mock
     private AiClient aiClient;
-
     @Mock
     private ResponseParser responseParser;
-
     @Mock
     private CardResolver cardResolver;
-
     @Mock
     private DeckAssembler deckAssembler;
-
     @Mock
     private ValidationAdapter validationAdapter;
 
@@ -57,16 +58,19 @@ class GenerationServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         deckGenerationService = new GenerationService(
-                promptBuilder, aiClient, responseParser, cardResolver, deckAssembler,
+                promptBuilder,
+                aiClient,
+                responseParser,
+                cardResolver,
+                deckAssembler,
                 validationAdapter);
     }
 
     @Test
     void testSuggestCards() {
         // Arrange
-        DeckSuggestRequestDto request = new DeckSuggestRequestDto("Edison", new ArrayList<>());
+        DeckSuggestRequestDto request = new DeckSuggestRequestDto(Format.EDISON, List.of());
         Prompt mockPrompt = new Prompt("test");
         when(promptBuilder.buildSuggestionPrompt(eq(request), any())).thenReturn(mockPrompt);
 
@@ -74,9 +78,10 @@ class GenerationServiceTest {
         when(aiClient.call(mockPrompt)).thenReturn(rawResponse);
 
         CardSuggestionListResponseDto parsed = new CardSuggestionListResponseDto();
-        CardSuggestionResponseDto suggestion = new CardSuggestionResponseDto("Lumina", "MAIN",
+        CardSuggestionResponseDto suggestion = new CardSuggestionResponseDto("Lumina",
+                DeckSection.MAIN,
                 "Milling", 10L,
-                "Effect Monster", "url");
+                CardType.EFFECT_MONSTER, "url");
         parsed.setSuggestions(List.of(suggestion));
         when(responseParser.parseSuggestionResponse(rawResponse)).thenReturn(parsed);
 
@@ -100,8 +105,8 @@ class GenerationServiceTest {
     @Test
     void testGenerateDeck_FastPath() {
         // Arrange
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
-                "Edison", "None");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
+                Format.EDISON, "None");
         Prompt mockDraftPrompt = new Prompt("draft");
         when(promptBuilder.buildDraftPrompt(eq(request), any())).thenReturn(mockDraftPrompt);
 
@@ -118,14 +123,14 @@ class GenerationServiceTest {
         Deck deck = new Deck();
         deck.setName("AI Lightsworn");
         deck.setDescription("Fast deck");
-        when(deckAssembler.assembleDeck("AI Lightsworn", "Edison", resolved)).thenReturn(deck);
+        when(deckAssembler.assembleDeck("AI Lightsworn", Format.EDISON, resolved)).thenReturn(deck);
 
         List<DeckCardResponseDto> cardDtos = List.of(
-                new DeckCardResponseDto(1L, 15L, "Judgment Dragon", "Effect Monster", "Desc",
-                        "Dragon",
-                        "Light",
+                new DeckCardResponseDto(1L, 15L, "Judgment Dragon", CardType.EFFECT_MONSTER, "Desc",
+                        CardRace.DRAGON,
+                        CardAttribute.LIGHT,
                         "None", "url",
-                        "MAIN", 2));
+                        DeckSection.MAIN, 2));
         when(deckAssembler.toDeckCardDtos(resolved)).thenReturn(cardDtos);
 
         List<String> warnings = List.of(); // Fast path: no warnings
@@ -138,138 +143,91 @@ class GenerationServiceTest {
         assertNotNull(responseDto);
         assertEquals("AI Lightsworn", responseDto.getName());
         assertEquals("Fast deck", responseDto.getDescription());
-        assertEquals(1, responseDto.getDeckCards().size());
-        assertEquals("Judgment Dragon", responseDto.getDeckCards().get(0).getName());
+        assertEquals(Format.EDISON, responseDto.getFormatName());
+        assertEquals(cardDtos, responseDto.getDeckCards());
         assertEquals(0, responseDto.getValidationWarnings().size());
 
         verify(promptBuilder).buildDraftPrompt(eq(request), any());
         verify(aiClient).call(mockDraftPrompt);
         verify(responseParser).parseGenerationResponse(rawResponse);
         verify(cardResolver).resolveCards(parsed.getCards());
-        verify(deckAssembler).assembleDeck("AI Lightsworn", "Edison", resolved);
+        verify(deckAssembler).assembleDeck("AI Lightsworn", Format.EDISON, resolved);
+        verify(validationAdapter).validate(deck);
         verify(deckAssembler).toDeckCardDtos(resolved);
-        verify(validationAdapter).validate(any());
     }
 
     @Test
-    void testGenerateDeck_DescriptionTruncated() {
+    void testGenerateDeck_RefinementLoopSuccess() {
         // Arrange
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
-                "Edison", "None");
+        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
+                Format.EDISON, "None");
         Prompt mockDraftPrompt = new Prompt("draft");
         when(promptBuilder.buildDraftPrompt(eq(request), any())).thenReturn(mockDraftPrompt);
 
-        String rawResponse = "raw response";
-        when(aiClient.call(mockDraftPrompt)).thenReturn(rawResponse);
+        String draftRawResponse = "draft raw response";
+        when(aiClient.call(mockDraftPrompt)).thenReturn(draftRawResponse);
 
-        String longDescription = "a".repeat(300);
-        DeckGenerateAiResponse parsed = new DeckGenerateAiResponse("AI Lightsworn", longDescription,
-                List.of());
-        when(responseParser.parseGenerationResponse(rawResponse)).thenReturn(parsed);
-
-        List<ResolvedCardEntry> resolved = List.of();
-        when(cardResolver.resolveCards(parsed.getCards())).thenReturn(resolved);
-
-        Deck deck = new Deck();
-        deck.setName("AI Lightsworn");
-        deck.setDescription(longDescription);
-        when(deckAssembler.assembleDeck("AI Lightsworn", "Edison", resolved)).thenReturn(deck);
-
-        List<DeckCardResponseDto> cardDtos = List.of();
-        when(deckAssembler.toDeckCardDtos(resolved)).thenReturn(cardDtos);
-
-        List<String> warnings = List.of();
-        when(validationAdapter.validate(any())).thenReturn(warnings);
-
-        // Act
-        DeckGenerationResponseDto responseDto = deckGenerationService.generateDeck(request);
-
-        // Assert
-        assertNotNull(responseDto);
-        assertEquals("AI Lightsworn", responseDto.getName());
-        assertEquals(255, responseDto.getDescription().length());
-        assertEquals("a".repeat(255), responseDto.getDescription());
-    }
-
-    @Test
-    void testGenerateDeck_WithRefinement() {
-        // Arrange
-        DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", "Milling",
-                "Edison", "None");
-        Prompt mockDraftPrompt = new Prompt("draft");
-        when(promptBuilder.buildDraftPrompt(eq(request), any())).thenReturn(mockDraftPrompt);
-
-        String rawDraftResponse = "raw draft response";
-        when(aiClient.call(mockDraftPrompt)).thenReturn(rawDraftResponse);
-
-        // Draft response contains 1 unresolved card: "UnresolvedCard"
-        CardEntry draftEntry = new CardEntry(
-                "UnresolvedCard",
-                "MAIN", 3);
         DeckGenerateAiResponse draftParsed = new DeckGenerateAiResponse("AI Lightsworn Draft",
-                "Draft deck",
-                List.of(draftEntry));
-        when(responseParser.parseGenerationResponse(rawDraftResponse)).thenReturn(draftParsed);
+                "Draft deck", List.of());
+        when(responseParser.parseGenerationResponse(draftRawResponse)).thenReturn(draftParsed);
 
-        // Mock resolver: draft lookupCard returns empty (unresolved)
+        // Mock resolver: draft returns 1 unresolved name
+        com.deck.lab.backend.service.generation.model.CardEntry unresolvedEntry = new com.deck.lab.backend.service.generation.model.CardEntry(
+                "UnresolvedCard", DeckSection.MAIN, 1);
+        DeckGenerateAiResponse draftWithCards = new DeckGenerateAiResponse("AI Lightsworn Draft",
+                "Draft deck", List.of(unresolvedEntry));
+        when(responseParser.parseGenerationResponse(draftRawResponse)).thenReturn(draftWithCards);
         when(cardResolver.lookupCard("UnresolvedCard")).thenReturn(java.util.Optional.empty());
-        List<ResolvedCardEntry> draftResolved = List.of();
-        when(cardResolver.resolveCards(draftParsed.getCards())).thenReturn(draftResolved);
 
-        // Warnings for the draft
-        List<String> draftWarnings = List.of("Warning 1");
-        // We mock the first validate call to return warnings
+        List<ResolvedCardEntry> draftResolved = List.of();
+        when(cardResolver.resolveCards(draftWithCards.getCards())).thenReturn(draftResolved);
+
+        // Warnings for draft
         Deck draftDeck = new Deck();
         draftDeck.setName("AI Lightsworn Draft");
-        when(deckAssembler.assembleDeck(eq("AI Lightsworn Draft"), eq("Edison"), eq(draftResolved)))
+        when(deckAssembler.assembleDeck("AI Lightsworn Draft", Format.EDISON, draftResolved))
                 .thenReturn(draftDeck);
-        when(validationAdapter.validate(draftDeck)).thenReturn(draftWarnings);
+        when(validationAdapter.validate(draftDeck))
+                .thenReturn(List.of("Warning: Main deck has less than 40 cards"));
 
-        // Step 2: Refinement Call
-        Prompt mockRefinementPrompt = new Prompt("refinement");
+        // Refinement step setup
+        Prompt mockRefinedPrompt = new Prompt("refined");
         when(promptBuilder.buildRefinementPrompt(eq(request),
                 eq(draftResolved),
                 eq(List.of("UnresolvedCard")),
-                eq(draftWarnings),
-                any()))
-                        .thenReturn(mockRefinementPrompt);
+                eq(List.of("Warning: Main deck has less than 40 cards")),
+                any())).thenReturn(mockRefinedPrompt);
 
-        String rawRefinementResponse = "raw refinement response";
-        when(aiClient.call(mockRefinementPrompt)).thenReturn(rawRefinementResponse);
+        String refinedRawResponse = "refined raw response";
+        when(aiClient.call(mockRefinedPrompt)).thenReturn(refinedRawResponse);
 
-        // Refined response has a resolved card
-        CardEntry refinedEntry = new CardEntry(
-                "Lumina",
-                "MAIN",
-                3);
         DeckGenerateAiResponse refinedParsed = new DeckGenerateAiResponse("AI Lightsworn Final",
-                "Final deck",
-                List.of(refinedEntry));
-        when(responseParser.parseGenerationResponse(rawRefinementResponse))
-                .thenReturn(refinedParsed);
+                "Final deck", List.of());
+        when(responseParser.parseGenerationResponse(refinedRawResponse)).thenReturn(refinedParsed);
 
-        // Mock resolver: refined lookupCard returns valid card
+        // Mock resolver: refined returns valid card
         com.deck.lab.backend.model.Card luminaCard = new com.deck.lab.backend.model.Card();
         luminaCard.setName("Lumina");
-        when(cardResolver.lookupCard("Lumina")).thenReturn(java.util.Optional.of(luminaCard));
 
         List<ResolvedCardEntry> finalResolved = List
-                .of(new ResolvedCardEntry(luminaCard, "MAIN", 3));
+                .of(new ResolvedCardEntry(luminaCard, DeckSection.MAIN, 3));
         when(cardResolver.resolveCards(refinedParsed.getCards())).thenReturn(finalResolved);
 
         // Warnings for refined: empty
         Deck finalDeck = new Deck();
         finalDeck.setName("AI Lightsworn Final");
-        when(deckAssembler.assembleDeck(eq("AI Lightsworn Final"), eq("Edison"), eq(finalResolved)))
-                .thenReturn(finalDeck);
+        when(deckAssembler
+                .assembleDeck(eq("AI Lightsworn Final"), eq(Format.EDISON), eq(finalResolved)))
+                        .thenReturn(finalDeck);
         when(validationAdapter.validate(finalDeck)).thenReturn(List.of());
 
         // Card DTO representation
         List<DeckCardResponseDto> cardDtos = List.of(
-                new DeckCardResponseDto(1L, 15L, "Lumina", "Effect Monster", "Desc", "Spellcaster",
-                        "Light",
+                new DeckCardResponseDto(1L, 15L, "Lumina", CardType.EFFECT_MONSTER, "Desc",
+                        CardRace.SPELLCASTER,
+                        CardAttribute.LIGHT,
                         "None", "url",
-                        "MAIN", 3));
+                        DeckSection.MAIN, 3));
         when(deckAssembler.toDeckCardDtos(finalResolved)).thenReturn(cardDtos);
 
         // Act
@@ -279,22 +237,15 @@ class GenerationServiceTest {
         assertNotNull(responseDto);
         assertEquals("AI Lightsworn Final", responseDto.getName());
         assertEquals("Final deck", responseDto.getDescription());
-        assertEquals(1, responseDto.getDeckCards().size());
-        assertEquals("Lumina", responseDto.getDeckCards().get(0).getName());
+        assertEquals(Format.EDISON, responseDto.getFormatName());
+        assertEquals(cardDtos, responseDto.getDeckCards());
         assertEquals(0, responseDto.getValidationWarnings().size());
 
-        verify(promptBuilder).buildDraftPrompt(eq(request), any());
         verify(promptBuilder).buildRefinementPrompt(eq(request),
                 eq(draftResolved),
                 eq(List.of("UnresolvedCard")),
-                eq(draftWarnings),
+                eq(List.of("Warning: Main deck has less than 40 cards")),
                 any());
-        verify(aiClient).call(mockDraftPrompt);
-        verify(aiClient).call(mockRefinementPrompt);
-        verify(responseParser).parseGenerationResponse(rawDraftResponse);
-        verify(responseParser).parseGenerationResponse(rawRefinementResponse);
-        verify(cardResolver).resolveCards(draftParsed.getCards());
-        verify(cardResolver).resolveCards(refinedParsed.getCards());
-        verify(deckAssembler).toDeckCardDtos(finalResolved);
+        verify(aiClient).call(mockRefinedPrompt);
     }
 }

@@ -1,30 +1,26 @@
 package com.deck.lab.backend.dto.response;
 
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.DeckSection;
+
 /**
  * Response Data Transfer Object (DTO) representing an individual card slot in a deck as returned to
  * the client.
- *
- * <p>
- * <strong>Response DTO</strong>
- * </p>
- * <p>
- * Combines attributes from both the {@code DeckCard} relationship (section, quantity, record ID)
- * and the referenced {@code Card} entity (name, type, imageUrl, etc.) to avoid extra query
- * roundtrips for the client.
- * </p>
  */
 public class DeckCardResponseDto {
 
     private Long id;
     private Long cardId;
     private String name;
-    private String type;
+    private CardType type;
     private String description;
-    private String race;
-    private String attribute;
+    private CardRace race;
+    private CardAttribute attribute;
     private String archetype;
     private String imageUrl;
-    private String section;
+    private DeckSection section;
     private Integer quantity;
 
     public DeckCardResponseDto() {
@@ -33,13 +29,13 @@ public class DeckCardResponseDto {
     public DeckCardResponseDto(Long id,
                                Long cardId,
                                String name,
-                               String type,
+                               CardType type,
                                String description,
-                               String race,
-                               String attribute,
+                               CardRace race,
+                               CardAttribute attribute,
                                String archetype,
                                String imageUrl,
-                               String section,
+                               DeckSection section,
                                Integer quantity) {
         this.id = id;
         this.cardId = cardId;
@@ -78,11 +74,11 @@ public class DeckCardResponseDto {
         this.name = name;
     }
 
-    public String getType() {
+    public CardType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CardType type) {
         this.type = type;
     }
 
@@ -94,19 +90,19 @@ public class DeckCardResponseDto {
         this.description = description;
     }
 
-    public String getRace() {
+    public CardRace getRace() {
         return race;
     }
 
-    public void setRace(String race) {
+    public void setRace(CardRace race) {
         this.race = race;
     }
 
-    public String getAttribute() {
+    public CardAttribute getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(CardAttribute attribute) {
         this.attribute = attribute;
     }
 
@@ -126,11 +122,11 @@ public class DeckCardResponseDto {
         this.imageUrl = imageUrl;
     }
 
-    public String getSection() {
+    public DeckSection getSection() {
         return section;
     }
 
-    public void setSection(String section) {
+    public void setSection(DeckSection section) {
         this.section = section;
     }
 

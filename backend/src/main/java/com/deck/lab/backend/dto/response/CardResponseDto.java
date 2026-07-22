@@ -1,96 +1,42 @@
 package com.deck.lab.backend.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
+import com.deck.lab.backend.model.CardAttribute;
+import com.deck.lab.backend.model.CardRace;
+import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.FrameType;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Data Transfer Object (DTO) representing detailed card statistics and attributes.
- *
- * <p>
- * <strong>Data Transfer Object (DTO)</strong>
- * </p>
- * <p>
- * This class encapsulates card details (such as name, type, stats, image URLs) and exposes them to
- * the API client. By using a DTO instead of sending the JPA database entity directly, we decouple
- * the internal database mapping structure (defined in {@link Card}) from the external JSON API
- * contract.
- * </p>
- *
- * <p>
- * <strong>Benefits:</strong>
- * </p>
- * <ul>
- * <li><strong>API Stability:</strong> If database column structures change, the DTO interface can
- * remain stable, avoiding breaking client applications.</li>
- * <li><strong>Performance optimization:</strong> Eliminates circular references or lazy-loading
- * issues common in Hibernate/JPA entities when serialized directly to JSON.</li>
- * <li><strong>Input Validation:</strong> Annotations like {@code @NotBlank} are processed by
- * Spring's validation engine before any processing logic runs.</li>
- * </ul>
  */
 public class CardResponseDto {
 
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @NotNull(message = "Name is required")
     private String name;
 
-    /**
-     * Classification category string (e.g. "Spell Card", "Effect Monster").
-     */
-    @NotBlank(message = "Type is required")
-    private String type;
+    @NotNull(message = "Type is required")
+    private CardType type;
 
-    /**
-     * Text detailing card effects or flavor text.
-     */
     private String description;
 
-    /**
-     * Card monster race or sub-classification.
-     */
-    private String race;
+    private CardRace race;
 
-    /**
-     * Monster elemental attribute.
-     */
-    private String attribute;
+    private CardAttribute attribute;
 
-    /**
-     * Archetype group name the card belongs to.
-     */
     private String archetype;
 
     private String imageUrl;
     private String imageUrlCropped;
 
-    /**
-     * Visual frame border style color representation.
-     */
-    private String frameType;
+    private FrameType frameType;
 
-    /**
-     * Monster Attack points value.
-     */
     private Integer atk;
-
-    /**
-     * Monster Defense points value.
-     */
     private Integer def;
-
-    /**
-     * Monster Level or Rank rating.
-     */
     private Integer level;
-
-    /**
-     * Monster Link Rating value.
-     */
     private Integer linkVal;
-
-    /**
-     * Monster Pendulum Scale rating.
-     */
     private Integer scale;
 
     public CardResponseDto() {
@@ -98,14 +44,14 @@ public class CardResponseDto {
 
     public CardResponseDto(Long id,
                            String name,
-                           String type,
+                           CardType type,
                            String description,
-                           String race,
-                           String attribute,
+                           CardRace race,
+                           CardAttribute attribute,
                            String archetype,
                            String imageUrl,
                            String imageUrlCropped,
-                           String frameType,
+                           FrameType frameType,
                            Integer atk,
                            Integer def,
                            Integer level,
@@ -144,11 +90,11 @@ public class CardResponseDto {
         this.name = name;
     }
 
-    public String getType() {
+    public CardType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CardType type) {
         this.type = type;
     }
 
@@ -160,19 +106,19 @@ public class CardResponseDto {
         this.description = description;
     }
 
-    public String getRace() {
+    public CardRace getRace() {
         return race;
     }
 
-    public void setRace(String race) {
+    public void setRace(CardRace race) {
         this.race = race;
     }
 
-    public String getAttribute() {
+    public CardAttribute getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(CardAttribute attribute) {
         this.attribute = attribute;
     }
 
@@ -200,11 +146,11 @@ public class CardResponseDto {
         this.imageUrlCropped = imageUrlCropped;
     }
 
-    public String getFrameType() {
+    public FrameType getFrameType() {
         return frameType;
     }
 
-    public void setFrameType(String frameType) {
+    public void setFrameType(FrameType frameType) {
         this.frameType = frameType;
     }
 

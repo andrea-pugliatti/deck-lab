@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -33,7 +35,7 @@ class DeckDtoValidationTest {
     void validate_withValidDeckDto_hasNoViolations() {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Frog Monarch");
-        deckDto.setFormatName("Edison");
+        deckDto.setFormatName(Format.EDISON);
         deckDto.setDescription("Tribute summon focus");
         deckDto.setDeckCards(new ArrayList<>());
 
@@ -45,7 +47,7 @@ class DeckDtoValidationTest {
     void validate_withBlankName_failsValidation() {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("   "); // Blank name
-        deckDto.setFormatName("TCG");
+        deckDto.setFormatName(Format.TCG);
 
         Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
         assertEquals(1, violations.size());
@@ -53,10 +55,10 @@ class DeckDtoValidationTest {
     }
 
     @Test
-    void validate_withBlankFormatName_failsValidation() {
+    void validate_withNullFormatName_failsValidation() {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Elemental Hero");
-        deckDto.setFormatName(""); // Blank format name
+        deckDto.setFormatName(null); // Null format name
 
         Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
         assertEquals(1, violations.size());
@@ -67,7 +69,7 @@ class DeckDtoValidationTest {
     void validate_withNullCardId_failsValidation() {
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(null); // Invalid
-        cardDto.setSection("MAIN");
+        cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(2);
 
         Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
@@ -76,10 +78,10 @@ class DeckDtoValidationTest {
     }
 
     @Test
-    void validate_withBlankSection_failsValidation() {
+    void validate_withNullSection_failsValidation() {
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
-        cardDto.setSection(""); // Invalid
+        cardDto.setSection((DeckSection) null); // Invalid
         cardDto.setQuantity(2);
 
         Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
@@ -91,7 +93,7 @@ class DeckDtoValidationTest {
     void validate_withQuantityTooLow_failsValidation() {
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
-        cardDto.setSection("MAIN");
+        cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(0); // Invalid (min 1)
 
         Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
@@ -103,7 +105,7 @@ class DeckDtoValidationTest {
     void validate_withQuantityTooHigh_failsValidation() {
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
-        cardDto.setSection("MAIN");
+        cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(4); // Invalid (max 3)
 
         Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
@@ -115,7 +117,7 @@ class DeckDtoValidationTest {
     void validate_withNullQuantity_failsValidation() {
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(1L);
-        cardDto.setSection("MAIN");
+        cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(null); // Invalid
 
         Set<ConstraintViolation<DeckCardRequestDto>> violations = validator.validate(cardDto);
@@ -127,12 +129,12 @@ class DeckDtoValidationTest {
     void validate_withNestedInvalidCard_failsValidation() {
         DeckCardRequestDto invalidCardDto = new DeckCardRequestDto();
         invalidCardDto.setCardId(1L);
-        invalidCardDto.setSection("MAIN");
+        invalidCardDto.setSection(DeckSection.MAIN);
         invalidCardDto.setQuantity(5); // Invalid quantity (>3)
 
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Valid Name");
-        deckDto.setFormatName("Goat");
+        deckDto.setFormatName(Format.GOAT);
         deckDto.setDeckCards(List.of(invalidCardDto));
 
         // Validation of parent should cascade to nested elements annotated with @Valid

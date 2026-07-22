@@ -23,6 +23,8 @@ import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
+import com.deck.lab.backend.model.DeckSection;
+import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
 
@@ -64,7 +66,7 @@ class DeckValidationServiceTest {
         for (int i = 0; i < 14; i++) {
             DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
-            cardDto.setSection("MAIN");
+            cardDto.setSection(DeckSection.MAIN);
             cardDto.setQuantity(3);
             cardDtos.add(cardDto);
         }
@@ -75,7 +77,7 @@ class DeckValidationServiceTest {
     void validateDeck_withValidDeck_doesNotThrow() {
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Valid Validation Test Deck");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
 
         assertDoesNotThrow(() -> {
@@ -87,7 +89,7 @@ class DeckValidationServiceTest {
     void validateDeck_withInvalidDeck_throwsDeckValidationException() {
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Too Small Validation Test Deck");
-        requestDto.setFormatName("TCG");
+        requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of()); // Empty deck
 
         assertThrows(DeckValidationException.class, () -> {
@@ -99,7 +101,7 @@ class DeckValidationServiceTest {
     void validateAndGetCardMap_withValidDeck_returnsCorrectMap() {
         DeckResponseDto requestDto = new DeckResponseDto();
         requestDto.setName("Valid Map Test Deck");
-        requestDto.setFormatName("Goat");
+        requestDto.setFormatName(Format.GOAT);
         requestDto.setDeckCards(createValidDeckCards());
 
         Map<Long, Card> cardMap = deckValidationService.validate(requestDto);

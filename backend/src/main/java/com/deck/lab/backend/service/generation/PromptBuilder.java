@@ -13,6 +13,8 @@ import com.deck.lab.backend.config.PromptConfig;
 import com.deck.lab.backend.dto.request.DeckGenerateRequestDto;
 import com.deck.lab.backend.dto.request.DeckSuggestRequestDto;
 import com.deck.lab.backend.model.Card;
+import com.deck.lab.backend.model.Format;
+import com.deck.lab.backend.model.Strategy;
 import com.deck.lab.backend.repository.CardRepository;
 import com.deck.lab.backend.service.generation.model.CardEntry;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
@@ -92,11 +94,17 @@ public class PromptBuilder {
         }
 
         String formattedInstruction = String.format(systemInstruction, formatInstructions);
+        String formatStr = request.getFormatName() != null
+                ? request.getFormatName().getValue()
+                : "TCG";
+        String strategyStr = request.getStrategy() != null
+                ? request.getStrategy().getValue()
+                : "None";
 
         String finalInstruction = formattedInstruction
-                .replace("{formatName}", request.getFormatName())
+                .replace("{formatName}", formatStr)
                 .replace("{archetype}", request.getArchetype())
-                .replace("{strategy}", request.getStrategy())
+                .replace("{strategy}", strategyStr)
                 .replace("{formatRules}", getFormatRules(request.getFormatName()))
                 .replace("{playstyleGuide}", getPlaystyleGuide(request.getStrategy()))
                 .replace("{customPrompt}", sanitizePrompt(request.getCustomPrompt()));
@@ -106,23 +114,15 @@ public class PromptBuilder {
         String userPrompt = String.format(
                 "Generate a Yu-Gi-Oh draft deck focusing on archetype: %s, strategy: %s, for format: %s.",
                 request.getArchetype(),
-                request.getStrategy(),
-                request.getFormatName());
+                strategyStr,
+                formatStr);
         UserMessage userMessage = new UserMessage(userPrompt);
 
         return new Prompt(List.of(systemMessage, userMessage));
     }
 
     /**
-     * Builds a Spring AI Prompt for the deck refinement phase, addressing unresolved cards and
-     * validation warnings.
-     *
-     * @param request            the original deck generation request parameters
-     * @param resolvedCards      list of successfully database-resolved cards from draft
-     * @param unresolvedNames    list of card names that could not be resolved in database
-     * @param validationWarnings list of format legality warning messages
-     * @param formatInstructions format-specific syntax constraints/rules for JSON output
-     * @return the constructed Prompt object
+     * Builds a Spring AI Prompt for the deck refinement phase.
      */
     public Prompt buildRefinementPrompt(DeckGenerateRequestDto request,
                                         List<ResolvedCardEntry> resolvedCards,
@@ -210,10 +210,17 @@ public class PromptBuilder {
             warningsText = "(None)";
         }
 
+        String formatStr = request.getFormatName() != null
+                ? request.getFormatName().getValue()
+                : "TCG";
+        String strategyStr = request.getStrategy() != null
+                ? request.getStrategy().getValue()
+                : "None";
+
         String finalInstruction = formattedInstruction
-                .replace("{formatName}", request.getFormatName())
+                .replace("{formatName}", formatStr)
                 .replace("{archetype}", request.getArchetype())
-                .replace("{strategy}", request.getStrategy())
+                .replace("{strategy}", strategyStr)
                 .replace("{formatRules}", getFormatRules(request.getFormatName()))
                 .replace("{playstyleGuide}", getPlaystyleGuide(request.getStrategy()))
                 .replace("{customPrompt}", sanitizePrompt(request.getCustomPrompt()))
@@ -236,7 +243,9 @@ public class PromptBuilder {
             sb.append("- ")
                     .append(card.getName())
                     .append(" (")
-                    .append(entry.section())
+                    .append(entry.section() != null
+                            ? entry.section().getValue()
+                            : "MAIN")
                     .append(") x")
                     .append(entry.quantity());
             if (card.getType() != null) {
@@ -246,7 +255,7 @@ public class PromptBuilder {
                 sb.append(", Race: ").append(card.getRace().getValue());
             }
             if (card.getAttribute() != null) {
-                sb.append(", Attribute: ").append(card.getAttribute().name());
+                sb.append(", Attribute: ").append(card.getAttribute().getValue());
             }
             if (card.getLevel() != null) {
                 sb.append(", Level: ").append(card.getLevel());
@@ -266,11 +275,6 @@ public class PromptBuilder {
     /**
      * Builds a Spring AI Prompt for generating card suggestions based on the current deck
      * composition.
-     *
-     * @param request            the deck suggestion request containing the current cards list and
-     *                               format
-     * @param formatInstructions format-specific syntax constraints/rules for JSON output
-     * @return the constructed Prompt object
      */
     public Prompt buildSuggestionPrompt(DeckSuggestRequestDto request, String formatInstructions) {
         String systemInstruction = null;
@@ -318,7 +322,6 @@ public class PromptBuilder {
         }
 
         String formattedInstruction = String.format(systemInstruction, formatInstructions);
-
         String serializedCards = formatSuggestionCurrentCards(request.getCurrentCards());
 
         String finalInstruction = formattedInstruction
@@ -354,7 +357,7 @@ public class PromptBuilder {
                     .append(c.getName())
                     .append(" (")
                     .append(c.getSection() != null
-                            ? c.getSection().toUpperCase()
+                            ? c.getSection().getValue()
                             : "MAIN")
                     .append(") x")
                     .append(c.getQuantity() != null
@@ -379,7 +382,7 @@ public class PromptBuilder {
                         sb.append(", Race: ").append(card.getRace().getValue());
                     }
                     if (card.getAttribute() != null) {
-                        sb.append(", Attribute: ").append(card.getAttribute().name());
+                        sb.append(", Attribute: ").append(card.getAttribute().getValue());
                     }
                     if (card.getLevel() != null) {
                         sb.append(", Level: ").append(card.getLevel());
@@ -398,14 +401,13 @@ public class PromptBuilder {
         }).collect(Collectors.joining("\n"));
     }
 
-    private String getFormatRules(String formatName) {
-        if (formatName == null) {
-            formatName = "TCG";
-        }
-        String normalized = formatName.trim().toUpperCase().replace(" ", "_");
+    private String getFormatRules(Format format) {
+        String formatKey = format != null
+                ? format.name()
+                : "DEFAULT";
         String rules = null;
         if (promptConfig != null && promptConfig.getFormats() != null) {
-            rules = promptConfig.getFormats().get(normalized);
+            rules = promptConfig.getFormats().get(formatKey);
             if (rules == null) {
                 rules = promptConfig.getFormats().get("DEFAULT");
             }
@@ -421,19 +423,13 @@ public class PromptBuilder {
         return rules;
     }
 
-    private String getPlaystyleGuide(String strategy) {
-        if (strategy == null) {
-            strategy = "None";
-        }
-        String normalized = strategy.trim()
-                .toLowerCase()
-                .replace("_", "")
-                .replace("-", "")
-                .replace("/", "")
-                .replace(" ", "");
+    private String getPlaystyleGuide(Strategy strategy) {
+        String strategyKey = strategy != null
+                ? strategy.name().toLowerCase().replace("_", "")
+                : "none";
         String guide = null;
         if (promptConfig != null && promptConfig.getPlaystyles() != null) {
-            guide = promptConfig.getPlaystyles().get(normalized);
+            guide = promptConfig.getPlaystyles().get(strategyKey);
             if (guide == null) {
                 guide = promptConfig.getPlaystyles().get("DEFAULT");
             }

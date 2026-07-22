@@ -110,7 +110,7 @@ public class DeckControllerRateLimitTest {
         for (int i = 0; i < 14; i++) {
             DeckCardRequestDto cardDto = new DeckCardRequestDto();
             cardDto.setCardId(testCards.get(i).getId());
-            cardDto.setSection("MAIN");
+            cardDto.setSection(DeckSection.MAIN);
             cardDto.setQuantity(3);
             cardDtos.add(cardDto);
         }
@@ -121,7 +121,7 @@ public class DeckControllerRateLimitTest {
     void testDeckValidationRateLimiting() throws Exception {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Validate Deck");
-        deckDto.setFormatName("Goat");
+        deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Validation Rate Limiting Test");
         deckDto.setDeckCards(createValidDeckCards());
 
@@ -146,7 +146,7 @@ public class DeckControllerRateLimitTest {
     void testDeckSaveRateLimiting() throws Exception {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Save Deck");
-        deckDto.setFormatName("Goat");
+        deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Save Rate Limiting Test");
         deckDto.setDeckCards(createValidDeckCards());
 
@@ -174,7 +174,7 @@ public class DeckControllerRateLimitTest {
     void testDeckUpdateRateLimiting() throws Exception {
         DeckResponseDto deckDto = new DeckResponseDto();
         deckDto.setName("Updated Deck");
-        deckDto.setFormatName("Goat");
+        deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Update Rate Limiting Test");
         deckDto.setDeckCards(createValidDeckCards());
 

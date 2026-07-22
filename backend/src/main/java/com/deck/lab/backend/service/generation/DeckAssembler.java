@@ -11,7 +11,6 @@ import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
-import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
@@ -25,48 +24,61 @@ public class DeckAssembler {
      * Assembles a transient Deck domain entity and its nested DeckCards.
      *
      * @param name          deck name
-     * @param formatName    target format name
+     * @param format        target format
      * @param resolvedCards list of database-resolved cards
      * @return an assembled Deck entity ready for validation or persistence
      */
     public Deck assembleDeck(String name,
-                             String formatName,
+                             Format format,
                              List<ResolvedCardEntry> resolvedCards) {
         Deck deck = new Deck();
         deck.setName(name);
-
-        if (formatName != null && !formatName.isBlank()) {
-            try {
-                deck.setFormatName(Format.fromString(formatName));
-            } catch (IllegalArgumentException e) {
-                // Ignore invalid format
-            }
-        }
+        deck.setFormatName(format);
 
         List<DeckCard> deckCards = new ArrayList<>();
         if (resolvedCards != null) {
             for (ResolvedCardEntry entry : resolvedCards) {
-                DeckSection sectionEnum = null;
-                if (entry.section() != null) {
-                    try {
-                        sectionEnum = DeckSection.fromString(entry.section());
-                    } catch (IllegalArgumentException e) {
-                        // Ignore invalid section
-                    }
-                }
-                deckCards.add(new DeckCard(deck, entry.card(), sectionEnum, entry.quantity()));
+                deckCards.add(new DeckCard(deck, entry.card(), entry.section(), entry.quantity()));
             }
         }
         deck.setDeckCards(deckCards);
         return deck;
     }
 
+    public Deck assembleDeck(String name,
+                             String formatName,
+                             List<ResolvedCardEntry> resolvedCards) {
+        Format format = null;
+        if (formatName != null && !formatName.isBlank()) {
+            try {
+                format = Format.fromString(formatName);
+            } catch (IllegalArgumentException e) {
+                format = null;
+            }
+        }
+        return assembleDeck(name, format, resolvedCards);
+    }
+
     /**
-     * Helper to assemble a transient Deck from raw DTO lists and pre-resolved Card map. Useful for
-     * eliminating duplication in validation routines.
+     * Helper to assemble a transient Deck from raw DTO lists and pre-resolved Card map.
      */
     public Deck assembleDeckFromDtos(String name,
                                      String formatName,
+                                     List<DeckCardRequestDto> cardDtos,
+                                     Map<Long, Card> cardMap) {
+        Format format = null;
+        if (formatName != null && !formatName.isBlank()) {
+            try {
+                format = Format.fromString(formatName);
+            } catch (IllegalArgumentException e) {
+                format = null;
+            }
+        }
+        return assembleDeckFromDtos(name, format, cardDtos, cardMap);
+    }
+
+    public Deck assembleDeckFromDtos(String name,
+                                     Format format,
                                      List<DeckCardRequestDto> cardDtos,
                                      Map<Long, Card> cardMap) {
         List<ResolvedCardEntry> resolved = new ArrayList<>();
@@ -78,7 +90,7 @@ public class DeckAssembler {
                 }
             }
         }
-        return assembleDeck(name, formatName, resolved);
+        return assembleDeck(name, format, resolved);
     }
 
     /**
@@ -99,16 +111,10 @@ public class DeckAssembler {
             dtos.add(new DeckCardResponseDto(tempIdCounter++,
                     card.getId(),
                     card.getName(),
-                    card.getType() != null
-                            ? card.getType().getValue()
-                            : null,
+                    card.getType(),
                     card.getDescription(),
-                    card.getRace() != null
-                            ? card.getRace().getValue()
-                            : null,
-                    card.getAttribute() != null
-                            ? card.getAttribute().getValue()
-                            : null,
+                    card.getRace(),
+                    card.getAttribute(),
                     card.getArchetype(),
                     card.getImageUrl(),
                     entry.section(),

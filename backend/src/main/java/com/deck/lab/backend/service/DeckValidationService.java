@@ -105,20 +105,14 @@ public class DeckValidationService {
                 cardMap);
         deck.setDeckCards(assembled.getDeckCards());
 
-        // Fetch format rules if format name is set
-        String formatName = deckDto.getFormatName();
+        Format format = deckDto.getFormatName();
         Map<Long, CardStatus> formatLimits = new HashMap<>();
-        if (formatName != null && !formatName.isBlank()) {
-            try {
-                Format format = Format.fromString(formatName);
-                List<FormatRules> formatRules = formatRulesRepository.findByFormatName(format);
-                for (FormatRules rule : formatRules) {
-                    if (rule.getCard() != null) {
-                        formatLimits.put(rule.getCard().getId(), rule.getStatus());
-                    }
+        if (format != null) {
+            List<FormatRules> formatRules = formatRulesRepository.findByFormatName(format);
+            for (FormatRules rule : formatRules) {
+                if (rule.getCard() != null) {
+                    formatLimits.put(rule.getCard().getId(), rule.getStatus());
                 }
-            } catch (IllegalArgumentException e) {
-                // Ignore invalid formats
             }
         }
 

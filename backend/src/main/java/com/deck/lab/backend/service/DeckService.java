@@ -204,14 +204,7 @@ public class DeckService {
                             "Card not found with ID: " + cardDto.getCardId());
                 }
 
-                DeckSection sectionEnum = null;
-                try {
-                    sectionEnum = cardDto.getSection() != null
-                            ? DeckSection.fromString(cardDto.getSection())
-                            : null;
-                } catch (IllegalArgumentException e) {
-                    // Fallback/ignore invalid section
-                }
+                DeckSection sectionEnum = cardDto.getSection();
 
                 // Try to find an existing DeckCard matching by ID, or by (cardId + section)
                 DeckCard existingMatch = null;
