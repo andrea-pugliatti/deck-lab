@@ -82,6 +82,7 @@ public class DeckSpecification {
             Class<?> resultType = query.getResultType();
             if (resultType != Long.class && resultType != long.class) {
                 root.fetch("deckCards", JoinType.LEFT).fetch("card", JoinType.LEFT);
+                root.fetch("user", JoinType.LEFT);
             }
             return null;
         };

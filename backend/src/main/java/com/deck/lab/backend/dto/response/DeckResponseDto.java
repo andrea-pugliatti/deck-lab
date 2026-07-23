@@ -31,9 +31,8 @@ public class DeckResponseDto {
     /**
      * Inbound card slots from the client request. Validated on write operations.
      */
-    @Valid
     @JsonIgnore
-    private List<DeckCardRequestDto> deckCards = new ArrayList<>();
+    private List<@Valid DeckCardRequestDto> deckCards = new ArrayList<>();
 
     /**
      * Outbound enriched card details populated by the server on read operations.

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.model.Card;
@@ -42,6 +43,7 @@ import com.deck.lab.backend.repository.specification.CardSpecification;
  * </ul>
  */
 @Service
+@Transactional(readOnly = true)
 public class CardService {
 
     private final CardRepository cardRepository;
@@ -162,6 +164,7 @@ public class CardService {
      * @param card the Card entity to save
      * @return the saved Card entity
      */
+    @Transactional
     public Card save(Card card) {
         return cardRepository.save(card);
     }
@@ -172,6 +175,7 @@ public class CardService {
      * @param card the Card entity containing updates
      * @return the updated Card entity
      */
+    @Transactional
     public Card edit(Card card) {
         return cardRepository.save(card);
     }
@@ -181,6 +185,7 @@ public class CardService {
      *
      * @param id the ID of the card to delete
      */
+    @Transactional
     public void deleteById(Long id) {
         if (cardRepository.existsById(id)) {
             cardRepository.deleteById(id);
