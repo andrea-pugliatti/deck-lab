@@ -58,8 +58,12 @@ public enum Format {
             return null;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (Format f : Format.values()) {
-            if (f.value.equalsIgnoreCase(trimmed)) {
+            if (f.value.equalsIgnoreCase(trimmed)
+                    || f.name().equalsIgnoreCase(trimmed)
+                    || f.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || f.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return f;
             }
         }

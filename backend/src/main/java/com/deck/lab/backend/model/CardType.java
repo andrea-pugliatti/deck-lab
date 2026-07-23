@@ -91,8 +91,12 @@ public enum CardType {
             return null;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (CardType type : CardType.values()) {
-            if (type.value.equalsIgnoreCase(trimmed)) {
+            if (type.value.equalsIgnoreCase(trimmed)
+                    || type.name().equalsIgnoreCase(trimmed)
+                    || type.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || type.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return type;
             }
         }

@@ -54,8 +54,12 @@ public enum CardAttribute {
             return null;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (CardAttribute attr : CardAttribute.values()) {
-            if (attr.value.equalsIgnoreCase(trimmed)) {
+            if (attr.value.equalsIgnoreCase(trimmed)
+                    || attr.name().equalsIgnoreCase(trimmed)
+                    || attr.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || attr.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return attr;
             }
         }

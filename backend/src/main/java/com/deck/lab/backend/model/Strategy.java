@@ -45,8 +45,12 @@ public enum Strategy {
             return NONE;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (Strategy s : Strategy.values()) {
-            if (s.value.equalsIgnoreCase(trimmed) || s.name().equalsIgnoreCase(trimmed)) {
+            if (s.value.equalsIgnoreCase(trimmed)
+                    || s.name().equalsIgnoreCase(trimmed)
+                    || s.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || s.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return s;
             }
         }

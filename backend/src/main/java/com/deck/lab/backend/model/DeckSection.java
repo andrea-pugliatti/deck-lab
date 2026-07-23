@@ -51,9 +51,13 @@ public enum DeckSection {
         if (value == null || value.isBlank()) {
             return null;
         }
-        String trimmed = value.trim().toUpperCase();
+        String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (DeckSection section : DeckSection.values()) {
-            if (section.value.equals(trimmed)) {
+            if (section.value.equalsIgnoreCase(trimmed)
+                    || section.name().equalsIgnoreCase(trimmed)
+                    || section.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || section.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return section;
             }
         }

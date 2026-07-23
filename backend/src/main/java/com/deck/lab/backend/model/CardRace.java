@@ -95,8 +95,12 @@ public enum CardRace {
             return null;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (CardRace race : CardRace.values()) {
-            if (race.value.equalsIgnoreCase(trimmed)) {
+            if (race.value.equalsIgnoreCase(trimmed)
+                    || race.name().equalsIgnoreCase(trimmed)
+                    || race.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || race.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return race;
             }
         }

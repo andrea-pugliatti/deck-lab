@@ -73,8 +73,12 @@ public enum FrameType {
             return null;
         }
         String trimmed = value.trim();
+        String normalized = trimmed.replace('_', ' ');
         for (FrameType type : FrameType.values()) {
-            if (type.value.equalsIgnoreCase(trimmed)) {
+            if (type.value.equalsIgnoreCase(trimmed)
+                    || type.name().equalsIgnoreCase(trimmed)
+                    || type.value.replace('_', ' ').equalsIgnoreCase(normalized)
+                    || type.name().replace('_', ' ').equalsIgnoreCase(normalized)) {
                 return type;
             }
         }
