@@ -2,7 +2,8 @@
 FROM node:26-alpine AS dev
 WORKDIR /app
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
+ENV CI=true
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 EXPOSE 5173

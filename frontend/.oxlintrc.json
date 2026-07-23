@@ -11,5 +11,9 @@
     "builtin": true,
     "browser": true
   },
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
   "ignorePatterns": ["dist/", "node_modules/**"]
 }
