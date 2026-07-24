@@ -1,4 +1,112 @@
 /**
+ * Game playstyle strategy enum types.
+ */
+export type Strategy =
+  | "None"
+  | "Combo"
+  | "Control"
+  | "Aggro"
+  | "Midrange"
+  | "Going Second"
+  | "Stall/Burn"
+  | "Pure";
+
+/**
+ * Game format classification types.
+ */
+export type Format = "TCG" | "OCG" | "Goat" | "Edison" | "Speed Duel" | "Custom";
+
+/**
+ * Card classification types.
+ */
+export type CardType =
+  | "Normal Monster"
+  | "Effect Monster"
+  | "Ritual Monster"
+  | "Fusion Monster"
+  | "Synchro Monster"
+  | "XYZ Monster"
+  | "Pendulum Normal Monster"
+  | "Pendulum Effect Monster"
+  | "Link Monster"
+  | "Spell Card"
+  | "Trap Card"
+  | "Token"
+  | "Unknown";
+
+/**
+ * Card race or sub-category types.
+ */
+export type CardRace =
+  | "Aqua"
+  | "Beast"
+  | "Beast-Warrior"
+  | "Cyberse"
+  | "Dinosaur"
+  | "Divine-Beast"
+  | "Dragon"
+  | "Fairy"
+  | "Fiend"
+  | "Fish"
+  | "Insect"
+  | "Machine"
+  | "Plant"
+  | "Psychic"
+  | "Pyro"
+  | "Reptile"
+  | "Rock"
+  | "Sea Serpent"
+  | "Spellcaster"
+  | "Thunder"
+  | "Warrior"
+  | "Winged Beast"
+  | "Wyrm"
+  | "Zombie"
+  | "Normal"
+  | "Field"
+  | "Equip"
+  | "Continuous"
+  | "Quick-Play"
+  | "Ritual"
+  | "Counter"
+  | "Unknown";
+
+/**
+ * Card elemental attributes.
+ */
+export type CardAttribute =
+  | "LIGHT"
+  | "DARK"
+  | "WATER"
+  | "FIRE"
+  | "EARTH"
+  | "WIND"
+  | "DIVINE"
+  | "UNKNOWN";
+
+/**
+ * Card frame render styles.
+ */
+export type FrameType =
+  | "normal"
+  | "effect"
+  | "ritual"
+  | "fusion"
+  | "synchro"
+  | "xyz"
+  | "link"
+  | "pendulum"
+  | "spell"
+  | "trap"
+  | "token"
+  | "unknown";
+
+/**
+ * Valid deck section locations for cards.
+ */
+export type CardSection = "MAIN" | "EXTRA" | "SIDE";
+
+/**
  * Represents a registered user.
  */
 export interface User {
@@ -14,20 +122,22 @@ export interface Card {
   id: number;
   /** The name of the card. */
   name: string;
-  /** Card classification type (e.g. "Normal Monster", "Spell Card", "Fusion Monster"). */
-  type: string;
+  /** Card classification type. */
+  type: CardType;
   /** Description/card text detailing effects, requirements, or lore. */
   description: string;
-  /** Race or type group (e.g. "Spellcaster", "Warrior", "Quick-Play"). */
-  race: string;
-  /** Elemental attribute classification (e.g. "LIGHT", "DARK", "FIRE"). */
-  attribute: string;
-  /** Archetype naming classification (e.g. "Blue-Eyes", "Elemental HERO"). */
+  /** Race or type group. */
+  race: CardRace;
+  /** Elemental attribute classification. */
+  attribute: CardAttribute;
+  /** Archetype naming classification. */
   archetype?: string;
   /** URL path pointing to the full card artwork image. */
   imageUrl?: string;
   /** URL path pointing to the cropped card artwork illustration. */
   imageUrlCropped?: string;
+  /** Card frame type style. */
+  frameType?: FrameType;
   /** Attack points (monsters only). */
   atk?: number;
   /** Defense points (monsters only). */
@@ -50,8 +160,8 @@ export interface Deck {
   name: string;
   /** Description describing strategies or notes. */
   description: string;
-  /** The game format category (e.g. "TCG", "OCG", "Goat"). */
-  formatName: string;
+  /** The game format category. */
+  formatName: Format;
   /** Timestamp indicating when the deck was last updated. */
   updatedAt?: string;
   /** The username of the user who created this deck. */
@@ -59,11 +169,6 @@ export interface Deck {
   /** Array of card items added to this deck. */
   deckCards: DeckCardItem[];
 }
-
-/**
- * Valid deck section locations for cards.
- */
-export type CardSection = "MAIN" | "EXTRA" | "SIDE";
 
 /**
  * Represents a single card assignment within a deck.
@@ -99,7 +204,7 @@ export interface Suggestion {
   /** The name of the card. */
   name: string;
   /** The card type. */
-  type: string;
+  type: CardType;
   /** The suggested section placement (MAIN, EXTRA, or SIDE). */
   section: CardSection;
   /** Image URL of the card. */
@@ -112,12 +217,12 @@ export interface Suggestion {
  * Visual filter state applied to the catalog cards browse grid.
  */
 export interface CardFiltersState {
-  /** Filter by card type (e.g. "Monster", "Spell", "Trap"). */
-  type: string;
+  /** Filter by card type. */
+  type: CardType | "ALL";
   /** Filter by elemental attribute. */
-  attribute: string;
+  attribute: CardAttribute | "ALL";
   /** Filter by race. */
-  race: string;
+  race: CardRace | "ALL";
   /** Filter by archetype. */
   archetype: string;
 }
@@ -169,9 +274,30 @@ export interface DeckPayload {
   /** The description of the deck. */
   description: string;
   /** The game format category. */
-  formatName: string;
+  formatName: Format;
   /** Collection of payload card records. */
   deckCards: DeckPayloadItem[];
+}
+
+/**
+ * Request payload model for AI deck generation.
+ */
+export interface DeckGenerateRequest {
+  archetype: string;
+  strategy: Strategy;
+  formatName: Format;
+  customPrompt?: string;
+}
+
+/**
+ * Response payload model for AI deck generation.
+ */
+export interface DeckGenerateResponse {
+  name: string;
+  description: string;
+  formatName: Format;
+  deckCards: DeckCardItem[];
+  validationWarnings?: string[];
 }
 
 /**
@@ -196,3 +322,8 @@ export interface ErrorPayload {
   /** Specific error type code or message. */
   error?: string;
 }
+
+/**
+ * Result of deck validation service calls.
+ */
+export type DeckValidation = { ok: true } | { ok: false; errors: string[] };

@@ -1,14 +1,13 @@
-import { describe, expect, it, vi } from "vitest";
-
+import type { Format, Strategy } from "../types";
 import { apiFetch } from "./api";
 import {
-  getDecksQueryEndpoint,
-  getDeck,
-  validateDeck,
-  saveDeck,
   deleteDeck,
   fetchAiSuggestions,
   generateAiDeck,
+  getDeck,
+  getDecksQueryEndpoint,
+  saveDeck,
+  validateDeck,
 } from "./deck";
 
 vi.mock("./api", () => ({
@@ -48,7 +47,7 @@ describe("deck service", () => {
   });
 
   describe("validateDeck", () => {
-    const payload = { name: "A", description: "B", formatName: "TCG", deckCards: [] };
+    const payload = { name: "A", description: "B", formatName: "TCG" as Format, deckCards: [] };
 
     it("should return ok: true when backend validation succeeds", async () => {
       vi.mocked(apiFetch).mockResolvedValueOnce({
@@ -77,7 +76,7 @@ describe("deck service", () => {
   });
 
   describe("saveDeck", () => {
-    const payload = { name: "Save", description: "", formatName: "TCG", deckCards: [] };
+    const payload = { name: "Save", description: "", formatName: "TCG" as Format, deckCards: [] };
 
     it("should perform POST for new deck", async () => {
       const mockSaved = { id: "new-id", ...payload };
@@ -148,14 +147,18 @@ describe("deck service", () => {
         json: async () => mockSugs,
       } as Response);
 
-      const sugs = await fetchAiSuggestions("TCG", []);
+      const sugs = await fetchAiSuggestions("TCG" as Format, []);
       expect(sugs).toEqual(mockSugs);
     });
   });
 
   describe("generateAiDeck", () => {
     it("should call generate endpoint and return deck details", async () => {
-      const payload = { archetype: "Yubel", strategy: "Control", formatName: "TCG" };
+      const payload = {
+        archetype: "Yubel",
+        strategy: "Control" as Strategy,
+        formatName: "TCG" as Format,
+      };
       const mockResponse = { name: "AI Deck", deckCards: [] };
       vi.mocked(apiFetch).mockResolvedValueOnce({
         ok: true,

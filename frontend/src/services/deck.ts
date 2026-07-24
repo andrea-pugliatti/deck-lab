@@ -3,8 +3,10 @@ import type {
   Deck,
   DeckCardItem,
   DeckPayload,
-  ErrorPayload,
+  DeckValidation,
+  Format,
   Page,
+  Strategy,
   Suggestion,
 } from "../types";
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
@@ -22,9 +24,9 @@ export function getDecksQueryEndpoint(params: URLSearchParams): string {
 /**
  * Fetches a single deck detail from the backend.
  *
- * @param id - The unique ID string of the deck.
- * @returns A promise resolving to the Deck details.
- * @throws {Error} If the request fails.
+ * @param id - The ID of the deck to fetch.
+ * @returns A promise resolving to the Deck details object.
+ * @throws {Error} If the HTTP request fails.
  */
 export async function getDeck(id: string | number, signal?: AbortSignal): Promise<Deck> {
   const res = await apiFetch(`/api/decks/${id}`, { signal });
@@ -62,7 +64,7 @@ export async function getDecks(fetchUrl: string, signal?: AbortSignal): Promise<
  * @param payload - The deck representation to validate.
  * @returns A promise resolving to an ErrorPayload indicating success or errors.
  */
-export async function validateDeck(payload: DeckPayload): Promise<ErrorPayload> {
+export async function validateDeck(payload: DeckPayload): Promise<DeckValidation> {
   try {
     const res = await apiFetch("/api/decks/validate", {
       method: "POST",
@@ -133,7 +135,7 @@ export async function deleteDeck(id: string | number): Promise<void> {
  * @throws {Error} If the suggestion request fails.
  */
 export async function fetchAiSuggestions(
-  formatName: string,
+  formatName: Format,
   currentCards: DeckCardItem[],
 ): Promise<Suggestion[]> {
   const res = await apiFetch("/api/decks/ai/suggest", {
@@ -161,8 +163,8 @@ export async function fetchAiSuggestions(
  */
 export async function generateAiDeck(payload: {
   archetype: string;
-  strategy: string;
-  formatName: string;
+  strategy: Strategy;
+  formatName: Format;
   customPrompt?: string;
 }): Promise<AiGeneratedDeck> {
   const res = await apiFetch("/api/decks/ai/generate", {

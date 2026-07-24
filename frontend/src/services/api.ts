@@ -83,8 +83,11 @@ export async function parseResponseErrors(response: Response): Promise<string[]>
               const errObj = e as Record<string, unknown>;
               const msg = errObj.defaultMessage || errObj.message || errObj.error;
               if (typeof msg === "string") return msg;
+              return Object.prototype.toString.call(e);
             }
-            return String(e || "Unknown validation error");
+            return typeof e === "string" || typeof e === "number" || typeof e === "boolean"
+              ? String(e)
+              : "Unknown validation error";
           });
         } else if (errData.message) {
           return [errData.message];
@@ -113,6 +116,21 @@ export async function parseResponseError(response: Response): Promise<Error> {
   return new Error(errorsList.join(", "));
 }
 
+function normalizeHeaders(headers?: HeadersInit): Record<string, string> {
+  if (!headers) return {};
+  if (headers instanceof Headers) {
+    const result: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      result[key] = value;
+    });
+    return result;
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers);
+  }
+  return { ...headers };
+}
+
 /**
  * Custom fetch wrapper that automatically appends the Bearer token, sets correct
  * Content-Type headers, sets credentials options to 'same-origin', and handles 401 token refresh.
@@ -129,9 +147,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
   const targetUrl = url.startsWith("/api") ? `${apiBaseUrl}${url}` : url;
 
-  const headers = {
-    ...options.headers,
-  } as Record<string, string>;
+  const headers = normalizeHeaders(options.headers);
 
   // Ensure cookies are sent (HttpOnly refresh token)
   options.credentials = "include";
@@ -210,9 +226,9 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
       subscribeTokenRefresh(
         (newToken) => {
           const retryHeaders = {
-            ...options.headers,
+            ...normalizeHeaders(options.headers),
             Authorization: `Bearer ${newToken}`,
-          } as Record<string, string>;
+          };
           const retryOptions = {
             ...options,
             headers: retryHeaders,

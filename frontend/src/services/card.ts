@@ -1,4 +1,4 @@
-import type { Card, Page } from "../types";
+import type { Card, CardType, Page } from "../types";
 import { apiFetch, parseResponseError } from "./api";
 
 /**
@@ -53,12 +53,12 @@ export async function getCards(fetchUrl: string, signal?: AbortSignal): Promise<
 export async function getSuggestions(
   fetchUrl: string,
   signal?: AbortSignal,
-): Promise<{ content: { id: number; name: string; type: string }[] }> {
+): Promise<{ content: { id: number; name: string; type: CardType }[] }> {
   const res = await apiFetch(fetchUrl, { signal });
   if (!res.ok) {
     throw await parseResponseError(res);
   }
-  return res.json() as Promise<{ content: { id: number; name: string; type: string }[] }>;
+  return res.json() as Promise<{ content: { id: number; name: string; type: CardType }[] }>;
 }
 
 /**

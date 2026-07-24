@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { apiFetch } from "./api";
-import { getCardsEndpoint, getCardSuggestionsEndpoint, getCard } from "./card";
+import { getCard, getCardsEndpoint, getCardSuggestionsEndpoint } from "./card";
 
 vi.mock("./api", () => ({
   apiFetch: vi.fn(),
