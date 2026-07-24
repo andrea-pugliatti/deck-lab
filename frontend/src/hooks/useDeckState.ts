@@ -4,14 +4,13 @@ import { useCallback, useEffect, useReducer } from "react";
 import { deckReducer, initialState } from "../reducers/deckReducer";
 import { getDeck } from "../services/deck";
 import { saveDeck as saveDeckService, validateDeck } from "../services/deck";
-import type { Card, CardSection, Deck, DeckCardItem, DeckPayload } from "../types";
+import type { Card, CardSection, Deck, DeckCardItem, Format, DeckPayload } from "../types";
 
 /**
- * Private helper function to format the deck configuration state into a simplified payload model
- * compatible with the backend save/validation controllers.
+ * Helper function to map state components into a DeckPayload object for API calls.
  *
  * @param name - The deck name.
- * @param description - Description of the deck.
+ * @param description - The deck description.
  * @param formatName - The format name.
  * @param deckCards - Current list of active cards.
  * @param defaultName - Fallback name if the deck name is empty.
@@ -20,7 +19,7 @@ import type { Card, CardSection, Deck, DeckCardItem, DeckPayload } from "../type
 const buildDeckPayload = (
   name: string,
   description: string,
-  formatName: string,
+  formatName: Format,
   deckCards: DeckCardItem[],
   defaultName: string = "",
 ) => ({
@@ -84,7 +83,7 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
     dispatch({ type: "SET_DESCRIPTION", description: description.slice(0, 255) });
   }, []);
 
-  const setFormatName = useCallback((formatName: string) => {
+  const setFormatName = useCallback((formatName: Format) => {
     dispatch({ type: "SET_FORMAT_NAME", formatName });
   }, []);
 
@@ -131,8 +130,8 @@ export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => v
       return saveDeckService(payload, id);
     },
     onSuccess: (savedDeck) => {
-      queryClient.invalidateQueries({ queryKey: ["deck", id] });
-      queryClient.invalidateQueries({ queryKey: ["decks"] });
+      void queryClient.invalidateQueries({ queryKey: ["deck", id] });
+      void queryClient.invalidateQueries({ queryKey: ["decks"] });
       dispatch({ type: "SET_SAVE_RESULT" });
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);

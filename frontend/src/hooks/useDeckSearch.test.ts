@@ -36,7 +36,7 @@ describe("useDeckSearch hook", () => {
       isLoading: false,
       error: undefined,
       refetch: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
   });
 
   it("should initialize with default states", () => {

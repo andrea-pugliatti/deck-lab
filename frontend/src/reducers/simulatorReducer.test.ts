@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { Deck, SimulatorCardInstance } from "../types";
+import type { CardType, Deck, SimulatorCardInstance } from "../types";
 import { initialSimulatorState, simulatorReducer, type SimulatorState } from "./simulatorReducer";
 
 describe("simulatorReducer", () => {
@@ -10,9 +10,30 @@ describe("simulatorReducer", () => {
     description: "A test deck",
     formatName: "TCG",
     deckCards: [
-      { cardId: 101, name: "Card A", quantity: 3, section: "MAIN", type: "Monster", imageUrl: "" },
-      { cardId: 102, name: "Card B", quantity: 2, section: "MAIN", type: "Spell", imageUrl: "" },
-      { cardId: 103, name: "Card C", quantity: 1, section: "SIDE", type: "Trap", imageUrl: "" },
+      {
+        cardId: 101,
+        name: "Card A",
+        quantity: 3,
+        section: "MAIN",
+        type: "Normal Monster" as CardType,
+        imageUrl: "",
+      },
+      {
+        cardId: 102,
+        name: "Card B",
+        quantity: 2,
+        section: "MAIN",
+        type: "Spell Card" as CardType,
+        imageUrl: "",
+      },
+      {
+        cardId: 103,
+        name: "Card C",
+        quantity: 1,
+        section: "SIDE",
+        type: "Trap Card" as CardType,
+        imageUrl: "",
+      },
     ],
     updatedAt: "",
   };
@@ -66,7 +87,7 @@ describe("simulatorReducer", () => {
           uniqId: "1-0-1",
           name: "Card",
           quantity: 1,
-          type: "spell",
+          type: "Spell Card" as CardType,
           imageUrl: "",
           section: "MAIN",
         },
@@ -86,7 +107,7 @@ describe("simulatorReducer", () => {
       uniqId: "1-0-1",
       name: "Card",
       quantity: 1,
-      type: "spell",
+      type: "Spell Card" as CardType,
       imageUrl: "",
       section: "MAIN",
     };
@@ -106,7 +127,7 @@ describe("simulatorReducer", () => {
       uniqId: "1-0-1",
       name: "Card",
       quantity: 1,
-      type: "spell",
+      type: "Spell Card" as CardType,
       imageUrl: "",
       section: "MAIN",
     };
@@ -129,8 +150,24 @@ describe("simulatorReducer", () => {
     const startState: SimulatorState = {
       ...initialSimulatorState,
       remainingDeck: [
-        { cardId: 1, uniqId: "1", name: "A", quantity: 1, type: "", imageUrl: "", section: "MAIN" },
-        { cardId: 2, uniqId: "2", name: "B", quantity: 1, type: "", imageUrl: "", section: "MAIN" },
+        {
+          cardId: 1,
+          uniqId: "1",
+          name: "A",
+          quantity: 1,
+          type: "Normal Monster" as CardType,
+          imageUrl: "",
+          section: "MAIN",
+        },
+        {
+          cardId: 2,
+          uniqId: "2",
+          name: "B",
+          quantity: 1,
+          type: "Normal Monster" as CardType,
+          imageUrl: "",
+          section: "MAIN",
+        },
       ],
     };
 
@@ -147,7 +184,7 @@ describe("simulatorReducer", () => {
       uniqId: "1-0-1",
       name: "Card",
       quantity: 1,
-      type: "spell",
+      type: "Spell Card" as CardType,
       imageUrl: "",
       section: "MAIN",
     };

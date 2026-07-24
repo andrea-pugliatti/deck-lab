@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import type { Card } from "../types";
+import type { Card, CardAttribute, CardRace, CardType, Format } from "../types";
 import {
-  deckReducer,
-  initialState,
-  type DeckState,
   canAddCard,
   clampQuantity,
-  isExtraDeckCard,
-  getFormatRules,
   DEFAULT_RULES,
+  deckReducer,
+  getFormatRules,
+  initialState,
+  isExtraDeckCard,
+  type DeckState,
 } from "./deckReducer";
 
 describe("deckReducer", () => {
@@ -25,18 +25,27 @@ describe("deckReducer", () => {
   });
 
   it("should handle SET_DESCRIPTION", () => {
-    const state = deckReducer(initialState, { type: "SET_DESCRIPTION", description: "Nice deck" });
-    expect(state.description).toBe("Nice deck");
+    const state = deckReducer(initialState, {
+      type: "SET_DESCRIPTION",
+      description: "New Description",
+    });
+    expect(state.description).toBe("New Description");
   });
 
   it("should handle SET_FORMAT_NAME", () => {
-    const state = deckReducer(initialState, { type: "SET_FORMAT_NAME", formatName: "Speed Duel" });
-    expect(state.formatName).toBe("Speed Duel");
+    const state = deckReducer(initialState, { type: "SET_FORMAT_NAME", formatName: "Goat" });
+    expect(state.formatName).toBe("Goat");
   });
 
   it("should handle SET_DECK_CARDS", () => {
     const cards = [
-      { cardId: 1, name: "Card A", quantity: 3, type: "spell", section: "MAIN" as const },
+      {
+        cardId: 1,
+        name: "Card A",
+        quantity: 3,
+        type: "Spell Card" as CardType,
+        section: "MAIN" as const,
+      },
     ];
     const state = deckReducer(initialState, { type: "SET_DECK_CARDS", deckCards: cards });
     expect(state.deckCards).toEqual(cards);
@@ -44,18 +53,24 @@ describe("deckReducer", () => {
 
   it("should handle LOAD_DECK", () => {
     const cards = [
-      { cardId: 1, name: "Card A", quantity: 3, type: "spell", section: "MAIN" as const },
+      {
+        cardId: 1,
+        name: "Card A",
+        quantity: 3,
+        type: "Spell Card" as CardType,
+        section: "MAIN" as const,
+      },
     ];
     const state = deckReducer(initialState, {
       type: "LOAD_DECK",
       name: "Loaded Deck",
       description: "Desc",
-      formatName: "Common Charity",
+      formatName: "Goat",
       deckCards: cards,
     });
     expect(state.name).toBe("Loaded Deck");
     expect(state.description).toBe("Desc");
-    expect(state.formatName).toBe("Common Charity");
+    expect(state.formatName).toBe("Goat");
     expect(state.deckCards).toEqual(cards);
   });
 
@@ -125,7 +140,14 @@ describe("deckReducer", () => {
     const startState: DeckState = {
       ...initialState,
       deckCards: [
-        { cardId: 1, name: "Card A", quantity: 2, type: "monster", section: "MAIN", imageUrl: "" },
+        {
+          cardId: 1,
+          name: "Card A",
+          quantity: 2,
+          type: "Normal Monster" as CardType,
+          section: "MAIN",
+          imageUrl: "",
+        },
       ],
     };
 
@@ -161,7 +183,14 @@ describe("deckReducer", () => {
     const startState: DeckState = {
       ...initialState,
       deckCards: [
-        { cardId: 1, name: "Card A", quantity: 1, type: "monster", section: "MAIN", imageUrl: "" },
+        {
+          cardId: 1,
+          name: "Card A",
+          quantity: 1,
+          type: "Normal Monster" as CardType,
+          section: "MAIN",
+          imageUrl: "",
+        },
       ],
     };
     const state = deckReducer(startState, { type: "REMOVE_CARD", cardId: 1, section: "MAIN" });
@@ -215,7 +244,7 @@ describe("deckReducer", () => {
     });
 
     it("should fall back to DEFAULT_RULES if format is unknown", () => {
-      expect(getFormatRules("Unknown Format")).toEqual(DEFAULT_RULES);
+      expect(getFormatRules("Unknown Format" as Format)).toEqual(DEFAULT_RULES);
     });
   });
 
@@ -245,8 +274,8 @@ describe("deckReducer", () => {
       type: "Spell Card",
       description: "",
       imageUrl: "",
-      race: "",
-      attribute: "",
+      race: "Spellcaster" as CardRace,
+      attribute: "LIGHT" as CardAttribute,
     };
 
     const linkCard: Card = {
@@ -255,8 +284,8 @@ describe("deckReducer", () => {
       type: "Link Monster",
       description: "",
       imageUrl: "",
-      race: "",
-      attribute: "",
+      race: "Cyberse" as CardRace,
+      attribute: "DARK" as CardAttribute,
     };
 
     it("should block non-extra deck cards from being placed in EXTRA section", () => {
@@ -287,7 +316,7 @@ describe("deckReducer", () => {
           name: "Raigeki",
           quantity: 3,
           section: "MAIN" as const,
-          type: "Spell",
+          type: "Spell Card" as CardType,
           imageUrl: "",
         },
       ];
@@ -307,7 +336,7 @@ describe("deckReducer", () => {
           name: "Raigeki",
           quantity: 1,
           section: "SIDE" as const,
-          type: "Spell",
+          type: "Spell Card" as CardType,
           imageUrl: "",
         },
       ];

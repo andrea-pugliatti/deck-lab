@@ -98,8 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAccessTokenState(customEvent.detail);
     };
 
-    Promise.resolve().then(() => {
-      checkAuth();
+    queueMicrotask(() => {
+      void checkAuth();
     });
 
     window.addEventListener("auth-logout", handleLogoutState);

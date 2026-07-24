@@ -3,6 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import { useSearchParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { CardAttribute, CardRace, CardType } from "../types";
 import { useCatalogSearch } from "./useCatalogSearch";
 
 vi.mock("react-router", () => ({
@@ -36,7 +37,7 @@ describe("useCatalogSearch hook", () => {
       isLoading: false,
       error: undefined,
       refetch: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
   });
 
   it("should initialize with default states in uncontrolled mode", () => {
@@ -86,14 +87,14 @@ describe("useCatalogSearch hook", () => {
 
     act(() => {
       result.current.setFilters({
-        type: "Spell",
+        type: "Spell Card" as CardType,
         attribute: "ALL",
         race: "ALL",
         archetype: "ALL",
       });
     });
 
-    expect(result.current.filters.type).toBe("Spell");
+    expect(result.current.filters.type).toBe("Spell Card");
   });
 
   it("should support controlled mode when options are passed", () => {
@@ -106,8 +107,8 @@ describe("useCatalogSearch hook", () => {
         page: 3,
         setPage: setPageMock,
         filters: {
-          type: "Trap",
-          attribute: "LIGHT",
+          type: "Trap Card" as CardType,
+          attribute: "LIGHT" as CardAttribute,
           race: "ALL",
           archetype: "ALL",
         },
@@ -119,7 +120,7 @@ describe("useCatalogSearch hook", () => {
 
     expect(result.current.searchPage).toBe(3);
     expect(result.current.searchQuery).toBe("control");
-    expect(result.current.filters.type).toBe("Trap");
+    expect(result.current.filters.type).toBe("Trap Card");
 
     act(() => {
       result.current.setSearchPage(4);
@@ -132,7 +133,7 @@ describe("useCatalogSearch hook", () => {
     expect(setSearchQueryMock).toHaveBeenCalledWith("aggro");
 
     act(() => {
-      result.current.setFilters((prev) => ({ ...prev, race: "Warrior" }));
+      result.current.setFilters((prev) => ({ ...prev, race: "Warrior" as CardRace }));
     });
     expect(setFiltersMock).toHaveBeenCalled();
   });
@@ -140,7 +141,7 @@ describe("useCatalogSearch hook", () => {
   describe("with syncUrl: true", () => {
     it("should parse initial state from searchParams", () => {
       mockSearchParams.set("page", "2");
-      mockSearchParams.set("type", "Monster");
+      mockSearchParams.set("type", "Normal Monster");
       mockSearchParams.set("attribute", "DARK");
       mockSearchParams.set("q", "Dragon");
 
@@ -149,7 +150,7 @@ describe("useCatalogSearch hook", () => {
       expect(result.current.searchPage).toBe(2);
       expect(result.current.searchQuery).toBe("Dragon");
       expect(result.current.filters).toEqual({
-        type: "Monster",
+        type: "Normal Monster",
         attribute: "DARK",
         race: "ALL",
         archetype: "ALL",
@@ -161,16 +162,16 @@ describe("useCatalogSearch hook", () => {
 
       act(() => {
         result.current.setFilters({
-          type: "Spell",
-          attribute: "LIGHT",
-          race: "Zombie",
+          type: "Spell Card" as CardType,
+          attribute: "LIGHT" as CardAttribute,
+          race: "Zombie" as CardRace,
           archetype: "Vampire",
         });
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
       const params = setSearchParamsMock.mock.calls[0][0];
-      expect(params.get("type")).toBe("Spell");
+      expect(params.get("type")).toBe("Spell Card");
       expect(params.get("attribute")).toBe("LIGHT");
       expect(params.get("race")).toBe("Zombie");
       expect(params.get("archetype")).toBe("Vampire");

@@ -27,8 +27,7 @@ describe("useDeckState hook", () => {
     vi.mocked(getDeck).mockReset();
     vi.mocked(saveDeckService).mockReset();
     vi.mocked(validateDeck).mockReset();
-    vi.mocked(useQuery).mockReset();
-    vi.mocked(useQuery).mockReturnValue({} as any);
+    vi.mocked(useQuery).mockReturnValue({} as unknown as ReturnType<typeof useQuery>);
     vi.mocked(useMutation).mockReset();
     vi.mocked(useMutation).mockImplementation(
       (options: any) =>
@@ -42,7 +41,7 @@ describe("useDeckState hook", () => {
             }
           }),
           mutateAsync: vi.fn(),
-        }) as any,
+        }) as unknown as ReturnType<typeof useMutation>,
     );
   });
 
@@ -76,7 +75,7 @@ describe("useDeckState hook", () => {
     };
     vi.mocked(useQuery).mockReturnValue({
       data: mockDeck,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     const { result } = renderHook(() => useDeckState("12"));
 
@@ -155,7 +154,7 @@ describe("useDeckState hook", () => {
     };
     vi.mocked(useQuery).mockReturnValue({
       data: mockDeck,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     const { result } = renderHook(() => useDeckState("12"));
 
@@ -174,7 +173,10 @@ describe("useDeckState hook", () => {
   it("should validate and save deck successfully", async () => {
     const onSaveSuccessMock = vi.fn();
     vi.mocked(validateDeck).mockResolvedValueOnce({ ok: true });
-    vi.mocked(saveDeckService).mockResolvedValueOnce({ id: "saved-id", name: "Super Deck" } as any);
+    vi.mocked(saveDeckService).mockResolvedValueOnce({
+      id: 10,
+      name: "Super Deck",
+    } as unknown as Awaited<ReturnType<typeof saveDeckService>>);
 
     const { result } = renderHook(() => useDeckState(undefined, onSaveSuccessMock));
 
@@ -189,6 +191,6 @@ describe("useDeckState hook", () => {
 
     expect(result.current.submitError).toBeUndefined();
     expect(saveDeckService).toHaveBeenCalled();
-    expect(onSaveSuccessMock).toHaveBeenCalledWith({ id: "saved-id", name: "Super Deck" });
+    expect(onSaveSuccessMock).toHaveBeenCalledWith({ id: 10, name: "Super Deck" });
   });
 });

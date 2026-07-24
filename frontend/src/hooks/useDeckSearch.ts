@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 
 import { getDecksQueryEndpoint } from "../services/deck";
-import type { Deck, Page } from "../types";
+import type { Deck, Format, Page } from "../types";
 import { useSearch } from "./useSearch";
 
 /**
  * Filter state representation for decks.
  */
 export interface DeckFiltersState {
-  format: string;
+  format: Format | "ALL";
   username: string;
 }
 
@@ -21,8 +21,8 @@ export interface UseDeckSearchOptions {
   setPage?: (page: number) => void;
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
-  format?: string;
-  setFormat?: (format: string) => void;
+  format?: Format | "ALL";
+  setFormat?: (format: Format | "ALL") => void;
   username?: string;
   setUsername?: (username: string) => void;
 
@@ -134,14 +134,14 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
       initialPage,
       initialSearchQuery: initialQuery,
       initialFilters: {
-        format: initialFormat,
+        format: (initialFormat || "ALL") as Format | "ALL",
         username: initialUsername,
       },
       debounceTime,
       syncUrl,
       urlConfig: {
         parse: (params) => ({
-          format: params.get("format") || "ALL",
+          format: (params.get("format") || "ALL") as Format | "ALL",
           username: username || "",
         }),
         serialize: (params, f) => {
@@ -160,7 +160,7 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
   const totalPages = data?.page?.totalPages || 0;
   const totalElements = data?.page?.totalElements || 0;
 
-  const handleSetFormat = (nextFormat: string) => {
+  const handleSetFormat = (nextFormat: Format | "ALL") => {
     handleSetFilters((prev) => ({ ...prev, format: nextFormat }));
   };
 

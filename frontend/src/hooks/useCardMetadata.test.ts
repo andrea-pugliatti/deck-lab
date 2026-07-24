@@ -23,13 +23,15 @@ describe("useCardMetadata hook", () => {
     vi.mocked(useQuery).mockImplementation((options: any) => {
       const key = options?.queryKey?.[1];
       if (!isFetched) {
-        return { data: undefined } as any;
+        return { data: undefined } as unknown as ReturnType<typeof useQuery>;
       }
-      if (key === "types") return { data: mockTypes } as any;
-      if (key === "attributes") return { data: mockAttributes } as any;
-      if (key === "races") return { data: mockRaces } as any;
-      if (key === "archetypes") return { data: mockArchetypes } as any;
-      return { data: undefined } as any;
+      if (key === "types") return { data: mockTypes } as unknown as ReturnType<typeof useQuery>;
+      if (key === "attributes")
+        return { data: mockAttributes } as unknown as ReturnType<typeof useQuery>;
+      if (key === "races") return { data: mockRaces } as unknown as ReturnType<typeof useQuery>;
+      if (key === "archetypes")
+        return { data: mockArchetypes } as unknown as ReturnType<typeof useQuery>;
+      return { data: undefined } as unknown as ReturnType<typeof useQuery>;
     });
 
     const { result, rerender } = renderHook(() => useCardMetadata());

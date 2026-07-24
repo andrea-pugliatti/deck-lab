@@ -40,7 +40,7 @@ describe("useSearch hook", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
   });
 
   describe("Uncontrolled Mode", () => {
@@ -281,7 +281,7 @@ describe("useSearch hook", () => {
         isLoading: true,
         error: new Error("Fetch error"),
         refetch: refetchSpy,
-      } as any);
+      } as unknown as ReturnType<typeof useQuery>);
 
       const { result } = renderHook(() =>
         useSearch(mockEndpointBuilder, {
@@ -294,7 +294,7 @@ describe("useSearch hook", () => {
       expect(result.current.error).toEqual(new Error("Fetch error"));
 
       act(() => {
-        result.current.refetch();
+        void result.current.refetch();
       });
       expect(refetchSpy).toHaveBeenCalled();
     });

@@ -1,4 +1,4 @@
-import type { Card, CardSection, DeckCardItem } from "../types";
+import type { Card, CardSection, DeckCardItem, Format } from "../types";
 
 /**
  * Rules and sizing limitations enforced by a specific Yu-Gi-Oh! game format.
@@ -25,7 +25,7 @@ export const DEFAULT_RULES: FormatRules = {
 /**
  * Mapped collection of game formats and their respective deck size limits.
  */
-export const FORMAT_RULES_MAP: Record<string, FormatRules> = {
+export const FORMAT_RULES_MAP: Record<Format, FormatRules> = {
   TCG: DEFAULT_RULES,
   OCG: DEFAULT_RULES,
   Goat: {
@@ -42,6 +42,14 @@ export const FORMAT_RULES_MAP: Record<string, FormatRules> = {
     maxSideSize: 6,
     maxCopiesPerCard: 3,
   },
+  Edison: {
+    minMainSize: 40,
+    maxMainSize: 60,
+    maxExtraSize: 15,
+    maxSideSize: 15,
+    maxCopiesPerCard: 3,
+  },
+  Custom: DEFAULT_RULES,
 };
 
 /**
@@ -50,7 +58,7 @@ export const FORMAT_RULES_MAP: Record<string, FormatRules> = {
  * @param formatName - The identifier of the deck format (e.g. "Goat", "Speed Duel").
  * @returns The resolved FormatRules settings.
  */
-export function getFormatRules(formatName: string): FormatRules {
+export function getFormatRules(formatName: Format): FormatRules {
   return FORMAT_RULES_MAP[formatName] || DEFAULT_RULES;
 }
 
@@ -58,10 +66,10 @@ export function getFormatRules(formatName: string): FormatRules {
  * Checks if a card's type classification places it in the Extra Deck.
  * Extra Deck cards include Fusion, Synchro, Xyz, and Link monsters.
  *
- * @param cardType - The type classification text of the card.
- * @returns True if it is an Extra Deck monster, otherwise false.
+ * @param cardType - The type property of the target card.
+ * @returns True if the card goes to the Extra Deck.
  */
-export function isExtraDeckCard(cardType: string | undefined): boolean {
+export function isExtraDeckCard(cardType?: string): boolean {
   if (!cardType) return false;
   const lower = cardType.toLowerCase();
   return (
@@ -73,10 +81,9 @@ export function isExtraDeckCard(cardType: string | undefined): boolean {
 }
 
 /**
- * Validates whether a card can be added to a specific deck section under copy limits
- * and placement restrictions.
+ * Validates whether a card can be added to a specified deck section according to format rules.
  *
- * @param card - The Card schema to add.
+ * @param card - The card being added.
  * @param section - The target deck section (MAIN, EXTRA, or SIDE).
  * @param currentCards - The current deck items.
  * @param formatName - The name of the game format ruleset to check.
@@ -86,7 +93,7 @@ export function canAddCard(
   card: Card,
   section: CardSection,
   currentCards: DeckCardItem[],
-  formatName: string,
+  formatName: Format,
 ): { ok: boolean; error?: string } {
   const rules = getFormatRules(formatName);
 
@@ -136,7 +143,7 @@ export function clampQuantity(
   section: CardSection,
   newQty: number,
   currentCards: DeckCardItem[],
-  formatName: string,
+  formatName: Format,
 ): number {
   const rules = getFormatRules(formatName);
 
@@ -155,7 +162,7 @@ export function clampQuantity(
 export interface DeckState {
   name: string;
   description: string;
-  formatName: string;
+  formatName: Format;
   deckCards: DeckCardItem[];
   validationErrors: string[];
   validationSuccess: boolean;
@@ -170,13 +177,13 @@ export interface DeckState {
 export type DeckAction =
   | { type: "SET_NAME"; name: string }
   | { type: "SET_DESCRIPTION"; description: string }
-  | { type: "SET_FORMAT_NAME"; formatName: string }
+  | { type: "SET_FORMAT_NAME"; formatName: Format }
   | { type: "SET_DECK_CARDS"; deckCards: DeckCardItem[] }
   | {
       type: "LOAD_DECK";
       name: string;
       description: string;
-      formatName: string;
+      formatName: Format;
       deckCards: DeckCardItem[];
     }
   | { type: "ADD_CARD"; card: Card; section: CardSection }

@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { Deck } from "../types";
+import type { CardType, Deck } from "../types";
 import { useHandSimulator } from "./useHandSimulator";
 
 describe("useHandSimulator hook", () => {
@@ -11,8 +11,22 @@ describe("useHandSimulator hook", () => {
     description: "",
     formatName: "TCG",
     deckCards: [
-      { cardId: 10, name: "Card 1", quantity: 3, section: "MAIN", type: "spell", imageUrl: "" },
-      { cardId: 20, name: "Card 2", quantity: 2, section: "MAIN", type: "spell", imageUrl: "" },
+      {
+        cardId: 10,
+        name: "Card 1",
+        quantity: 3,
+        section: "MAIN",
+        type: "Spell Card" as CardType,
+        imageUrl: "",
+      },
+      {
+        cardId: 20,
+        name: "Card 2",
+        quantity: 2,
+        section: "MAIN",
+        type: "Spell Card" as CardType,
+        imageUrl: "",
+      },
     ],
     updatedAt: "2026-06-30T10:00:00Z",
   };

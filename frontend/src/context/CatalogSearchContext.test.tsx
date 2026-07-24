@@ -39,7 +39,7 @@ describe("CatalogSearchContext", () => {
       libraryLoading: false,
       totalSearchPages: 1,
       totalElements: 1,
-    } as any);
+    } as unknown as ReturnType<typeof useCatalogSearch>);
 
     vi.mocked(useCardMetadata).mockReturnValue({
       types: ["Monster", "Spell"],
@@ -50,7 +50,7 @@ describe("CatalogSearchContext", () => {
 
     vi.mocked(useQuery).mockReturnValue({
       data: ["TCG", "Goat"],
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <CatalogSearchProvider>

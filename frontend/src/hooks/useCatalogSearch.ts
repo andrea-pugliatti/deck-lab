@@ -1,5 +1,5 @@
 import { getCardsEndpoint } from "../services/card";
-import type { Card, CardFiltersState, Page } from "../types";
+import type { Card, CardAttribute, CardFiltersState, CardRace, CardType, Page } from "../types";
 import { useSearch } from "./useSearch";
 
 /**
@@ -104,9 +104,9 @@ export function useCatalogSearch(options: UseCatalogSearchOptions = {}) {
       syncUrl,
       urlConfig: {
         parse: (params) => ({
-          type: params.get("type") || "ALL",
-          attribute: params.get("attribute") || "ALL",
-          race: params.get("race") || "ALL",
+          type: (params.get("type") || "ALL") as CardType | "ALL",
+          attribute: (params.get("attribute") || "ALL") as CardAttribute | "ALL",
+          race: (params.get("race") || "ALL") as CardRace | "ALL",
           archetype: params.get("archetype") || "ALL",
         }),
         serialize: (params, f) => {
