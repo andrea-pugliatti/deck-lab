@@ -1,6 +1,6 @@
 import { SlidersHorizontal } from "lucide-react";
 
-import type { CardFiltersState } from "../../types";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
 import Button from "../ui/Button";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
@@ -11,9 +11,9 @@ import Select from "../ui/Select";
 export interface CardFiltersProps {
   filters: CardFiltersState;
   onChange: (filters: CardFiltersState) => void;
-  types: string[];
-  attributes: string[];
-  races: string[];
+  types: CardType[];
+  attributes: CardAttribute[];
+  races: CardRace[];
   archetypes: string[];
 }
 
@@ -46,19 +46,24 @@ export default function CardFilters({
     const isSpellProp = spellProperties.includes(race);
     const isTrapProp = trapProperties.includes(race);
 
-    if (selectedType === "Spell") {
+    if (selectedType.includes("Spell")) {
       return isSpellProp;
     }
-    if (selectedType === "Trap") {
+    if (selectedType.includes("Trap")) {
       return isTrapProp;
     }
-    if (selectedType === "Monster") {
+    if (
+      selectedType !== "ALL" &&
+      !selectedType.includes("Spell") &&
+      !selectedType.includes("Trap")
+    ) {
       return !isSpellProp && !isTrapProp;
     }
     return true;
   });
 
-  const isMonsterSelected = selectedType === "Monster" || selectedType === "ALL";
+  const isMonsterSelected =
+    selectedType === "ALL" || (!selectedType.includes("Spell") && !selectedType.includes("Trap"));
 
   return (
     <div className="bg-dark-surface border-border-dim space-y-5 rounded-lg border p-5">
@@ -77,7 +82,7 @@ export default function CardFilters({
           onChange={(e) => {
             onChange({
               ...filters,
-              type: e.target.value,
+              type: e.target.value as CardType | "ALL",
               race: "ALL",
             });
           }}
@@ -86,11 +91,11 @@ export default function CardFilters({
           <option value="ALL">All Types</option>
           {types.map((type) => (
             <option key={type} value={type}>
-              {type === "Monster"
+              {type.includes("Monster")
                 ? "Monsters"
-                : type === "Spell"
+                : type.includes("Spell")
                   ? "Spells"
-                  : type === "Trap"
+                  : type.includes("Trap")
                     ? "Traps"
                     : type}
             </option>
@@ -109,7 +114,7 @@ export default function CardFilters({
             onChange={(e) => {
               onChange({
                 ...filters,
-                attribute: e.target.value,
+                attribute: e.target.value as CardAttribute | "ALL",
               });
             }}
             className="text-xs"
@@ -126,9 +131,11 @@ export default function CardFilters({
 
       <div>
         <Label htmlFor="race-property" className="mb-2">
-          {selectedType === "Monster"
+          {!selectedType.includes("Spell") &&
+          !selectedType.includes("Trap") &&
+          selectedType !== "ALL"
             ? "Monster Type (Race)"
-            : selectedType === "Spell" || selectedType === "Trap"
+            : selectedType.includes("Spell") || selectedType.includes("Trap")
               ? "Property"
               : "Type / Property"}
         </Label>
@@ -138,7 +145,7 @@ export default function CardFilters({
           onChange={(e) => {
             onChange({
               ...filters,
-              race: e.target.value,
+              race: e.target.value as CardRace | "ALL",
             });
           }}
           className="text-xs"

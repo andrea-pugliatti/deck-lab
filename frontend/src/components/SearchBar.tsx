@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router";
 import { useDebounce } from "../hooks/useDebounce";
 import { getSuggestions } from "../services/card";
 import { getCardSuggestionsEndpoint } from "../services/card";
+import type { CardType } from "../types";
 
 /**
  * Representation of a card suggestion result returned in the search suggestions dropdown.
@@ -13,7 +14,7 @@ import { getCardSuggestionsEndpoint } from "../services/card";
 interface SuggestionCard {
   id: number;
   name: string;
-  type: string;
+  type: CardType;
 }
 
 /**
@@ -62,11 +63,11 @@ export default function SearchBar() {
     };
   }, []);
 
-  const handleSubmit = (e: React.SubmitEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.trim()) {
       setIsOpen(false);
-      navigate(`/cards?q=${encodeURIComponent(query.trim())}`);
+      void navigate(`/cards?q=${encodeURIComponent(query.trim())}`);
     }
   };
 
@@ -97,7 +98,7 @@ export default function SearchBar() {
   const handleSuggestionClick = (name: string) => {
     setQuery(name);
     setIsOpen(false);
-    navigate(`/cards?q=${encodeURIComponent(name)}`);
+    void navigate(`/cards?q=${encodeURIComponent(name)}`);
   };
 
   return (

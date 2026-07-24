@@ -164,7 +164,7 @@ export default function Header() {
                     variant="outline-red"
                     size="sm"
                     onClick={() => {
-                      logout();
+                      void logout();
                       setIsMobileMenuOpen(false);
                     }}
                     className="font-sans font-semibold tracking-wider uppercase"

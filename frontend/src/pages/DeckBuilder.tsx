@@ -62,7 +62,7 @@ function DeckBuilderContent(): React.JSX.Element {
     updateQuantity,
     removeCard,
   } = useDeckState(id, (savedDeck) => {
-    navigate(`/decks/${savedDeck.id}`);
+    void navigate(`/decks/${savedDeck.id}`);
   });
 
   const {
@@ -94,9 +94,9 @@ function DeckBuilderContent(): React.JSX.Element {
    *
    * @param {React.SubmitEvent} e - Form submission event.
    */
-  const handleSave = (e: React.SubmitEvent) => {
+  const handleSave = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    saveDeck();
+    void saveDeck();
   };
 
   /**

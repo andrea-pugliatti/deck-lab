@@ -33,7 +33,7 @@ describe("HandSimulator page component", () => {
     vi.mocked(useQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <MemoryRouter>
@@ -57,7 +57,7 @@ describe("HandSimulator page component", () => {
         updatedAt: "",
       },
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <MemoryRouter>

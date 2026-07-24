@@ -96,7 +96,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
     setDeleteError(undefined);
     try {
       await deleteDeck(deckToDelete.id);
-      refetch();
+      await refetch();
       setDeckToDelete(undefined);
     } catch (err) {
       console.error(err);

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { getMetadata } from "../../../services/card";
 import { generateAiDeck, getFormats } from "../../../services/deck";
-import type { DeckCardItem } from "../../../types";
+import type { DeckCardItem, Format, Strategy } from "../../../types";
 import Button from "../../ui/Button";
 import Label from "../../ui/Label";
 import Select from "../../ui/Select";
@@ -23,10 +23,10 @@ export interface AiDeckWizardProps {
   onDeckGenerated: (generatedData: {
     name: string;
     description: string;
-    formatName: string;
+    formatName: Format;
     deckCards: DeckCardItem[];
   }) => void;
-  currentFormat: string;
+  currentFormat: Format;
 }
 
 /**
@@ -44,8 +44,8 @@ export default function AiDeckWizard({
   currentFormat,
 }: AiDeckWizardProps) {
   const [archetype, setArchetype] = useState("");
-  const [strategy, setStrategy] = useState("None");
-  const [formatName, setFormatName] = useState(currentFormat || "TCG");
+  const [strategy, setStrategy] = useState<Strategy>("None");
+  const [formatName, setFormatName] = useState<Format>(currentFormat || "TCG");
   const [customPrompt, setCustomPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -56,11 +56,14 @@ export default function AiDeckWizard({
     queryKey: ["metadata", "archetypes"],
     queryFn: ({ signal }) => getMetadata("archetypes", signal),
   });
-  const { data: formatsData } = useQuery<string[]>({
+  const { data: formatsData } = useQuery<Format[]>({
     queryKey: ["formats"],
-    queryFn: ({ signal }) => getFormats(signal),
+    queryFn: async ({ signal }) => {
+      const res = await getFormats(signal);
+      return res as Format[];
+    },
   });
-  const formats = formatsData || ["TCG", "OCG", "Goat", "Edison"];
+  const formats: Format[] = formatsData || ["TCG", "OCG", "Goat", "Edison"];
 
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [prevCurrentFormat, setPrevCurrentFormat] = useState(currentFormat);
@@ -108,7 +111,7 @@ export default function AiDeckWizard({
     };
   }, [onClose]);
 
-  const handleGenerate = async (e: React.SubmitEvent) => {
+  const handleGenerate = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!archetype.trim()) {
       setError("Please specify an archetype first.");
@@ -202,7 +205,7 @@ export default function AiDeckWizard({
                 <Select
                   id="format"
                   value={formatName}
-                  onChange={(e) => setFormatName(e.target.value)}
+                  onChange={(e) => setFormatName(e.target.value as Format)}
                   disabled={loading}
                   className="mt-1"
                 >

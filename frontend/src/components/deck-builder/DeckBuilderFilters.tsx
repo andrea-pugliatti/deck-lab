@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-import type { CardFiltersState } from "../../types";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
 import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
@@ -46,9 +46,10 @@ export default function DeckBuilderFilters({
     const isSpellProp = spellProperties.includes(r);
     const isTrapProp = trapProperties.includes(r);
 
-    if (type === "Spell") return isSpellProp;
-    if (type === "Trap") return isTrapProp;
-    if (type === "Monster") return !isSpellProp && !isTrapProp;
+    if (type.includes("Spell")) return isSpellProp;
+    if (type.includes("Trap")) return isTrapProp;
+    if (type !== "ALL" && !type.includes("Spell") && !type.includes("Trap"))
+      return !isSpellProp && !isTrapProp;
     return true;
   });
 
@@ -71,7 +72,7 @@ export default function DeckBuilderFilters({
             onChange={(e) => {
               setFilters((prev) => ({
                 ...prev,
-                type: e.target.value,
+                type: e.target.value as CardType | "ALL",
                 race: "ALL",
               }));
             }}
@@ -90,11 +91,11 @@ export default function DeckBuilderFilters({
           <Label>Attribute</Label>
           <Select
             value={attribute}
-            disabled={type === "Spell" || type === "Trap"}
+            disabled={type.includes("Spell") || type.includes("Trap")}
             onChange={(e) => {
               setFilters((prev) => ({
                 ...prev,
-                attribute: e.target.value,
+                attribute: e.target.value as CardAttribute | "ALL",
               }));
             }}
             className="py-1.5 text-xs"
@@ -115,7 +116,7 @@ export default function DeckBuilderFilters({
             onChange={(e) => {
               setFilters((prev) => ({
                 ...prev,
-                race: e.target.value,
+                race: e.target.value as CardRace | "ALL",
               }));
             }}
             className="py-1.5 text-xs"

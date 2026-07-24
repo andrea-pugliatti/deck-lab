@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Card, DeckCardItem } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType, DeckCardItem } from "../../types";
 import DeckBuilderCardList from "./DeckBuilderCardList";
 
 describe("DeckBuilderCardList component", () => {
@@ -10,19 +10,19 @@ describe("DeckBuilderCardList component", () => {
     {
       id: 1,
       name: "Blue-Eyes White Dragon",
-      type: "Monster",
+      type: "Normal Monster" as CardType,
       description: "Legendary dragon",
-      race: "Dragon",
-      attribute: "LIGHT",
+      race: "Dragon" as CardRace,
+      attribute: "LIGHT" as CardAttribute,
       imageUrlCropped: "blue_eyes.jpg",
     },
     {
       id: 2,
       name: "Dark Magician",
-      type: "Monster",
+      type: "Normal Monster" as CardType,
       description: "Ultimate wizard",
-      race: "Spellcaster",
-      attribute: "DARK",
+      race: "Spellcaster" as CardRace,
+      attribute: "DARK" as CardAttribute,
       imageUrlCropped: "dark_magician.jpg",
     },
   ];

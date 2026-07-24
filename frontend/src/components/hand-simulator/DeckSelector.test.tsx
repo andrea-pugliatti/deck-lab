@@ -68,7 +68,7 @@ describe("DeckSelector component", () => {
       isLoading: false,
       error: null,
       refetch: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     vi.mocked(useDeckSearch).mockReturnValue({
       page: 0,
@@ -83,7 +83,7 @@ describe("DeckSelector component", () => {
       totalPages: 1,
       totalElements: 2,
       refetch: mockRefetch,
-    } as any);
+    } as unknown as ReturnType<typeof useDeckSearch>);
   });
 
   it("should render tabs, search input, and format dropdown", () => {
@@ -188,7 +188,7 @@ describe("DeckSelector component", () => {
       totalPages: 1,
       totalElements: 0,
       refetch: mockRefetch,
-    } as any);
+    } as unknown as ReturnType<typeof useDeckSearch>);
 
     const { container } = render(
       <MemoryRouter>
@@ -213,7 +213,7 @@ describe("DeckSelector component", () => {
       totalPages: 1,
       totalElements: 0,
       refetch: mockRefetch,
-    } as any);
+    } as unknown as ReturnType<typeof useDeckSearch>);
 
     render(
       <MemoryRouter>
@@ -244,7 +244,7 @@ describe("DeckSelector component", () => {
       totalPages: 0,
       totalElements: 0,
       refetch: mockRefetch,
-    } as any);
+    } as unknown as ReturnType<typeof useDeckSearch>);
 
     render(
       <MemoryRouter>

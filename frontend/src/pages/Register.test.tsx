@@ -24,7 +24,9 @@ describe("Register page component", () => {
   beforeEach(() => {
     registerMock.mockReset();
     navigateMock.mockReset();
-    vi.mocked(useAuth).mockReturnValue({ register: registerMock } as any);
+    vi.mocked(useAuth).mockReturnValue({ register: registerMock } as unknown as ReturnType<
+      typeof useAuth
+    >);
     vi.mocked(useNavigate).mockReturnValue(navigateMock);
   });
 

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { CardFiltersState } from "../../types";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
 import CardFilters from "./CardFilters";
 
 describe("CardFilters component", () => {
@@ -12,9 +12,25 @@ describe("CardFilters component", () => {
     archetype: "ALL",
   };
 
-  const mockTypes = ["Monster", "Spell", "Trap"];
-  const mockAttributes = ["LIGHT", "DARK", "FIRE", "WATER"];
-  const mockRaces = ["Spellcaster", "Dragon", "Normal", "Continuous", "Counter", "Quick-Play"];
+  const mockTypes: CardType[] = [
+    "Normal Monster" as CardType,
+    "Spell Card" as CardType,
+    "Trap Card" as CardType,
+  ];
+  const mockAttributes: CardAttribute[] = [
+    "LIGHT" as CardAttribute,
+    "DARK" as CardAttribute,
+    "FIRE" as CardAttribute,
+    "WATER" as CardAttribute,
+  ];
+  const mockRaces: CardRace[] = [
+    "Spellcaster" as CardRace,
+    "Dragon" as CardRace,
+    "Normal" as CardRace,
+    "Continuous" as CardRace,
+    "Counter" as CardRace,
+    "Quick-Play" as CardRace,
+  ];
   const mockArchetypes = ["Blue-Eyes", "Dark Magician", "Elemental HERO"];
 
   it("renders filter controls and headings", () => {
@@ -30,7 +46,7 @@ describe("CardFilters component", () => {
       />,
     );
 
-    expect(screen.getByText("Catalog Filters")).toBeInTheDocument();
+    expect(screen.getByText(/catalog filters/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/card type/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/monster attribute/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/type \/ property/i)).toBeInTheDocument();
@@ -42,7 +58,7 @@ describe("CardFilters component", () => {
     const handleChange = vi.fn();
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Spell" }}
+        filters={{ ...defaultFilters, type: "Spell Card" as CardType }}
         onChange={handleChange}
         types={mockTypes}
         attributes={mockAttributes}
@@ -58,7 +74,7 @@ describe("CardFilters component", () => {
     const handleChange = vi.fn();
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Trap" }}
+        filters={{ ...defaultFilters, type: "Trap Card" as CardType }}
         onChange={handleChange}
         types={mockTypes}
         attributes={mockAttributes}
@@ -84,10 +100,10 @@ describe("CardFilters component", () => {
     );
 
     const select = screen.getByLabelText(/card type/i);
-    fireEvent.change(select, { target: { value: "Spell" } });
+    fireEvent.change(select, { target: { value: "Spell Card" } });
 
     expect(handleChange).toHaveBeenCalledWith({
-      type: "Spell",
+      type: "Spell Card",
       attribute: "ALL",
       race: "ALL",
       archetype: "ALL",
@@ -98,7 +114,7 @@ describe("CardFilters component", () => {
     const handleChange = vi.fn();
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Monster" }}
+        filters={{ ...defaultFilters, type: "Normal Monster" as CardType }}
         onChange={handleChange}
         types={mockTypes}
         attributes={mockAttributes}
@@ -111,7 +127,7 @@ describe("CardFilters component", () => {
     fireEvent.change(select, { target: { value: "DARK" } });
 
     expect(handleChange).toHaveBeenCalledWith({
-      type: "Monster",
+      type: "Normal Monster",
       attribute: "DARK",
       race: "ALL",
       archetype: "ALL",
@@ -171,9 +187,9 @@ describe("CardFilters component", () => {
     render(
       <CardFilters
         filters={{
-          type: "Monster",
-          attribute: "LIGHT",
-          race: "Dragon",
+          type: "Normal Monster" as CardType,
+          attribute: "LIGHT" as CardAttribute,
+          race: "Dragon" as CardRace,
           archetype: "Blue-Eyes",
         }}
         onChange={handleChange}
@@ -198,11 +214,18 @@ describe("CardFilters component", () => {
   it("filters races properly based on selectedType = Spell", () => {
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Spell" }}
+        filters={{ ...defaultFilters, type: "Spell Card" as CardType }}
         onChange={vi.fn()}
         types={mockTypes}
         attributes={mockAttributes}
-        races={["Dragon", "Spellcaster", "Quick-Play", "Normal", "Continuous", "Counter"]}
+        races={[
+          "Dragon" as CardRace,
+          "Spellcaster" as CardRace,
+          "Quick-Play" as CardRace,
+          "Normal" as CardRace,
+          "Continuous" as CardRace,
+          "Counter" as CardRace,
+        ]}
         archetypes={mockArchetypes}
       />,
     );
@@ -225,11 +248,18 @@ describe("CardFilters component", () => {
   it("filters races properly based on selectedType = Trap", () => {
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Trap" }}
+        filters={{ ...defaultFilters, type: "Trap Card" as CardType }}
         onChange={vi.fn()}
         types={mockTypes}
         attributes={mockAttributes}
-        races={["Dragon", "Spellcaster", "Quick-Play", "Normal", "Continuous", "Counter"]}
+        races={[
+          "Dragon" as CardRace,
+          "Spellcaster" as CardRace,
+          "Quick-Play" as CardRace,
+          "Normal" as CardRace,
+          "Continuous" as CardRace,
+          "Counter" as CardRace,
+        ]}
         archetypes={mockArchetypes}
       />,
     );
@@ -252,7 +282,7 @@ describe("CardFilters component", () => {
   it("filters races properly based on selectedType = Monster", () => {
     render(
       <CardFilters
-        filters={{ ...defaultFilters, type: "Monster" }}
+        filters={{ ...defaultFilters, type: "Normal Monster" as CardType }}
         onChange={vi.fn()}
         types={mockTypes}
         attributes={mockAttributes}

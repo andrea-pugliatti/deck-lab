@@ -2,17 +2,17 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it } from "vitest";
 
-import type { Card } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../types";
 import CardGridItem from "./CardGridItem";
 
 describe("CardGridItem component", () => {
   const monsterCard: Card = {
     id: 101,
     name: "Blue-Eyes White Dragon",
-    type: "Normal Monster",
+    type: "Normal Monster" as CardType,
     description: "This legendary dragon is a powerful engine of destruction.",
-    race: "Dragon",
-    attribute: "LIGHT",
+    race: "Dragon" as CardRace,
+    attribute: "LIGHT" as CardAttribute,
     level: 8,
     atk: 3000,
     def: 2500,
@@ -22,10 +22,10 @@ describe("CardGridItem component", () => {
   const spellCard: Card = {
     id: 201,
     name: "Monster Reborn",
-    type: "Normal Spell Card",
+    type: "Normal Spell Card" as CardType,
     description: "Target 1 monster in either GY; Special Summon it.",
-    race: "Normal",
-    attribute: "SPELL",
+    race: "Normal" as CardRace,
+    attribute: "SPELL" as CardAttribute,
   };
 
   it("renders a monster card correctly", () => {
@@ -120,10 +120,10 @@ describe("CardGridItem component", () => {
     const cardMinimal: Card = {
       id: 999,
       name: "Mystery Card",
-      type: "Unknown",
+      type: "Normal Monster" as CardType,
       description: "Something mysterious",
-      race: "",
-      attribute: "",
+      race: "" as CardRace,
+      attribute: "" as CardAttribute,
     };
 
     render(

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { Card } from "../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../types";
 import HeroCardShowcase from "./HeroCardShowcase";
 
 describe("HeroCardShowcase component", () => {
@@ -9,10 +9,10 @@ describe("HeroCardShowcase component", () => {
     {
       id: 1,
       name: "Blue-Eyes White Dragon",
-      type: "Normal Monster",
+      type: "Normal Monster" as CardType,
       description: "Legendary dragon",
-      attribute: "LIGHT",
-      race: "Dragon",
+      attribute: "LIGHT" as CardAttribute,
+      race: "Dragon" as CardRace,
       level: 8,
       atk: 3000,
       def: 2500,
@@ -22,10 +22,10 @@ describe("HeroCardShowcase component", () => {
     {
       id: 2,
       name: "Raigeki",
-      type: "Spell Card",
+      type: "Spell Card" as CardType,
       description: "Destroy monsters",
-      attribute: "SPELL",
-      race: "Normal",
+      attribute: "SPELL" as CardAttribute,
+      race: "Normal" as CardRace,
       imageUrl: "",
       imageUrlCropped: "",
     },

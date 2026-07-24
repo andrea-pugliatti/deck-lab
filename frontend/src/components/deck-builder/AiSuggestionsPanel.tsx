@@ -2,7 +2,15 @@ import { AlertCircle, RotateCcw, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
 
 import { fetchAiSuggestions } from "../../services/deck";
-import type { Card, CardSection, DeckCardItem, Suggestion } from "../../types";
+import type {
+  Card,
+  CardAttribute,
+  CardRace,
+  CardSection,
+  DeckCardItem,
+  Format,
+  Suggestion,
+} from "../../types";
 import LoadingSpinner from "../LoadingSpinner";
 import Button from "../ui/Button";
 import AiSuggestionItem from "./AiSuggestionItem";
@@ -12,7 +20,7 @@ import AiSuggestionItem from "./AiSuggestionItem";
  */
 export interface AiSuggestionsPanelProps {
   deckCards: DeckCardItem[];
-  formatName: string;
+  formatName: Format;
   addCard: (card: Card, section: CardSection) => void;
 }
 
@@ -38,13 +46,7 @@ export default function AiSuggestionsPanel({
     setError(undefined);
 
     try {
-      const currentCards = deckCards.map((c) => ({
-        cardId: c.cardId,
-        name: c.name,
-        section: c.section,
-        quantity: c.quantity,
-      }));
-      const data = await fetchAiSuggestions(formatName, currentCards);
+      const data = await fetchAiSuggestions(formatName, deckCards);
       setSuggestions(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not retrieve recommendations.");
@@ -61,8 +63,8 @@ export default function AiSuggestionsPanel({
         type: suggested.type,
         imageUrlCropped: suggested.imageUrl,
         description: "",
-        race: "",
-        attribute: "",
+        race: "" as CardRace,
+        attribute: "" as CardAttribute,
       },
       suggested.section,
     );

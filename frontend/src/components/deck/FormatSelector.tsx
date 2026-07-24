@@ -1,9 +1,11 @@
+import type { Format } from "../../types";
+
 /**
  * Properties for the {@link FormatSelector} component.
  */
 export interface FormatSelectorProps {
-  selectedFormat: string;
-  setSelectedFormat: (format: string) => void;
+  selectedFormat: Format | "ALL";
+  setSelectedFormat: (format: Format | "ALL") => void;
   formats: string[];
 }
 
@@ -24,7 +26,7 @@ export default function FormatSelector({
       {formats.map((format) => (
         <button
           key={format}
-          onClick={() => setSelectedFormat(format)}
+          onClick={() => setSelectedFormat(format as Format | "ALL")}
           className={`cursor-pointer rounded border px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
             selectedFormat === format
               ? "bg-cyan-accent/10 border-cyan-accent text-cyan-accent"

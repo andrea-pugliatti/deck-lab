@@ -127,7 +127,7 @@ export default function DeckListCard({
           if (onSelect) {
             onSelect(id);
           } else {
-            navigate(`/decks/${id}`, { viewTransition: true });
+            void navigate(`/decks/${id}`, { viewTransition: true });
           }
         }}
         onKeyDown={(e) => {
@@ -139,7 +139,7 @@ export default function DeckListCard({
             if (onSelect) {
               onSelect(id);
             } else {
-              navigate(`/decks/${id}`, { viewTransition: true });
+              void navigate(`/decks/${id}`, { viewTransition: true });
             }
           }
         }}

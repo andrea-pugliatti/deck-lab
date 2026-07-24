@@ -24,7 +24,9 @@ describe("Login page component", () => {
   beforeEach(() => {
     loginMock.mockReset();
     navigateMock.mockReset();
-    vi.mocked(useAuth).mockReturnValue({ login: loginMock } as any);
+    vi.mocked(useAuth).mockReturnValue({ login: loginMock } as unknown as ReturnType<
+      typeof useAuth
+    >);
     vi.mocked(useNavigate).mockReturnValue(navigateMock);
   });
 

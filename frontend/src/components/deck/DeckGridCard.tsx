@@ -1,6 +1,7 @@
 import { Calendar, Edit, Layers, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 
+import type { Format } from "../../types";
 import { formatRelativeTime } from "../../utils/date";
 import Badge from "../ui/Badge";
 import Button, { getButtonClasses } from "../ui/Button";
@@ -12,7 +13,7 @@ export interface DeckGridCardProps {
   id: number;
   name: string;
   description?: string;
-  formatName: string;
+  formatName: Format;
   cardCount: number;
   updatedAt?: string;
   creatorUsername?: string;
@@ -137,7 +138,7 @@ export default function DeckGridCard({
           if (onSelect) {
             onSelect(id);
           } else {
-            navigate(`/decks/${id}`, { viewTransition: true });
+            void navigate(`/decks/${id}`, { viewTransition: true });
           }
         }}
         onKeyDown={(e) => {
@@ -149,7 +150,7 @@ export default function DeckGridCard({
             if (onSelect) {
               onSelect(id);
             } else {
-              navigate(`/decks/${id}`, { viewTransition: true });
+              void navigate(`/decks/${id}`, { viewTransition: true });
             }
           }
         }}

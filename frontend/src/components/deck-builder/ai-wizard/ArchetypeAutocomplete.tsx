@@ -10,7 +10,7 @@ export interface ArchetypeAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-  archetypes: string[];
+  archetypes?: string[];
 }
 
 /**

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { DeckCardItem } from "../../types";
+import type { CardType, DeckCardItem, Format } from "../../types";
 import DeckSectionList from "./DeckSectionList";
 
 describe("DeckSectionList component", () => {
@@ -12,7 +12,7 @@ describe("DeckSectionList component", () => {
     {
       cardId: 1,
       name: "Blue-Eyes White Dragon",
-      type: "Monster Card",
+      type: "Normal Monster" as CardType,
       section: "MAIN",
       quantity: 3,
       imageUrl: "blue_eyes.jpg",
@@ -20,7 +20,7 @@ describe("DeckSectionList component", () => {
     {
       cardId: 2,
       name: "Polymerization",
-      type: "Spell Card",
+      type: "Spell Card" as CardType,
       section: "MAIN",
       quantity: 1,
       imageUrl: "poly.jpg",
@@ -40,7 +40,7 @@ describe("DeckSectionList component", () => {
       <DeckSectionList
         section="MAIN"
         deckCards={mockDeckCards}
-        formatName="TCG"
+        formatName={"TCG" as Format}
         updateQuantity={mockUpdateQuantity}
         removeCard={mockRemoveCard}
       />,
@@ -60,7 +60,7 @@ describe("DeckSectionList component", () => {
       <DeckSectionList
         section="EXTRA"
         deckCards={mockDeckCards}
-        formatName="TCG"
+        formatName={"TCG" as Format}
         updateQuantity={mockUpdateQuantity}
         removeCard={mockRemoveCard}
       />,
@@ -79,7 +79,7 @@ describe("DeckSectionList component", () => {
       <DeckSectionList
         section="SIDE"
         deckCards={mockDeckCards}
-        formatName="TCG"
+        formatName={"TCG" as Format}
         updateQuantity={mockUpdateQuantity}
         removeCard={mockRemoveCard}
       />,
@@ -95,7 +95,7 @@ describe("DeckSectionList component", () => {
       <DeckSectionList
         section="MAIN"
         deckCards={[]}
-        formatName="TCG"
+        formatName={"TCG" as Format}
         updateQuantity={mockUpdateQuantity}
         removeCard={mockRemoveCard}
       />,

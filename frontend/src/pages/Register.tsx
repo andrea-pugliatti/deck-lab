@@ -32,7 +32,7 @@ export default function Register(): React.JSX.Element {
    *
    * @param {React.SubmitEvent} e - Form submission event.
    */
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(undefined);
 
@@ -44,7 +44,7 @@ export default function Register(): React.JSX.Element {
     setSubmitting(true);
     try {
       await register(username, email, password);
-      navigate("/decks");
+      void navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {

@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import { getFormatRules } from "../../reducers/deckReducer";
-import type { DeckCardItem, Suggestion } from "../../types";
+import type { DeckCardItem, Format, Suggestion } from "../../types";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
@@ -12,7 +12,7 @@ import Button from "../ui/Button";
 export interface AiSuggestionItemProps {
   card: Suggestion;
   deckCards: DeckCardItem[];
-  formatName: string;
+  formatName: Format;
   onAdd: (card: Suggestion) => void;
 }
 

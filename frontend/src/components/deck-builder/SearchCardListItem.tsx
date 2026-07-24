@@ -12,7 +12,7 @@ export interface SearchCardListItemProps {
   type?: string;
   imageUrl?: string;
   card: Card;
-  deckCards: DeckCardItem[];
+  deckCards?: DeckCardItem[];
   addCard: (card: Card, section: CardSection) => void;
 }
 

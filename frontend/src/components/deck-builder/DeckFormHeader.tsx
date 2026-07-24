@@ -1,5 +1,6 @@
 import { Layers } from "lucide-react";
 
+import type { Format } from "../../types";
 import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
@@ -13,8 +14,8 @@ export interface DeckFormHeaderProps {
   setName: (name: string) => void;
   description: string;
   setDescription: (desc: string) => void;
-  formatName: string;
-  setFormatName: (format: string) => void;
+  formatName: Format;
+  setFormatName: (format: Format) => void;
   formats: string[];
 }
 
@@ -55,7 +56,7 @@ export default function DeckFormHeader({
 
         <div className="md:col-span-4">
           <Label>Legality Format</Label>
-          <Select value={formatName} onChange={(e) => setFormatName(e.target.value)}>
+          <Select value={formatName} onChange={(e) => setFormatName(e.target.value as Format)}>
             {formats.map((f) => (
               <option key={f} value={f}>
                 {f}

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Card } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../types";
 import SearchCardGridItem from "./SearchCardGridItem";
 
 describe("SearchCardGridItem component", () => {
@@ -9,10 +9,10 @@ describe("SearchCardGridItem component", () => {
   const mockCard: Card = {
     id: 101,
     name: "Dark Magician",
-    type: "Spellcaster Monster",
+    type: "Normal Monster" as CardType,
     description: "Ultimate wizard",
-    race: "Spellcaster",
-    attribute: "DARK",
+    race: "Spellcaster" as CardRace,
+    attribute: "DARK" as CardAttribute,
     imageUrlCropped: "dm.jpg",
   };
 
@@ -103,7 +103,7 @@ describe("SearchCardGridItem component", () => {
 
   it("should enable Extra button and disable Main button for Extra Deck monsters", () => {
     mockAddCard.mockClear();
-    const fusionCard = { ...mockCard, type: "Fusion Monster" };
+    const fusionCard: Card = { ...mockCard, type: "Fusion Monster" as CardType };
 
     render(
       <SearchCardGridItem

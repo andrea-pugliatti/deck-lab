@@ -31,7 +31,7 @@ describe("SearchBar component", () => {
         ],
       },
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
   });
 
   it("should render input field and static trending links", () => {

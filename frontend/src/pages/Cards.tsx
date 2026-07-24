@@ -14,6 +14,7 @@ import ViewToggle from "../components/ui/ViewToggle";
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useCatalogSearch } from "../hooks/useCatalogSearch";
 import { useViewPreference } from "../hooks/useViewPreference";
+import type { CardAttribute, CardRace, CardType } from "../types";
 
 /**
  * Number of cards to display per page in the pagination grid.
@@ -59,9 +60,9 @@ export default function Cards(): React.JSX.Element {
           <CardFilters
             filters={filters}
             onChange={(newFilters) => setFilters(newFilters)}
-            types={types}
-            attributes={attributes}
-            races={races}
+            types={types as CardType[]}
+            attributes={attributes as CardAttribute[]}
+            races={races as CardRace[]}
             archetypes={archetypes}
           />
         </aside>

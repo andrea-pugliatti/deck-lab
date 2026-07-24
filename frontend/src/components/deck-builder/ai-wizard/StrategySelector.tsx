@@ -1,3 +1,4 @@
+import type { Strategy } from "../../../types";
 import Label from "../../ui/Label";
 
 /**
@@ -5,7 +6,7 @@ import Label from "../../ui/Label";
  */
 export interface StrategyOption {
   label: string;
-  value: string;
+  value: Strategy;
   description: string;
 }
 
@@ -61,8 +62,8 @@ export const strategies: StrategyOption[] = [
  * Props for the {@link StrategySelector} component.
  */
 export interface StrategySelectorProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: Strategy;
+  onChange: (value: Strategy) => void;
   disabled?: boolean;
 }
 

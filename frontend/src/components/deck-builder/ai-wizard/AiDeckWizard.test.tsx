@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { generateAiDeck } from "../../../services/deck";
+import type { Format } from "../../../types";
 import AiDeckWizard from "./AiDeckWizard";
 
 // Mock services
@@ -33,12 +34,17 @@ describe("AiDeckWizard component", () => {
     vi.mocked(useQuery).mockImplementation((options: any) => {
       const queryKey = options?.queryKey || [];
       if (queryKey.includes("archetypes")) {
-        return { data: ["Blue-Eyes", "Dark Magician"], isLoading: false } as any;
+        return { data: ["Blue-Eyes", "Dark Magician"], isLoading: false } as unknown as ReturnType<
+          typeof useQuery
+        >;
       }
       if (queryKey.includes("formats")) {
-        return { data: ["TCG", "OCG", "Goat", "Edison"], isLoading: false } as any;
+        return {
+          data: ["TCG", "OCG", "Goat", "Edison"],
+          isLoading: false,
+        } as unknown as ReturnType<typeof useQuery>;
       }
-      return { data: null, isLoading: false } as any;
+      return { data: null, isLoading: false } as unknown as ReturnType<typeof useQuery>;
     });
   });
 
@@ -95,7 +101,7 @@ describe("AiDeckWizard component", () => {
     const mockDeckResult = {
       name: "Blue-Eyes Deck",
       description: "Generated Blue-Eyes Deck",
-      formatName: "TCG",
+      formatName: "TCG" as Format,
       deckCards: [
         {
           cardId: 123,
@@ -153,7 +159,7 @@ describe("AiDeckWizard component", () => {
     const mockDeckResult = {
       name: "Blue-Eyes Deck",
       description: "Generated Blue-Eyes Deck",
-      formatName: "TCG",
+      formatName: "TCG" as Format,
       deckCards: [],
       validationWarnings: ["Too few cards", "Missing core cards"],
     };

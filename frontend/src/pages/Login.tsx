@@ -30,13 +30,13 @@ export default function Login(): React.JSX.Element {
    *
    * @param {React.SubmitEvent} e - Form submission event.
    */
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(undefined);
     setSubmitting(true);
     try {
       await login(usernameOrEmail, password);
-      navigate("/decks");
+      void navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

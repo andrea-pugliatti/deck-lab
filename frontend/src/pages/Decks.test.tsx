@@ -36,7 +36,7 @@ describe("Decks page component", () => {
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
       user: { username: "yugi" },
-    } as any);
+    } as unknown as ReturnType<typeof useAuth>);
 
     vi.mocked(useDeckSearch).mockReturnValue({
       page: 0,
@@ -50,7 +50,7 @@ describe("Decks page component", () => {
       totalPages: 1,
       totalElements: 1,
       refetch: mockRefetch,
-    } as any);
+    } as unknown as ReturnType<typeof useDeckSearch>);
   });
 
   it("should render page headers, search filter input, and public decks", () => {

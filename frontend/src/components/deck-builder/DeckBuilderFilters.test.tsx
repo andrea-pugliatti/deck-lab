@@ -1,10 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import type { CardFiltersState } from "../../types";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
 import DeckBuilderFilters from "./DeckBuilderFilters";
 
 describe("DeckBuilderFilters component", () => {
+  const mockSetSearchQuery = vi.fn();
+  const mockSetFilters = vi.fn();
+
   const defaultFilters: CardFiltersState = {
     type: "ALL",
     attribute: "ALL",
@@ -12,18 +15,30 @@ describe("DeckBuilderFilters component", () => {
     archetype: "ALL",
   };
 
-  const mockSetSearchQuery = vi.fn();
-  const mockSetFilters = vi.fn();
-
-  const types = ["Monster", "Spell", "Trap"];
-  const attributes = ["LIGHT", "DARK", "FIRE"];
-  const races = ["Dragon", "Spellcaster", "Continuous", "Counter", "Quick-Play"];
+  const types: CardType[] = [
+    "Normal Monster" as CardType,
+    "Spell Card" as CardType,
+    "Trap Card" as CardType,
+  ];
+  const attributes: CardAttribute[] = ["LIGHT" as CardAttribute, "DARK" as CardAttribute];
+  const races: CardRace[] = [
+    "Dragon" as CardRace,
+    "Spellcaster" as CardRace,
+    "Continuous" as CardRace,
+    "Counter" as CardRace,
+    "Quick-Play" as CardRace,
+  ];
   const archetypes = ["Blue-Eyes", "Dark Magician"];
 
-  it("should render filter inputs and options correctly", () => {
-    const { container } = render(
+  beforeEach(() => {
+    mockSetSearchQuery.mockReset();
+    mockSetFilters.mockReset();
+  });
+
+  it("should render all select inputs and search field", () => {
+    render(
       <DeckBuilderFilters
-        searchQuery=""
+        searchQuery="dragon"
         setSearchQuery={mockSetSearchQuery}
         filters={defaultFilters}
         setFilters={mockSetFilters}
@@ -34,13 +49,14 @@ describe("DeckBuilderFilters component", () => {
       />,
     );
 
-    expect(screen.getByPlaceholderText("Search catalog by name...")).toBeInTheDocument();
-    const selects = container.querySelectorAll("select");
-    expect(selects.length).toBe(4);
+    const searchInput = screen.getByPlaceholderText("Search catalog by name...");
+    expect(searchInput).toHaveValue("dragon");
+
+    const selects = screen.getAllByRole("combobox");
+    expect(selects).toHaveLength(4); // type, attribute, race, archetype
   });
 
-  it("should trigger setSearchQuery when typing in the search box", () => {
-    mockSetSearchQuery.mockClear();
+  it("should handle search input change", () => {
     render(
       <DeckBuilderFilters
         searchQuery=""
@@ -55,14 +71,12 @@ describe("DeckBuilderFilters component", () => {
     );
 
     const searchInput = screen.getByPlaceholderText("Search catalog by name...");
-    fireEvent.change(searchInput, { target: { value: "Blue-Eyes" } });
-
-    expect(mockSetSearchQuery).toHaveBeenCalledWith("Blue-Eyes");
+    fireEvent.change(searchInput, { target: { value: "blue-eyes" } });
+    expect(mockSetSearchQuery).toHaveBeenCalledWith("blue-eyes");
   });
 
-  it("should call setFilters when attribute, race, or archetype filters change", () => {
-    mockSetFilters.mockClear();
-    const { container } = render(
+  it("should handle filter select changes", () => {
+    render(
       <DeckBuilderFilters
         searchQuery=""
         setSearchQuery={mockSetSearchQuery}
@@ -75,13 +89,13 @@ describe("DeckBuilderFilters component", () => {
       />,
     );
 
-    const selects = container.querySelectorAll("select");
+    const selects = screen.getAllByRole("combobox");
 
-    // Change Attribute (index 1)
-    fireEvent.change(selects[1], { target: { value: "LIGHT" } });
-    expect(mockSetFilters).toHaveBeenCalledTimes(1);
+    // Change type
+    fireEvent.change(selects[0], { target: { value: "Spell Card" } });
+    expect(mockSetFilters).toHaveBeenCalled();
 
-    // Change Archetype (index 3)
+    // Change archetype
     fireEvent.change(selects[3], { target: { value: "Blue-Eyes" } });
     expect(mockSetFilters).toHaveBeenCalledTimes(2);
   });
@@ -90,7 +104,7 @@ describe("DeckBuilderFilters component", () => {
     mockSetFilters.mockClear();
     const spellFilters: CardFiltersState = {
       ...defaultFilters,
-      type: "Spell",
+      type: "Spell Card" as CardType,
     };
 
     const { container, rerender } = render(
@@ -106,13 +120,12 @@ describe("DeckBuilderFilters component", () => {
       />,
     );
 
-    // Attribute select (index 1) should be disabled for Spell
     expect(container.querySelectorAll("select")[1]).toBeDisabled();
 
-    // Rerender with type = Monster
+    // Rerender with type = Normal Monster
     const monsterFilters: CardFiltersState = {
       ...defaultFilters,
-      type: "Monster",
+      type: "Normal Monster" as CardType,
     };
     rerender(
       <DeckBuilderFilters
@@ -130,10 +143,9 @@ describe("DeckBuilderFilters component", () => {
   });
 
   it("should filter races based on type (Spell, Trap, Monster)", () => {
-    // When Type is Spell, race options should only contain Spell properties: Quick-Play, Continuous, Ritual, Normal, Field, Equip
     const spellFilters: CardFiltersState = {
       ...defaultFilters,
-      type: "Spell",
+      type: "Spell Card" as CardType,
     };
 
     const { rerender } = render(
@@ -144,22 +156,19 @@ describe("DeckBuilderFilters component", () => {
         setFilters={mockSetFilters}
         types={types}
         attributes={attributes}
-        races={races} // races: ["Dragon", "Spellcaster", "Continuous", "Counter", "Quick-Play"]
+        races={races}
         archetypes={archetypes}
       />,
     );
 
-    // Quick-Play, Continuous are spell properties in spellProperties.
-    // Counter is a trap property. Dragon and Spellcaster are monster properties.
     expect(screen.queryByText("Dragon")).not.toBeInTheDocument();
     expect(screen.queryByText("Counter")).not.toBeInTheDocument();
     expect(screen.getByText("Continuous")).toBeInTheDocument();
     expect(screen.getByText("Quick-Play")).toBeInTheDocument();
 
-    // When Type is Trap, it should only contain Trap properties (Counter, Continuous, Normal)
     const trapFilters: CardFiltersState = {
       ...defaultFilters,
-      type: "Trap",
+      type: "Trap Card" as CardType,
     };
     rerender(
       <DeckBuilderFilters
@@ -178,10 +187,9 @@ describe("DeckBuilderFilters component", () => {
     expect(screen.getByText("Counter")).toBeInTheDocument();
     expect(screen.getByText("Continuous")).toBeInTheDocument();
 
-    // When Type is Monster, it should filter out spell/trap properties
     const monsterFilters: CardFiltersState = {
       ...defaultFilters,
-      type: "Monster",
+      type: "Normal Monster" as CardType,
     };
     rerender(
       <DeckBuilderFilters
@@ -224,12 +232,14 @@ describe("DeckBuilderFilters component", () => {
       />,
     );
 
-    fireEvent.change(container.querySelectorAll("select")[0], { target: { value: "Monster" } });
+    fireEvent.change(container.querySelectorAll("select")[0], {
+      target: { value: "Normal Monster" },
+    });
 
     // The setFilters updater function is called
     expect(setFiltersMock).toHaveBeenCalledTimes(1);
     expect(currentFilters).toEqual({
-      type: "Monster",
+      type: "Normal Monster",
       attribute: "ALL",
       race: "ALL",
       archetype: "ALL",

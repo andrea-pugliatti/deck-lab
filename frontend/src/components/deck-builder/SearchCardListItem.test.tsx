@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Card } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../types";
 import SearchCardListItem from "./SearchCardListItem";
 
 describe("SearchCardListItem component", () => {
@@ -9,10 +9,10 @@ describe("SearchCardListItem component", () => {
   const mockCard: Card = {
     id: 101,
     name: "Dark Magician",
-    type: "Spellcaster Monster",
+    type: "Normal Monster" as CardType,
     description: "Ultimate wizard",
-    race: "Spellcaster",
-    attribute: "DARK",
+    race: "Spellcaster" as CardRace,
+    attribute: "DARK" as CardAttribute,
     imageUrlCropped: "dm.jpg",
   };
 
@@ -106,7 +106,7 @@ describe("SearchCardListItem component", () => {
 
   it("should enable Extra button and disable Main button for Extra Deck monsters", () => {
     mockAddCard.mockClear();
-    const fusionCard = { ...mockCard, type: "Fusion Monster" };
+    const fusionCard: Card = { ...mockCard, type: "Fusion Monster" as CardType };
 
     render(
       <SearchCardListItem

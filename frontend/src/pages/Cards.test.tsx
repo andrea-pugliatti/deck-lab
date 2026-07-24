@@ -48,7 +48,7 @@ describe("Cards page component", () => {
       totalElements: 1,
       error: undefined,
       refetch: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useCatalogSearch>);
   });
 
   it("should render page header, filters sidebar, search input, and card results", () => {

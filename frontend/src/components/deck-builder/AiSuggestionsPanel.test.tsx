@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { fetchAiSuggestions } from "../../services/deck";
-import type { DeckCardItem, Suggestion } from "../../types";
+import type { CardType, DeckCardItem, Format, Suggestion } from "../../types";
 import AiSuggestionsPanel from "./AiSuggestionsPanel";
 
 vi.mock("../../services/deck", () => ({
@@ -12,15 +12,32 @@ vi.mock("../../services/deck", () => ({
 describe("AiSuggestionsPanel component", () => {
   const mockAddCard = vi.fn();
   const mockDeckCards: DeckCardItem[] = [
-    { cardId: 1, name: "Blue-Eyes White Dragon", quantity: 1, section: "MAIN" },
+    {
+      cardId: 1,
+      name: "Blue-Eyes White Dragon",
+      quantity: 1,
+      section: "MAIN",
+      type: "Normal Monster" as CardType,
+      imageUrl: "",
+    },
   ];
 
-  it("should render instructions initially", () => {
-    render(<AiSuggestionsPanel deckCards={mockDeckCards} formatName="TCG" addCard={mockAddCard} />);
+  beforeEach(() => {
+    mockAddCard.mockReset();
+    vi.mocked(fetchAiSuggestions).mockReset();
+  });
 
-    expect(screen.getByText(/Click/)).toBeInTheDocument();
+  it("should render initial idle state", () => {
+    render(
+      <AiSuggestionsPanel
+        deckCards={mockDeckCards}
+        formatName={"TCG" as Format}
+        addCard={mockAddCard}
+      />,
+    );
+
+    expect(screen.getByText("AI Card Suggestions")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Analyze Synergy" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Reset" })).not.toBeInTheDocument();
   });
 
   it("should show loading spinner and fetch recommendations when Analyze Synergy is clicked", async () => {
@@ -28,7 +45,7 @@ describe("AiSuggestionsPanel component", () => {
       {
         cardId: 101,
         name: "Dark Magician",
-        type: "Spellcaster / Normal",
+        type: "Normal Monster" as CardType,
         section: "MAIN",
         synergyReason: "High spellcaster synergy",
       },
@@ -36,7 +53,11 @@ describe("AiSuggestionsPanel component", () => {
     vi.mocked(fetchAiSuggestions).mockResolvedValueOnce(suggestions);
 
     const { container } = render(
-      <AiSuggestionsPanel deckCards={mockDeckCards} formatName="TCG" addCard={mockAddCard} />,
+      <AiSuggestionsPanel
+        deckCards={mockDeckCards}
+        formatName={"TCG" as Format}
+        addCard={mockAddCard}
+      />,
     );
 
     const btn = screen.getByRole("button", { name: "Analyze Synergy" });
@@ -49,9 +70,7 @@ describe("AiSuggestionsPanel component", () => {
       expect(container.querySelector(".animate-spin")).not.toBeInTheDocument();
     });
 
-    expect(fetchAiSuggestions).toHaveBeenCalledWith("TCG", [
-      { cardId: 1, name: "Blue-Eyes White Dragon", section: "MAIN", quantity: 1 },
-    ]);
+    expect(fetchAiSuggestions).toHaveBeenCalledWith("TCG", mockDeckCards);
     expect(screen.getByText("Dark Magician")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Reset" })).toBeInTheDocument();
   });
@@ -78,14 +97,20 @@ describe("AiSuggestionsPanel component", () => {
       {
         cardId: 101,
         name: "Dark Magician",
-        type: "Spellcaster / Normal",
+        type: "Normal Monster" as CardType,
         section: "MAIN",
         synergyReason: "High spellcaster synergy",
       },
     ];
     vi.mocked(fetchAiSuggestions).mockResolvedValue(suggestions);
 
-    render(<AiSuggestionsPanel deckCards={mockDeckCards} formatName="TCG" addCard={mockAddCard} />);
+    render(
+      <AiSuggestionsPanel
+        deckCards={mockDeckCards}
+        formatName={"TCG" as Format}
+        addCard={mockAddCard}
+      />,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Analyze Synergy" }));
     await waitFor(() => {
@@ -94,7 +119,6 @@ describe("AiSuggestionsPanel component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
     expect(screen.queryByText("Dark Magician")).not.toBeInTheDocument();
-    expect(screen.getByText(/Click/)).toBeInTheDocument();
   });
 
   it("should trigger addCard when a suggested item calls onAdd", async () => {
@@ -102,7 +126,7 @@ describe("AiSuggestionsPanel component", () => {
       {
         cardId: 101,
         name: "Dark Magician",
-        type: "Spellcaster / Normal",
+        type: "Normal Monster" as CardType,
         section: "MAIN",
         imageUrl: "/dm.png",
         synergyReason: "High spellcaster synergy",
@@ -111,7 +135,13 @@ describe("AiSuggestionsPanel component", () => {
     vi.mocked(fetchAiSuggestions).mockResolvedValue(suggestions);
     mockAddCard.mockClear();
 
-    render(<AiSuggestionsPanel deckCards={mockDeckCards} formatName="TCG" addCard={mockAddCard} />);
+    render(
+      <AiSuggestionsPanel
+        deckCards={mockDeckCards}
+        formatName={"TCG" as Format}
+        addCard={mockAddCard}
+      />,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Analyze Synergy" }));
     await waitFor(() => {
@@ -123,7 +153,7 @@ describe("AiSuggestionsPanel component", () => {
       {
         id: 101,
         name: "Dark Magician",
-        type: "Spellcaster / Normal",
+        type: "Normal Monster",
         imageUrlCropped: "/dm.png",
         description: "",
         race: "",

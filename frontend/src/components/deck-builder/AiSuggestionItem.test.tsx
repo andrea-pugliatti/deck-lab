@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { DeckCardItem, Suggestion } from "../../types";
+import type { CardType, DeckCardItem, Format, Suggestion } from "../../types";
 import AiSuggestionItem from "./AiSuggestionItem";
 
 describe("AiSuggestionItem component", () => {
   const mockCard: Suggestion = {
     cardId: 101,
     name: "Dark Magician",
-    type: "Spellcaster / Normal Monster",
+    type: "Normal Monster" as CardType,
     section: "MAIN",
     imageUrl: "/images/dark_magician.jpg",
     synergyReason: "Classic synergy with Dark Magic Attack.",
@@ -17,7 +17,14 @@ describe("AiSuggestionItem component", () => {
   const mockOnAdd = vi.fn();
 
   it("should render card information correctly", () => {
-    render(<AiSuggestionItem card={mockCard} deckCards={[]} formatName="TCG" onAdd={mockOnAdd} />);
+    render(
+      <AiSuggestionItem
+        card={mockCard}
+        deckCards={[]}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
+    );
 
     expect(screen.getByText("Dark Magician")).toBeInTheDocument();
     expect(screen.getByText("MAIN")).toBeInTheDocument();
@@ -34,7 +41,7 @@ describe("AiSuggestionItem component", () => {
       <AiSuggestionItem
         card={cardWithoutImage}
         deckCards={[]}
-        formatName="TCG"
+        formatName={"TCG" as Format}
         onAdd={mockOnAdd}
       />,
     );
@@ -44,7 +51,14 @@ describe("AiSuggestionItem component", () => {
   });
 
   it("should render smiley placeholder if image fails to load", () => {
-    render(<AiSuggestionItem card={mockCard} deckCards={[]} formatName="TCG" onAdd={mockOnAdd} />);
+    render(
+      <AiSuggestionItem
+        card={mockCard}
+        deckCards={[]}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
+    );
 
     const img = screen.getByAltText("Dark Magician");
     fireEvent.error(img);
@@ -55,7 +69,14 @@ describe("AiSuggestionItem component", () => {
 
   it("should call onAdd when plus button is clicked", () => {
     mockOnAdd.mockClear();
-    render(<AiSuggestionItem card={mockCard} deckCards={[]} formatName="TCG" onAdd={mockOnAdd} />);
+    render(
+      <AiSuggestionItem
+        card={mockCard}
+        deckCards={[]}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
+    );
 
     const button = screen.getByRole("button", { name: "Add to MAIN Deck" });
     fireEvent.click(button);
@@ -70,7 +91,12 @@ describe("AiSuggestionItem component", () => {
     ];
 
     render(
-      <AiSuggestionItem card={mockCard} deckCards={deckCards} formatName="TCG" onAdd={mockOnAdd} />,
+      <AiSuggestionItem
+        card={mockCard}
+        deckCards={deckCards}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
     );
 
     const button = screen.getByRole("button");
@@ -84,7 +110,12 @@ describe("AiSuggestionItem component", () => {
       section: "EXTRA",
     };
     const { rerender } = render(
-      <AiSuggestionItem card={extraCard} deckCards={[]} formatName="TCG" onAdd={mockOnAdd} />,
+      <AiSuggestionItem
+        card={extraCard}
+        deckCards={[]}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
     );
     expect(screen.getByText("EXTRA")).toBeInTheDocument();
 
@@ -93,7 +124,12 @@ describe("AiSuggestionItem component", () => {
       section: "SIDE",
     };
     rerender(
-      <AiSuggestionItem card={sideCard} deckCards={[]} formatName="TCG" onAdd={mockOnAdd} />,
+      <AiSuggestionItem
+        card={sideCard}
+        deckCards={[]}
+        formatName={"TCG" as Format}
+        onAdd={mockOnAdd}
+      />,
     );
     expect(screen.getByText("SIDE")).toBeInTheDocument();
   });

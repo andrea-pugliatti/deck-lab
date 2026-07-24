@@ -1,5 +1,5 @@
 import { getFormatRules } from "../../reducers/deckReducer";
-import type { CardSection, DeckCardItem } from "../../types";
+import type { CardSection, DeckCardItem, Format } from "../../types";
 import Badge from "../ui/Badge";
 import EditorCardGridItem from "./EditorCardGridItem";
 import EditorCardListItem from "./EditorCardListItem";
@@ -10,7 +10,7 @@ import EditorCardListItem from "./EditorCardListItem";
 export interface DeckSectionListProps {
   section: CardSection;
   deckCards: DeckCardItem[];
-  formatName: string;
+  formatName: Format;
   updateQuantity: (cardId: number, section: CardSection, delta: number) => void;
   removeCard: (cardId: number, section: CardSection) => void;
   viewMode?: "grid" | "list";

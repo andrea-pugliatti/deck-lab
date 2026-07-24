@@ -39,7 +39,7 @@ describe("CardDetail page component", () => {
       },
       isLoading: false,
       error: undefined,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <MemoryRouter>

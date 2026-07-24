@@ -18,7 +18,7 @@ describe("ProtectedRoute component", () => {
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: false,
       loading: true,
-    } as any);
+    } as unknown as ReturnType<typeof useAuth>);
 
     const { container } = render(
       <MemoryRouter>
@@ -34,7 +34,7 @@ describe("ProtectedRoute component", () => {
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
       loading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useAuth>);
 
     render(
       <MemoryRouter initialEntries={["/admin"]}>
@@ -53,7 +53,7 @@ describe("ProtectedRoute component", () => {
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: false,
       loading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useAuth>);
 
     render(
       <MemoryRouter initialEntries={["/admin"]}>

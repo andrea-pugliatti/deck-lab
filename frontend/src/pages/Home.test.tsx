@@ -39,7 +39,7 @@ describe("Home page component", () => {
       data: undefined,
       isLoading: true,
       error: undefined,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <MemoryRouter>
@@ -65,7 +65,7 @@ describe("Home page component", () => {
           content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
         },
         isLoading: false,
-      } as any;
+      } as unknown as ReturnType<typeof useQuery>;
     });
 
     render(

@@ -29,7 +29,7 @@ describe("DeckDetail page component", () => {
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
       user: { username: "yugi" },
-    } as any);
+    } as unknown as ReturnType<typeof useAuth>);
   });
 
   it("should render mock deck and compute counts", () => {
@@ -51,7 +51,7 @@ describe("DeckDetail page component", () => {
         ],
       },
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof useQuery>);
 
     render(
       <MemoryRouter>

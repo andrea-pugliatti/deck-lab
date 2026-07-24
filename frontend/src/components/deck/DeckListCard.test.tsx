@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { Format } from "../../types";
 import DeckListCard from "./DeckListCard";
 
 // Mock useNavigate from react-router
@@ -25,7 +26,7 @@ describe("DeckListCard component", () => {
     id: 42,
     name: "Stardust Dragon Deck",
     description: "A deck centered around synchro summoning Stardust Dragon.",
-    formatName: "TCG",
+    formatName: "TCG" as Format,
     cardCount: 40,
     creatorUsername: "yusei_fudo",
     updatedAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago

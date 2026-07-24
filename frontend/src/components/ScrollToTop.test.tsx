@@ -16,13 +16,17 @@ describe("ScrollToTop component", () => {
   });
 
   it("should trigger window.scrollTo when pathname changes", () => {
-    vi.mocked(useLocation).mockReturnValue({ pathname: "/home" } as any);
+    vi.mocked(useLocation).mockReturnValue({ pathname: "/home" } as unknown as ReturnType<
+      typeof useLocation
+    >);
 
     const { rerender } = render(<ScrollToTop />);
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
 
     // change pathname
-    vi.mocked(useLocation).mockReturnValue({ pathname: "/about" } as any);
+    vi.mocked(useLocation).mockReturnValue({ pathname: "/about" } as unknown as ReturnType<
+      typeof useLocation
+    >);
     rerender(<ScrollToTop />);
     expect(window.scrollTo).toHaveBeenCalledTimes(2);
   });

@@ -58,7 +58,7 @@ export default function DeckDetail(): React.JSX.Element {
 
     try {
       await deleteDeck(id);
-      navigate("/my-decks");
+      void navigate("/my-decks");
     } catch (err) {
       setDeleteError(
         err instanceof Error ? err.message : "An error occurred while deleting the deck.",
