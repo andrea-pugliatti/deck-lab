@@ -27,9 +27,11 @@ vi.mock("./useDebounce", () => ({
 describe("useSearch hook", () => {
   const setSearchParamsMock = vi.fn();
   let mockSearchParams: URLSearchParams;
-  const mockEndpointBuilder = vi.fn((query, page, filters: any) => {
-    return `/api/test?q=${query}&page=${page}&filter=${filters.type}`;
-  });
+  const mockEndpointBuilder = vi.fn(
+    (query: string, page: number, filters: Record<string, string>) => {
+      return `/api/test?q=${query}&page=${page}&filter=${filters.type}`;
+    },
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();

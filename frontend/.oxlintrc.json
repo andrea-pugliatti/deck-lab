@@ -5,7 +5,8 @@
     "correctness": "error"
   },
   "rules": {
-    "react/react-compiler": "error"
+    "react/react-compiler": "error",
+    "typescript/no-explicit-any": "error"
   },
   "env": {
     "builtin": true,

@@ -30,14 +30,16 @@ describe("useDeckState hook", () => {
     vi.mocked(useQuery).mockReturnValue({} as unknown as ReturnType<typeof useQuery>);
     vi.mocked(useMutation).mockReset();
     vi.mocked(useMutation).mockImplementation(
-      (options: any) =>
+      (options: Parameters<typeof useMutation>[0]) =>
         ({
           mutate: vi.fn(async (payload) => {
             try {
-              const res = await options.mutationFn(payload);
-              options.onSuccess?.(res);
+              const res = await (
+                options?.mutationFn as ((variables: unknown) => Promise<unknown>) | undefined
+              )?.(payload);
+              (options?.onSuccess as ((res: unknown) => void) | undefined)?.(res);
             } catch (err) {
-              options.onError?.(err);
+              (options?.onError as ((err: unknown) => void) | undefined)?.(err);
             }
           }),
           mutateAsync: vi.fn(),

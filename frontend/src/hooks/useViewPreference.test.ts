@@ -11,7 +11,7 @@ import { useViewPreference } from "./useViewPreference";
 
 describe("useViewPreference hook", () => {
   const testKey = "test-view-mode";
-  let warnSpy: any;
+  let warnSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     localStorage.clear();

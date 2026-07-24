@@ -31,7 +31,7 @@ describe("AiDeckWizard component", () => {
     vi.clearAllMocks();
 
     // Default mock implementation for useQuery
-    vi.mocked(useQuery).mockImplementation((options: any) => {
+    vi.mocked(useQuery).mockImplementation((options?: { queryKey?: readonly unknown[] }) => {
       const queryKey = options?.queryKey || [];
       if (queryKey.includes("archetypes")) {
         return { data: ["Blue-Eyes", "Dark Magician"], isLoading: false } as unknown as ReturnType<

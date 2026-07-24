@@ -20,7 +20,7 @@ describe("useCardMetadata hook", () => {
     const mockArchetypes = ["Blue-Eyes", "Red-Eyes"];
 
     let isFetched = false;
-    vi.mocked(useQuery).mockImplementation((options: any) => {
+    vi.mocked(useQuery).mockImplementation((options?: { queryKey?: readonly unknown[] }) => {
       const key = options?.queryKey?.[1];
       if (!isFetched) {
         return { data: undefined } as unknown as ReturnType<typeof useQuery>;

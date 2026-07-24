@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useHandSimulator } from "../../hooks/useHandSimulator";
-import type { Deck } from "../../types";
+import type { Deck, DeckCardItem, SimulatorCardInstance } from "../../types";
 import SimulatorWorkspace from "./SimulatorWorkspace";
 
 vi.mock("../../hooks/useHandSimulator", () => ({
@@ -10,7 +10,18 @@ vi.mock("../../hooks/useHandSimulator", () => ({
 }));
 
 vi.mock("./DeckExplorerModal", () => ({
-  default: ({ deck, setShowDeckExplorer, handleActionFromExplorer }: any) => (
+  default: ({
+    deck,
+    setShowDeckExplorer,
+    handleActionFromExplorer,
+  }: {
+    deck: SimulatorCardInstance[];
+    setShowDeckExplorer: (show: boolean) => void;
+    handleActionFromExplorer: (
+      card: SimulatorCardInstance,
+      toZone: "hand" | "field" | "graveyard" | "banished",
+    ) => void;
+  }) => (
     <div data-testid="deck-explorer">
       <span>Explorer Card Count: {deck.length}</span>
       <button onClick={() => handleActionFromExplorer(deck[0], "hand")}>Action Hand</button>
@@ -20,7 +31,7 @@ vi.mock("./DeckExplorerModal", () => ({
 }));
 
 vi.mock("./ProbabilityCalculator", () => ({
-  default: ({ cards, onClose }: any) => (
+  default: ({ cards, onClose }: { cards: DeckCardItem[]; onClose: () => void }) => (
     <div data-testid="probability-calculator">
       <span>Cards Count: {cards.length}</span>
       <button onClick={onClose}>Close Calc</button>
