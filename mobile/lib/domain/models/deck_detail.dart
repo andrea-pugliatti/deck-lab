@@ -1,3 +1,4 @@
+import '../enums/enums.dart';
 import 'deck_card.dart';
 
 /// Domain model representing a detailed deck blueprint.
@@ -5,7 +6,7 @@ class DeckDetail {
   final int id;
   final String name;
   final String? description;
-  final String formatName;
+  final Format formatName;
   final String? creatorUsername;
   final String? updatedAt;
   final List<DeckCard> deckCards;
@@ -21,13 +22,13 @@ class DeckDetail {
   });
 
   List<DeckCard> get mainDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'MAIN').toList();
+      deckCards.where((card) => card.section == DeckSection.main).toList();
 
   List<DeckCard> get extraDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'EXTRA').toList();
+      deckCards.where((card) => card.section == DeckSection.extra).toList();
 
   List<DeckCard> get sideDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'SIDE').toList();
+      deckCards.where((card) => card.section == DeckSection.side).toList();
 
   int get mainDeckCount =>
       mainDeckCards.fold(0, (sum, card) => sum + card.quantity);
@@ -44,7 +45,7 @@ class DeckDetail {
     int? id,
     String? name,
     String? description,
-    String? formatName,
+    Format? formatName,
     String? creatorUsername,
     String? updatedAt,
     List<DeckCard>? deckCards,

@@ -1,15 +1,17 @@
+import '../enums/enums.dart';
+
 /// Domain model representing a Yu-Gi-Oh! card.
 class Card {
   final int id;
   final String name;
-  final String type;
+  final CardType type;
   final String? description;
-  final String? race;
-  final String? attribute;
+  final CardRace? race;
+  final CardAttribute? attribute;
   final String? archetype;
   final String? imageUrl;
   final String? imageUrlCropped;
-  final String? frameType;
+  final FrameType? frameType;
   final int? atk;
   final int? def;
   final int? level;
@@ -37,14 +39,14 @@ class Card {
   Card copyWith({
     int? id,
     String? name,
-    String? type,
+    CardType? type,
     String? description,
-    String? race,
-    String? attribute,
+    CardRace? race,
+    CardAttribute? attribute,
     String? archetype,
     String? imageUrl,
     String? imageUrlCropped,
-    String? frameType,
+    FrameType? frameType,
     int? atk,
     int? def,
     int? level,

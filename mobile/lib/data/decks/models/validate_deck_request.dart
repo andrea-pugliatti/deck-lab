@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'deck_card_response.dart';
 
 part 'validate_deck_request.freezed.dart';
@@ -12,7 +12,7 @@ part 'validate_deck_request.g.dart';
 abstract class ValidateDeckRequest with _$ValidateDeckRequest {
   const factory ValidateDeckRequest({
     required String name,
-    required String formatName,
+    required Format formatName,
     required List<DeckCardResponse> deckCards,
   }) = _ValidateDeckRequest;
 

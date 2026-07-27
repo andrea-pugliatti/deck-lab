@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckGenerateRequest {
 
- String get archetype; String get strategy; String get formatName; String? get customPrompt;
+ String get archetype; Strategy get strategy; Format get formatName; String? get customPrompt;
 /// Create a copy of DeckGenerateRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckGenerateRequestCopyWith<$Res>  {
   factory $DeckGenerateRequestCopyWith(DeckGenerateRequest value, $Res Function(DeckGenerateRequest) _then) = _$DeckGenerateRequestCopyWithImpl;
 @useResult
 $Res call({
- String archetype, String strategy, String formatName, String? customPrompt
+ String archetype, Strategy strategy, Format formatName, String? customPrompt
 });
 
 
@@ -69,8 +69,8 @@ class _$DeckGenerateRequestCopyWithImpl<$Res>
   return _then(_self.copyWith(
 archetype: null == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String,strategy: null == strategy ? _self.strategy : strategy // ignore: cast_nullable_to_non_nullable
-as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,customPrompt: freezed == customPrompt ? _self.customPrompt : customPrompt // ignore: cast_nullable_to_non_nullable
+as Strategy,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
+as Format,customPrompt: freezed == customPrompt ? _self.customPrompt : customPrompt // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String archetype,  String strategy,  String formatName,  String? customPrompt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String archetype,  Strategy strategy,  Format formatName,  String? customPrompt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckGenerateRequest() when $default != null:
 return $default(_that.archetype,_that.strategy,_that.formatName,_that.customPrompt);case _:
@@ -177,7 +177,7 @@ return $default(_that.archetype,_that.strategy,_that.formatName,_that.customProm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String archetype,  String strategy,  String formatName,  String? customPrompt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String archetype,  Strategy strategy,  Format formatName,  String? customPrompt)  $default,) {final _that = this;
 switch (_that) {
 case _DeckGenerateRequest():
 return $default(_that.archetype,_that.strategy,_that.formatName,_that.customPrompt);case _:
@@ -197,7 +197,7 @@ return $default(_that.archetype,_that.strategy,_that.formatName,_that.customProm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String archetype,  String strategy,  String formatName,  String? customPrompt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String archetype,  Strategy strategy,  Format formatName,  String? customPrompt)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckGenerateRequest() when $default != null:
 return $default(_that.archetype,_that.strategy,_that.formatName,_that.customPrompt);case _:
@@ -216,8 +216,8 @@ class _DeckGenerateRequest implements DeckGenerateRequest {
   factory _DeckGenerateRequest.fromJson(Map<String, dynamic> json) => _$DeckGenerateRequestFromJson(json);
 
 @override final  String archetype;
-@override final  String strategy;
-@override final  String formatName;
+@override final  Strategy strategy;
+@override final  Format formatName;
 @override final  String? customPrompt;
 
 /// Create a copy of DeckGenerateRequest
@@ -253,7 +253,7 @@ abstract mixin class _$DeckGenerateRequestCopyWith<$Res> implements $DeckGenerat
   factory _$DeckGenerateRequestCopyWith(_DeckGenerateRequest value, $Res Function(_DeckGenerateRequest) _then) = __$DeckGenerateRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String archetype, String strategy, String formatName, String? customPrompt
+ String archetype, Strategy strategy, Format formatName, String? customPrompt
 });
 
 
@@ -274,8 +274,8 @@ class __$DeckGenerateRequestCopyWithImpl<$Res>
   return _then(_DeckGenerateRequest(
 archetype: null == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String,strategy: null == strategy ? _self.strategy : strategy // ignore: cast_nullable_to_non_nullable
-as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,customPrompt: freezed == customPrompt ? _self.customPrompt : customPrompt // ignore: cast_nullable_to_non_nullable
+as Strategy,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
+as Format,customPrompt: freezed == customPrompt ? _self.customPrompt : customPrompt // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

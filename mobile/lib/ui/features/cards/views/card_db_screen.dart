@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/core/widgets/empty_state.dart';
+import 'package:mobile/ui/core/widgets/error_state.dart';
 import 'package:mobile/ui/features/cards/widgets/card_grid_item.dart';
 import 'package:mobile/ui/features/cards/widgets/filter_modal.dart';
 
@@ -138,7 +139,15 @@ class _CardDbScreenState extends ConsumerState<CardDbScreen> {
               onRefresh: () => ref
                   .read(cardDbProvider.notifier)
                   .fetchNextPage(isRefresh: true),
-              child: state.cards.isEmpty && !state.isLoading
+              child: state.error != null && state.cards.isEmpty
+                  ? ErrorState(
+                      title: 'Failed to load cards',
+                      message: state.error,
+                      onRetry: () => ref
+                          .read(cardDbProvider.notifier)
+                          .fetchNextPage(isRefresh: true),
+                    )
+                  : state.cards.isEmpty && !state.isLoading
                   ? EmptyState(text: 'No Cards Found', icon: Icons.search_off)
                   : GridView.builder(
                       controller: _scrollController,

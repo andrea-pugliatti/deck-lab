@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../domain/enums/enums.dart';
 
 part 'deck_card_response.freezed.dart';
 part 'deck_card_response.g.dart';
@@ -12,13 +13,13 @@ abstract class DeckCardResponse with _$DeckCardResponse {
     int? id,
     required int cardId,
     required String name,
-    String? type,
+    @JsonKey(unknownEnumValue: CardType.unknown) CardType? type,
     String? description,
-    String? race,
-    String? attribute,
+    @JsonKey(unknownEnumValue: CardRace.unknown) CardRace? race,
+    @JsonKey(unknownEnumValue: CardAttribute.unknown) CardAttribute? attribute,
     String? archetype,
     String? imageUrl,
-    required String section,
+    required DeckSection section,
     required int quantity,
   }) = _DeckCardResponse;
 

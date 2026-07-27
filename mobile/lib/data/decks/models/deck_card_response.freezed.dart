@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckCardResponse {
 
- int? get id; int get cardId; String get name; String? get type; String? get description; String? get race; String? get attribute; String? get archetype; String? get imageUrl; String get section; int get quantity;
+ int? get id; int get cardId; String get name; CardType? get type; String? get description; CardRace? get race; CardAttribute? get attribute; String? get archetype; String? get imageUrl; DeckSection get section; int get quantity;
 /// Create a copy of DeckCardResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckCardResponseCopyWith<$Res>  {
   factory $DeckCardResponseCopyWith(DeckCardResponse value, $Res Function(DeckCardResponse) _then) = _$DeckCardResponseCopyWithImpl;
 @useResult
 $Res call({
- int? id, int cardId, String name, String? type, String? description, String? race, String? attribute, String? archetype, String? imageUrl, String section, int quantity
+ int? id, int cardId, String name, CardType? type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
 });
 
 
@@ -71,13 +71,13 @@ id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,cardId: null == cardId ? _self.cardId : cardId // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as CardType?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,race: freezed == race ? _self.race : race // ignore: cast_nullable_to_non_nullable
-as String?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
-as String?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
+as CardRace?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
+as CardAttribute?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as DeckSection,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  String? type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckCardResponse() when $default != null:
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -184,7 +184,7 @@ return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  String? type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String section,  int quantity)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)  $default,) {final _that = this;
 switch (_that) {
 case _DeckCardResponse():
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -204,7 +204,7 @@ return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int cardId,  String name,  String? type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String section,  int quantity)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckCardResponse() when $default != null:
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -225,13 +225,13 @@ class _DeckCardResponse implements DeckCardResponse {
 @override final  int? id;
 @override final  int cardId;
 @override final  String name;
-@override final  String? type;
+@override final  CardType? type;
 @override final  String? description;
-@override final  String? race;
-@override final  String? attribute;
+@override final  CardRace? race;
+@override final  CardAttribute? attribute;
 @override final  String? archetype;
 @override final  String? imageUrl;
-@override final  String section;
+@override final  DeckSection section;
 @override final  int quantity;
 
 /// Create a copy of DeckCardResponse
@@ -267,7 +267,7 @@ abstract mixin class _$DeckCardResponseCopyWith<$Res> implements $DeckCardRespon
   factory _$DeckCardResponseCopyWith(_DeckCardResponse value, $Res Function(_DeckCardResponse) _then) = __$DeckCardResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, int cardId, String name, String? type, String? description, String? race, String? attribute, String? archetype, String? imageUrl, String section, int quantity
+ int? id, int cardId, String name, CardType? type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
 });
 
 
@@ -290,13 +290,13 @@ id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,cardId: null == cardId ? _self.cardId : cardId // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as CardType?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,race: freezed == race ? _self.race : race // ignore: cast_nullable_to_non_nullable
-as String?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
-as String?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
+as CardRace?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
+as CardAttribute?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as DeckSection,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

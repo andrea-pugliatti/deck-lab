@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'deck_card_response.dart';
 
 part 'deck_generation_response.freezed.dart';
@@ -11,7 +11,7 @@ abstract class DeckGenerationResponse with _$DeckGenerationResponse {
   const factory DeckGenerationResponse({
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     @Default([]) List<DeckCardResponse> deckCards,
     @Default([]) List<String> validationWarnings,
   }) = _DeckGenerationResponse;

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/ui/core/theme/theme.dart';
 
-enum TabButtonStyle {
-  underline,
-  pill,
-}
+enum TabButtonStyle { underline, pill }
 
 class TabButton extends StatelessWidget {
   final String label;
@@ -17,7 +14,7 @@ class TabButton extends StatelessWidget {
     required this.label,
     required this.isActive,
     required this.onTap,
-    this.style = TabButtonStyle.underline,
+    this.style = .underline,
   });
 
   @override
@@ -34,16 +31,18 @@ class TabButton extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isActive ? DeckLabTheme.cyanAccent : Colors.transparent,
+                  color: isActive
+                      ? DeckLabTheme.cyanAccent
+                      : Colors.transparent,
                   width: 2.0,
                 ),
               ),
             ),
             child: Text(
               label,
-              textAlign: TextAlign.center,
+              textAlign: .center,
               style: tt.labelSmall!.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
                 color: isActive
                     ? cs.onSurface
                     : cs.onSurface.withValues(alpha: 0.38),
@@ -56,22 +55,26 @@ class TabButton extends StatelessWidget {
         return InkWell(
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const .symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: isActive
                   ? cs.primary.withValues(alpha: 0.1)
                   : Colors.transparent,
               border: Border.all(
-                color: isActive ? cs.primary : cs.onSurface.withValues(alpha: 0.24),
+                color: isActive
+                    ? cs.primary
+                    : cs.onSurface.withValues(alpha: 0.24),
               ),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               label,
               style: tt.labelSmall!.copyWith(
-                color: isActive ? cs.primary : cs.onSurface.withValues(alpha: 0.54),
+                color: isActive
+                    ? cs.primary
+                    : cs.onSurface.withValues(alpha: 0.54),
                 fontSize: 9,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
               ),
             ),
           ),

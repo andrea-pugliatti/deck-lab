@@ -1,3 +1,4 @@
+import '../enums/enums.dart';
 import '../models/card_suggestion.dart';
 import '../models/deck_card.dart';
 import '../models/deck_detail.dart';
@@ -32,7 +33,7 @@ abstract class DeckRepository {
   Future<DeckDetail> createDeck({
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   });
 
@@ -41,7 +42,7 @@ abstract class DeckRepository {
     int id, {
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   });
 
@@ -54,21 +55,21 @@ abstract class DeckRepository {
   /// Requests validation of deck content constraints.
   Future<DeckValidation> validateDeck({
     required String name,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   });
 
   /// Requests card recommendations based on current list.
   Future<List<CardSuggestion>> fetchAiSuggestions({
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> currentCards,
   });
 
   /// Requests AI deck layout generation.
   Future<DeckGeneration> generateAiDeck({
     required String archetype,
-    required String strategy,
-    required String formatName,
+    required Strategy strategy,
+    required Format formatName,
     String? customPrompt,
   });
 }

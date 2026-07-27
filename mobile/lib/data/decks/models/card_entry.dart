@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../domain/enums/enums.dart';
 
 part 'card_entry.freezed.dart';
 part 'card_entry.g.dart';
@@ -10,7 +11,7 @@ part 'card_entry.g.dart';
 abstract class CardEntry with _$CardEntry {
   const factory CardEntry({
     required String name,
-    required String section,
+    required DeckSection section,
     required int quantity,
   }) = _CardEntry;
 

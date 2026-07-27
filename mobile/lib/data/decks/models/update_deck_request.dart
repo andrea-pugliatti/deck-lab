@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'deck_card_response.dart';
 
 part 'update_deck_request.freezed.dart';
@@ -14,7 +14,7 @@ abstract class UpdateDeckRequest with _$UpdateDeckRequest {
     required int id,
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCardResponse> deckCards,
   }) = _UpdateDeckRequest;
 

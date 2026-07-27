@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckDetailResponse {
 
- int get id; String get name; String? get description; String get formatName; String? get creatorUsername; String? get updatedAt; List<DeckCardResponse> get deckCards;
+ int get id; String get name; String? get description; Format get formatName; String? get creatorUsername; String? get updatedAt; List<DeckCardResponse> get deckCards;
 /// Create a copy of DeckDetailResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckDetailResponseCopyWith<$Res>  {
   factory $DeckDetailResponseCopyWith(DeckDetailResponse value, $Res Function(DeckDetailResponse) _then) = _$DeckDetailResponseCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String? description, String formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
+ int id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
 });
 
 
@@ -71,7 +71,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable
+as Format,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,deckCards: null == deckCards ? _self.deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  String formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse() when $default != null:
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  String formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse():
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? description,  String formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse() when $default != null:
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -221,7 +221,7 @@ class _DeckDetailResponse extends DeckDetailResponse {
 @override final  int id;
 @override final  String name;
 @override final  String? description;
-@override final  String formatName;
+@override final  Format formatName;
 @override final  String? creatorUsername;
 @override final  String? updatedAt;
  final  List<DeckCardResponse> _deckCards;
@@ -265,7 +265,7 @@ abstract mixin class _$DeckDetailResponseCopyWith<$Res> implements $DeckDetailRe
   factory _$DeckDetailResponseCopyWith(_DeckDetailResponse value, $Res Function(_DeckDetailResponse) _then) = __$DeckDetailResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String? description, String formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
+ int id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
 });
 
 
@@ -288,7 +288,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable
+as Format,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,deckCards: null == deckCards ? _self._deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,

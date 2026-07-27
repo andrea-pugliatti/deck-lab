@@ -1,3 +1,4 @@
+import '../enums/enums.dart';
 import 'deck_card.dart';
 
 /// Instanced card representation for the hand simulator workspace.
@@ -5,9 +6,9 @@ class SimulatorCardInstance {
   final String uniqId;
   final int cardId;
   final String name;
-  final String? type;
+  final CardType? type;
   final String? imageUrl;
-  final String section;
+  final DeckSection section;
 
   const SimulatorCardInstance({
     required this.uniqId,
@@ -21,7 +22,7 @@ class SimulatorCardInstance {
   /// Factory creator wrapping a deck card details.
   factory SimulatorCardInstance.fromDomain(DeckCard card, int index) {
     return SimulatorCardInstance(
-      uniqId: '${card.cardId}_${card.section}_$index',
+      uniqId: '${card.cardId}_${card.section.value}_$index',
       cardId: card.cardId,
       name: card.name,
       type: card.type,

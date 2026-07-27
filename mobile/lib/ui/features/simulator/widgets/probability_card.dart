@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/ui/features/simulator/view_models/simulator_provider.dart';
-import 'package:mobile/ui/features/simulator/widgets/size_chip.dart';
 
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../view_models/simulator_provider.dart';
 
+/// Card widget component wrapping the probability calculator.
 class ProbabilityCard extends StatelessWidget {
   final SimulatorState state;
   final SimulatorNotifier notifier;
   final String? card;
-  final ValueChanged<String?> setCardAction;
+  final Function(String name) setCardAction;
 
   const ProbabilityCard({
     super.key,
@@ -27,7 +28,7 @@ class ProbabilityCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     final cardNames = deck.deckCards
-        .where((c) => c.section.toUpperCase() == 'MAIN')
+        .where((c) => c.section == .main)
         .map((c) => c.name)
         .toSet()
         .toList();
@@ -43,93 +44,108 @@ class ProbabilityCard extends StatelessWidget {
       child: Padding(
         padding: const .all(16.0),
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: .stretch,
           children: [
-            Text(
-              'ODDS CALCULATOR',
-              style: tt.labelSmall!.copyWith(
-                color: cs.primary,
-                fontWeight: .bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 12),
             Row(
               children: [
+                Icon(Icons.functions, color: cs.primary, size: 20),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: DropdownButtonFormField<String>(
-                    isExpanded: true,
-                    initialValue: card,
-                    dropdownColor: DeckLabTheme.darkSurface,
-                    style: tt.bodySmall!.copyWith(color: cs.onSurface),
-                    decoration: const InputDecoration(
-                      contentPadding: .symmetric(horizontal: 10, vertical: 6),
+                  child: Text(
+                    'ODDS CALCULATOR',
+                    overflow: .ellipsis,
+                    style: tt.labelMedium!.copyWith(
+                      color: cs.primary,
+                      fontWeight: .bold,
+                      letterSpacing: 0.5,
                     ),
-                    hint: Text(
-                      'Target Card Name...',
-                      style: tt.bodySmall!.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.38),
-                      ),
-                    ),
-                    onChanged: setCardAction,
-                    items: cardNames.map((name) {
-                      return DropdownMenuItem<String>(
-                        value: name,
-                        child: Text(name),
-                      );
-                    }).toList(),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: .start,
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Dropdown selector for target card
+            DropdownButtonFormField<String>(
+              isExpanded: true,
+              initialValue: cardNames.contains(state.targetCardName)
+                  ? state.targetCardName
+                  : null,
+              dropdownColor: DeckLabTheme.darkSurface,
+              decoration: const InputDecoration(
+                hintText: 'Target Card Name...',
+                contentPadding: .symmetric(horizontal: 12, vertical: 8),
+              ),
+              items: cardNames.map((name) {
+                return DropdownMenuItem<String>(
+                  value: name,
+                  child: Text(name, overflow: .ellipsis),
+                );
+              }).toList(),
+              onChanged: (val) {
+                if (val != null) {
+                  setCardAction(val);
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+
+            // Controls for Draw Sample Size
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  'Draw Sample Size:',
+                  style: tt.bodySmall!.copyWith(
+                    color: cs.onSurface.withValues(alpha: 0.54),
+                  ),
+                ),
+                Row(
                   children: [
-                    Text(
-                      'Draw Size',
-                      style: tt.bodySmall!.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.38),
-                        fontSize: 10,
-                      ),
+                    CustomButton(
+                      text: '5',
+                      variant: state.drawSize != 5 ? 'outline' : 'primary',
+                      onPressed: () => notifier.setDrawSize(5),
                     ),
-                    Row(
-                      children: [
-                        SizeChip(
-                          size: 5,
-                          activeSize: state.drawSize,
-                          notifier: notifier,
-                        ),
-                        const SizedBox(width: 4),
-                        SizeChip(
-                          size: 6,
-                          activeSize: state.drawSize,
-                          notifier: notifier,
-                        ),
-                      ],
+                    const SizedBox(width: 8),
+                    CustomButton(
+                      text: '6',
+                      variant: state.drawSize != 6 ? 'outline' : 'primary',
+                      onPressed: () => notifier.setDrawSize(6),
                     ),
                   ],
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+
+            // Calculation Results Output Banner
             if (state.targetCardName != null) ...[
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Text(
-                    'Chance to draw ≥ 1 copy:',
-                    style: tt.bodyMedium!.copyWith(
-                      color: cs.onSurface.withValues(alpha: 0.7),
+              Container(
+                padding: const .all(12),
+                decoration: BoxDecoration(
+                  color: cs.primary.withValues(alpha: 0.1),
+                  borderRadius: .circular(8),
+                  border: .all(color: cs.primary.withValues(alpha: 0.3)),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Chance to draw ≥ 1 copy:',
+                      style: tt.bodySmall!.copyWith(
+                        color: cs.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
-                  ),
-                  Text(
-                    '$percentage%',
-                    style: tt.titleLarge!.copyWith(
-                      color: cs.secondary,
-                      fontWeight: .bold,
-                      fontSize: 18,
+                    const SizedBox(height: 4),
+                    Text(
+                      '$percentage%',
+                      style: tt.headlineMedium!.copyWith(
+                        color: cs.primary,
+                        fontWeight: .bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ],

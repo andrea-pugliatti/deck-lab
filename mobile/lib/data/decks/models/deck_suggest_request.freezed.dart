@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckSuggestRequest {
 
- String get formatName; List<CardEntry> get currentCards;
+ Format get formatName; List<CardEntry> get currentCards;
 /// Create a copy of DeckSuggestRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckSuggestRequestCopyWith<$Res>  {
   factory $DeckSuggestRequestCopyWith(DeckSuggestRequest value, $Res Function(DeckSuggestRequest) _then) = _$DeckSuggestRequestCopyWithImpl;
 @useResult
 $Res call({
- String formatName, List<CardEntry> currentCards
+ Format formatName, List<CardEntry> currentCards
 });
 
 
@@ -68,7 +68,7 @@ class _$DeckSuggestRequestCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? formatName = null,Object? currentCards = null,}) {
   return _then(_self.copyWith(
 formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,currentCards: null == currentCards ? _self.currentCards : currentCards // ignore: cast_nullable_to_non_nullable
+as Format,currentCards: null == currentCards ? _self.currentCards : currentCards // ignore: cast_nullable_to_non_nullable
 as List<CardEntry>,
   ));
 }
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String formatName,  List<CardEntry> currentCards)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Format formatName,  List<CardEntry> currentCards)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckSuggestRequest() when $default != null:
 return $default(_that.formatName,_that.currentCards);case _:
@@ -175,7 +175,7 @@ return $default(_that.formatName,_that.currentCards);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String formatName,  List<CardEntry> currentCards)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Format formatName,  List<CardEntry> currentCards)  $default,) {final _that = this;
 switch (_that) {
 case _DeckSuggestRequest():
 return $default(_that.formatName,_that.currentCards);case _:
@@ -195,7 +195,7 @@ return $default(_that.formatName,_that.currentCards);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String formatName,  List<CardEntry> currentCards)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Format formatName,  List<CardEntry> currentCards)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckSuggestRequest() when $default != null:
 return $default(_that.formatName,_that.currentCards);case _:
@@ -213,7 +213,7 @@ class _DeckSuggestRequest implements DeckSuggestRequest {
   const _DeckSuggestRequest({required this.formatName, required final  List<CardEntry> currentCards}): _currentCards = currentCards;
   factory _DeckSuggestRequest.fromJson(Map<String, dynamic> json) => _$DeckSuggestRequestFromJson(json);
 
-@override final  String formatName;
+@override final  Format formatName;
  final  List<CardEntry> _currentCards;
 @override List<CardEntry> get currentCards {
   if (_currentCards is EqualUnmodifiableListView) return _currentCards;
@@ -255,7 +255,7 @@ abstract mixin class _$DeckSuggestRequestCopyWith<$Res> implements $DeckSuggestR
   factory _$DeckSuggestRequestCopyWith(_DeckSuggestRequest value, $Res Function(_DeckSuggestRequest) _then) = __$DeckSuggestRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String formatName, List<CardEntry> currentCards
+ Format formatName, List<CardEntry> currentCards
 });
 
 
@@ -275,7 +275,7 @@ class __$DeckSuggestRequestCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? formatName = null,Object? currentCards = null,}) {
   return _then(_DeckSuggestRequest(
 formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,currentCards: null == currentCards ? _self._currentCards : currentCards // ignore: cast_nullable_to_non_nullable
+as Format,currentCards: null == currentCards ? _self._currentCards : currentCards // ignore: cast_nullable_to_non_nullable
 as List<CardEntry>,
   ));
 }

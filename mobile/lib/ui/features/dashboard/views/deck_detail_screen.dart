@@ -187,7 +187,7 @@ class DeckDetailScreen extends ConsumerWidget {
                           borderRadius: .circular(6),
                         ),
                         child: Text(
-                          deck.formatName.toUpperCase(),
+                          deck.formatName.value.toUpperCase(),
                           style: tt.labelSmall!.copyWith(
                             color: cs.primary,
                             fontWeight: .bold,

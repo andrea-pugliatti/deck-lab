@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../domain/enums/enums.dart';
 
 part 'deck_generate_request.freezed.dart';
 part 'deck_generate_request.g.dart';
@@ -10,8 +11,8 @@ part 'deck_generate_request.g.dart';
 abstract class DeckGenerateRequest with _$DeckGenerateRequest {
   const factory DeckGenerateRequest({
     required String archetype,
-    required String strategy,
-    required String formatName,
+    required Strategy strategy,
+    required Format formatName,
     String? customPrompt,
   }) = _DeckGenerateRequest;
 

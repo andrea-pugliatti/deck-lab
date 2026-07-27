@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'card_entry.dart';
 
 part 'deck_suggest_request.freezed.dart';
@@ -11,7 +11,7 @@ part 'deck_suggest_request.g.dart';
 @freezed
 abstract class DeckSuggestRequest with _$DeckSuggestRequest {
   const factory DeckSuggestRequest({
-    required String formatName,
+    required Format formatName,
     required List<CardEntry> currentCards,
   }) = _DeckSuggestRequest;
 

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/core/widgets/empty_state.dart';
+import 'package:mobile/ui/core/widgets/error_state.dart';
+import 'package:mobile/ui/core/widgets/tab_button.dart';
 import 'package:mobile/ui/features/dashboard/widgets/deck_item_card.dart';
 import 'package:mobile/ui/features/dashboard/widgets/format_carousel.dart';
-import 'package:mobile/ui/core/widgets/tab_button.dart';
 
 import '../../../../navigation/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -198,7 +199,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               onRefresh: () => ref
                   .read(deckListProvider.notifier)
                   .fetchNextPage(isRefresh: true),
-              child: deckState.decks.isEmpty && !deckState.isLoading
+              child: deckState.error != null && deckState.decks.isEmpty
+                  ? ErrorState(
+                      title: 'Failed to load decks',
+                      message: deckState.error,
+                      onRetry: () => ref
+                          .read(deckListProvider.notifier)
+                          .fetchNextPage(isRefresh: true),
+                    )
+                  : deckState.decks.isEmpty && !deckState.isLoading
                   ? EmptyState(text: 'No Decks Found', icon: Icons.layers_clear)
                   : ListView.builder(
                       controller: _scrollController,

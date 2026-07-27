@@ -49,7 +49,7 @@ class StatsGrid extends StatelessWidget {
                   Expanded(
                     child: StatCell(
                       title: 'ATTRIBUTE',
-                      val: card.attribute!.toUpperCase(),
+                      val: card.attribute!.value.toUpperCase(),
                     ),
                   )
                 else
@@ -58,7 +58,7 @@ class StatsGrid extends StatelessWidget {
                   Expanded(
                     child: StatCell(
                       title: 'RACE',
-                      val: card.race!.toUpperCase(),
+                      val: card.race!.value.toUpperCase(),
                     ),
                   )
                 else

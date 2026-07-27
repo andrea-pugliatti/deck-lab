@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'deck_card_response.dart';
 
 part 'create_deck_request.freezed.dart';
@@ -13,7 +13,7 @@ abstract class CreateDeckRequest with _$CreateDeckRequest {
   const factory CreateDeckRequest({
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCardResponse> deckCards,
   }) = _CreateDeckRequest;
 

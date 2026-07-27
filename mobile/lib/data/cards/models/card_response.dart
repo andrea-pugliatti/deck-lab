@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../domain/enums/enums.dart';
 
 part 'card_response.freezed.dart';
 part 'card_response.g.dart';
@@ -11,14 +12,14 @@ abstract class CardResponse with _$CardResponse {
   const factory CardResponse({
     required int id,
     required String name,
-    required String type,
+    @JsonKey(unknownEnumValue: CardType.unknown) required CardType type,
     String? description,
-    String? race,
-    String? attribute,
+    @JsonKey(unknownEnumValue: CardRace.unknown) CardRace? race,
+    @JsonKey(unknownEnumValue: CardAttribute.unknown) CardAttribute? attribute,
     String? archetype,
     String? imageUrl,
     String? imageUrlCropped,
-    String? frameType,
+    @JsonKey(unknownEnumValue: FrameType.unknown) FrameType? frameType,
     int? atk,
     int? def,
     int? level,

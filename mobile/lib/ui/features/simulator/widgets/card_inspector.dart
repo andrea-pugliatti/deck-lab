@@ -67,7 +67,7 @@ class CardInspector extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    card.type ?? 'Monster',
+                    card.type?.value ?? 'Monster',
                     style: tt.labelSmall!.copyWith(
                       color: cs.primary,
                       fontWeight: .bold,

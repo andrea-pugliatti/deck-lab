@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../domain/enums/enums.dart';
 import '../../domain/models/card_suggestion.dart';
 import '../../domain/models/deck_card.dart';
 import '../../domain/models/deck_detail.dart';
@@ -34,7 +35,7 @@ class DeckRepositoryImpl implements DeckRepository {
   Future<DeckDetail> createDeck({
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   }) async {
     try {
@@ -69,7 +70,7 @@ class DeckRepositoryImpl implements DeckRepository {
   /// Requests card recommendations based on current cards via POST `/api/decks/ai/suggest`.
   @override
   Future<List<CardSuggestion>> fetchAiSuggestions({
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> currentCards,
   }) async {
     try {
@@ -208,8 +209,8 @@ class DeckRepositoryImpl implements DeckRepository {
   @override
   Future<DeckGeneration> generateAiDeck({
     required String archetype,
-    required String strategy,
-    required String formatName,
+    required Strategy strategy,
+    required Format formatName,
     String? customPrompt,
   }) async {
     try {
@@ -242,7 +243,7 @@ class DeckRepositoryImpl implements DeckRepository {
     int id, {
     required String name,
     required String description,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   }) async {
     try {
@@ -271,7 +272,7 @@ class DeckRepositoryImpl implements DeckRepository {
   @override
   Future<DeckValidation> validateDeck({
     required String name,
-    required String formatName,
+    required Format formatName,
     required List<DeckCard> deckCards,
   }) async {
     try {

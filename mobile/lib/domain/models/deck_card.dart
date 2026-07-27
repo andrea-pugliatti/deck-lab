@@ -1,15 +1,17 @@
+import '../enums/enums.dart';
+
 /// Domain model representing a card instance within a deck layout.
 class DeckCard {
   final int? id;
   final int cardId;
   final String name;
-  final String? type;
+  final CardType? type;
   final String? description;
-  final String? race;
-  final String? attribute;
+  final CardRace? race;
+  final CardAttribute? attribute;
   final String? archetype;
   final String? imageUrl;
-  final String section;
+  final DeckSection section;
   final int quantity;
 
   const DeckCard({
@@ -30,13 +32,13 @@ class DeckCard {
     int? id,
     int? cardId,
     String? name,
-    String? type,
+    CardType? type,
     String? description,
-    String? race,
-    String? attribute,
+    CardRace? race,
+    CardAttribute? attribute,
     String? archetype,
     String? imageUrl,
-    String? section,
+    DeckSection? section,
     int? quantity,
   }) {
     return DeckCard(

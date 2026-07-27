@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobile/ui/features/cards/widgets/error_state.dart';
+import 'package:mobile/ui/core/widgets/error_state.dart';
 import 'package:mobile/ui/features/cards/widgets/stats_grid.dart';
 
 import '../../../core/theme/theme.dart';
@@ -30,8 +30,10 @@ class CardDetailScreen extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(title: const Text('CARD DETAIL')),
         body: ErrorState(
-          state: state,
-          retry: () => ref.read(cardDetailProvider(cardId).notifier).loadCard(),
+          title: 'Failed to load card details',
+          message: state.error,
+          onRetry: () =>
+              ref.read(cardDetailProvider(cardId).notifier).loadCard(),
         ),
       );
     }
@@ -113,7 +115,7 @@ class CardDetailScreen extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          card.type.toUpperCase(),
+                          card.type.value.toUpperCase(),
                           overflow: .ellipsis,
                           style: tt.labelSmall!.copyWith(
                             color: cs.secondary,

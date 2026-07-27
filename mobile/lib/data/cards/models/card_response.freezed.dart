@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CardResponse {
 
- int get id; String get name; String get type; String? get description; String? get race; String? get attribute; String? get archetype; String? get imageUrl; String? get imageUrlCropped; String? get frameType; int? get atk; int? get def; int? get level; int? get linkVal; int? get scale;
+ int get id; String get name; CardType get type; String? get description; CardRace? get race; CardAttribute? get attribute; String? get archetype; String? get imageUrl; String? get imageUrlCropped; FrameType? get frameType; int? get atk; int? get def; int? get level; int? get linkVal; int? get scale;
 /// Create a copy of CardResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CardResponseCopyWith<$Res>  {
   factory $CardResponseCopyWith(CardResponse value, $Res Function(CardResponse) _then) = _$CardResponseCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String type, String? description, String? race, String? attribute, String? archetype, String? imageUrl, String? imageUrlCropped, String? frameType, int? atk, int? def, int? level, int? linkVal, int? scale
+ int id, String name, CardType type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, String? imageUrlCropped, FrameType? frameType, int? atk, int? def, int? level, int? linkVal, int? scale
 });
 
 
@@ -70,14 +70,14 @@ class _$CardResponseCopyWithImpl<$Res>
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as CardType,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,race: freezed == race ? _self.race : race // ignore: cast_nullable_to_non_nullable
-as String?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
-as String?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
+as CardRace?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
+as CardAttribute?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,imageUrlCropped: freezed == imageUrlCropped ? _self.imageUrlCropped : imageUrlCropped // ignore: cast_nullable_to_non_nullable
 as String?,frameType: freezed == frameType ? _self.frameType : frameType // ignore: cast_nullable_to_non_nullable
-as String?,atk: freezed == atk ? _self.atk : atk // ignore: cast_nullable_to_non_nullable
+as FrameType?,atk: freezed == atk ? _self.atk : atk // ignore: cast_nullable_to_non_nullable
 as int?,def: freezed == def ? _self.def : def // ignore: cast_nullable_to_non_nullable
 as int?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as int?,linkVal: freezed == linkVal ? _self.linkVal : linkVal // ignore: cast_nullable_to_non_nullable
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  String? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  CardType type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  FrameType? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CardResponse() when $default != null:
 return $default(_that.id,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.imageUrlCropped,_that.frameType,_that.atk,_that.def,_that.level,_that.linkVal,_that.scale);case _:
@@ -188,7 +188,7 @@ return $default(_that.id,_that.name,_that.type,_that.description,_that.race,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  String? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  CardType type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  FrameType? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)  $default,) {final _that = this;
 switch (_that) {
 case _CardResponse():
 return $default(_that.id,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.imageUrlCropped,_that.frameType,_that.atk,_that.def,_that.level,_that.linkVal,_that.scale);case _:
@@ -208,7 +208,7 @@ return $default(_that.id,_that.name,_that.type,_that.description,_that.race,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String type,  String? description,  String? race,  String? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  String? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  CardType type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  String? imageUrlCropped,  FrameType? frameType,  int? atk,  int? def,  int? level,  int? linkVal,  int? scale)?  $default,) {final _that = this;
 switch (_that) {
 case _CardResponse() when $default != null:
 return $default(_that.id,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.imageUrlCropped,_that.frameType,_that.atk,_that.def,_that.level,_that.linkVal,_that.scale);case _:
@@ -228,14 +228,14 @@ class _CardResponse implements CardResponse {
 
 @override final  int id;
 @override final  String name;
-@override final  String type;
+@override final  CardType type;
 @override final  String? description;
-@override final  String? race;
-@override final  String? attribute;
+@override final  CardRace? race;
+@override final  CardAttribute? attribute;
 @override final  String? archetype;
 @override final  String? imageUrl;
 @override final  String? imageUrlCropped;
-@override final  String? frameType;
+@override final  FrameType? frameType;
 @override final  int? atk;
 @override final  int? def;
 @override final  int? level;
@@ -275,7 +275,7 @@ abstract mixin class _$CardResponseCopyWith<$Res> implements $CardResponseCopyWi
   factory _$CardResponseCopyWith(_CardResponse value, $Res Function(_CardResponse) _then) = __$CardResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String type, String? description, String? race, String? attribute, String? archetype, String? imageUrl, String? imageUrlCropped, String? frameType, int? atk, int? def, int? level, int? linkVal, int? scale
+ int id, String name, CardType type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, String? imageUrlCropped, FrameType? frameType, int? atk, int? def, int? level, int? linkVal, int? scale
 });
 
 
@@ -297,14 +297,14 @@ class __$CardResponseCopyWithImpl<$Res>
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as CardType,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,race: freezed == race ? _self.race : race // ignore: cast_nullable_to_non_nullable
-as String?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
-as String?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
+as CardRace?,attribute: freezed == attribute ? _self.attribute : attribute // ignore: cast_nullable_to_non_nullable
+as CardAttribute?,archetype: freezed == archetype ? _self.archetype : archetype // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,imageUrlCropped: freezed == imageUrlCropped ? _self.imageUrlCropped : imageUrlCropped // ignore: cast_nullable_to_non_nullable
 as String?,frameType: freezed == frameType ? _self.frameType : frameType // ignore: cast_nullable_to_non_nullable
-as String?,atk: freezed == atk ? _self.atk : atk // ignore: cast_nullable_to_non_nullable
+as FrameType?,atk: freezed == atk ? _self.atk : atk // ignore: cast_nullable_to_non_nullable
 as int?,def: freezed == def ? _self.def : def // ignore: cast_nullable_to_non_nullable
 as int?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as int?,linkVal: freezed == linkVal ? _self.linkVal : linkVal // ignore: cast_nullable_to_non_nullable

@@ -98,7 +98,7 @@ class DeckSection extends StatelessWidget {
                 ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                card.type ?? 'Unknown Type',
+                card.type?.value ?? 'Unknown Type',
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: Theme.of(
                     context,

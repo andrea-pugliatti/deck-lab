@@ -28,6 +28,19 @@ class DeckSelector extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
+    // Deduplicate decks by unique ID
+    final uniqueDecks = <int, dynamic>{};
+    for (final deck in userDecks) {
+      uniqueDecks[deck.id] = deck;
+    }
+    final deckList = uniqueDecks.values.toList();
+
+    final selectedId = simState.selectedDeck?.id;
+    final validInitialValue =
+        (selectedId != null && uniqueDecks.containsKey(selectedId))
+        ? selectedId
+        : null;
+
     return Container(
       padding: const .all(16),
       color: DeckLabTheme.darkSurface,
@@ -37,14 +50,18 @@ class DeckSelector extends StatelessWidget {
           Row(
             mainAxisAlignment: .spaceBetween,
             children: [
-              Text(
-                'SELECT WORKSPACE DECK BLUEPRINT',
-                style: tt.labelSmall!.copyWith(
-                  color: cs.primary,
-                  fontWeight: .bold,
-                  letterSpacing: 0.5,
+              Expanded(
+                child: Text(
+                  'SELECT WORKSPACE DECK BLUEPRINT',
+                  overflow: .ellipsis,
+                  style: tt.labelSmall!.copyWith(
+                    color: cs.primary,
+                    fontWeight: .bold,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               if (activeUsername != null)
                 Row(
                   mainAxisSize: .min,
@@ -68,8 +85,11 @@ class DeckSelector extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<int>(
-            key: ValueKey('${listState.activeTab}_${userDecks.length}'),
-            initialValue: simState.selectedDeck?.id,
+            isExpanded: true,
+            key: ValueKey(
+              '${listState.activeTab}_${deckList.length}_$validInitialValue',
+            ),
+            initialValue: validInitialValue,
             dropdownColor: DeckLabTheme.darkSurface,
             style: tt.bodyMedium!.copyWith(color: cs.onSurface),
             decoration: const InputDecoration(
@@ -82,11 +102,12 @@ class DeckSelector extends StatelessWidget {
               ),
             ),
             onChanged: (id) => {if (id != null) selectDeckAction(id)},
-            items: userDecks.map((deck) {
+            items: deckList.map((deck) {
               return DropdownMenuItem<int>(
                 value: deck.id,
                 child: Text(
-                  '${deck.name.toUpperCase()} (${deck.formatName.toUpperCase()})',
+                  '${deck.name.toUpperCase()} (${deck.formatName.value.toUpperCase()})',
+                  overflow: .ellipsis,
                 ),
               );
             }).toList(),

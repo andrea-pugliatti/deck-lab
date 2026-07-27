@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Card;
+import 'package:mobile/domain/enums/enums.dart';
 import 'package:mobile/domain/models/card.dart';
 import 'package:mobile/domain/models/deck_card.dart';
 import 'package:mobile/ui/features/deck_builder/view_models/deck_builder_provider.dart';
@@ -10,7 +11,7 @@ class BuilderSection extends StatelessWidget {
   final Iterable<DeckCard> cards;
   final int count;
   final Color indicatorColor;
-  final String sectionKey;
+  final DeckSection sectionKey;
   final DeckBuilderNotifier notifier;
 
   const BuilderSection({
@@ -127,7 +128,7 @@ class BuilderSection extends StatelessWidget {
                         final tempCard = Card(
                           id: card.cardId,
                           name: card.name,
-                          type: card.type ?? '',
+                          type: card.type ?? CardType.unknown,
                           imageUrl: card.imageUrl,
                         );
                         notifier.addCard(tempCard, sectionKey);

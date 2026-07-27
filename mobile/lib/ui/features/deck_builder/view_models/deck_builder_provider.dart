@@ -1,17 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers.dart';
-import '../../../../domain/models/deck_card.dart';
-import '../../../../domain/models/deck_detail.dart';
+
+import '../../../../domain/enums/enums.dart';
 import '../../../../domain/models/card.dart';
 import '../../../../domain/models/card_suggestion.dart';
+import '../../../../domain/models/deck_card.dart';
+import '../../../../domain/models/deck_detail.dart';
 import '../../../../domain/services/card_legality_engine.dart';
+import '../../../core/providers.dart';
 
 /// State representation of the active Deck Builder session.
 class DeckBuilderState {
   final int? id;
   final String name;
   final String description;
-  final String formatName;
+  final Format formatName;
   final List<DeckCard> cards;
   final bool isValidating;
   final List<String> validationErrors;
@@ -44,7 +46,7 @@ class DeckBuilderState {
     int? id,
     String? name,
     String? description,
-    String? formatName,
+    Format? formatName,
     List<DeckCard>? cards,
     bool? isValidating,
     List<String>? validationErrors,
@@ -75,8 +77,6 @@ class DeckBuilderState {
   }
 }
 
-/// State notifier implementing the deck editing state machine.
-///
 /// Manages add, remove, and quantity edits, format switches, validation rule calls,
 /// AI suggestions retrieval, and wizard-driven generation.
 class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
@@ -86,7 +86,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
       id: null,
       name: '',
       description: '',
-      formatName: 'TCG',
+      formatName: Format.tcg,
       cards: [],
       isValidating: false,
       validationErrors: [],
@@ -107,7 +107,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
         id: null,
         name: '',
         description: '',
-        formatName: 'TCG',
+        formatName: Format.tcg,
         cards: [],
         isValidating: false,
         validationErrors: [],
@@ -159,18 +159,16 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   }
 
   /// Updates legality format rules and triggers recalculations.
-  void updateFormat(String formatName) {
+  void updateFormat(Format formatName) {
     state = state.copyWith(formatName: formatName);
     triggerValidation();
     triggerAiSuggestions();
   }
 
-  /// Adds a card definition to a specific deck section (MAIN, EXTRA, or SIDE).
+  /// Adds a card definition to a specific deck section.
   ///
   /// Enforces Yu-Gi-Oh! maximum copies limit: sum of card across all sections cannot exceed 3.
-  void addCard(Card card, String section) {
-    final normalizedSection = section.toUpperCase();
-
+  void addCard(Card card, DeckSection section) {
     if (!CardLegalityEngine.canAddCard(state.cards, card.id)) {
       state = state.copyWith(
         error:
@@ -181,8 +179,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
 
     final updatedCards = List<DeckCard>.from(state.cards);
     final existingIdx = updatedCards.indexWhere(
-      (c) =>
-          c.cardId == card.id && c.section.toUpperCase() == normalizedSection,
+      (c) => c.cardId == card.id && c.section == section,
     );
 
     if (existingIdx != -1) {
@@ -197,7 +194,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
           name: card.name,
           type: card.type,
           imageUrl: card.imageUrl,
-          section: normalizedSection,
+          section: section,
           quantity: 1,
         ),
       );
@@ -209,11 +206,10 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   }
 
   /// Decrements or removes a card copy in a section.
-  void removeCard(int cardId, String section) {
-    final normalizedSection = section.toUpperCase();
+  void removeCard(int cardId, DeckSection section) {
     final updatedCards = List<DeckCard>.from(state.cards);
     final idx = updatedCards.indexWhere(
-      (c) => c.cardId == cardId && c.section.toUpperCase() == normalizedSection,
+      (c) => c.cardId == cardId && c.section == section,
     );
 
     if (idx != -1) {
@@ -229,34 +225,60 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
     }
   }
 
-  /// Triggers a deck validation request.
-  Future<void> triggerValidation() async {
-    if (state.cards.isEmpty) {
-      state = state.copyWith(validationErrors: []);
+  /// Explicitly sets the quantity copy count for a card in a section.
+  void updateCardQuantity(int cardId, DeckSection section, int quantity) {
+    if (quantity <= 0) {
+      final updatedCards = List<DeckCard>.from(state.cards)
+        ..removeWhere((c) => c.cardId == cardId && c.section == section);
+      state = state.copyWith(cards: updatedCards, error: null);
+      triggerValidation();
+      triggerAiSuggestions();
       return;
     }
 
-    state = state.copyWith(isValidating: true);
-    try {
-      final repo = ref.read(deckRepositoryProvider);
-      final res = await repo.validateDeck(
-        name: state.name,
-        formatName: state.formatName,
-        deckCards: state.cards,
-      );
+    if (quantity > 3) {
       state = state.copyWith(
-        isValidating: false,
-        validationErrors: res.isValid ? [] : res.errors,
+        error: 'Quantity cannot exceed 3 copies per card rule.',
       );
-    } catch (e) {
+      return;
+    }
+
+    final otherSectionsCount = state.cards
+        .where((c) => c.cardId == cardId && c.section != section)
+        .fold(0, (sum, c) => sum + c.quantity);
+
+    if (otherSectionsCount + quantity > 3) {
       state = state.copyWith(
-        isValidating: false,
-        validationErrors: [e.toString()],
+        error:
+            'Total copies across Main, Extra, and Side cannot exceed 3 copies.',
       );
+      return;
+    }
+
+    final updatedCards = List<DeckCard>.from(state.cards);
+    final idx = updatedCards.indexWhere(
+      (c) => c.cardId == cardId && c.section == section,
+    );
+
+    if (idx != -1) {
+      updatedCards[idx] = updatedCards[idx].copyWith(quantity: quantity);
+      state = state.copyWith(cards: updatedCards, error: null);
+      triggerValidation();
+      triggerAiSuggestions();
     }
   }
 
-  /// Queries Card recommendations synergy matching current deck state.
+  /// Evaluates current deck compliance rules.
+  Future<void> triggerValidation() async {
+    state = state.copyWith(isValidating: true);
+    final errors = CardLegalityEngine.validateDeck(
+      state.cards,
+      state.formatName.value,
+    );
+    state = state.copyWith(isValidating: false, validationErrors: errors);
+  }
+
+  /// Fetches AI suggestions matching current cards list.
   Future<void> triggerAiSuggestions() async {
     if (state.cards.isEmpty) {
       state = state.copyWith(aiSuggestions: []);
@@ -285,7 +307,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   /// Generates a deck list using archetype parameters via AI Wizard.
   Future<void> triggerAiGeneration({
     required String archetype,
-    required String strategy,
+    required Strategy strategy,
     String? customPrompt,
   }) async {
     state = state.copyWith(isGenerating: true, error: null);
@@ -362,7 +384,7 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   }
 }
 
-/// Provider exposing the Deck Builder notifier state.
+/// Riverpod notifier provider exposing [DeckBuilderNotifier].
 final deckBuilderProvider =
     NotifierProvider<DeckBuilderNotifier, DeckBuilderState>(
       DeckBuilderNotifier.new,

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CardEntry {
 
- String get name; String get section; int get quantity;
+ String get name; DeckSection get section; int get quantity;
 /// Create a copy of CardEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CardEntryCopyWith<$Res>  {
   factory $CardEntryCopyWith(CardEntry value, $Res Function(CardEntry) _then) = _$CardEntryCopyWithImpl;
 @useResult
 $Res call({
- String name, String section, int quantity
+ String name, DeckSection section, int quantity
 });
 
 
@@ -69,7 +69,7 @@ class _$CardEntryCopyWithImpl<$Res>
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as DeckSection,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  DeckSection section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CardEntry() when $default != null:
 return $default(_that.name,_that.section,_that.quantity);case _:
@@ -176,7 +176,7 @@ return $default(_that.name,_that.section,_that.quantity);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String section,  int quantity)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  DeckSection section,  int quantity)  $default,) {final _that = this;
 switch (_that) {
 case _CardEntry():
 return $default(_that.name,_that.section,_that.quantity);case _:
@@ -196,7 +196,7 @@ return $default(_that.name,_that.section,_that.quantity);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String section,  int quantity)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  DeckSection section,  int quantity)?  $default,) {final _that = this;
 switch (_that) {
 case _CardEntry() when $default != null:
 return $default(_that.name,_that.section,_that.quantity);case _:
@@ -215,7 +215,7 @@ class _CardEntry implements CardEntry {
   factory _CardEntry.fromJson(Map<String, dynamic> json) => _$CardEntryFromJson(json);
 
 @override final  String name;
-@override final  String section;
+@override final  DeckSection section;
 @override final  int quantity;
 
 /// Create a copy of CardEntry
@@ -251,7 +251,7 @@ abstract mixin class _$CardEntryCopyWith<$Res> implements $CardEntryCopyWith<$Re
   factory _$CardEntryCopyWith(_CardEntry value, $Res Function(_CardEntry) _then) = __$CardEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String section, int quantity
+ String name, DeckSection section, int quantity
 });
 
 
@@ -272,7 +272,7 @@ class __$CardEntryCopyWithImpl<$Res>
   return _then(_CardEntry(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as DeckSection,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

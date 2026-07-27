@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckGenerationResponse {
 
- String get name; String get description; String get formatName; List<DeckCardResponse> get deckCards; List<String> get validationWarnings;
+ String get name; String get description; Format get formatName; List<DeckCardResponse> get deckCards; List<String> get validationWarnings;
 /// Create a copy of DeckGenerationResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckGenerationResponseCopyWith<$Res>  {
   factory $DeckGenerationResponseCopyWith(DeckGenerationResponse value, $Res Function(DeckGenerationResponse) _then) = _$DeckGenerationResponseCopyWithImpl;
 @useResult
 $Res call({
- String name, String description, String formatName, List<DeckCardResponse> deckCards, List<String> validationWarnings
+ String name, String description, Format formatName, List<DeckCardResponse> deckCards, List<String> validationWarnings
 });
 
 
@@ -70,7 +70,7 @@ class _$DeckGenerationResponseCopyWithImpl<$Res>
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,deckCards: null == deckCards ? _self.deckCards : deckCards // ignore: cast_nullable_to_non_nullable
+as Format,deckCards: null == deckCards ? _self.deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,validationWarnings: null == validationWarnings ? _self.validationWarnings : validationWarnings // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckGenerationResponse() when $default != null:
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_that.validationWarnings);case _:
@@ -178,7 +178,7 @@ return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)  $default,) {final _that = this;
 switch (_that) {
 case _DeckGenerationResponse():
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_that.validationWarnings);case _:
@@ -198,7 +198,7 @@ return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards,  List<String> validationWarnings)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckGenerationResponse() when $default != null:
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_that.validationWarnings);case _:
@@ -218,7 +218,7 @@ class _DeckGenerationResponse implements DeckGenerationResponse {
 
 @override final  String name;
 @override final  String description;
-@override final  String formatName;
+@override final  Format formatName;
  final  List<DeckCardResponse> _deckCards;
 @override@JsonKey() List<DeckCardResponse> get deckCards {
   if (_deckCards is EqualUnmodifiableListView) return _deckCards;
@@ -267,7 +267,7 @@ abstract mixin class _$DeckGenerationResponseCopyWith<$Res> implements $DeckGene
   factory _$DeckGenerationResponseCopyWith(_DeckGenerationResponse value, $Res Function(_DeckGenerationResponse) _then) = __$DeckGenerationResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String description, String formatName, List<DeckCardResponse> deckCards, List<String> validationWarnings
+ String name, String description, Format formatName, List<DeckCardResponse> deckCards, List<String> validationWarnings
 });
 
 
@@ -289,7 +289,7 @@ class __$DeckGenerationResponseCopyWithImpl<$Res>
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,deckCards: null == deckCards ? _self._deckCards : deckCards // ignore: cast_nullable_to_non_nullable
+as Format,deckCards: null == deckCards ? _self._deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,validationWarnings: null == validationWarnings ? _self._validationWarnings : validationWarnings // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));

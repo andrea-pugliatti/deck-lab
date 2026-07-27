@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateDeckRequest {
 
- String get name; String get description; String get formatName; List<DeckCardResponse> get deckCards;
+ String get name; String get description; Format get formatName; List<DeckCardResponse> get deckCards;
 /// Create a copy of CreateDeckRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CreateDeckRequestCopyWith<$Res>  {
   factory $CreateDeckRequestCopyWith(CreateDeckRequest value, $Res Function(CreateDeckRequest) _then) = _$CreateDeckRequestCopyWithImpl;
 @useResult
 $Res call({
- String name, String description, String formatName, List<DeckCardResponse> deckCards
+ String name, String description, Format formatName, List<DeckCardResponse> deckCards
 });
 
 
@@ -70,7 +70,7 @@ class _$CreateDeckRequestCopyWithImpl<$Res>
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,deckCards: null == deckCards ? _self.deckCards : deckCards // ignore: cast_nullable_to_non_nullable
+as Format,deckCards: null == deckCards ? _self.deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,
   ));
 }
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateDeckRequest() when $default != null:
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards);case _:
@@ -177,7 +177,7 @@ return $default(_that.name,_that.description,_that.formatName,_that.deckCards);c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
 switch (_that) {
 case _CreateDeckRequest():
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards);case _:
@@ -197,7 +197,7 @@ return $default(_that.name,_that.description,_that.formatName,_that.deckCards);c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  String formatName,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String description,  Format formatName,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateDeckRequest() when $default != null:
 return $default(_that.name,_that.description,_that.formatName,_that.deckCards);case _:
@@ -217,7 +217,7 @@ class _CreateDeckRequest implements CreateDeckRequest {
 
 @override final  String name;
 @override final  String description;
-@override final  String formatName;
+@override final  Format formatName;
  final  List<DeckCardResponse> _deckCards;
 @override List<DeckCardResponse> get deckCards {
   if (_deckCards is EqualUnmodifiableListView) return _deckCards;
@@ -259,7 +259,7 @@ abstract mixin class _$CreateDeckRequestCopyWith<$Res> implements $CreateDeckReq
   factory _$CreateDeckRequestCopyWith(_CreateDeckRequest value, $Res Function(_CreateDeckRequest) _then) = __$CreateDeckRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String description, String formatName, List<DeckCardResponse> deckCards
+ String name, String description, Format formatName, List<DeckCardResponse> deckCards
 });
 
 
@@ -281,7 +281,7 @@ class __$CreateDeckRequestCopyWithImpl<$Res>
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
-as String,deckCards: null == deckCards ? _self._deckCards : deckCards // ignore: cast_nullable_to_non_nullable
+as Format,deckCards: null == deckCards ? _self._deckCards : deckCards // ignore: cast_nullable_to_non_nullable
 as List<DeckCardResponse>,
   ));
 }

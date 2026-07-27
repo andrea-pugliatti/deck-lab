@@ -1,10 +1,12 @@
+import '../enums/enums.dart';
+
 /// Domain model representing a single card recommended by AI synergies.
 class CardSuggestion {
   final String name;
-  final String section;
+  final DeckSection section;
   final String synergyReason;
   final int cardId;
-  final String type;
+  final CardType type;
   final String? imageUrl;
 
   const CardSuggestion({
@@ -18,10 +20,10 @@ class CardSuggestion {
 
   CardSuggestion copyWith({
     String? name,
-    String? section,
+    DeckSection? section,
     String? synergyReason,
     int? cardId,
-    String? type,
+    CardType? type,
     String? imageUrl,
   }) {
     return CardSuggestion(

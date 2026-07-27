@@ -8,13 +8,19 @@ part of 'card_entry.dart';
 
 _CardEntry _$CardEntryFromJson(Map<String, dynamic> json) => _CardEntry(
   name: json['name'] as String,
-  section: json['section'] as String,
+  section: $enumDecode(_$DeckSectionEnumMap, json['section']),
   quantity: (json['quantity'] as num).toInt(),
 );
 
 Map<String, dynamic> _$CardEntryToJson(_CardEntry instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'section': instance.section,
+      'section': _$DeckSectionEnumMap[instance.section]!,
       'quantity': instance.quantity,
     };
+
+const _$DeckSectionEnumMap = {
+  DeckSection.main: 'MAIN',
+  DeckSection.extra: 'EXTRA',
+  DeckSection.side: 'SIDE',
+};

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../enums/enums.dart';
 import '../services/hypergeometric_calculator.dart';
 import 'deck_card.dart';
 import 'simulator_card_instance.dart';
@@ -36,7 +37,7 @@ class SimulationSession {
   }) {
     final List<SimulatorCardInstance> tempMain = [];
     final mainCards = deckCards
-        .where((c) => c.section.toUpperCase() == 'MAIN')
+        .where((c) => c.section == DeckSection.main)
         .toList();
 
     for (final card in mainCards) {

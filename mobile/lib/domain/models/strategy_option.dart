@@ -1,7 +1,9 @@
+import '../enums/strategy.dart';
+
 /// Represents a strategic playstyle option that can be applied to the deck generator.
 class StrategyOption {
   final String label;
-  final String value;
+  final Strategy value;
   final String description;
 
   const StrategyOption({
@@ -27,49 +29,49 @@ class StrategyOption {
 const List<StrategyOption> defaultStrategies = [
   StrategyOption(
     label: 'None (Standard)',
-    value: 'None',
+    value: Strategy.none,
     description:
         'Build a standard, balanced deck following the archetype\'s core style.',
   ),
   StrategyOption(
     label: 'Combo / Synchro Spam',
-    value: 'Combo',
+    value: Strategy.combo,
     description:
         'Focuses on explosive special summon chains, search effects, and boss monster boards.',
   ),
   StrategyOption(
     label: 'Control / Stun',
-    value: 'Control',
+    value: Strategy.control,
     description:
         'Focuses on counter-traps, hand traps, negates, and resource denial.',
   ),
   StrategyOption(
     label: 'Aggro / OTK',
-    value: 'Aggro',
+    value: Strategy.aggro,
     description:
         'Focuses on high attack stats, board wipes, and quick One-Turn Kills.',
   ),
   StrategyOption(
     label: 'Midrange',
-    value: 'Midrange',
+    value: Strategy.midrange,
     description:
         'A balanced hybrid focusing on recurring resource loops, consistency, and grind game.',
   ),
   StrategyOption(
     label: 'Going Second',
-    value: 'Going Second',
+    value: Strategy.goingSecond,
     description:
         'Optimized with board breakers and hand traps to break opposing setups.',
   ),
   StrategyOption(
     label: 'Stall / Burn',
-    value: 'Stall/Burn',
+    value: Strategy.stallBurn,
     description:
         'Uses defense, negation, stalling tactics, and direct burn damage to win.',
   ),
   StrategyOption(
     label: 'Pure Archetype',
-    value: 'Pure',
+    value: Strategy.pure,
     description:
         'Stick strictly to cards of the chosen archetype for a thematic build.',
   ),

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import '../../../../domain/enums/enums.dart';
 import 'deck_card_response.dart';
 
 part 'deck_detail_response.freezed.dart';
@@ -16,20 +16,20 @@ abstract class DeckDetailResponse with _$DeckDetailResponse {
     required int id,
     required String name,
     String? description,
-    required String formatName,
+    required Format formatName,
     String? creatorUsername,
     String? updatedAt,
     required List<DeckCardResponse> deckCards,
   }) = _DeckDetailResponse;
 
   List<DeckCardResponse> get mainDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'MAIN').toList();
+      deckCards.where((card) => card.section == DeckSection.main).toList();
 
   List<DeckCardResponse> get extraDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'EXTRA').toList();
+      deckCards.where((card) => card.section == DeckSection.extra).toList();
 
   List<DeckCardResponse> get sideDeckCards =>
-      deckCards.where((card) => card.section.toUpperCase() == 'SIDE').toList();
+      deckCards.where((card) => card.section == DeckSection.side).toList();
 
   int get mainDeckCount =>
       mainDeckCards.fold(0, (sum, card) => sum + card.quantity);

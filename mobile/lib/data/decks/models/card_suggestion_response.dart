@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../domain/enums/enums.dart';
 
 part 'card_suggestion_response.freezed.dart';
 part 'card_suggestion_response.g.dart';
@@ -8,10 +9,10 @@ part 'card_suggestion_response.g.dart';
 abstract class CardSuggestionResponse with _$CardSuggestionResponse {
   const factory CardSuggestionResponse({
     required String name,
-    required String section,
+    required DeckSection section,
     required String synergyReason,
     required int cardId,
-    required String type,
+    @JsonKey(unknownEnumValue: CardType.unknown) required CardType type,
     String? imageUrl,
   }) = _CardSuggestionResponse;
 
