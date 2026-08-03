@@ -210,7 +210,7 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("page")).toBe("3");
     });
 
@@ -229,7 +229,7 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("page")).toBeNull();
     });
 
@@ -249,7 +249,7 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("type")).toBe("Spell");
       expect(params.get("page")).toBeNull(); // Reset page
     });
@@ -269,7 +269,7 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("q")).toBe("Magician");
       expect(params.get("page")).toBeNull();
     });

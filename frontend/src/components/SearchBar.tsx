@@ -89,7 +89,9 @@ export default function SearchBar() {
     } else if (e.key === "Enter" && focusedIndex >= 0) {
       e.preventDefault();
       const selected = cardSuggestions[focusedIndex];
-      handleSuggestionClick(selected.name);
+      if (selected) {
+        handleSuggestionClick(selected.name);
+      }
     } else if (e.key === "Escape") {
       setIsOpen(false);
     }

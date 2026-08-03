@@ -128,7 +128,7 @@ describe("DeckSelector component", () => {
     );
 
     const selectBtns = screen.getAllByRole("button", { name: "Select" });
-    fireEvent.click(selectBtns[0]); // Select first deck
+    fireEvent.click(selectBtns[0]!); // Select first deck
 
     expect(mockOnSelect).toHaveBeenCalledWith(1);
   });
@@ -170,7 +170,7 @@ describe("DeckSelector component", () => {
     fireEvent.click(randomBtn);
 
     expect(mockOnSelect).toHaveBeenCalled();
-    const selectedId = mockOnSelect.mock.calls[0][0];
+    const selectedId = mockOnSelect.mock.calls[0]![0];
     expect([1, 2]).toContain(selectedId);
   });
 

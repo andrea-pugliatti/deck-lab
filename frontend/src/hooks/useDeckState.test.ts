@@ -128,8 +128,8 @@ describe("useDeckState hook", () => {
   it("should fail saveDeck if deck name is empty", async () => {
     const { result } = renderHook(() => useDeckState());
 
-    await act(async () => {
-      await result.current.saveDeck();
+    act(() => {
+      result.current.saveDeck();
     });
 
     expect(result.current.submitError).toBe("Deck name is required.");
@@ -164,8 +164,8 @@ describe("useDeckState hook", () => {
       expect(result.current.name).toBe("Existing Deck");
     });
 
-    await act(async () => {
-      await result.current.saveDeck();
+    act(() => {
+      result.current.saveDeck();
     });
 
     expect(result.current.submitError).toBe("Strategy/notes must be 255 characters or less.");
@@ -188,7 +188,7 @@ describe("useDeckState hook", () => {
     });
 
     await act(async () => {
-      await result.current.saveDeck();
+      result.current.saveDeck();
     });
 
     expect(result.current.submitError).toBeUndefined();

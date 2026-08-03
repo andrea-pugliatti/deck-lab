@@ -96,7 +96,7 @@ function DeckBuilderContent(): React.JSX.Element {
    */
   const handleSave = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    void saveDeck();
+    saveDeck();
   };
 
   /**
@@ -238,7 +238,9 @@ function DeckBuilderContent(): React.JSX.Element {
               <Button
                 type="button"
                 variant="outline"
-                onClick={validateDeckPayload}
+                onClick={() => {
+                  void validateDeckPayload();
+                }}
                 isLoading={isValidating}
                 disabled={deckCards.length === 0}
                 className="hover:text-cyan-accent px-5 py-2.5 font-semibold text-slate-300"

@@ -170,7 +170,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("type")).toBe("Spell Card");
       expect(params.get("attribute")).toBe("LIGHT");
       expect(params.get("race")).toBe("Zombie");
@@ -186,7 +186,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("page")).toBe("3");
     });
 
@@ -198,7 +198,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("q")).toBe("Magician");
       expect(params.get("page")).toBeNull(); // Reset page
     });

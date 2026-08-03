@@ -15,7 +15,7 @@ describe("Select component", () => {
     const select = screen.getByTestId("select") as HTMLSelectElement;
     expect(select).toBeInTheDocument();
     expect(select.options).toHaveLength(2);
-    expect(select.options[0].text).toBe("Option A");
+    expect(select.options[0]!.text).toBe("Option A");
   });
 
   it("should trigger onChange when changing selection", () => {

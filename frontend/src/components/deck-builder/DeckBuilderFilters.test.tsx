@@ -92,11 +92,11 @@ describe("DeckBuilderFilters component", () => {
     const selects = screen.getAllByRole("combobox");
 
     // Change type
-    fireEvent.change(selects[0], { target: { value: "Spell Card" } });
+    fireEvent.change(selects[0]!, { target: { value: "Spell Card" } });
     expect(mockSetFilters).toHaveBeenCalled();
 
     // Change archetype
-    fireEvent.change(selects[3], { target: { value: "Blue-Eyes" } });
+    fireEvent.change(selects[3]!, { target: { value: "Blue-Eyes" } });
     expect(mockSetFilters).toHaveBeenCalledTimes(2);
   });
 
@@ -232,7 +232,7 @@ describe("DeckBuilderFilters component", () => {
       />,
     );
 
-    fireEvent.change(container.querySelectorAll("select")[0], {
+    fireEvent.change(container.querySelectorAll("select")[0]!, {
       target: { value: "Normal Monster" },
     });
 

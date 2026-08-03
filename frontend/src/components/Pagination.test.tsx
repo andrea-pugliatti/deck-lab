@@ -14,8 +14,8 @@ describe("Pagination component", () => {
     const handlePageChange = vi.fn();
     render(<Pagination page={0} totalPages={5} onPageChange={handlePageChange} />);
 
-    const prevBtn = screen.getAllByRole("button")[0];
-    const nextBtn = screen.getAllByRole("button")[1];
+    const prevBtn = screen.getAllByRole("button")[0]!;
+    const nextBtn = screen.getAllByRole("button")[1]!;
 
     expect(prevBtn).toBeDisabled();
     expect(nextBtn).not.toBeDisabled();
@@ -28,8 +28,8 @@ describe("Pagination component", () => {
     const handlePageChange = vi.fn();
     render(<Pagination page={4} totalPages={5} onPageChange={handlePageChange} />);
 
-    const prevBtn = screen.getAllByRole("button")[0];
-    const nextBtn = screen.getAllByRole("button")[1];
+    const prevBtn = screen.getAllByRole("button")[0]!;
+    const nextBtn = screen.getAllByRole("button")[1]!;
 
     expect(prevBtn).not.toBeDisabled();
     expect(nextBtn).toBeDisabled();

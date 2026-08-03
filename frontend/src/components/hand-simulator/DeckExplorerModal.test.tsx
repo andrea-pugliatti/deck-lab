@@ -121,7 +121,7 @@ describe("DeckExplorerModal component", () => {
 
     // Get "To Hand" button for Blue-Eyes
     const toHandBtns = screen.getAllByRole("button", { name: "To Hand" });
-    fireEvent.click(toHandBtns[0]); // Click first card (Blue-Eyes) to hand
+    fireEvent.click(toHandBtns[0]!); // Click first card (Blue-Eyes) to hand
 
     expect(handleActionFromExplorer).toHaveBeenCalledWith(mockDeck[0], "hand");
     expect(setShowDeckExplorer).toHaveBeenCalledWith(false);

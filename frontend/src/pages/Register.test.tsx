@@ -54,8 +54,8 @@ describe("Register page component", () => {
       target: { value: "yugi@mutou.com" },
     });
     const pwInputs = screen.getAllByPlaceholderText("••••••••");
-    fireEvent.change(pwInputs[0], { target: { value: "pass1" } });
-    fireEvent.change(pwInputs[1], { target: { value: "pass2" } });
+    fireEvent.change(pwInputs[0]!, { target: { value: "pass1" } });
+    fireEvent.change(pwInputs[1]!, { target: { value: "pass2" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
 
@@ -77,8 +77,8 @@ describe("Register page component", () => {
       target: { value: "yugi@mutou.com" },
     });
     const pwInputs = screen.getAllByPlaceholderText("••••••••");
-    fireEvent.change(pwInputs[0], { target: { value: "pass1" } });
-    fireEvent.change(pwInputs[1], { target: { value: "pass1" } });
+    fireEvent.change(pwInputs[0]!, { target: { value: "pass1" } });
+    fireEvent.change(pwInputs[1]!, { target: { value: "pass1" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
 

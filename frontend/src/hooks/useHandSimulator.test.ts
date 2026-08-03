@@ -60,7 +60,7 @@ describe("useHandSimulator hook", () => {
   it("should support moving card to field and resetting", () => {
     const { result } = renderHook(() => useHandSimulator(mockDeck, 2));
 
-    const card = result.current.hand[0];
+    const card = result.current.hand[0]!;
 
     act(() => {
       result.current.moveCard(card, "field");

@@ -48,7 +48,12 @@ function shuffle<T>(array: T[]): T[] {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+    const temp = copy[i];
+    const target = copy[j];
+    if (temp !== undefined && target !== undefined) {
+      copy[i] = target;
+      copy[j] = temp;
+    }
   }
   return copy;
 }
@@ -165,12 +170,18 @@ export function simulatorReducer(state: SimulatorState, action: SimulatorAction)
             banished,
             remainingDeck: [...remainingDeck, card],
           };
-        default:
+        default: {
+          const _exhaustiveZone: never = toZone;
+          void _exhaustiveZone;
           return state;
+        }
       }
     }
 
-    default:
+    default: {
+      const _exhaustive: never = action;
+      void _exhaustive;
       return state;
+    }
   }
 }

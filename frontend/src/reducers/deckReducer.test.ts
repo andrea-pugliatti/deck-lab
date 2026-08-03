@@ -111,7 +111,7 @@ describe("deckReducer", () => {
     let state = deckReducer(initialState, { type: "ADD_CARD", card, section: "MAIN" });
     state = deckReducer(state, { type: "ADD_CARD", card, section: "MAIN" });
     expect(state.deckCards).toHaveLength(1);
-    expect(state.deckCards[0].quantity).toBe(2);
+    expect(state.deckCards[0]!.quantity).toBe(2);
   });
 
   it("should clamp quantity and add validation error if adding too many copies of a card", () => {
@@ -130,7 +130,7 @@ describe("deckReducer", () => {
     state = deckReducer(state, { type: "ADD_CARD", card, section: "MAIN" });
     // Attempting to add 4th copy (TCG max is 3)
     state = deckReducer(state, { type: "ADD_CARD", card, section: "MAIN" });
-    expect(state.deckCards[0].quantity).toBe(3);
+    expect(state.deckCards[0]!.quantity).toBe(3);
     expect(state.validationErrors).toContain(
       'You cannot add more than 3 copies of "Blue-Eyes White Dragon" across your entire deck.',
     );
@@ -158,7 +158,7 @@ describe("deckReducer", () => {
       section: "MAIN",
       delta: 1,
     });
-    expect(state.deckCards[0].quantity).toBe(3);
+    expect(state.deckCards[0]!.quantity).toBe(3);
 
     // Decrement
     state = deckReducer(state, {
@@ -167,7 +167,7 @@ describe("deckReducer", () => {
       section: "MAIN",
       delta: -1,
     });
-    expect(state.deckCards[0].quantity).toBe(2);
+    expect(state.deckCards[0]!.quantity).toBe(2);
 
     // Remove if quantity <= 0
     state = deckReducer(state, {

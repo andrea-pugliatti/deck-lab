@@ -34,6 +34,31 @@ const buildDeckPayload = (
 });
 
 /**
+ * Return interface for {@link useDeckState}.
+ */
+export interface UseDeckStateReturn {
+  isEditMode: boolean;
+  name: string;
+  setName: (name: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  formatName: Format;
+  setFormatName: (formatName: Format) => void;
+  deckCards: DeckCardItem[];
+  setDeckCards: (deckCards: DeckCardItem[]) => void;
+  validationErrors: string[];
+  validationSuccess: boolean;
+  isSaving: boolean;
+  isValidating: boolean;
+  submitError: string | undefined;
+  addCard: (card: Card, section: CardSection) => void;
+  updateQuantity: (cardId: number, section: CardSection, delta: number) => void;
+  removeCard: (cardId: number, section: CardSection) => void;
+  validateDeckPayload: (overrideName?: string) => Promise<boolean>;
+  saveDeck: (overrideName?: string) => void;
+}
+
+/**
  * Custom React hook that acts as the primary state manager for the Deck Builder.
  * Wraps useReducer logic with asynchronous triggers for fetching, saving, and
  * validating deck designs.
@@ -42,7 +67,10 @@ const buildDeckPayload = (
  * @param onSaveSuccess - Optional callback executed when save operation completes.
  * @returns State variables, dispatch wrappers, and save/validation handles.
  */
-export function useDeckState(id?: string, onSaveSuccess?: (savedDeck: Deck) => void) {
+export function useDeckState(
+  id?: string,
+  onSaveSuccess?: (savedDeck: Deck) => void,
+): UseDeckStateReturn {
   const isEditMode = !!id;
 
   const [state, dispatch] = useReducer(deckReducer, initialState);

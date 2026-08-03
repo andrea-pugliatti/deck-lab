@@ -143,7 +143,7 @@ describe("useDeckSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      let params = setSearchParamsMock.mock.calls[0][0];
+      let params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("format")).toBe("Speed Duel");
       expect(params.get("page")).toBeNull(); // Reset page
 
@@ -154,7 +154,7 @@ describe("useDeckSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      params = setSearchParamsMock.mock.calls[0][0];
+      params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("page")).toBe("3");
     });
 
@@ -166,7 +166,7 @@ describe("useDeckSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0][0];
+      const params = setSearchParamsMock.mock.calls[0]![0];
       expect(params.get("q")).toBe("Blue");
       expect(params.get("page")).toBeNull(); // Reset page
     });

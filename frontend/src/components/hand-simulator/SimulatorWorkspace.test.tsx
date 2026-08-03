@@ -24,7 +24,7 @@ vi.mock("./DeckExplorerModal", () => ({
   }) => (
     <div data-testid="deck-explorer">
       <span>Explorer Card Count: {deck.length}</span>
-      <button onClick={() => handleActionFromExplorer(deck[0], "hand")}>Action Hand</button>
+      <button onClick={() => handleActionFromExplorer(deck[0]!, "hand")}>Action Hand</button>
       <button onClick={() => setShowDeckExplorer(false)}>Close Explorer</button>
     </div>
   ),

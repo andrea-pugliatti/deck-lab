@@ -1,5 +1,12 @@
 import { getCardsEndpoint } from "../services/card";
-import type { Card, CardAttribute, CardFiltersState, CardRace, CardType, Page } from "../types";
+import {
+  isCardAttribute,
+  isCardRace,
+  isCardType,
+  type Card,
+  type CardFiltersState,
+  type Page,
+} from "../types";
 import { useSearch } from "./useSearch";
 
 /**
@@ -27,6 +34,25 @@ export interface UseCatalogSearchOptions {
 }
 
 /**
+ * Return interface for {@link useCatalogSearch}.
+ */
+export interface UseCatalogSearchReturn {
+  searchPage: number;
+  setSearchPage: (page: number) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  filters: CardFiltersState;
+  setFilters: (next: CardFiltersState | ((prev: CardFiltersState) => CardFiltersState)) => void;
+  debouncedQuery: string;
+  libraryCards: Card[];
+  libraryLoading: boolean;
+  totalSearchPages: number;
+  totalElements: number;
+  error: Error | null;
+  refetch: () => void;
+}
+
+/**
  * Custom React hook that encapsulates searching, filtering, and paging the card catalog.
  * Manages query debouncing, local vs. controlled state sync, query param parsing,
  * and handles the fetch state lifecycle using useSearch.
@@ -34,7 +60,7 @@ export interface UseCatalogSearchOptions {
  * @param options - Hook configuration options.
  * @returns State parameters and action mutators for card library browsing.
  */
-export function useCatalogSearch(options: UseCatalogSearchOptions = {}) {
+export function useCatalogSearch(options: UseCatalogSearchOptions = {}): UseCatalogSearchReturn {
   const {
     page,
     setPage,
@@ -103,12 +129,17 @@ export function useCatalogSearch(options: UseCatalogSearchOptions = {}) {
       debounceTime,
       syncUrl,
       urlConfig: {
-        parse: (params) => ({
-          type: (params.get("type") || "ALL") as CardType | "ALL",
-          attribute: (params.get("attribute") || "ALL") as CardAttribute | "ALL",
-          race: (params.get("race") || "ALL") as CardRace | "ALL",
-          archetype: params.get("archetype") || "ALL",
-        }),
+        parse: (params) => {
+          const typeParam = params.get("type");
+          const attrParam = params.get("attribute");
+          const raceParam = params.get("race");
+          return {
+            type: isCardType(typeParam) ? typeParam : "ALL",
+            attribute: isCardAttribute(attrParam) ? attrParam : "ALL",
+            race: isCardRace(raceParam) ? raceParam : "ALL",
+            archetype: params.get("archetype") || "ALL",
+          };
+        },
         serialize: (params, f) => {
           if (f.type !== "ALL") params.set("type", f.type);
           else params.delete("type");

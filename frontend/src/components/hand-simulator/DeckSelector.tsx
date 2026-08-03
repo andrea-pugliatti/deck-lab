@@ -79,7 +79,10 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
   const selectRandomDeck = () => {
     if (filteredDecks.length > 0) {
       const randomIndex = Math.floor(Math.random() * filteredDecks.length);
-      onSelect(filteredDecks[randomIndex].id);
+      const chosenDeck = filteredDecks[randomIndex];
+      if (chosenDeck) {
+        onSelect(chosenDeck.id);
+      }
     }
   };
 

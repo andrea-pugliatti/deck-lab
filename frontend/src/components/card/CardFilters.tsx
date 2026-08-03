@@ -1,6 +1,14 @@
 import { SlidersHorizontal } from "lucide-react";
 
-import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
+import {
+  isCardAttribute,
+  isCardRace,
+  isCardType,
+  type CardAttribute,
+  type CardFiltersState,
+  type CardRace,
+  type CardType,
+} from "../../types";
 import Button from "../ui/Button";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
@@ -80,9 +88,10 @@ export default function CardFilters({
           id="card-type"
           value={selectedType}
           onChange={(e) => {
+            const val = e.target.value;
             onChange({
               ...filters,
-              type: e.target.value as CardType | "ALL",
+              type: isCardType(val) ? val : "ALL",
               race: "ALL",
             });
           }}
@@ -112,9 +121,10 @@ export default function CardFilters({
             id="monster-attribute"
             value={selectedAttribute}
             onChange={(e) => {
+              const val = e.target.value;
               onChange({
                 ...filters,
-                attribute: e.target.value as CardAttribute | "ALL",
+                attribute: isCardAttribute(val) ? val : "ALL",
               });
             }}
             className="text-xs"
@@ -143,9 +153,10 @@ export default function CardFilters({
           id="race-property"
           value={selectedRace}
           onChange={(e) => {
+            const val = e.target.value;
             onChange({
               ...filters,
-              race: e.target.value as CardRace | "ALL",
+              race: isCardRace(val) ? val : "ALL",
             });
           }}
           className="text-xs"

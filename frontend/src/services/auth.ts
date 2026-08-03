@@ -128,7 +128,9 @@ export interface JwtPayload {
  */
 export function parseJwt(token: string): JwtPayload | undefined {
   try {
-    const base64Url = token.split(".")[1];
+    const parts = token.split(".");
+    const base64Url = parts[1];
+    if (!base64Url) return undefined;
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
       window

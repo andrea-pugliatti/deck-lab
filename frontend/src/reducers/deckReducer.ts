@@ -25,7 +25,7 @@ export const DEFAULT_RULES: FormatRules = {
 /**
  * Mapped collection of game formats and their respective deck size limits.
  */
-export const FORMAT_RULES_MAP: Record<Format, FormatRules> = {
+export const FORMAT_RULES_MAP = {
   TCG: DEFAULT_RULES,
   OCG: DEFAULT_RULES,
   Goat: {
@@ -50,7 +50,7 @@ export const FORMAT_RULES_MAP: Record<Format, FormatRules> = {
     maxCopiesPerCard: 3,
   },
   Custom: DEFAULT_RULES,
-};
+} satisfies Record<Format, FormatRules>;
 
 /**
  * Resolves the deck size limits and copy restrictions for a selected format name.
@@ -63,13 +63,22 @@ export function getFormatRules(formatName: Format): FormatRules {
 }
 
 /**
+ * Type representing Extra Deck card classifications.
+ */
+export type ExtraDeckCardType =
+  | "Fusion Monster"
+  | "Synchro Monster"
+  | "XYZ Monster"
+  | "Link Monster";
+
+/**
  * Checks if a card's type classification places it in the Extra Deck.
  * Extra Deck cards include Fusion, Synchro, Xyz, and Link monsters.
  *
  * @param cardType - The type property of the target card.
  * @returns True if the card goes to the Extra Deck.
  */
-export function isExtraDeckCard(cardType?: string): boolean {
+export function isExtraDeckCard(cardType?: string): cardType is ExtraDeckCardType {
   if (!cardType) return false;
   const lower = cardType.toLowerCase();
   return (
@@ -251,14 +260,15 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
 
       if (existingIndex > -1) {
         const updated = [...prevCards];
+        const existingItem = updated[existingIndex]!;
         const newQty = clampQuantity(
           card.id,
           section,
-          updated[existingIndex].quantity + 1,
+          existingItem.quantity + 1,
           prevCards,
           formatName,
         );
-        if (newQty === updated[existingIndex].quantity) {
+        if (newQty === existingItem.quantity) {
           const rules = getFormatRules(formatName);
           return {
             ...state,
@@ -269,7 +279,7 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
           };
         }
         updated[existingIndex] = {
-          ...updated[existingIndex],
+          ...existingItem,
           quantity: newQty,
         };
         return {
@@ -315,13 +325,14 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
       if (targetIndex === -1) return state;
 
       const updated = [...prevCards];
-      const targetQty = updated[targetIndex].quantity + delta;
+      const targetItem = updated[targetIndex]!;
+      const targetQty = targetItem.quantity + delta;
 
       if (targetQty <= 0) {
         updated.splice(targetIndex, 1);
       } else {
         updated[targetIndex] = {
-          ...updated[targetIndex],
+          ...targetItem,
           quantity: clampQuantity(cardId, section, targetQty, prevCards, formatName),
         };
       }
@@ -380,7 +391,10 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
         submitError: action.error,
       };
 
-    default:
+    default: {
+      const _exhaustive: never = action;
+      void _exhaustive;
       return state;
+    }
   }
 }
