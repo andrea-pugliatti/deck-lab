@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/ui/core/widgets/tab_button.dart';
-import 'package:mobile/ui/features/dashboard/view_models/deck_list_provider.dart';
+import 'package:mobile/ui/features/decks/view_models/deck_list_provider.dart';
 import 'package:mobile/ui/features/simulator/view_models/simulator_provider.dart';
 
 import '../../../core/theme/theme.dart';

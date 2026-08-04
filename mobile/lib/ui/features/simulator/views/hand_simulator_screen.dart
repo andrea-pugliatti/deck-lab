@@ -9,7 +9,7 @@ import 'package:mobile/ui/features/simulator/widgets/zone_panel.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/theme.dart';
 import '../../auth/view_models/auth_provider.dart';
-import '../../dashboard/view_models/deck_list_provider.dart';
+import '../../decks/view_models/deck_list_provider.dart';
 import '../view_models/simulator_provider.dart';
 
 /// Standalone Hand Simulator workspace.

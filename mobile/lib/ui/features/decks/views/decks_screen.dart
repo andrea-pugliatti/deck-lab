@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/core/widgets/empty_state.dart';
 import 'package:mobile/ui/core/widgets/error_state.dart';
 import 'package:mobile/ui/core/widgets/tab_button.dart';
-import 'package:mobile/ui/features/dashboard/widgets/deck_item_card.dart';
-import 'package:mobile/ui/features/dashboard/widgets/format_carousel.dart';
+import 'package:mobile/ui/features/decks/widgets/deck_item_card.dart';
+import 'package:mobile/ui/features/decks/widgets/format_carousel.dart';
 
 import '../../../../navigation/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -13,15 +13,15 @@ import '../../../core/widgets/shimmer_placeholder.dart';
 import '../../auth/view_models/auth_provider.dart';
 import '../view_models/deck_list_provider.dart';
 
-/// Catalog dashboard screen containing Public Decks and Personal Decks directories.
-class DashboardScreen extends ConsumerStatefulWidget {
-  const DashboardScreen({super.key});
+/// Decks catalog screen containing Public Decks and Personal Decks directories.
+class DecksScreen extends ConsumerStatefulWidget {
+  const DecksScreen({super.key});
 
   @override
-  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<DecksScreen> createState() => _DecksScreenState();
 }
 
-class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+class _DecksScreenState extends ConsumerState<DecksScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/ui/features/dashboard/widgets/deck_section.dart';
+import 'package:mobile/ui/features/decks/widgets/deck_section.dart';
 
 import '../../../../navigation/routes.dart';
 import '../../../core/theme/theme.dart';

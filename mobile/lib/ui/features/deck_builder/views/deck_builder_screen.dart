@@ -8,7 +8,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/widgets/custom_input.dart';
 import '../../../core/widgets/shimmer_placeholder.dart';
 import '../../cards/view_models/card_db_provider.dart';
-import '../../dashboard/view_models/deck_list_provider.dart';
+import '../../decks/view_models/deck_list_provider.dart';
 import '../view_models/deck_builder_provider.dart';
 import '../widgets/ai_suggestions_panel.dart';
 import '../widgets/ai_wizard_modal.dart';

@@ -7,8 +7,8 @@ import '../ui/features/auth/views/login_screen.dart';
 import '../ui/features/auth/views/register_screen.dart';
 import '../ui/features/cards/views/card_db_screen.dart';
 import '../ui/features/cards/views/card_detail_screen.dart';
-import '../ui/features/dashboard/views/dashboard_screen.dart';
-import '../ui/features/dashboard/views/deck_detail_screen.dart';
+import '../ui/features/decks/views/decks_screen.dart';
+import '../ui/features/decks/views/deck_detail_screen.dart';
 import '../ui/features/deck_builder/views/deck_builder_screen.dart';
 import '../ui/features/simulator/views/hand_simulator_screen.dart';
 import 'routes.dart';
@@ -57,7 +57,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.home,
             pageBuilder: (context, state) =>
-                const NoTransitionPage(child: DashboardScreen()),
+                const NoTransitionPage(child: DecksScreen()),
           ),
           GoRoute(
             path: AppRoutes.cards,
