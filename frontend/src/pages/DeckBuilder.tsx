@@ -1,4 +1,4 @@
-import { ArrowLeft, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, RotateCcw, Sparkles, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -16,6 +16,7 @@ import ViewToggle from "../components/ui/ViewToggle";
 import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
 import { useDeckState } from "../hooks/useDeckState";
 import { useViewPreference } from "../hooks/useViewPreference";
+import { importYdk } from "../services/deck";
 import type { AiGeneratedDeck } from "../types";
 
 /**
@@ -33,7 +34,10 @@ function DeckBuilderContent(): React.JSX.Element {
   const navigate = useNavigate();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [importWarnings, setImportWarnings] = useState<string[]>([]);
+  const [isImporting, setIsImporting] = useState(false);
 
   const [libraryViewMode, setLibraryViewMode] = useViewPreference(
     "deck-builder-library-view",
@@ -124,6 +128,40 @@ function DeckBuilderContent(): React.JSX.Element {
     setDescription("");
     setFormatName("TCG");
     setDeckCards([]);
+    setImportWarnings([]);
+  };
+
+  const handleFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsImporting(true);
+      setImportWarnings([]);
+      const result = await importYdk(file);
+      if (result.deck) {
+        if (result.deck.name && result.deck.name !== "Imported Deck") {
+          setName(result.deck.name);
+        } else if (!name) {
+          setName(file.name.replace(/\.ydk$/i, ""));
+        }
+        if (result.deck.formatName) {
+          setFormatName(result.deck.formatName);
+        }
+        if (result.deck.deckCards) {
+          setDeckCards(result.deck.deckCards);
+        }
+      }
+      if (result.warnings && result.warnings.length > 0) {
+        setImportWarnings(result.warnings);
+      }
+    } catch (err) {
+      setImportWarnings([err instanceof Error ? err.message : "Failed to import .ydk file"]);
+    } finally {
+      setIsImporting(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   return (
@@ -144,15 +182,34 @@ function DeckBuilderContent(): React.JSX.Element {
           </h1>
         </div>
 
-        <Button
-          variant="outline"
-          onClick={() => setIsWizardOpen(true)}
-          className="border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent flex items-center gap-2 rounded-xl bg-cyan-950/20 px-4 py-2 text-xs font-semibold"
-          type="button"
-        >
-          <Sparkles className="text-cyan-accent h-4 w-4" />
-          <span>AI Deck Wizard</span>
-        </Button>
+        <div className="flex items-center gap-3">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileImport}
+            accept=".ydk"
+            className="hidden"
+          />
+          <Button
+            variant="outline-gold-subtle"
+            onClick={() => fileInputRef.current?.click()}
+            isLoading={isImporting}
+            type="button"
+          >
+            <Upload className="text-gold-accent h-3.5 w-3.5" />
+            <span>Import .ydk</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => setIsWizardOpen(true)}
+            className="border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent flex items-center gap-2 rounded-xl bg-cyan-950/20 px-4 py-2 text-xs font-semibold"
+            type="button"
+          >
+            <Sparkles className="text-cyan-accent h-4 w-4" />
+            <span>AI Deck Wizard</span>
+          </Button>
+        </div>
       </div>
 
       <form onSubmit={handleSave} className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -216,6 +273,15 @@ function DeckBuilderContent(): React.JSX.Element {
             validationErrors={validationErrors}
             submitError={submitError}
           />
+
+          {importWarnings.length > 0 && (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-xs text-amber-300 space-y-1">
+              <div className="font-bold text-amber-400 mb-1">Import Warnings:</div>
+              {importWarnings.map((warn, i) => (
+                <div key={i}>• {warn}</div>
+              ))}
+            </div>
+          )}
 
           <div className="space-y-4">
             {(["MAIN", "EXTRA", "SIDE"] as const).map((section) => (

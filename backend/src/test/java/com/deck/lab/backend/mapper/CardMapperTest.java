@@ -27,6 +27,7 @@ class CardMapperTest {
     void toDto_withValidCard_mapsAllFields() {
         Card card = new Card();
         card.setId(10L);
+        card.setPasscode(46986414L);
         card.setName("Blue-Eyes White Dragon");
         card.setType(CardType.NORMAL_MONSTER);
         card.setDescription("This legendary dragon is a powerful engine of destruction.");
@@ -46,6 +47,7 @@ class CardMapperTest {
 
         assertNotNull(dto);
         assertEquals(card.getId(), dto.getId());
+        assertEquals(card.getPasscode(), dto.getPasscode());
         assertEquals(card.getName(), dto.getName());
         assertEquals(card.getType(), dto.getType());
         assertEquals(card.getDescription(), dto.getDescription());

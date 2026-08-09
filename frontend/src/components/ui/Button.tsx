@@ -10,6 +10,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     | "outline"
     | "outline-cyan"
     | "outline-gold"
+    | "outline-gold-subtle"
     | "outline-purple"
     | "outline-red"
     | "ghost";
@@ -53,6 +54,9 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   } else if (variant === "outline-gold") {
     variantStyles =
       "border border-gold-accent/20 hover:border-gold-accent text-gold-accent hover:text-dark-bg bg-gold-accent/15 hover:bg-gold-accent";
+  } else if (variant === "outline-gold-subtle") {
+    variantStyles =
+      "border border-border-dim hover:border-gold-accent text-slate-300 hover:text-gold-accent bg-dark-surface-elevated shadow-md";
   } else if (variant === "outline-purple") {
     variantStyles =
       "border border-purple-500/20 hover:border-purple-500 text-purple-400 hover:text-white bg-purple-500/10 hover:bg-purple-500";

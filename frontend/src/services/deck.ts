@@ -8,6 +8,7 @@ import type {
   Page,
   Strategy,
   Suggestion,
+  YdkImportResponse,
 } from "../types";
 import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
 
@@ -177,4 +178,53 @@ export async function generateAiDeck(payload: {
   }
 
   return res.json() as Promise<AiGeneratedDeck>;
+}
+
+/**
+ * Imports a .ydk file into a resolved deck DTO structure with warnings.
+ *
+ * @param file - The .ydk file to import.
+ * @returns A promise resolving to YdkImportResponse.
+ */
+export async function importYdk(file: File): Promise<YdkImportResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await apiFetch("/api/decks/import/ydk", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw await parseResponseError(res);
+  }
+
+  return res.json() as Promise<YdkImportResponse>;
+}
+
+/**
+ * Exports a deck by ID to standard .ydk text format and triggers a browser download.
+ *
+ * @param deckId - The ID of the deck to export.
+ * @param deckName - Optional deck name for the downloaded file.
+ */
+export async function exportYdk(deckId: number | string, deckName?: string): Promise<void> {
+  const res = await apiFetch(`/api/decks/${deckId}/export/ydk`);
+  if (!res.ok) {
+    throw await parseResponseError(res);
+  }
+
+  const text = await res.text();
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const fileName = deckName
+    ? `${deckName.toLowerCase().replace(/[^a-z0-9]/g, "_")}.ydk`
+    : `deck_${deckId}.ydk`;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

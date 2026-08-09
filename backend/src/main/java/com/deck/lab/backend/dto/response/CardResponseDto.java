@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 public class CardResponseDto {
 
     private Long id;
+    private Long passcode;
 
     @NotNull(message = "Name is required")
     private String name;
@@ -80,6 +81,14 @@ public class CardResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPasscode() {
+        return passcode;
+    }
+
+    public void setPasscode(Long passcode) {
+        this.passcode = passcode;
     }
 
     public String getName() {

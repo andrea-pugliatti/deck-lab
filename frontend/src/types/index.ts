@@ -270,6 +270,14 @@ export interface Deck {
 }
 
 /**
+ * Result of a YDK deck import operation.
+ */
+export interface YdkImportResponse {
+  deck: Partial<Deck> & { deckCards: DeckCardItem[] };
+  warnings: string[];
+}
+
+/**
  * Represents a single card assignment within a deck.
  */
 export interface DeckCardItem extends Partial<Card> {

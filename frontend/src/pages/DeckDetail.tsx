@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Calendar, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Download, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
@@ -13,7 +13,7 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useViewPreference } from "../hooks/useViewPreference";
-import { deleteDeck, getDeck } from "../services/deck";
+import { deleteDeck, exportYdk, getDeck } from "../services/deck";
 import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
@@ -310,7 +310,21 @@ export default function DeckDetail(): React.JSX.Element {
         </aside>
 
         <div className="space-y-8 lg:col-span-8">
-          <div className="flex justify-end px-2">
+          <div className="flex justify-end px-2 gap-3">
+            <Button
+              variant="outline-gold-subtle"
+              className="rounded-md px-1 py-0.5"
+              onClick={() => {
+                if (deck?.id) {
+                  void exportYdk(deck.id, deck.name);
+                }
+              }}
+              type="button"
+            >
+              <Download className="text-gold-accent h-3.5 w-3.5" />
+              <span>Export .ydk</span>
+            </Button>
+
             <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           </div>
 

@@ -58,8 +58,8 @@ public class Card {
     @SequenceGenerator(name = "card_seq", sequenceName = "cards_id_seq", allocationSize = 50)
     private Long id;
 
-    @NotBlank
-    private Long passcode;
+    @NotNull
+    private Long passcode = 0L;
 
     @NotBlank
     private String name;

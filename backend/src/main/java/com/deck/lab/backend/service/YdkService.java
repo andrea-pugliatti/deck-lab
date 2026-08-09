@@ -158,7 +158,7 @@ public class YdkService {
         DeckResponseDto deck = deckService.getDeckById(deckId);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#exported from DeckLab\n");
+        sb.append("#created by DeckLab\n");
 
         List<DeckCardResponseDto> cardDtos = deck.getCards();
         if (cardDtos == null || cardDtos.isEmpty()) {

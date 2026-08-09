@@ -24,6 +24,7 @@ public class CardMapper {
         }
         CardResponseDto dto = new CardResponseDto();
         dto.setId(card.getId());
+        dto.setPasscode(card.getPasscode());
         dto.setName(card.getName());
         dto.setType(card.getType());
         dto.setDescription(card.getDescription());
@@ -54,6 +55,7 @@ public class CardMapper {
         }
         Card card = new Card();
         card.setId(dto.getId());
+        card.setPasscode(dto.getPasscode());
         card.setName(dto.getName());
         card.setType(dto.getType());
         card.setDescription(dto.getDescription());
@@ -82,6 +84,7 @@ public class CardMapper {
         if (dto == null || card == null) {
             return;
         }
+        card.setPasscode(dto.getPasscode());
         card.setName(dto.getName());
         card.setType(dto.getType());
         card.setDescription(dto.getDescription());
