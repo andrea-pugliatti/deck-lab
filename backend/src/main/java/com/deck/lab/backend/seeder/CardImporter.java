@@ -240,6 +240,7 @@ public class CardImporter {
 
         Card card = new Card(name, cardType, frameTypeEnum, description, cardRace, cardAttribute,
                 archetype, imageUrl, imageUrlCropped, atk, def, level, linkVal, scale);
+        card.setPasscode(apiId);
 
         // Extract remote URLs and trigger async download
         String remoteImageUrl = null;
@@ -404,6 +405,10 @@ public class CardImporter {
                     }
                     if (existingByName.getScale() == null) {
                         existingByName.setScale(apiCard.getScale());
+                        updated = true;
+                    }
+                    if (existingByName.getPasscode() == null) {
+                        existingByName.setPasscode(apiCard.getPasscode());
                         updated = true;
                     }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -47,13 +48,18 @@ import jakarta.validation.constraints.NotNull;
  * </ul>
  */
 @Entity
-@Table(name = "cards")
+@Table(name = "cards", indexes = {
+        @Index(name = "idx_card_passcode", columnList = "passcode")
+})
 public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_seq")
     @SequenceGenerator(name = "card_seq", sequenceName = "cards_id_seq", allocationSize = 50)
     private Long id;
+
+    @NotBlank
+    private Long passcode;
 
     @NotBlank
     private String name;
@@ -130,6 +136,14 @@ public class Card {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPasscode() {
+        return passcode;
+    }
+
+    public void setPasscode(Long passcode) {
+        this.passcode = passcode;
     }
 
     public String getName() {

@@ -91,4 +91,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleNoSuchElementException(NoSuchElementException ex) {
         return ResponseEntity.notFound().build();
     }
+
+    /**
+     * Intercepts {@link YdkImportException} errors when .ydk file import or parsing fails.
+     * Returns a 400 Bad Request with a structured {@link ValidationErrorResponseDto}.
+     *
+     * @param ex the caught import exception
+     * @return 400 Bad Request with error details
+     */
+    @ExceptionHandler(YdkImportException.class)
+    public ResponseEntity<ValidationErrorResponseDto>
+            handleYdkImportException(YdkImportException ex) {
+        ValidationErrorResponseDto response = new ValidationErrorResponseDto(
+                "Import failed", List.of(ex.getMessage()));
+        return ResponseEntity.badRequest().body(response);
+    }
 }

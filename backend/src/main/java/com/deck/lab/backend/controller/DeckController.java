@@ -1,12 +1,17 @@
 package com.deck.lab.backend.controller;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,13 +23,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.dto.response.YdkImportResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.deck.lab.backend.exception.YdkImportException;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.security.RateLimiter;
 import com.deck.lab.backend.service.DeckService;
+import com.deck.lab.backend.service.YdkService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -58,13 +66,16 @@ import jakarta.validation.Valid;
 public class DeckController {
 
     private final DeckService deckService;
+    private final YdkService ydkService;
     private final RateLimiter deckValidationRateLimiter;
     private final RateLimiter deckSaveRateLimiter;
 
     public DeckController(DeckService deckService,
+                          YdkService ydkService,
                           @Qualifier("deckValidationRateLimiter") RateLimiter deckValidationRateLimiter,
                           @Qualifier("deckSaveRateLimiter") RateLimiter deckSaveRateLimiter) {
         this.deckService = deckService;
+        this.ydkService = ydkService;
         this.deckValidationRateLimiter = deckValidationRateLimiter;
         this.deckSaveRateLimiter = deckSaveRateLimiter;
     }
@@ -186,5 +197,51 @@ public class DeckController {
     @GetMapping("/formats")
     public ResponseEntity<List<String>> getFormats() {
         return ResponseEntity.ok(deckService.findDistinctFormats());
+    }
+
+    /**
+     * Imports a .ydk file or string content into a resolved deck DTO structure.
+     *
+     * @param file    optional uploaded .ydk file
+     * @param rawBody optional raw .ydk text payload
+     * @return 200 OK with YdkImportResponseDto containing deck details and warnings
+     */
+    @PostMapping("/import/ydk")
+    public ResponseEntity<YdkImportResponseDto>
+            importYdk(@RequestParam(value = "file", required = false) MultipartFile file,
+                      @RequestBody(required = false) String rawBody) {
+        String content = "";
+        if (file != null && !file.isEmpty()) {
+            try {
+                content = new String(file.getBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new YdkImportException("Failed to read uploaded .ydk file", e);
+            }
+        } else if (rawBody != null) {
+            content = rawBody;
+        }
+
+        return ResponseEntity.ok(ydkService.importYdk(content));
+    }
+
+    /**
+     * Exports a deck to standard .ydk text file format.
+     *
+     * @param id the ID of the deck to export
+     * @return 200 OK with text/plain .ydk content and attachment disposition header
+     */
+    @GetMapping("/{id}/export/ydk")
+    public ResponseEntity<String> exportYdk(@PathVariable Long id) {
+        if (!deckService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String ydkContent = ydkService.exportYdk(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                new MediaType("text", "plain", StandardCharsets.UTF_8));
+        headers.setContentDispositionFormData("attachment", "deck_" + id + ".ydk");
+
+        return ResponseEntity.ok().headers(headers).body(ydkContent);
     }
 }

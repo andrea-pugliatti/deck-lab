@@ -50,6 +50,22 @@ public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificat
     List<Card> findByNameContainingIgnoreCase(String name);
 
     /**
+     * Resolves a card by exact matching passcode.
+     *
+     * @param passcode exact passcode of the card
+     * @return Optional containing the Card if found
+     */
+    Optional<Card> findByPasscode(Long passcode);
+
+    /**
+     * Resolves cards whose passcodes are in the given list.
+     *
+     * @param passcodes list of card passcodes
+     * @return list of matching Cards
+     */
+    List<Card> findByPasscodeIn(List<Long> passcodes);
+
+    /**
      * Retrieves all unique cards having a non-null and non-empty archetype string. Used to build
      * search filter lists.
      *
