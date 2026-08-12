@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:mobile/ui/core/theme/theme.dart';
 import 'package:mobile/ui/features/cards/widgets/stat_cell.dart';
 import '../../../../domain/models/card.dart';

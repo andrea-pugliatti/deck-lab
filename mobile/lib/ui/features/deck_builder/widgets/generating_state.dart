@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:material_ui/material_ui.dart' hide Card;
 
 class GeneratingState extends StatelessWidget {
   const GeneratingState({super.key});

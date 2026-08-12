@@ -193,7 +193,7 @@ class DeckRepositoryImpl implements DeckRepository {
           totalPages: 0,
         );
       }
-      return fetchPublicDecks(
+      return await fetchPublicDecks(
         name: name,
         format: format,
         username: username,
@@ -319,8 +319,9 @@ class DeckRepositoryImpl implements DeckRepository {
       );
       final body = response.data as Map<String, dynamic>;
       final deckMap = body['deck'] as Map<String, dynamic>;
-      return DeckDetailResponse.fromJson(deckMap)
-          .toDomain(apiClient.dio.options.baseUrl);
+      return DeckDetailResponse.fromJson(
+        deckMap,
+      ).toDomain(apiClient.dio.options.baseUrl);
     } on DioException catch (e) {
       throw Exception(_parseError(e));
     }

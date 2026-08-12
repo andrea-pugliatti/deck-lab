@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/features/decks/widgets/deck_section.dart';
@@ -153,20 +154,24 @@ class DeckDetailScreen extends ConsumerWidget {
                 if (deck.id == null) return;
                 final deckId = deck.id!;
                 final ydkContent = await repo.exportYdk(deckId);
-                final sanitizedName =
-                    deck.name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_').toLowerCase();
+                final sanitizedName = deck.name
+                    .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')
+                    .toLowerCase();
                 final fileName =
                     '${sanitizedName.isEmpty ? "deck_$deckId" : sanitizedName}.ydk';
 
-                final isDesktop = !kIsWeb &&
+                final isDesktop =
+                    !kIsWeb &&
                     (defaultTargetPlatform == TargetPlatform.macOS ||
                         defaultTargetPlatform == TargetPlatform.windows ||
                         defaultTargetPlatform == TargetPlatform.linux);
 
                 if (isDesktop) {
-                  final outputPath = await FilePicker.platform.saveFile(
+                  final bytes = Uint8List.fromList(utf8.encode(ydkContent));
+                  final outputPath = await FilePicker.saveFile(
                     dialogTitle: 'Export .ydk Deck',
                     fileName: fileName,
+                    bytes: bytes,
                   );
                   if (outputPath != null) {
                     final file = File(outputPath);
@@ -189,9 +194,11 @@ class DeckDetailScreen extends ConsumerWidget {
                   final file = File('${tempDir.path}/$fileName');
                   await file.parent.create(recursive: true);
                   await file.writeAsString(ydkContent);
-                  await Share.shareXFiles(
-                    [XFile(file.path)],
-                    text: 'Exported ${deck.name} (.ydk)',
+                  await SharePlus.instance.share(
+                    ShareParams(
+                      text: 'Exported ${deck.name} (.ydk)',
+                      files: [XFile(file.path)],
+                    ),
                   );
                 }
               } catch (e) {

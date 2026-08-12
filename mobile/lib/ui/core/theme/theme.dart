@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Custom theme configuration and palette definitions for the DeckLab mobile app.
@@ -40,66 +40,68 @@ class DeckLabTheme {
         onSurface: Colors.white,
         error: errorAccent,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(baseTextTheme).copyWith(
-        displayLarge: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.displayLarge?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
+      textTheme: baseTextTheme
+          .apply(fontFamily: GoogleFonts.outfit().fontFamily)
+          .copyWith(
+            displayLarge: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.displayLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
+            displayMedium: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.displayMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
+            displaySmall: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.displaySmall?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
+            headlineLarge: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.headlineLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+                fontSize: 36,
+                letterSpacing: 2,
+              ),
+            ),
+            headlineMedium: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.headlineMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+                fontSize: 24,
+                letterSpacing: 2,
+              ),
+            ),
+            headlineSmall: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.headlineSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
+            titleLarge: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.titleLarge?.copyWith(
+                color: goldAccent,
+                fontWeight: .bold,
+              ),
+            ),
+            titleMedium: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
+            titleSmall: GoogleFonts.cinzel(
+              textStyle: baseTextTheme.titleSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: .bold,
+              ),
+            ),
           ),
-        ),
-        displayMedium: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.displayMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-          ),
-        ),
-        displaySmall: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.displaySmall?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-          ),
-        ),
-        headlineLarge: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.headlineLarge?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-            fontSize: 36,
-            letterSpacing: 2,
-          ),
-        ),
-        headlineMedium: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.headlineMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-            fontSize: 24,
-            letterSpacing: 2,
-          ),
-        ),
-        headlineSmall: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.headlineSmall?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-          ),
-        ),
-        titleLarge: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.titleLarge?.copyWith(
-            color: goldAccent,
-            fontWeight: .bold,
-          ),
-        ),
-        titleMedium: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.titleMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-          ),
-        ),
-        titleSmall: GoogleFonts.cinzel(
-          textStyle: baseTextTheme.titleSmall?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
-          ),
-        ),
-      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: darkSurface,
         elevation: 0,

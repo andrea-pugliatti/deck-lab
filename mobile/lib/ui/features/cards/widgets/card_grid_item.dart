@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:go_router/go_router.dart';
 import 'package:mobile/domain/models/card.dart';
 

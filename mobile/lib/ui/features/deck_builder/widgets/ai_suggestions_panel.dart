@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Card;
+import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:mobile/domain/models/card.dart';
 import 'package:mobile/domain/models/card_suggestion.dart';
 import 'package:mobile/ui/features/deck_builder/view_models/deck_builder_provider.dart';

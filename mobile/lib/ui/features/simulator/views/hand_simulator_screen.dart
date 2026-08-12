@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/ui/features/simulator/widgets/action_toolbar.dart';
 import 'package:mobile/ui/features/simulator/widgets/card_inspector.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile/domain/models/simulator_card_instance.dart';
 import 'package:mobile/ui/features/simulator/view_models/simulator_provider.dart';
 

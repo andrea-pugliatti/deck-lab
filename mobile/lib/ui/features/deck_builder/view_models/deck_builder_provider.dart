@@ -344,10 +344,17 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final repo = ref.read(deckRepositoryProvider);
-      final importedDeck = await repo.importYdk(bytes: bytes, fileName: fileName);
+      final importedDeck = await repo.importYdk(
+        bytes: bytes,
+        fileName: fileName,
+      );
 
-      final defaultName = fileName.replaceAll(RegExp(r'\.ydk$', caseSensitive: false), '');
-      final newName = (importedDeck.name.isNotEmpty && importedDeck.name != 'Imported Deck')
+      final defaultName = fileName.replaceAll(
+        RegExp(r'\.ydk$', caseSensitive: false),
+        '',
+      );
+      final newName =
+          (importedDeck.name.isNotEmpty && importedDeck.name != 'Imported Deck')
           ? importedDeck.name
           : (state.name.isNotEmpty ? state.name : defaultName);
 
