@@ -14,10 +14,10 @@ import 'package:mobile/domain/models/deck_generation.dart' as _i5;
 import 'package:mobile/domain/models/deck_summary.dart' as _i9;
 import 'package:mobile/domain/models/deck_validation.dart' as _i4;
 import 'package:mobile/domain/models/page.dart' as _i2;
-import 'package:mobile/domain/repositories/card_repository.dart' as _i13;
+import 'package:mobile/domain/repositories/card_repository.dart' as _i14;
 import 'package:mobile/domain/repositories/deck_repository.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:mockito/src/dummies.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -372,12 +372,62 @@ class MockDeckRepository extends _i1.Mock implements _i7.DeckRepository {
             ),
           )
           as _i8.Future<_i5.DeckGeneration>);
+
+  @override
+  _i8.Future<_i3.DeckDetail> importYdk({
+    required List<int>? bytes,
+    required String? fileName,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#importYdk, [], {
+              #bytes: bytes,
+              #fileName: fileName,
+            }),
+            returnValue: _i8.Future<_i3.DeckDetail>.value(
+              _FakeDeckDetail_1(
+                this,
+                Invocation.method(#importYdk, [], {
+                  #bytes: bytes,
+                  #fileName: fileName,
+                }),
+              ),
+            ),
+            returnValueForMissingStub: _i8.Future<_i3.DeckDetail>.value(
+              _FakeDeckDetail_1(
+                this,
+                Invocation.method(#importYdk, [], {
+                  #bytes: bytes,
+                  #fileName: fileName,
+                }),
+              ),
+            ),
+          )
+          as _i8.Future<_i3.DeckDetail>);
+
+  @override
+  _i8.Future<String> exportYdk(int? deckId) =>
+      (super.noSuchMethod(
+            Invocation.method(#exportYdk, [deckId]),
+            returnValue: _i8.Future<String>.value(
+              _i13.dummyValue<String>(
+                this,
+                Invocation.method(#exportYdk, [deckId]),
+              ),
+            ),
+            returnValueForMissingStub: _i8.Future<String>.value(
+              _i13.dummyValue<String>(
+                this,
+                Invocation.method(#exportYdk, [deckId]),
+              ),
+            ),
+          )
+          as _i8.Future<String>);
 }
 
 /// A class which mocks [CardRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCardRepository extends _i1.Mock implements _i13.CardRepository {
+class MockCardRepository extends _i1.Mock implements _i14.CardRepository {
   @override
   String resolveCardImageUrl(String? fileName, {bool? cropped = false}) =>
       (super.noSuchMethod(
@@ -386,7 +436,7 @@ class MockCardRepository extends _i1.Mock implements _i13.CardRepository {
               [fileName],
               {#cropped: cropped},
             ),
-            returnValue: _i14.dummyValue<String>(
+            returnValue: _i13.dummyValue<String>(
               this,
               Invocation.method(
                 #resolveCardImageUrl,
@@ -394,7 +444,7 @@ class MockCardRepository extends _i1.Mock implements _i13.CardRepository {
                 {#cropped: cropped},
               ),
             ),
-            returnValueForMissingStub: _i14.dummyValue<String>(
+            returnValueForMissingStub: _i13.dummyValue<String>(
               this,
               Invocation.method(
                 #resolveCardImageUrl,

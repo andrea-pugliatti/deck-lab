@@ -72,4 +72,13 @@ abstract class DeckRepository {
     required Format formatName,
     String? customPrompt,
   });
+
+  /// Imports a .ydk file into a resolved [DeckDetail].
+  Future<DeckDetail> importYdk({
+    required List<int> bytes,
+    required String fileName,
+  });
+
+  /// Exports a deck by ID to .ydk formatted string content.
+  Future<String> exportYdk(int deckId);
 }

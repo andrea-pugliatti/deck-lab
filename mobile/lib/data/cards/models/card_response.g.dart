@@ -100,6 +100,7 @@ const _$CardRaceEnumMap = {
   CardRace.aqua: 'Aqua',
   CardRace.beast: 'Beast',
   CardRace.beastWarrior: 'Beast-Warrior',
+  CardRace.creatorGod: 'Creator God',
   CardRace.cyberse: 'Cyberse',
   CardRace.dinosaur: 'Dinosaur',
   CardRace.divineBeast: 'Divine-Beast',
@@ -107,6 +108,7 @@ const _$CardRaceEnumMap = {
   CardRace.fairy: 'Fairy',
   CardRace.fiend: 'Fiend',
   CardRace.fish: 'Fish',
+  CardRace.illusion: 'Illusion',
   CardRace.insect: 'Insect',
   CardRace.machine: 'Machine',
   CardRace.plant: 'Plant',
@@ -128,6 +130,8 @@ const _$CardRaceEnumMap = {
   CardRace.quickPlay: 'Quick-Play',
   CardRace.ritual: 'Ritual',
   CardRace.counter: 'Counter',
+  CardRace.skill: 'Skill',
+  CardRace.token: 'Token',
   CardRace.unknown: 'Unknown',
 };
 
@@ -154,5 +158,11 @@ const _$FrameTypeEnumMap = {
   FrameType.spell: 'spell',
   FrameType.trap: 'trap',
   FrameType.token: 'token',
+  FrameType.skill: 'skill',
+  FrameType.normalPendulum: 'normal_pendulum',
+  FrameType.effectPendulum: 'effect_pendulum',
+  FrameType.fusionPendulum: 'fusion_pendulum',
+  FrameType.synchroPendulum: 'synchro_pendulum',
+  FrameType.xyzPendulum: 'xyz_pendulum',
   FrameType.unknown: 'unknown',
 };

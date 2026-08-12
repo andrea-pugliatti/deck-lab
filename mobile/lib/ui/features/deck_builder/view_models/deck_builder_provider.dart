@@ -339,6 +339,36 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
     }
   }
 
+  /// Imports a .ydk file and populates the builder session with resolved cards.
+  Future<void> importYdk(List<int> bytes, String fileName) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final repo = ref.read(deckRepositoryProvider);
+      final importedDeck = await repo.importYdk(bytes: bytes, fileName: fileName);
+
+      final defaultName = fileName.replaceAll(RegExp(r'\.ydk$', caseSensitive: false), '');
+      final newName = (importedDeck.name.isNotEmpty && importedDeck.name != 'Imported Deck')
+          ? importedDeck.name
+          : (state.name.isNotEmpty ? state.name : defaultName);
+
+      state = state.copyWith(
+        isLoading: false,
+        name: newName,
+        formatName: importedDeck.formatName,
+        cards: importedDeck.deckCards,
+        error: null,
+      );
+
+      triggerValidation();
+      triggerAiSuggestions();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to import .ydk file: $e',
+      );
+    }
+  }
+
   /// Submits the active deck configuration.
   ///
   /// Calls create or update depending on ID presence. Returns saved ID on success.

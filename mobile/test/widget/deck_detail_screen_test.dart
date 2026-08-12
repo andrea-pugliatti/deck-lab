@@ -195,5 +195,25 @@ void main() {
 
       expect(find.text('Card Detail Page: 101'), findsOneWidget);
     });
+
+    testWidgets('renders export .ydk button in action bar', (
+      WidgetTester tester,
+    ) async {
+      mockAuthRepository.silentLoginResult = null;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(mockAuthRepository),
+            deckRepositoryProvider.overrideWithValue(mockDeckRepository),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.file_download_outlined), findsOneWidget);
+    });
   });
 }

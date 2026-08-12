@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CardSuggestionResponse {
 
- String get name; DeckSection get section; String get synergyReason; int get cardId; CardType get type; String? get imageUrl;
+ String get name; DeckSection get section; String get synergyReason; int get cardId;@JsonKey(unknownEnumValue: CardType.unknown) CardType get type; String? get imageUrl;
 /// Create a copy of CardSuggestionResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CardSuggestionResponseCopyWith<$Res>  {
   factory $CardSuggestionResponseCopyWith(CardSuggestionResponse value, $Res Function(CardSuggestionResponse) _then) = _$CardSuggestionResponseCopyWithImpl;
 @useResult
 $Res call({
- String name, DeckSection section, String synergyReason, int cardId, CardType type, String? imageUrl
+ String name, DeckSection section, String synergyReason, int cardId,@JsonKey(unknownEnumValue: CardType.unknown) CardType type, String? imageUrl
 });
 
 
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  DeckSection section,  String synergyReason,  int cardId,  CardType type,  String? imageUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  DeckSection section,  String synergyReason,  int cardId, @JsonKey(unknownEnumValue: CardType.unknown)  CardType type,  String? imageUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CardSuggestionResponse() when $default != null:
 return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.type,_that.imageUrl);case _:
@@ -179,7 +179,7 @@ return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  DeckSection section,  String synergyReason,  int cardId,  CardType type,  String? imageUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  DeckSection section,  String synergyReason,  int cardId, @JsonKey(unknownEnumValue: CardType.unknown)  CardType type,  String? imageUrl)  $default,) {final _that = this;
 switch (_that) {
 case _CardSuggestionResponse():
 return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.type,_that.imageUrl);case _:
@@ -199,7 +199,7 @@ return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  DeckSection section,  String synergyReason,  int cardId,  CardType type,  String? imageUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  DeckSection section,  String synergyReason,  int cardId, @JsonKey(unknownEnumValue: CardType.unknown)  CardType type,  String? imageUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _CardSuggestionResponse() when $default != null:
 return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.type,_that.imageUrl);case _:
@@ -214,14 +214,14 @@ return $default(_that.name,_that.section,_that.synergyReason,_that.cardId,_that.
 @JsonSerializable()
 
 class _CardSuggestionResponse implements CardSuggestionResponse {
-  const _CardSuggestionResponse({required this.name, required this.section, required this.synergyReason, required this.cardId, required this.type, this.imageUrl});
+  const _CardSuggestionResponse({required this.name, required this.section, required this.synergyReason, required this.cardId, @JsonKey(unknownEnumValue: CardType.unknown) required this.type, this.imageUrl});
   factory _CardSuggestionResponse.fromJson(Map<String, dynamic> json) => _$CardSuggestionResponseFromJson(json);
 
 @override final  String name;
 @override final  DeckSection section;
 @override final  String synergyReason;
 @override final  int cardId;
-@override final  CardType type;
+@override@JsonKey(unknownEnumValue: CardType.unknown) final  CardType type;
 @override final  String? imageUrl;
 
 /// Create a copy of CardSuggestionResponse
@@ -257,7 +257,7 @@ abstract mixin class _$CardSuggestionResponseCopyWith<$Res> implements $CardSugg
   factory _$CardSuggestionResponseCopyWith(_CardSuggestionResponse value, $Res Function(_CardSuggestionResponse) _then) = __$CardSuggestionResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String name, DeckSection section, String synergyReason, int cardId, CardType type, String? imageUrl
+ String name, DeckSection section, String synergyReason, int cardId,@JsonKey(unknownEnumValue: CardType.unknown) CardType type, String? imageUrl
 });
 
 

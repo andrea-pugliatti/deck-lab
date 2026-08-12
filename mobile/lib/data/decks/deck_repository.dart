@@ -303,6 +303,43 @@ class DeckRepositoryImpl implements DeckRepository {
     }
   }
 
+  /// Imports a .ydk file into a resolved [DeckDetail].
+  @override
+  Future<DeckDetail> importYdk({
+    required List<int> bytes,
+    required String fileName,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': MultipartFile.fromBytes(bytes, filename: fileName),
+      });
+      final response = await apiClient.dio.post(
+        '/api/decks/import/ydk',
+        data: formData,
+      );
+      final body = response.data as Map<String, dynamic>;
+      final deckMap = body['deck'] as Map<String, dynamic>;
+      return DeckDetailResponse.fromJson(deckMap)
+          .toDomain(apiClient.dio.options.baseUrl);
+    } on DioException catch (e) {
+      throw Exception(_parseError(e));
+    }
+  }
+
+  /// Exports a deck by ID to .ydk formatted string content.
+  @override
+  Future<String> exportYdk(int deckId) async {
+    try {
+      final response = await apiClient.dio.get<String>(
+        '/api/decks/$deckId/export/ydk',
+        options: Options(responseType: ResponseType.plain),
+      );
+      return response.data ?? '';
+    } on DioException catch (e) {
+      throw Exception(_parseError(e));
+    }
+  }
+
   /// Private helper method to parse error details from a [DioException].
   String _parseError(DioException e) {
     if (e.error != null) {

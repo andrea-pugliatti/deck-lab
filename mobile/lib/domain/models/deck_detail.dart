@@ -3,7 +3,7 @@ import 'deck_card.dart';
 
 /// Domain model representing a detailed deck blueprint.
 class DeckDetail {
-  final int id;
+  final int? id;
   final String name;
   final String? description;
   final Format formatName;
@@ -12,7 +12,7 @@ class DeckDetail {
   final List<DeckCard> deckCards;
 
   const DeckDetail({
-    required this.id,
+    this.id,
     required this.name,
     this.description,
     required this.formatName,

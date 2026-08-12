@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckDetailResponse {
 
- int get id; String get name; String? get description; Format get formatName; String? get creatorUsername; String? get updatedAt; List<DeckCardResponse> get deckCards;
+ int? get id; String get name; String? get description; Format get formatName; String? get creatorUsername; String? get updatedAt; List<DeckCardResponse> get deckCards;
 /// Create a copy of DeckDetailResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckDetailResponseCopyWith<$Res>  {
   factory $DeckDetailResponseCopyWith(DeckDetailResponse value, $Res Function(DeckDetailResponse) _then) = _$DeckDetailResponseCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
+ int? id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
 });
 
 
@@ -65,10 +65,10 @@ class _$DeckDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of DeckDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? formatName = null,Object? creatorUsername = freezed,Object? updatedAt = freezed,Object? deckCards = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? description = freezed,Object? formatName = null,Object? creatorUsername = freezed,Object? updatedAt = freezed,Object? deckCards = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
 as Format,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse() when $default != null:
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)  $default,) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse():
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String name,  String? description,  Format formatName,  String? creatorUsername,  String? updatedAt,  List<DeckCardResponse> deckCards)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckDetailResponse() when $default != null:
 return $default(_that.id,_that.name,_that.description,_that.formatName,_that.creatorUsername,_that.updatedAt,_that.deckCards);case _:
@@ -215,10 +215,10 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 @JsonSerializable()
 
 class _DeckDetailResponse extends DeckDetailResponse {
-  const _DeckDetailResponse({required this.id, required this.name, this.description, required this.formatName, this.creatorUsername, this.updatedAt, required final  List<DeckCardResponse> deckCards}): _deckCards = deckCards,super._();
+  const _DeckDetailResponse({this.id, required this.name, this.description, required this.formatName, this.creatorUsername, this.updatedAt, required final  List<DeckCardResponse> deckCards}): _deckCards = deckCards,super._();
   factory _DeckDetailResponse.fromJson(Map<String, dynamic> json) => _$DeckDetailResponseFromJson(json);
 
-@override final  int id;
+@override final  int? id;
 @override final  String name;
 @override final  String? description;
 @override final  Format formatName;
@@ -265,7 +265,7 @@ abstract mixin class _$DeckDetailResponseCopyWith<$Res> implements $DeckDetailRe
   factory _$DeckDetailResponseCopyWith(_DeckDetailResponse value, $Res Function(_DeckDetailResponse) _then) = __$DeckDetailResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
+ int? id, String name, String? description, Format formatName, String? creatorUsername, String? updatedAt, List<DeckCardResponse> deckCards
 });
 
 
@@ -282,10 +282,10 @@ class __$DeckDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of DeckDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? formatName = null,Object? creatorUsername = freezed,Object? updatedAt = freezed,Object? deckCards = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? name = null,Object? description = freezed,Object? formatName = null,Object? creatorUsername = freezed,Object? updatedAt = freezed,Object? deckCards = null,}) {
   return _then(_DeckDetailResponse(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
 as Format,creatorUsername: freezed == creatorUsername ? _self.creatorUsername : creatorUsername // ignore: cast_nullable_to_non_nullable

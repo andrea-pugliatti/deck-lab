@@ -255,5 +255,24 @@ void main() {
       // Verify AiWizardModal dialog renders
       expect(find.byType(AiWizardModal), findsOneWidget);
     });
+
+    testWidgets('renders import .ydk file button in action bar', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(mockAuthRepository),
+            deckRepositoryProvider.overrideWithValue(mockDeckRepository),
+            cardRepositoryProvider.overrideWithValue(mockCardRepository),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.file_upload_outlined), findsOneWidget);
+    });
   });
 }

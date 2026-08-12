@@ -224,6 +224,21 @@ class MockDeckRepository implements DeckRepository {
     if (shouldFail) throw Exception('AI Generation failed');
     return aiGenerationResult;
   }
+
+  @override
+  Future<DeckDetail> importYdk({
+    required List<int> bytes,
+    required String fileName,
+  }) async {
+    if (shouldFail) throw Exception('Import failed');
+    return deckDetail;
+  }
+
+  @override
+  Future<String> exportYdk(int deckId) async {
+    if (shouldFail) throw Exception('Export failed');
+    return '#created by DeckLab\n#main\n46986414\n#extra\n!side\n';
+  }
 }
 
 class MockCardRepository implements CardRepository {

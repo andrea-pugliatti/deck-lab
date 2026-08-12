@@ -13,7 +13,7 @@ abstract class DeckDetailResponse with _$DeckDetailResponse {
   const DeckDetailResponse._();
 
   const factory DeckDetailResponse({
-    required int id,
+    int? id,
     required String name,
     String? description,
     required Format formatName,

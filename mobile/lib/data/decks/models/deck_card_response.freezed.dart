@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeckCardResponse {
 
- int? get id; int get cardId; String get name; CardType? get type; String? get description; CardRace? get race; CardAttribute? get attribute; String? get archetype; String? get imageUrl; DeckSection get section; int get quantity;
+ int? get id; int get cardId; String get name;@JsonKey(unknownEnumValue: CardType.unknown) CardType? get type; String? get description;@JsonKey(unknownEnumValue: CardRace.unknown) CardRace? get race;@JsonKey(unknownEnumValue: CardAttribute.unknown) CardAttribute? get attribute; String? get archetype; String? get imageUrl; DeckSection get section; int get quantity;
 /// Create a copy of DeckCardResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DeckCardResponseCopyWith<$Res>  {
   factory $DeckCardResponseCopyWith(DeckCardResponse value, $Res Function(DeckCardResponse) _then) = _$DeckCardResponseCopyWithImpl;
 @useResult
 $Res call({
- int? id, int cardId, String name, CardType? type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
+ int? id, int cardId, String name,@JsonKey(unknownEnumValue: CardType.unknown) CardType? type, String? description,@JsonKey(unknownEnumValue: CardRace.unknown) CardRace? race,@JsonKey(unknownEnumValue: CardAttribute.unknown) CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
 });
 
 
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name, @JsonKey(unknownEnumValue: CardType.unknown)  CardType? type,  String? description, @JsonKey(unknownEnumValue: CardRace.unknown)  CardRace? race, @JsonKey(unknownEnumValue: CardAttribute.unknown)  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeckCardResponse() when $default != null:
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -184,7 +184,7 @@ return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int cardId,  String name, @JsonKey(unknownEnumValue: CardType.unknown)  CardType? type,  String? description, @JsonKey(unknownEnumValue: CardRace.unknown)  CardRace? race, @JsonKey(unknownEnumValue: CardAttribute.unknown)  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)  $default,) {final _that = this;
 switch (_that) {
 case _DeckCardResponse():
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -204,7 +204,7 @@ return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int cardId,  String name,  CardType? type,  String? description,  CardRace? race,  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int cardId,  String name, @JsonKey(unknownEnumValue: CardType.unknown)  CardType? type,  String? description, @JsonKey(unknownEnumValue: CardRace.unknown)  CardRace? race, @JsonKey(unknownEnumValue: CardAttribute.unknown)  CardAttribute? attribute,  String? archetype,  String? imageUrl,  DeckSection section,  int quantity)?  $default,) {final _that = this;
 switch (_that) {
 case _DeckCardResponse() when $default != null:
 return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_that.race,_that.attribute,_that.archetype,_that.imageUrl,_that.section,_that.quantity);case _:
@@ -219,16 +219,16 @@ return $default(_that.id,_that.cardId,_that.name,_that.type,_that.description,_t
 @JsonSerializable()
 
 class _DeckCardResponse implements DeckCardResponse {
-  const _DeckCardResponse({this.id, required this.cardId, required this.name, this.type, this.description, this.race, this.attribute, this.archetype, this.imageUrl, required this.section, required this.quantity});
+  const _DeckCardResponse({this.id, required this.cardId, required this.name, @JsonKey(unknownEnumValue: CardType.unknown) this.type, this.description, @JsonKey(unknownEnumValue: CardRace.unknown) this.race, @JsonKey(unknownEnumValue: CardAttribute.unknown) this.attribute, this.archetype, this.imageUrl, required this.section, required this.quantity});
   factory _DeckCardResponse.fromJson(Map<String, dynamic> json) => _$DeckCardResponseFromJson(json);
 
 @override final  int? id;
 @override final  int cardId;
 @override final  String name;
-@override final  CardType? type;
+@override@JsonKey(unknownEnumValue: CardType.unknown) final  CardType? type;
 @override final  String? description;
-@override final  CardRace? race;
-@override final  CardAttribute? attribute;
+@override@JsonKey(unknownEnumValue: CardRace.unknown) final  CardRace? race;
+@override@JsonKey(unknownEnumValue: CardAttribute.unknown) final  CardAttribute? attribute;
 @override final  String? archetype;
 @override final  String? imageUrl;
 @override final  DeckSection section;
@@ -267,7 +267,7 @@ abstract mixin class _$DeckCardResponseCopyWith<$Res> implements $DeckCardRespon
   factory _$DeckCardResponseCopyWith(_DeckCardResponse value, $Res Function(_DeckCardResponse) _then) = __$DeckCardResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, int cardId, String name, CardType? type, String? description, CardRace? race, CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
+ int? id, int cardId, String name,@JsonKey(unknownEnumValue: CardType.unknown) CardType? type, String? description,@JsonKey(unknownEnumValue: CardRace.unknown) CardRace? race,@JsonKey(unknownEnumValue: CardAttribute.unknown) CardAttribute? attribute, String? archetype, String? imageUrl, DeckSection section, int quantity
 });
 
 

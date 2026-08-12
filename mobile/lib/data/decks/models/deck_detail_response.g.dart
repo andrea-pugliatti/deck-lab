@@ -8,7 +8,7 @@ part of 'deck_detail_response.dart';
 
 _DeckDetailResponse _$DeckDetailResponseFromJson(Map<String, dynamic> json) =>
     _DeckDetailResponse(
-      id: (json['id'] as num).toInt(),
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
       description: json['description'] as String?,
       formatName: $enumDecode(_$FormatEnumMap, json['formatName']),

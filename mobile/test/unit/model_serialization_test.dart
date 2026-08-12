@@ -1,11 +1,33 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/data/auth/models/auth_response.dart';
 import 'package:mobile/data/auth/models/login_request.dart';
+import 'package:mobile/data/decks/models/deck_detail_response.dart';
 import 'package:mobile/data/decks/models/deck_summary_response.dart';
 import 'package:mobile/domain/models/page.dart';
 
 void main() {
   group('Model Serialization Tests', () {
+    test('DeckDetailResponse deserializes correctly when id is null (YDK import response)', () {
+      final json = {
+        'id': null,
+        'name': 'Imported Deck',
+        'description': null,
+        'formatName': 'TCG',
+        'creatorUsername': null,
+        'updatedAt': null,
+        'deckCards': [
+          {'cardId': 101, 'name': 'Blue-Eyes White Dragon', 'section': 'MAIN', 'quantity': 3},
+        ],
+      };
+
+      final res = DeckDetailResponse.fromJson(json);
+
+      expect(res.id, isNull);
+      expect(res.name, 'Imported Deck');
+      expect(res.mainDeckCount, 3);
+      expect(res.totalCardsCount, 3);
+    });
+
     test('LoginRequest serializes to JSON correctly', () {
       const req = LoginRequest(username: 'testuser', password: 'password123');
       final json = req.toJson();

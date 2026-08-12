@@ -1,9 +1,16 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/ui/features/decks/widgets/deck_section.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../navigation/routes.dart';
+import '../../../core/providers.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../core/widgets/custom_button.dart';
@@ -117,6 +124,7 @@ class DeckDetailScreen extends ConsumerWidget {
         activeUsername != null && deck.creatorUsername == activeUsername;
 
     return Scaffold(
+      backgroundColor: DeckLabTheme.darkBg,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -133,13 +141,82 @@ class DeckDetailScreen extends ConsumerWidget {
           style: tt.titleMedium!.copyWith(fontSize: 16),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.file_download_outlined,
+              color: DeckLabTheme.goldAccent,
+            ),
+            tooltip: 'Export .ydk',
+            onPressed: () async {
+              try {
+                final repo = ref.read(deckRepositoryProvider);
+                if (deck.id == null) return;
+                final deckId = deck.id!;
+                final ydkContent = await repo.exportYdk(deckId);
+                final sanitizedName =
+                    deck.name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_').toLowerCase();
+                final fileName =
+                    '${sanitizedName.isEmpty ? "deck_$deckId" : sanitizedName}.ydk';
+
+                final isDesktop = !kIsWeb &&
+                    (defaultTargetPlatform == TargetPlatform.macOS ||
+                        defaultTargetPlatform == TargetPlatform.windows ||
+                        defaultTargetPlatform == TargetPlatform.linux);
+
+                if (isDesktop) {
+                  final outputPath = await FilePicker.platform.saveFile(
+                    dialogTitle: 'Export .ydk Deck',
+                    fileName: fileName,
+                  );
+                  if (outputPath != null) {
+                    final file = File(outputPath);
+                    await file.parent.create(recursive: true);
+                    await file.writeAsString(ydkContent);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Deck exported to $outputPath'),
+                          backgroundColor: DeckLabTheme.goldAccent,
+                        ),
+                      );
+                    }
+                  }
+                } else {
+                  final tempDir = await getTemporaryDirectory();
+                  if (!await tempDir.exists()) {
+                    await tempDir.create(recursive: true);
+                  }
+                  final file = File('${tempDir.path}/$fileName');
+                  await file.parent.create(recursive: true);
+                  await file.writeAsString(ydkContent);
+                  await Share.shareXFiles(
+                    [XFile(file.path)],
+                    text: 'Exported ${deck.name} (.ydk)',
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to export deck: $e'),
+                      backgroundColor: DeckLabTheme.errorAccent,
+                    ),
+                  );
+                }
+              }
+            },
+          ),
           if (isOwner) ...[
             IconButton(
               icon: const Icon(
                 Icons.edit_outlined,
                 color: DeckLabTheme.goldAccent,
               ),
-              onPressed: () => context.push(AppRoutes.deckEdit(deck.id)),
+              onPressed: () {
+                if (deck.id != null) {
+                  context.push(AppRoutes.deckEdit(deck.id!));
+                }
+              },
             ),
             IconButton(
               icon: state.isDeleting
