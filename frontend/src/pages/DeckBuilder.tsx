@@ -275,8 +275,8 @@ function DeckBuilderContent(): React.JSX.Element {
           />
 
           {importWarnings.length > 0 && (
-            <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-xs text-amber-300 space-y-1">
-              <div className="font-bold text-amber-400 mb-1">Import Warnings:</div>
+            <div className="space-y-1 rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-xs text-amber-300">
+              <div className="mb-1 font-bold text-amber-400">Import Warnings:</div>
               {importWarnings.map((warn, i) => (
                 <div key={i}>• {warn}</div>
               ))}

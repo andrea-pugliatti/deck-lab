@@ -310,7 +310,7 @@ export default function DeckDetail(): React.JSX.Element {
         </aside>
 
         <div className="space-y-8 lg:col-span-8">
-          <div className="flex justify-end px-2 gap-3">
+          <div className="flex justify-end gap-3 px-2">
             <Button
               variant="outline-gold-subtle"
               className="rounded-md px-1 py-0.5"
