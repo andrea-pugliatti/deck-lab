@@ -1,0 +1,42 @@
+info:
+  name: Export YDK Deck
+  type: http
+  seq: 29
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/decks/{{createdDeckId}}/export/ydk"
+  headers:
+    - name: accept
+      value: text/plain
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+  scripts:
+    - type: before-request
+      code: |-
+        if (!bru.getVar("createdDeckId")) {
+          bru.setVar("createdDeckId", 1);
+        }
+    - type: tests
+      code: |-
+        test("Response should be 200 OK or 404 Not Found", function() {
+          expect([200, 404]).to.include(res.status);
+        });
+        if (res.status === 200) {
+          test("Response body should contain YDK sections", function() {
+            expect(res.body).to.be.a('string');
+            expect(res.body).to.include('#created by DeckLab');
+            expect(res.body).to.include('#main');
+            expect(res.body).to.include('#extra');
+            expect(res.body).to.include('!side');
+          });
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

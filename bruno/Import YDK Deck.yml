@@ -1,0 +1,49 @@
+info:
+  name: Import YDK Deck
+  type: http
+  seq: 28
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/decks/import/ydk"
+  headers:
+    - name: accept
+      value: application/json
+    - name: content-type
+      value: text/plain
+  body:
+    type: text
+    data: |-
+      #created by DeckLab
+      #main
+      46986414
+      46986414
+      46986414
+      #extra
+      83755611
+      !side
+      14558127
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+  scripts:
+    - type: tests
+      code: |-
+        test("Response should be 200 OK", function() {
+          expect(res.status).to.equal(200);
+        });
+        test("Response should contain parsed deck and warnings list", function() {
+          expect(res.body).to.be.an('object');
+          expect(res.body).to.have.property('deck');
+          expect(res.body).to.have.property('warnings');
+          expect(res.body.deck).to.be.an('object');
+          expect(res.body.warnings).to.be.an('array');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

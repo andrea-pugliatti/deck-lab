@@ -17,6 +17,7 @@ http:
     type: json
     data: |-
       {
+        "passcode": 46986414,
         "name": "Dark Magician (Updated)",
         "type": "Normal Monster",
         "description": "The ultimate wizard in terms of attack and defense. Updated version.",

@@ -45,6 +45,7 @@ runtime:
               const cardRes = await axios.post(
                 `${baseUrl}/api/cards`,
                 {
+                  passcode: 46986414 + i,
                   name: `Normal Monster ${Date.now()}_${i}`,
                   type: "Normal Monster",
                   description: "A normal monster card generated dynamically for testing",
