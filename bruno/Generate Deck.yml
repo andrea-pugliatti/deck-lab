@@ -1,7 +1,7 @@
 info:
   name: Generate Deck
   type: http
-  seq: 21
+  seq: 24
 
 http:
   method: post

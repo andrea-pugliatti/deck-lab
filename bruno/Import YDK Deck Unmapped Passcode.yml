@@ -1,7 +1,7 @@
 info:
   name: Import YDK Deck Unmapped Passcode
   type: http
-  seq: 30
+  seq: 19
 
 http:
   method: POST
@@ -11,12 +11,15 @@ http:
       value: application/json
     - name: content-type
       value: text/plain
+    - name: Authorization
+      value: Bearer {{accessToken}}
   body:
     type: text
     data: |-
       #main
       46986414
       999999999
+  auth: inherit
 
 runtime:
   variables:

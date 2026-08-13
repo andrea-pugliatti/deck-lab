@@ -1,7 +1,7 @@
 info:
   name: Validate Deck Invalid Quantity
   type: http
-  seq: 20
+  seq: 23
 
 http:
   method: POST

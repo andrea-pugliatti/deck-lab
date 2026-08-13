@@ -1,7 +1,7 @@
 info:
   name: Export YDK Deck
   type: http
-  seq: 29
+  seq: 17
 
 http:
   method: GET
@@ -9,6 +9,9 @@ http:
   headers:
     - name: accept
       value: text/plain
+    - name: Authorization
+      value: Bearer {{accessToken}}
+  auth: inherit
 
 runtime:
   variables:
@@ -22,18 +25,16 @@ runtime:
         }
     - type: tests
       code: |-
-        test("Response should be 200 OK or 404 Not Found", function() {
-          expect([200, 404]).to.include(res.status);
+        test("Response should be 200 OK", function() {
+          expect(res.status).to.equal(200);
         });
-        if (res.status === 200) {
-          test("Response body should contain YDK sections", function() {
-            expect(res.body).to.be.a('string');
-            expect(res.body).to.include('#created by DeckLab');
-            expect(res.body).to.include('#main');
-            expect(res.body).to.include('#extra');
-            expect(res.body).to.include('!side');
-          });
-        }
+        test("Response body should contain YDK sections", function() {
+          expect(res.body).to.be.a('string');
+          expect(res.body).to.include('#created by DeckLab');
+          expect(res.body).to.include('#main');
+          expect(res.body).to.include('#extra');
+          expect(res.body).to.include('!side');
+        });
 
 settings:
   encodeUrl: true

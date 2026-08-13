@@ -1,7 +1,7 @@
 info:
   name: Refresh Token Missing
   type: http
-  seq: 25
+  seq: 28
 
 http:
   method: POST

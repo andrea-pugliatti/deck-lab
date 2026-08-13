@@ -1,7 +1,7 @@
 info:
   name: Refresh Token Expired
   type: http
-  seq: 24
+  seq: 27
 
 http:
   method: POST

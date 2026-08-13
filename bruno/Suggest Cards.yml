@@ -1,7 +1,7 @@
 info:
   name: Suggest Cards
   type: http
-  seq: 22
+  seq: 25
 
 http:
   method: post

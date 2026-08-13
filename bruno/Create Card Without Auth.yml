@@ -1,7 +1,7 @@
 info:
   name: Create Card Without Auth
   type: http
-  seq: 27
+  seq: 30
 
 http:
   method: POST

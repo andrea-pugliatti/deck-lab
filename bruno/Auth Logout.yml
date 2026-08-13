@@ -1,7 +1,7 @@
 info:
   name: Auth Logout
   type: http
-  seq: 23
+  seq: 26
 
 http:
   method: POST
