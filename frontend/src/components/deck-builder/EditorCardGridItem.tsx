@@ -1,5 +1,6 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 
+import { API_BASE_URL } from "../../config/env";
 import { getCardTheme } from "../../utils/card";
 import Button from "../ui/Button";
 import type { EditorCardListItemProps } from "./EditorCardListItem";
@@ -23,14 +24,13 @@ export default function EditorCardGridItem({
   remove,
 }: EditorCardListItemProps) {
   const { deckBadgeColor: badgeColor } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent/50 group relative flex min-h-32 flex-col overflow-hidden rounded-xl border p-2 text-center backdrop-blur-sm transition-all duration-200 hover:shadow-md">
       <div className="border-border-dim/40 relative mx-auto flex aspect-4/5 w-full items-center justify-center overflow-hidden rounded bg-slate-900">
         {imageUrl ? (
           <img
-            src={`${apiBaseUrl}/api/${imageUrl}`}
+            src={`${API_BASE_URL}/api/${imageUrl}`}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

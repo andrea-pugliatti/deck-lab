@@ -1,6 +1,7 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { API_BASE_URL } from "../../config/env";
 import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Input from "../ui/Input";
@@ -32,7 +33,6 @@ export default function DeckExplorerModal({
 }: DeckExplorerModalProps) {
   const [deckSearchQuery, setDeckSearchQuery] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -123,7 +123,7 @@ export default function DeckExplorerModal({
                     >
                       {card.imageUrl ? (
                         <img
-                          src={`${apiBaseUrl}/api/${card.imageUrl}`}
+                          src={`${API_BASE_URL}/api/${card.imageUrl}`}
                           alt={card.name}
                           className="h-full w-full object-cover"
                         />

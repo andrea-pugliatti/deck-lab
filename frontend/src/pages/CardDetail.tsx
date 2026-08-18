@@ -7,6 +7,7 @@ import ErrorAlert from "../components/ErrorAlert";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
+import { API_BASE_URL } from "../config/env";
 import { getCard } from "../services/card";
 import type { Card } from "../types";
 import { getCardTheme } from "../utils/card";
@@ -86,7 +87,6 @@ export default function CardDetail(): React.JSX.Element {
 
   const { bgGradient, badgeVariant, type: cardThemeType } = getCardTheme(card.type);
   const isMonster = cardThemeType === "monster";
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
@@ -121,7 +121,7 @@ export default function CardDetail(): React.JSX.Element {
             >
               {card.imageUrl ? (
                 <img
-                  src={`${apiBaseUrl}/api/${card.imageUrl}`}
+                  src={`${API_BASE_URL}/api/${card.imageUrl}`}
                   alt={card.name}
                   className="h-full w-full object-cover"
                 />

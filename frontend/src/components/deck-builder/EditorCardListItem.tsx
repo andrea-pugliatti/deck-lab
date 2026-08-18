@@ -1,5 +1,6 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 
+import { API_BASE_URL } from "../../config/env";
 import type { CardSection } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
@@ -37,7 +38,6 @@ export default function EditorCardListItem({
   remove,
 }: EditorCardListItemProps) {
   const { badgeVariant } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   const containerClass =
     "flex bg-dark-surface-elevated/40 border border-border-dim rounded-xl items-center justify-between gap-3 group p-2";
@@ -53,7 +53,7 @@ export default function EditorCardListItem({
         <div className={imgWrapperClass}>
           {imageUrl ? (
             <img
-              src={`${apiBaseUrl}/api/${imageUrl}`}
+              src={`${API_BASE_URL}/api/${imageUrl}`}
               alt={name}
               className="h-full w-full object-cover"
             />

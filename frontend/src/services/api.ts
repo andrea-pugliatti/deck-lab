@@ -5,6 +5,7 @@
  * and unified response error parsing.
  */
 
+import { API_BASE_URL } from "../config/env";
 import { getAccessToken, setAccessToken } from "./auth";
 
 /** Flag indicating if an access token refresh operation is currently in progress. */
@@ -144,8 +145,7 @@ function normalizeHeaders(headers?: HeadersInit): Record<string, string> {
  * @throws {Error} If refreshing the token fails or session expires.
  */
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
-  const targetUrl = url.startsWith("/api") ? `${apiBaseUrl}${url}` : url;
+  const targetUrl = url.startsWith("/api") ? `${API_BASE_URL}${url}` : url;
 
   const headers = normalizeHeaders(options.headers);
 

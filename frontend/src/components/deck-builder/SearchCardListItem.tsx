@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config/env";
 import type { Card, CardSection, DeckCardItem } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
@@ -53,7 +54,6 @@ export default function SearchCardListItem({
   const totalInDeck = deckCards
     .filter((dc) => dc.cardId === cardId)
     .reduce((sum, dc) => sum + dc.quantity, 0);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className={containerClass}>
@@ -61,7 +61,7 @@ export default function SearchCardListItem({
         <div className={imgWrapperClass}>
           {imageUrl ? (
             <img
-              src={`${apiBaseUrl}/api/${imageUrl}`}
+              src={`${API_BASE_URL}/api/${imageUrl}`}
               alt={name}
               className="h-full w-full object-cover"
             />

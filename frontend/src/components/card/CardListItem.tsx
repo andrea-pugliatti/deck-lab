@@ -1,6 +1,7 @@
 import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
+import { API_BASE_URL } from "../../config/env";
 import type { Card } from "../../types";
 import { getCardTheme } from "../../utils/card";
 
@@ -25,7 +26,6 @@ export default function CardListItem({
 }: Card) {
   const isMonster = type?.toLowerCase().includes("monster");
   const { gridBadgeColor: badgeColor } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <Link
@@ -37,7 +37,7 @@ export default function CardListItem({
         <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-4/5 w-12 shrink-0 items-center justify-center overflow-hidden rounded border">
           {imageUrlCropped ? (
             <img
-              src={`${apiBaseUrl}/api/${imageUrlCropped}`}
+              src={`${API_BASE_URL}/api/${imageUrlCropped}`}
               alt={name}
               className="h-full w-full object-cover"
             />

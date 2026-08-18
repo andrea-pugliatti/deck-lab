@@ -2,6 +2,7 @@ import { Flame, Sparkles, Star, Zap } from "lucide-react";
 import { useRef, useState } from "react";
 import type { MouseEvent } from "react";
 
+import { API_BASE_URL } from "../config/env";
 import type { Card } from "../types";
 
 /**
@@ -99,7 +100,6 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
           const isTrap = card?.type.toLowerCase().includes("trap");
           const isMonster = !isSpell && !isTrap;
           const croppedUrl = card?.imageUrlCropped;
-          const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
           const FallbackIcon = isSpell ? Sparkles : isTrap ? Zap : Flame;
           const fallbackIconColor = isSpell
             ? "text-emerald-400"
@@ -150,7 +150,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                 <div className="border-border-dim/60 bg-dark-surface-elevated/40 group relative mb-1.5 flex flex-1 items-center justify-center overflow-hidden rounded border sm:mb-2">
                   {croppedUrl ? (
                     <img
-                      src={`${apiBaseUrl}/api/${croppedUrl}`}
+                      src={`${API_BASE_URL}/api/${croppedUrl}`}
                       className="h-full w-full object-cover transition-transform duration-500"
                       alt={card?.name}
                     />

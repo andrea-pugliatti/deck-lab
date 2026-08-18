@@ -1,5 +1,6 @@
 import { Eye, Flame, Shield, Star } from "lucide-react";
 
+import { API_BASE_URL } from "../../config/env";
 import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
@@ -20,8 +21,6 @@ interface CardInspectorProps {
  * @returns A JSX element containing the detailed card inspector UI.
  */
 export default function CardInspector({ inspectedCard }: CardInspectorProps) {
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
-
   return (
     <div className="bg-dark-surface border-border-dim relative flex min-h-112.5 flex-col rounded-2xl border p-5 shadow-lg">
       <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
@@ -37,7 +36,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
             <div className="border-border-dim mx-auto aspect-244/356 w-full max-w-50 overflow-hidden rounded-lg border bg-slate-950 shadow-md">
               {inspectedCard.imageUrl ? (
                 <img
-                  src={`${apiBaseUrl}/api/${inspectedCard.imageUrl}`}
+                  src={`${API_BASE_URL}/api/${inspectedCard.imageUrl}`}
                   alt={inspectedCard.name}
                   className="h-full w-full object-cover"
                 />

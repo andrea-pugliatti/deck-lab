@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 
+import { API_BASE_URL } from "../../config/env";
 import { getCardTheme } from "../../utils/card";
 import Badge from "../ui/Badge";
 import type { DeckGridItemProps } from "./DeckGridItem";
@@ -20,7 +21,6 @@ export default function DeckListItem({
   quantity,
 }: DeckGridItemProps) {
   const { badgeVariant } = getCardTheme(type);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <Link
@@ -32,7 +32,7 @@ export default function DeckListItem({
         <div className="border-border-dim/40 relative flex aspect-4/5 w-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-slate-900">
           {imageUrl ? (
             <img
-              src={`${apiBaseUrl}/api/${imageUrl}`}
+              src={`${API_BASE_URL}/api/${imageUrl}`}
               alt={name}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />

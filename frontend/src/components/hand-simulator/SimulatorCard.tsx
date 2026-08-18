@@ -1,6 +1,7 @@
 import { Move } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { API_BASE_URL } from "../../config/env";
 import type { SimulatorCardInstance } from "../../types";
 import { getCardTheme } from "../../utils/card";
 
@@ -34,7 +35,6 @@ export default function SimulatorCard({
 }: SimulatorCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   const { borderColor, glowColor } = getCardTheme(card.type);
 
@@ -70,7 +70,7 @@ export default function SimulatorCard({
       >
         {card.imageUrl ? (
           <img
-            src={`${apiBaseUrl}/api/${card.imageUrl}`}
+            src={`${API_BASE_URL}/api/${card.imageUrl}`}
             alt={card.name}
             className="h-full w-full object-cover"
             loading="lazy"

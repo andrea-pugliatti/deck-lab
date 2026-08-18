@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
+import { API_BASE_URL } from "../../config/env";
 import { getFormatRules } from "../../reducers/deckReducer";
 import type { DeckCardItem, Format, Suggestion } from "../../types";
 import Badge from "../ui/Badge";
@@ -37,7 +38,6 @@ export default function AiSuggestionItem({
 
   const rules = getFormatRules(formatName);
   const isMaxCopies = countInDeck >= rules.maxCopiesPerCard;
-  const apiBaseUrl = import.meta.env.DEV ? "" : import.meta.env.VITE_API_URL || "";
 
   return (
     <div className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border-border-dim/40 hover:border-border-dim flex items-center gap-3 rounded-xl border p-3">
@@ -45,8 +45,8 @@ export default function AiSuggestionItem({
         <img
           src={
             card.imageUrl.startsWith("/")
-              ? `${apiBaseUrl}/api${card.imageUrl}`
-              : `${apiBaseUrl}/api/${card.imageUrl}`
+              ? `${API_BASE_URL}/api${card.imageUrl}`
+              : `${API_BASE_URL}/api/${card.imageUrl}`
           }
           alt={card.name}
           className="border-border-dim h-10 w-10 shrink-0 rounded-lg border object-cover shadow-inner"
