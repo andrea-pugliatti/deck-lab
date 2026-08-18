@@ -25,6 +25,7 @@ class ApiClient {
   static const String keyAccessToken = 'accessToken';
 
   // --- Base URL configuration ---
+  static const String customBaseUrl = String.fromEnvironment('API_BASE_URL');
   static const String prodBaseUrl = 'https://decklab.games/api';
   static const String localAndroidBaseUrl = 'http://10.0.2.2:8080';
   static const String localIosBaseUrl = 'http://localhost:8080';
@@ -58,10 +59,14 @@ class ApiClient {
 
   /// Resolves the default backend base URL dynamically based on the platform and build mode.
   ///
+  /// If [customBaseUrl] was provided via `--dart-define=API_BASE_URL=...`, it takes precedence.
   /// In release mode, resolves to the production URL.
   /// For Android emulator context, resolves to `http://10.0.2.2:8080`.
   /// For iOS simulator or web context, resolves to `http://localhost:8080`.
   static String get defaultBaseUrl {
+    if (customBaseUrl.isNotEmpty) {
+      return customBaseUrl;
+    }
     if (kReleaseMode) {
       return prodBaseUrl;
     }

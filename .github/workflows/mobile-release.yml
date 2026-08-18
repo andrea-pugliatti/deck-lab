@@ -1,0 +1,64 @@
+name: Mobile Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "Backend API Base URL"
+        required: false
+        default: "https://decklab.games/api"
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    name: Build Android Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java 21 (Gradle Toolchain)
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+
+      - name: Cache Gradle & Pub
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.pub-cache
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-mobile-release-${{ hashFiles('mobile/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mobile-release-
+
+      - name: Install Flutter dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Build Android Release APK
+        working-directory: mobile
+        run: |
+          API_URL="${{ github.event.inputs.api_base_url || 'https://decklab.games/api' }}"
+          flutter build apk --release --dart-define=API_BASE_URL="$API_URL"
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: decklab-android-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk

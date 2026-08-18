@@ -7,6 +7,7 @@ on:
       - master
       - "**/feature/**"
   pull_request:
+  workflow_dispatch:
 
 jobs:
   backend:
@@ -36,14 +37,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
-
-      - name: Cache Maven local repository
-        uses: actions/cache@v6
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/backend/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+          cache: "maven"
 
       - name: Run backend tests
         working-directory: backend
@@ -58,7 +52,7 @@ jobs:
           ./mvnw -B package -DskipTests
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "26"
 
@@ -118,7 +112,7 @@ jobs:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "26"
           cache: "pnpm"
@@ -136,6 +130,10 @@ jobs:
         working-directory: frontend
         run: pnpm format:check
 
+      - name: TypeScript type check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
       - name: Run frontend tests
         working-directory: frontend
         run: pnpm test:run
@@ -143,3 +141,36 @@ jobs:
       - name: Build frontend application
         working-directory: frontend
         run: pnpm build
+
+  mobile-test:
+    name: Mobile tests and analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v6
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('mobile/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install Flutter dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Analyze Dart and Flutter code
+        working-directory: mobile
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        working-directory: mobile
+        run: flutter test

@@ -25,12 +25,17 @@ services:
       - "8080:8080"
     environment:
       - DB_HOST=db
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/deck-lab?reWriteBatchedInserts=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-deck-lab}?reWriteBatchedInserts=true
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - IMAGE_UPLOAD_DIR=/app/data/images
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - JWT_SECRET=${JWT_SECRET}
+      - IMAGE_UPLOAD_DIR=${IMAGE_UPLOAD_DIR:-/app/data/images}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - JWT_SECRET=${JWT_SECRET:-ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=}
+      - ALLOWED_CORS_ORIGINS=${ALLOWED_CORS_ORIGINS:-http://localhost:5173,http://localhost:8080,http://127.0.0.1:5173}
+      - APP_SEED_CARDS=${APP_SEED_CARDS:-false}
+      - APP_SEED_USERS=${APP_SEED_USERS:-false}
+      - COOKIE_SAME_SITE=${COOKIE_SAME_SITE:-Lax}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
     volumes:
       - card-images:/app/data/images
     depends_on:
