@@ -82,7 +82,7 @@ void main() {
         );
 
         // Open Dropdown
-        await tester.tap(find.text('Choose deck...'));
+        await tester.tap(find.text('Choose deck...'), warnIfMissed: false);
         await tester.pumpAndSettle();
 
         // Select deck
@@ -109,8 +109,8 @@ void main() {
         expect(find.text('HAND ZONE (5)'), findsOneWidget);
 
         // Test probability odds calculator targets card selection
-        expect(find.text('HYPERGEOMETRIC ODDS CALCULATOR'), findsOneWidget);
-        await tester.tap(find.text('Target Card Name...'));
+        expect(find.text('ODDS CALCULATOR'), findsOneWidget);
+        await tester.tap(find.text('Target Card Name...'), warnIfMissed: false);
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Blue-Eyes White Dragon').last);

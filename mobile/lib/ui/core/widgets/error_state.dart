@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'custom_button.dart';
+
 /// Reusable Error State widget displaying an error icon, title, error message,
 /// and an optional retry action button.
 class ErrorState extends StatelessWidget {
@@ -54,10 +56,10 @@ class ErrorState extends StatelessWidget {
             ],
             if (onRetry != null) ...[
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: onRetry,
+              CustomButton(
+                text: retryLabel,
                 icon: const Icon(Icons.refresh, size: 18),
-                label: Text(retryLabel),
+                onPressed: onRetry,
               ),
             ],
           ],
