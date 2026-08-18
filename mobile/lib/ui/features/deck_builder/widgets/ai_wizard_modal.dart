@@ -133,6 +133,7 @@ class _AiWizardModalState extends ConsumerState<AiWizardModal> {
               ] else ...[
                 // Archetype
                 Autocomplete<String>(
+                  initialValue: TextEditingValue(text: _archetypeController.text),
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
                       return const Iterable<String>.empty();
@@ -153,29 +154,15 @@ class _AiWizardModalState extends ConsumerState<AiWizardModal> {
                         focusNode,
                         onFieldSubmitted,
                       ) {
-                        if (textEditingController.text !=
-                            _archetypeController.text) {
-                          textEditingController.text =
-                              _archetypeController.text;
-                        }
-                        _archetypeController.addListener(() {
-                          if (textEditingController.text !=
-                              _archetypeController.text) {
-                            textEditingController.text =
-                                _archetypeController.text;
-                          }
-                        });
-                        textEditingController.addListener(() {
-                          _archetypeController.text =
-                              textEditingController.text;
-                        });
-
                         return CustomInput(
                           label: 'Archetype (e.g. Elemental HERO, Blue-Eyes)',
                           placeholder: 'Enter archetype name...',
                           controller: textEditingController,
                           prefixIcon: Icons.auto_awesome,
                           focusNode: focusNode,
+                          onChanged: (val) {
+                            _archetypeController.text = val;
+                          },
                           validator: (val) {
                             if (val == null || val.trim().isEmpty) {
                               return 'Archetype is required';

@@ -103,49 +103,41 @@ class SimulationSession {
     final to = toZone.toUpperCase();
     if (from == to) return this;
 
+    final newMainDeck = List<SimulatorCardInstance>.from(mainDeck);
+    final newHand = List<SimulatorCardInstance>.from(hand);
+    final newField = List<SimulatorCardInstance>.from(field);
+    final newGraveyard = List<SimulatorCardInstance>.from(graveyard);
+    final newBanished = List<SimulatorCardInstance>.from(banished);
+
+    List<SimulatorCardInstance> getTargetList(String zone) => switch (zone) {
+      'DECK_TOP' || 'DECK_BOTTOM' => newMainDeck,
+      'HAND' => newHand,
+      'FIELD' => newField,
+      'GRAVEYARD' => newGraveyard,
+      'BANISHED' => newBanished,
+      _ => [],
+    };
+
     // Remove from source list
-    List<SimulatorCardInstance> fromList = _getZoneList(from);
+    final fromList = getTargetList(from);
     final idx = fromList.indexWhere((c) => c.uniqId == card.uniqId);
     if (idx == -1) return this;
     fromList.removeAt(idx);
 
     // Insert to target list
-    List<SimulatorCardInstance> toList = _getZoneList(to);
+    final toList = getTargetList(to);
     if (to == 'DECK_TOP') {
       toList.insert(0, card);
-    } else if (to == 'DECK_BOTTOM') {
-      toList.add(card);
     } else {
       toList.add(card);
     }
 
-    // Construct and return new state mapping modified lists
     return _copyWith(
-      mainDeck: (from == 'DECK_TOP' || from == 'DECK_BOTTOM')
-          ? fromList
-          : (to == 'DECK_TOP' || to == 'DECK_BOTTOM')
-          ? toList
-          : mainDeck,
-      hand: from == 'HAND'
-          ? fromList
-          : to == 'HAND'
-          ? toList
-          : hand,
-      field: from == 'FIELD'
-          ? fromList
-          : to == 'FIELD'
-          ? toList
-          : field,
-      graveyard: from == 'GRAVEYARD'
-          ? fromList
-          : to == 'GRAVEYARD'
-          ? toList
-          : graveyard,
-      banished: from == 'BANISHED'
-          ? fromList
-          : to == 'BANISHED'
-          ? toList
-          : banished,
+      mainDeck: newMainDeck,
+      hand: newHand,
+      field: newField,
+      graveyard: newGraveyard,
+      banished: newBanished,
     );
   }
 
@@ -158,15 +150,6 @@ class SimulationSession {
   SimulationSession selectTargetCard(String? cardName) {
     return _copyWith(targetCardName: cardName);
   }
-
-  List<SimulatorCardInstance> _getZoneList(String zone) => switch (zone) {
-    'DECK_TOP' || 'DECK_BOTTOM' => List<SimulatorCardInstance>.from(mainDeck),
-    'HAND' => List<SimulatorCardInstance>.from(hand),
-    'FIELD' => List<SimulatorCardInstance>.from(field),
-    'GRAVEYARD' => List<SimulatorCardInstance>.from(graveyard),
-    'BANISHED' => List<SimulatorCardInstance>.from(banished),
-    _ => [],
-  };
 
   /// Private helper method to clone session properties and automatically recalculate probability.
   SimulationSession _copyWith({

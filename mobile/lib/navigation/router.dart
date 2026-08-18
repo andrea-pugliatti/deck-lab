@@ -13,16 +13,33 @@ import '../ui/features/deck_builder/views/deck_builder_screen.dart';
 import '../ui/features/simulator/views/hand_simulator_screen.dart';
 import 'routes.dart';
 
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+final shellNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Listenable bridge notifying GoRouter on Riverpod auth state updates.
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  RouterNotifier(this._ref) {
+    _ref.listen<AsyncValue<dynamic>>(
+      authProvider,
+      (previous, next) => notifyListeners(),
+    );
+  }
+}
+
+final routerNotifierProvider = Provider<RouterNotifier>((ref) => RouterNotifier(ref));
+
 /// Provider exposing declarative routes and guard logic managed by go_router.
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-  final rootNavigatorKey = GlobalKey<NavigatorState>();
-  final shellNavigatorKey = GlobalKey<NavigatorState>();
+  final notifier = ref.watch(routerNotifierProvider);
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
+    refreshListenable: notifier,
     initialLocation: AppRoutes.home,
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final loggedIn = authState.value != null;
       final isAuthScreen =
           state.matchedLocation == AppRoutes.login ||
@@ -98,10 +115,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         path: AppRoutes.deckDetailPattern,
         pageBuilder: (context, state) {
-          final idStr = state.pathParameters['id']!;
+          final idStr = state.pathParameters['id'] ?? '';
+          final id = int.tryParse(idStr);
+          if (id == null) {
+            return _fadeTransitionPage(
+              key: state.pageKey,
+              child: const Scaffold(
+                body: Center(child: Text('Invalid Deck ID')),
+              ),
+            );
+          }
           return _fadeTransitionPage(
             key: state.pageKey,
-            child: DeckDetailScreen(deckId: int.parse(idStr)),
+            child: DeckDetailScreen(deckId: id),
           );
         },
       ),
@@ -109,10 +135,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         path: AppRoutes.deckEditPattern,
         pageBuilder: (context, state) {
-          final idStr = state.pathParameters['id']!;
+          final idStr = state.pathParameters['id'] ?? '';
+          final id = int.tryParse(idStr);
+          if (id == null) {
+            return _fadeTransitionPage(
+              key: state.pageKey,
+              child: const Scaffold(
+                body: Center(child: Text('Invalid Deck ID')),
+              ),
+            );
+          }
           return _fadeTransitionPage(
             key: state.pageKey,
-            child: DeckBuilderScreen(deckId: int.parse(idStr)),
+            child: DeckBuilderScreen(deckId: id),
           );
         },
       ),
@@ -120,10 +155,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         path: AppRoutes.cardDetailPattern,
         pageBuilder: (context, state) {
-          final idStr = state.pathParameters['id']!;
+          final idStr = state.pathParameters['id'] ?? '';
+          final id = int.tryParse(idStr);
+          if (id == null) {
+            return _fadeTransitionPage(
+              key: state.pageKey,
+              child: const Scaffold(
+                body: Center(child: Text('Invalid Card ID')),
+              ),
+            );
+          }
           return _fadeTransitionPage(
             key: state.pageKey,
-            child: CardDetailScreen(cardId: int.parse(idStr)),
+            child: CardDetailScreen(cardId: id),
           );
         },
       ),
