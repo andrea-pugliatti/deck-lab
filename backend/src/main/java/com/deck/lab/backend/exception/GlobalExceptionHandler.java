@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,9 +36,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DeckValidationException.class)
     public ResponseEntity<ValidationErrorResponseDto>
             handleDeckValidationException(DeckValidationException ex) {
-        List<String> errors = ex.getErrors().stream()
-                .map(error -> error.message())
-                .toList();
+        List<String> errors = ex.getErrors() != null
+                ? ex.getErrors().stream()
+                        .filter(error -> error != null)
+                        .map(error -> error.message() != null ? error.message() : "Validation failed")
+                        .toList()
+                : List.of();
 
         ValidationErrorResponseDto response = new ValidationErrorResponseDto(
                 "Validation failed", errors);
@@ -56,9 +59,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponseDto>
             handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getDefaultMessage())
-                .toList();
+        List<String> errors = ex.getBindingResult() != null && ex.getBindingResult().getFieldErrors() != null
+                ? ex.getBindingResult().getFieldErrors().stream()
+                        .filter(error -> error != null)
+                        .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error")
+                        .toList()
+                : List.of();
 
         ValidationErrorResponseDto response = new ValidationErrorResponseDto(
                 "Validation failed", errors);
@@ -71,9 +77,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ValidationErrorResponseDto>
             handleConstraintViolationException(ConstraintViolationException ex) {
-        List<String> errors = ex.getConstraintViolations().stream()
-                .map(violation -> violation.getMessage())
-                .toList();
+        List<String> errors = ex.getConstraintViolations() != null
+                ? ex.getConstraintViolations().stream()
+                        .filter(violation -> violation != null)
+                        .map(violation -> violation.getMessage() != null ? violation.getMessage() : "Constraint violation")
+                        .toList()
+                : List.of();
 
         ValidationErrorResponseDto response = new ValidationErrorResponseDto(
                 "Validation failed", errors);

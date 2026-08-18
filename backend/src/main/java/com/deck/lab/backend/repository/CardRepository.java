@@ -41,6 +41,14 @@ public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificat
     Optional<Card> findByName(String name);
 
     /**
+     * Resolves cards whose names are in the given list.
+     *
+     * @param names list of card names
+     * @return list of matching Cards
+     */
+    List<Card> findByNameIn(List<String> names);
+
+    /**
      * Resolves cards whose name contains the search substring (case-insensitive). Used for fallback
      * searches.
      *

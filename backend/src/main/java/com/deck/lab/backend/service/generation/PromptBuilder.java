@@ -1,7 +1,8 @@
 package com.deck.lab.backend.service.generation;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -351,10 +352,31 @@ public class PromptBuilder {
         if (currentCards == null || currentCards.isEmpty()) {
             return "(Empty Deck)";
         }
-        return currentCards.stream().map(c -> {
+
+        List<String> names = currentCards.stream()
+                .filter(c -> c != null && c.getName() != null && !c.getName().isBlank())
+                .map(c -> c.getName().trim())
+                .distinct()
+                .toList();
+
+        Map<String, Card> cardMap = new HashMap<>();
+        if (!names.isEmpty()) {
+            List<Card> foundCards = cardRepository.findByNameIn(names);
+            if (foundCards != null) {
+                for (Card c : foundCards) {
+                    if (c != null && c.getName() != null) {
+                        cardMap.put(c.getName().trim().toLowerCase(), c);
+                    }
+                }
+            }
+        }
+
+        return currentCards.stream()
+                .filter(c -> c != null)
+                .map(c -> {
             StringBuilder sb = new StringBuilder();
             sb.append("- ")
-                    .append(c.getName())
+                    .append(c.getName() != null ? c.getName() : "Unknown Card")
                     .append(" (")
                     .append(c.getSection() != null
                             ? c.getSection().getValue()
@@ -365,16 +387,15 @@ public class PromptBuilder {
                             : 1);
 
             if (c.getName() != null) {
-                Optional<Card> dbCardOpt = cardRepository.findByName(c.getName().trim());
-                if (dbCardOpt.isEmpty()) {
-                    List<Card> fallbacks = cardRepository
-                            .findByNameContainingIgnoreCase(c.getName().trim());
-                    if (!fallbacks.isEmpty()) {
-                        dbCardOpt = Optional.of(fallbacks.get(0));
+                String trimmedName = c.getName().trim();
+                Card card = cardMap.get(trimmedName.toLowerCase());
+                if (card == null) {
+                    List<Card> fallbacks = cardRepository.findByNameContainingIgnoreCase(trimmedName);
+                    if (fallbacks != null && !fallbacks.isEmpty()) {
+                        card = fallbacks.get(0);
                     }
                 }
-                if (dbCardOpt.isPresent()) {
-                    Card card = dbCardOpt.get();
+                if (card != null) {
                     if (card.getType() != null) {
                         sb.append(", Type: ").append(card.getType().getValue());
                     }

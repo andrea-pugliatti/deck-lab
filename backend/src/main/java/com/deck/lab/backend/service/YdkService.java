@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -165,25 +165,43 @@ public class YdkService {
             cardDtos = new ArrayList<>();
         }
 
+        List<Long> cardIds = cardDtos.stream()
+                .filter(dto -> dto != null && dto.getCardId() != null)
+                .map(dto -> dto.getCardId())
+                .distinct()
+                .toList();
+
+        Map<Long, Card> cardMap = new HashMap<>();
+        if (!cardIds.isEmpty()) {
+            List<Card> foundCards = cardRepository.findAllById(cardIds);
+            if (foundCards != null) {
+                for (Card c : foundCards) {
+                    if (c != null && c.getId() != null) {
+                        cardMap.put(c.getId(), c);
+                    }
+                }
+            }
+        }
+
         sb.append("#main\n");
-        appendSectionPasscodes(sb, cardDtos, DeckSection.MAIN);
+        appendSectionPasscodes(sb, cardDtos, DeckSection.MAIN, cardMap);
 
         sb.append("#extra\n");
-        appendSectionPasscodes(sb, cardDtos, DeckSection.EXTRA);
+        appendSectionPasscodes(sb, cardDtos, DeckSection.EXTRA, cardMap);
 
         sb.append("!side\n");
-        appendSectionPasscodes(sb, cardDtos, DeckSection.SIDE);
+        appendSectionPasscodes(sb, cardDtos, DeckSection.SIDE, cardMap);
 
         return sb.toString();
     }
 
     private void appendSectionPasscodes(StringBuilder sb, List<DeckCardResponseDto> cards,
-                                        DeckSection section) {
+                                        DeckSection section, Map<Long, Card> cardMap) {
         for (DeckCardResponseDto cardDto : cards) {
             if (cardDto.getSection() == section && cardDto.getCardId() != null) {
-                Optional<Card> cardOpt = cardRepository.findById(cardDto.getCardId());
-                if (cardOpt.isPresent() && cardOpt.get().getPasscode() != null) {
-                    Long passcode = cardOpt.get().getPasscode();
+                Card card = cardMap.get(cardDto.getCardId());
+                if (card != null && card.getPasscode() != null) {
+                    Long passcode = card.getPasscode();
                     int qty = cardDto.getQuantity() != null
                             ? cardDto.getQuantity()
                             : 1;
