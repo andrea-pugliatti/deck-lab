@@ -90,6 +90,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Value("${app.seed.users:true}")
     private boolean seedUsersEnabled;
 
+    @Value("${app.seed.password:12345678}")
+    private String seedPassword = "12345678";
+
     public DatabaseSeeder(UserRepository userRepository, PasswordEncoder passwordEncoder,
                           PlatformTransactionManager transactionManager, CardImporter cardImporter,
                           BanlistImporter banlistImporter, DeckSeeder deckSeeder,
@@ -149,8 +152,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                     }
                     if (seedUsersEnabled) {
                         transactionTemplate.executeWithoutResult(status -> {
-                            seedUser("admin", "12345678", "admin@example.com");
-                            seedUser("yugi", "12345678", "yugi@example.com");
+                            seedUser("admin", seedPassword, "admin@example.com");
+                            seedUser("yugi", seedPassword, "yugi@example.com");
                         });
                     } else {
                         logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
@@ -173,8 +176,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             logger.info("Card seeding is disabled (app.seed.cards=false). Skipping.");
             if (seedUsersEnabled) {
                 transactionTemplate.executeWithoutResult(status -> {
-                    seedUser("admin", "12345678", "admin@example.com");
-                    seedUser("yugi", "12345678", "yugi@example.com");
+                    seedUser("admin", seedPassword, "admin@example.com");
+                    seedUser("yugi", seedPassword, "yugi@example.com");
                 });
             } else {
                 logger.info("User seeding is disabled (app.seed.users=false). Skipping.");

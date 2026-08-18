@@ -74,6 +74,11 @@
       "name": "app.cookie.secure",
       "type": "java.lang.String",
       "description": "Configuration for CORS security"
+    },
+    {
+      "name": "app.seed.password",
+      "type": "java.lang.String",
+      "description": "Default user password"
     }
   ]
 }
