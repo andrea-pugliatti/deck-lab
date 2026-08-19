@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
-import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -173,7 +173,7 @@ public class DeckControllerTest {
 
     @Test
     void testCreateDeck() throws Exception {
-        DeckResponseDto newDeckDto = new DeckResponseDto();
+        DeckSaveRequestDto newDeckDto = new DeckSaveRequestDto();
         newDeckDto.setName("New Deck");
         newDeckDto.setFormatName(Format.GOAT);
         newDeckDto.setDescription("MockMvc test creation");
@@ -192,7 +192,7 @@ public class DeckControllerTest {
 
     @Test
     void testCreateDeckInvalidValidation() throws Exception {
-        DeckResponseDto invalidDto = new DeckResponseDto();
+        DeckSaveRequestDto invalidDto = new DeckSaveRequestDto();
         invalidDto.setName(""); // Blank name is invalid
         invalidDto.setFormatName(Format.TCG);
 
@@ -206,7 +206,7 @@ public class DeckControllerTest {
 
     @Test
     void testValidateDeckSuccess() throws Exception {
-        DeckResponseDto validDto = new DeckResponseDto();
+        DeckSaveRequestDto validDto = new DeckSaveRequestDto();
         validDto.setName("Valid Deck");
         validDto.setFormatName(Format.GOAT);
         validDto.setDescription("Validation success test");
@@ -221,7 +221,7 @@ public class DeckControllerTest {
 
     @Test
     void testValidateDeckFailure() throws Exception {
-        DeckResponseDto invalidDto = new DeckResponseDto();
+        DeckSaveRequestDto invalidDto = new DeckSaveRequestDto();
         invalidDto.setName(""); // Blank name is invalid
         invalidDto.setFormatName(Format.TCG);
 
@@ -249,7 +249,7 @@ public class DeckControllerTest {
             cardDtos.add(mainCard);
         }
 
-        DeckResponseDto updateDto = new DeckResponseDto();
+        DeckSaveRequestDto updateDto = new DeckSaveRequestDto();
         updateDto.setName("ControllerTest Deck Updated");
         updateDto.setFormatName(Format.EDISON);
         updateDto.setDescription("Updated desc");
@@ -269,7 +269,7 @@ public class DeckControllerTest {
 
     @Test
     void testUpdateDeckUnauthorized() throws Exception {
-        DeckResponseDto updateDto = new DeckResponseDto();
+        DeckSaveRequestDto updateDto = new DeckSaveRequestDto();
         updateDto.setName("Hacked Deck");
         updateDto.setFormatName(Format.TCG);
         updateDto.setDeckCards(createValidDeckCards());

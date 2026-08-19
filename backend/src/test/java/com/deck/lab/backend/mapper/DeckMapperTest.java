@@ -151,7 +151,7 @@ class DeckMapperTest {
 
     @Test
     void toEntity_withNullDto_returnsNull() {
-        assertNull(deckMapper.toEntity(null));
+        assertNull(deckMapper.toEntity((DeckResponseDto) null));
     }
 
     @Test

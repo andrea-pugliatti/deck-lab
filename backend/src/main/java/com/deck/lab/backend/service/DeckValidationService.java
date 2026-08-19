@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
@@ -69,22 +71,22 @@ public class DeckValidationService {
     }
 
     /**
-     * Validates the structure and legality of a deck based on the provided DeckDto. Fetches card
-     * definitions, checks missing IDs, converts references, queries format specific limit lists,
-     * and coordinates evaluation of rules.
+     * Validates the structure and legality of a deck based on the provided DeckSaveRequestDto.
+     * Fetches card definitions, checks missing IDs, converts references, queries format specific
+     * limit lists, and coordinates evaluation of rules.
      *
-     * @param deckDto the DTO representing the deck to validate
+     * @param deckDto the DTO representing the inbound deck save request to validate
      * @return a map of database-resolved Card objects mapped by their IDs, for subsequent save
      *             reuse
      * @throws DeckValidationException containing all validation errors if any rules are violated
      */
     @Transactional(readOnly = true)
-    public Map<Long, Card> validate(DeckResponseDto deckDto) {
-        Map<Long, Card> cardMap = fetchCardMap(deckDto.getDeckCards());
+    public Map<Long, Card> validate(DeckSaveRequestDto deckDto) {
+        List<DeckCardRequestDto> cardDtos = deckDto.getDeckCards();
+        Map<Long, Card> cardMap = fetchCardMap(cardDtos);
         List<ValidationError> errors = new ArrayList<>();
 
         // Verify all card IDs exist
-        List<DeckCardRequestDto> cardDtos = deckDto.getDeckCards();
         if (cardDtos != null) {
             for (DeckCardRequestDto cardDto : cardDtos) {
                 if (cardDto.getCardId() != null && !cardMap.containsKey(cardDto.getCardId())) {
@@ -126,6 +128,30 @@ public class DeckValidationService {
             throw new DeckValidationException(errors);
         }
         return cardMap;
+    }
+
+    /**
+     * Validates the structure and legality of a deck based on the provided DeckResponseDto.
+     *
+     * @param deckDto the DTO representing the deck to validate
+     * @return a map of database-resolved Card objects mapped by their IDs, for subsequent save
+     *             reuse
+     * @throws DeckValidationException containing all validation errors if any rules are violated
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, Card> validate(DeckResponseDto deckDto) {
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
+        if (deckDto.getDeckCards() != null) {
+            for (DeckCardResponseDto c : deckDto.getDeckCards()) {
+                if (c != null) {
+                    cardDtos.add(
+                            new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
+                }
+            }
+        }
+        DeckSaveRequestDto req = new DeckSaveRequestDto(deckDto.getName(), deckDto.getDescription(),
+                deckDto.getFormatName(), cardDtos);
+        return validate(req);
     }
 
     /**

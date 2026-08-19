@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
+import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
@@ -87,8 +89,7 @@ public class DeckService {
      */
     public Page<DeckResponseDto> findAllWithFilters(String name, String format, String username,
                                                     Pageable pageable) {
-        Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
-                .and(DeckSpecification.hasName(name))
+        Specification<Deck> spec = Specification.where(DeckSpecification.hasName(name))
                 .and(DeckSpecification.hasFormat(format))
                 .and(DeckSpecification.hasUser(username));
 
@@ -127,7 +128,17 @@ public class DeckService {
     }
 
     /**
-     * Validates a deck list against structural and format rules.
+     * Validates a deck save request against structural and format rules.
+     *
+     * @param deckDto the DTO deck representation to validate
+     * @throws DeckValidationException if validation fails
+     */
+    public void validateDeck(DeckSaveRequestDto deckDto) {
+        deckValidationService.validate(deckDto);
+    }
+
+    /**
+     * Validates a deck response against structural and format rules.
      *
      * @param deckDto the DTO deck representation to validate
      * @throws DeckValidationException if validation fails
@@ -137,7 +148,28 @@ public class DeckService {
     }
 
     /**
-     * Creates and persists a new user deck. Validates format compliance first.
+     * Creates and persists a new user deck from a save request. Validates format compliance first.
+     *
+     * @param deckDto the deck save request to persist
+     * @param user    the owner user account
+     * @return the saved DeckDto
+     * @throws DeckValidationException if the deck format or size is invalid
+     */
+    @Transactional
+    public DeckResponseDto createDeck(DeckSaveRequestDto deckDto, User user) {
+        Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
+
+        Deck deck = deckMapper.toEntity(deckDto);
+        deck.setUser(user);
+
+        saveDeckCards(deck, deckDto.getDeckCards(), cardMap);
+
+        Deck savedDeck = deckRepository.save(deck);
+        return deckMapper.toDto(savedDeck);
+    }
+
+    /**
+     * Creates and persists a new user deck from a response DTO. Validates format compliance first.
      *
      * @param deckDto the deck details to save
      * @param user    the owner user account
@@ -146,10 +178,37 @@ public class DeckService {
      */
     @Transactional
     public DeckResponseDto createDeck(DeckResponseDto deckDto, User user) {
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
+        if (deckDto.getDeckCards() != null) {
+            for (DeckCardResponseDto c : deckDto.getDeckCards()) {
+                if (c != null) {
+                    cardDtos.add(new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
+                }
+            }
+        }
+        DeckSaveRequestDto req = new DeckSaveRequestDto(deckDto.getName(), deckDto.getDescription(),
+                deckDto.getFormatName(), cardDtos);
+        return createDeck(req, user);
+    }
+
+    /**
+     * Updates and persists changes to an existing user deck from a save request.
+     *
+     * @param id      the ID of the deck to update
+     * @param deckDto the updated deck save request
+     * @param user    the owner user requesting the change
+     * @return the updated and saved DeckDto
+     * @throws NoSuchElementException  if the deck doesn't exist or doesn't belong to the user
+     * @throws DeckValidationException if the updated deck list is invalid
+     */
+    @Transactional
+    public DeckResponseDto updateDeck(Long id, DeckSaveRequestDto deckDto, User user) {
+        Deck deck = deckRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
+
         Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
 
-        Deck deck = deckMapper.toEntity(deckDto);
-        deck.setUser(user);
+        deckMapper.updateEntityFromDto(deckDto, deck);
 
         saveDeckCards(deck, deckDto.getDeckCards(), cardMap);
 
@@ -169,17 +228,17 @@ public class DeckService {
      */
     @Transactional
     public DeckResponseDto updateDeck(Long id, DeckResponseDto deckDto, User user) {
-        Deck deck = deckRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
-
-        Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
-
-        deckMapper.updateEntityFromDto(deckDto, deck);
-
-        saveDeckCards(deck, deckDto.getDeckCards(), cardMap);
-
-        Deck savedDeck = deckRepository.save(deck);
-        return deckMapper.toDto(savedDeck);
+        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
+        if (deckDto.getDeckCards() != null) {
+            for (DeckCardResponseDto c : deckDto.getDeckCards()) {
+                if (c != null) {
+                    cardDtos.add(new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
+                }
+            }
+        }
+        DeckSaveRequestDto req = new DeckSaveRequestDto(deckDto.getName(), deckDto.getDescription(),
+                deckDto.getFormatName(), cardDtos);
+        return updateDeck(id, req, user);
     }
 
     /**

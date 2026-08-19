@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
-import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -119,7 +119,7 @@ public class DeckControllerRateLimitTest {
 
     @Test
     void testDeckValidationRateLimiting() throws Exception {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Validate Deck");
         deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Validation Rate Limiting Test");
@@ -144,7 +144,7 @@ public class DeckControllerRateLimitTest {
 
     @Test
     void testDeckSaveRateLimiting() throws Exception {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Save Deck");
         deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Save Rate Limiting Test");
@@ -172,7 +172,7 @@ public class DeckControllerRateLimitTest {
 
     @Test
     void testDeckUpdateRateLimiting() throws Exception {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Updated Deck");
         deckDto.setFormatName(Format.GOAT);
         deckDto.setDescription("Update Rate Limiting Test");

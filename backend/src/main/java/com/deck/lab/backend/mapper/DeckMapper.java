@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
@@ -12,8 +13,8 @@ import com.deck.lab.backend.model.Deck;
 import com.deck.lab.backend.model.DeckCard;
 
 /**
- * Mapper component that translates between {@link Deck} JPA Entities and {@link DeckResponseDto}
- * Data Transfer Objects.
+ * Mapper component that translates between {@link Deck} JPA Entities, {@link DeckSaveRequestDto},
+ * and {@link DeckResponseDto} Data Transfer Objects.
  */
 @Component
 public class DeckMapper {
@@ -44,6 +45,23 @@ public class DeckMapper {
     }
 
     /**
+     * Converts an incoming {@link DeckSaveRequestDto} payload into a new {@link Deck} JPA entity.
+     *
+     * @param dto the DTO data received from client API request
+     * @return a new transient (unsaved) Deck entity populated with the DTO values
+     */
+    public Deck toEntity(DeckSaveRequestDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        Deck deck = new Deck();
+        deck.setName(dto.getName());
+        deck.setDescription(dto.getDescription());
+        deck.setFormatName(dto.getFormatName());
+        return deck;
+    }
+
+    /**
      * Converts an incoming {@link DeckResponseDto} payload into a new {@link Deck} JPA entity.
      *
      * @param dto the DTO data received from client API request
@@ -63,6 +81,22 @@ public class DeckMapper {
 
     /**
      * Updates an existing database-managed {@link Deck} entity with new parameters from a request
+     * DTO.
+     *
+     * @param dto  the incoming updated DTO parameters
+     * @param deck the existing database entity to update
+     */
+    public void updateEntityFromDto(DeckSaveRequestDto dto, Deck deck) {
+        if (dto == null || deck == null) {
+            return;
+        }
+        deck.setName(dto.getName());
+        deck.setDescription(dto.getDescription());
+        deck.setFormatName(dto.getFormatName());
+    }
+
+    /**
+     * Updates an existing database-managed {@link Deck} entity with new parameters from a response
      * DTO.
      *
      * @param dto  the incoming updated DTO parameters

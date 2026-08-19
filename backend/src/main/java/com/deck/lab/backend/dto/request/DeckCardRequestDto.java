@@ -27,6 +27,10 @@ public class DeckCardRequestDto {
     public DeckCardRequestDto() {
     }
 
+    public DeckCardRequestDto(Long cardId, DeckSection section, Integer quantity) {
+        this(null, cardId, section, quantity);
+    }
+
     public DeckCardRequestDto(Long id, Long cardId, DeckSection section, Integer quantity) {
         this.id = id;
         this.cardId = cardId;

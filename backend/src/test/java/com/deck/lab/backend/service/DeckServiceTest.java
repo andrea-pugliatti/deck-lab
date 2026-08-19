@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
@@ -152,7 +153,7 @@ class DeckServiceTest {
 
     @Test
     void createDeck_savesDeckAndReturnsDto() {
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("New Created Deck");
         requestDto.setDescription("Freshly created");
         requestDto.setFormatName(Format.GOAT);
@@ -175,7 +176,7 @@ class DeckServiceTest {
         List<DeckCardRequestDto> cardDtos = createValidDeckCards();
         cardDtos.get(0).setCardId(999999L); // Replace first card with non-existent ID
 
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Invalid Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(cardDtos);
@@ -193,7 +194,7 @@ class DeckServiceTest {
         cardDto.setSection(DeckSection.MAIN);
         cardDto.setQuantity(3);
 
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Size Invalid Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of(cardDto));
@@ -217,7 +218,7 @@ class DeckServiceTest {
         List<DeckCardRequestDto> newCardsList = new ArrayList<>(validCards);
         newCardsList.add(extraCardDto);
 
-        DeckResponseDto updateRequest = new DeckResponseDto();
+        DeckSaveRequestDto updateRequest = new DeckSaveRequestDto();
         updateRequest.setName("ServiceTest Deck Updated");
         updateRequest.setDescription("An updated description");
         updateRequest.setFormatName(Format.EDISON);
@@ -249,7 +250,7 @@ class DeckServiceTest {
     @Test
     void updateDeck_withPopulatedIds_doesNotThrowLockingException() {
         List<DeckCardRequestDto> validCards = createValidDeckCards();
-        DeckResponseDto updateRequest = new DeckResponseDto();
+        DeckSaveRequestDto updateRequest = new DeckSaveRequestDto();
         updateRequest.setName("ServiceTest Deck Initial");
         updateRequest.setDescription("Initial state");
         updateRequest.setFormatName(Format.TCG);
@@ -274,7 +275,7 @@ class DeckServiceTest {
                 })
                 .toList();
 
-        DeckResponseDto secondRequest = new DeckResponseDto();
+        DeckSaveRequestDto secondRequest = new DeckSaveRequestDto();
         secondRequest.setName("ServiceTest Deck Initial");
         secondRequest.setDescription("Initial state");
         secondRequest.setFormatName(Format.TCG);
@@ -290,7 +291,7 @@ class DeckServiceTest {
 
     @Test
     void updateDeck_whenUnauthorized_throwsNoSuchElementException() {
-        DeckResponseDto request = new DeckResponseDto();
+        DeckSaveRequestDto request = new DeckSaveRequestDto();
         request.setName("Hacked Deck");
         request.setFormatName(Format.TCG);
 
@@ -319,7 +320,7 @@ class DeckServiceTest {
 
     @Test
     void validateDeck_withValidDeck_doesNotThrow() {
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
@@ -332,7 +333,7 @@ class DeckServiceTest {
     @Test
     void validateDeck_withInvalidDeck_throwsDeckValidationException() {
         // Less than 40 cards
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Too Small");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of());

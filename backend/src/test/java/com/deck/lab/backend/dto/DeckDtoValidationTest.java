@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
-import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 
@@ -33,34 +33,34 @@ class DeckDtoValidationTest {
 
     @Test
     void validate_withValidDeckDto_hasNoViolations() {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Frog Monarch");
         deckDto.setFormatName(Format.EDISON);
         deckDto.setDescription("Tribute summon focus");
         deckDto.setDeckCards(new ArrayList<>());
 
-        Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
+        Set<ConstraintViolation<DeckSaveRequestDto>> violations = validator.validate(deckDto);
         assertTrue(violations.isEmpty(), "Valid DeckDto should have no violations");
     }
 
     @Test
     void validate_withBlankName_failsValidation() {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("   "); // Blank name
         deckDto.setFormatName(Format.TCG);
 
-        Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
+        Set<ConstraintViolation<DeckSaveRequestDto>> violations = validator.validate(deckDto);
         assertEquals(1, violations.size());
         assertEquals("Deck name is required", violations.iterator().next().getMessage());
     }
 
     @Test
     void validate_withNullFormatName_failsValidation() {
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Elemental Hero");
         deckDto.setFormatName(null); // Null format name
 
-        Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
+        Set<ConstraintViolation<DeckSaveRequestDto>> violations = validator.validate(deckDto);
         assertEquals(1, violations.size());
         assertEquals("Format name is required", violations.iterator().next().getMessage());
     }
@@ -132,13 +132,13 @@ class DeckDtoValidationTest {
         invalidCardDto.setSection(DeckSection.MAIN);
         invalidCardDto.setQuantity(5); // Invalid quantity (>3)
 
-        DeckResponseDto deckDto = new DeckResponseDto();
+        DeckSaveRequestDto deckDto = new DeckSaveRequestDto();
         deckDto.setName("Valid Name");
         deckDto.setFormatName(Format.GOAT);
         deckDto.setDeckCards(List.of(invalidCardDto));
 
         // Validation of parent should cascade to nested elements annotated with @Valid
-        Set<ConstraintViolation<DeckResponseDto>> violations = validator.validate(deckDto);
+        Set<ConstraintViolation<DeckSaveRequestDto>> violations = validator.validate(deckDto);
         assertFalse(violations.isEmpty());
         assertTrue(violations.stream()
                 .anyMatch(v -> v.getMessage().equals("Quantity cannot exceed 3")));

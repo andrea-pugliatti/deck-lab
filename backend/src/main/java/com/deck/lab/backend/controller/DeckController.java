@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.dto.response.YdkImportResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
@@ -124,7 +125,7 @@ public class DeckController {
      * @throws DeckValidationException if the deck violates format or size rules
      */
     @PostMapping
-    public ResponseEntity<DeckResponseDto> create(@Valid @RequestBody DeckResponseDto deckDto,
+    public ResponseEntity<DeckResponseDto> create(@Valid @RequestBody DeckSaveRequestDto deckDto,
                                                   @AuthenticationPrincipal User user) {
         deckSaveRateLimiter.checkLimit("user:" + user.getId());
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -139,7 +140,7 @@ public class DeckController {
      * @throws DeckValidationException containing validation errors if invalid
      */
     @PostMapping("/validate")
-    public ResponseEntity<Void> validate(@Valid @RequestBody DeckResponseDto deckDto,
+    public ResponseEntity<Void> validate(@Valid @RequestBody DeckSaveRequestDto deckDto,
                                          @AuthenticationPrincipal User user,
                                          HttpServletRequest servletRequest) {
         String key = (user != null)
@@ -162,7 +163,7 @@ public class DeckController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<DeckResponseDto> update(@PathVariable Long id,
-                                                  @Valid @RequestBody DeckResponseDto deckDto,
+                                                  @Valid @RequestBody DeckSaveRequestDto deckDto,
                                                   @AuthenticationPrincipal User user) {
         if (!deckService.existsById(id)) {
             return ResponseEntity.notFound().build();

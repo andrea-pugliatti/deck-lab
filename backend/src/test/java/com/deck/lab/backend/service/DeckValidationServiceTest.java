@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
-import com.deck.lab.backend.dto.response.DeckResponseDto;
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -75,7 +75,7 @@ class DeckValidationServiceTest {
 
     @Test
     void validateDeck_withValidDeck_doesNotThrow() {
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Validation Test Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
@@ -87,7 +87,7 @@ class DeckValidationServiceTest {
 
     @Test
     void validateDeck_withInvalidDeck_throwsDeckValidationException() {
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Too Small Validation Test Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of()); // Empty deck
@@ -99,7 +99,7 @@ class DeckValidationServiceTest {
 
     @Test
     void validateAndGetCardMap_withValidDeck_returnsCorrectMap() {
-        DeckResponseDto requestDto = new DeckResponseDto();
+        DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Map Test Deck");
         requestDto.setFormatName(Format.GOAT);
         requestDto.setDeckCards(createValidDeckCards());
