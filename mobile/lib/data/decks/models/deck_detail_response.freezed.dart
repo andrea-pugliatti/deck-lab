@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'deck_detail_response.dart';
@@ -9,6 +9,7 @@ part of 'deck_detail_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -66,7 +67,7 @@ class _$DeckDetailResponseCopyWithImpl<$Res>
 /// Create a copy of DeckDetailResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? description = freezed,Object? formatName = null,Object? creatorUsername = freezed,Object? updatedAt = freezed,Object? deckCards = null,}) {
-  return _then(_self.copyWith(
+  return _then(DeckDetailResponse(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -215,7 +216,7 @@ return $default(_that.id,_that.name,_that.description,_that.formatName,_that.cre
 @JsonSerializable()
 
 class _DeckDetailResponse extends DeckDetailResponse {
-  const _DeckDetailResponse({this.id, required this.name, this.description, required this.formatName, this.creatorUsername, this.updatedAt, required final  List<DeckCardResponse> deckCards}): _deckCards = deckCards,super._();
+  const _DeckDetailResponse({this.id, required this.name, this.description, required this.formatName, this.creatorUsername, this.updatedAt, required  List<DeckCardResponse> deckCards}): _deckCards = deckCards,super._();
   factory _DeckDetailResponse.fromJson(Map<String, dynamic> json) => _$DeckDetailResponseFromJson(json);
 
 @override final  int? id;

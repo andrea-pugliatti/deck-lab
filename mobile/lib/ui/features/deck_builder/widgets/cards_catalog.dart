@@ -4,6 +4,7 @@ import 'package:mobile/domain/enums/enums.dart';
 import 'package:mobile/domain/models/card.dart';
 import 'package:mobile/navigation/routes.dart';
 import 'package:mobile/ui/core/theme/theme.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 import 'package:mobile/ui/features/deck_builder/view_models/deck_builder_provider.dart';
 
 class CardsCatalog extends StatelessWidget {
@@ -36,11 +37,11 @@ class CardsCatalog extends StatelessWidget {
               border: .all(color: DeckLabTheme.borderDim),
             ),
             child: card.imageUrl != null
-                ? Image.network(
-                    card.imageUrl!,
+                ? AppNetworkImage(
+                    imageUrl: card.imageUrl,
                     fit: .cover,
-                    errorBuilder: (_, _, _) =>
-                        const Icon(Icons.broken_image, size: 14),
+                    borderRadius: 4,
+                    memCacheWidth: 64,
                   )
                 : const Icon(Icons.image_outlined, size: 14),
           ),

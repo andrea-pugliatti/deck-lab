@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:go_router/go_router.dart';
 import 'package:mobile/domain/models/card.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 
 import '../../../../navigation/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -30,15 +31,10 @@ class CardGridItem extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: const .vertical(top: .circular(8)),
                 child: card.imageUrl != null
-                    ? Image.network(
-                        card.imageUrl!,
+                    ? AppNetworkImage(
+                        imageUrl: card.imageUrl,
                         fit: .cover,
-                        errorBuilder: (_, _, _) => Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            color: cs.onSurface.withValues(alpha: 0.24),
-                          ),
-                        ),
+                        memCacheWidth: 200,
                       )
                     : Center(
                         child: Icon(

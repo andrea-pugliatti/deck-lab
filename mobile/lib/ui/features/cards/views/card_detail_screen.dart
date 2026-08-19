@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 import 'package:mobile/ui/core/widgets/error_state.dart';
 import 'package:mobile/ui/features/cards/widgets/stats_grid.dart';
 
@@ -81,24 +82,17 @@ class CardDetailScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: .circular(6),
-                    child: card.imageUrl != null
-                        ? Image.network(
-                            card.imageUrl!,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, _, _) => Icon(
-                              Icons.broken_image,
-                              size: 64,
-                              color: cs.onSurface.withValues(alpha: 0.24),
-                            ),
-                          )
-                        : Icon(
-                            Icons.image,
-                            size: 64,
-                            color: cs.onSurface.withValues(alpha: 0.24),
-                          ),
-                  ),
+                  child: card.imageUrl != null
+                      ? AppNetworkImage(
+                          imageUrl: card.imageUrl,
+                          fit: .contain,
+                          borderRadius: 6,
+                        )
+                      : Icon(
+                          Icons.image,
+                          size: 64,
+                          color: cs.onSurface.withValues(alpha: 0.24),
+                        ),
                 ),
               ),
             ),

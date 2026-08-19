@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart' hide Card;
 import 'package:mobile/domain/models/card.dart';
 import 'package:mobile/domain/models/card_suggestion.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 import 'package:mobile/ui/features/deck_builder/view_models/deck_builder_provider.dart';
 
 import '../../../core/theme/theme.dart';
@@ -48,7 +49,13 @@ class AiSuggestionsPanel extends StatelessWidget {
                     side: const BorderSide(color: DeckLabTheme.borderDim),
                     shape: RoundedRectangleBorder(borderRadius: .circular(8)),
                     avatar: suggestion.imageUrl != null
-                        ? Image.network(suggestion.imageUrl!)
+                        ? AppNetworkImage(
+                            imageUrl: suggestion.imageUrl,
+                            width: 16,
+                            height: 16,
+                            borderRadius: 4,
+                            memCacheWidth: 48,
+                          )
                         : Icon(
                             Icons.auto_awesome,
                             color: Theme.of(context).colorScheme.secondary,

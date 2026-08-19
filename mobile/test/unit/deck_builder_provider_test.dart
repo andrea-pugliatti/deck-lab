@@ -137,6 +137,7 @@ void main() {
           mockDeckRepository.fetchAiSuggestions(
             formatName: anyNamed('formatName'),
             currentCards: anyNamed('currentCards'),
+            cancelToken: anyNamed('cancelToken'),
           ),
         ).thenAnswer(
           (_) async => [
@@ -169,7 +170,7 @@ void main() {
         );
 
         notifier.addCard(newCard, DeckSection.main);
-        await Future.delayed(Duration.zero);
+        await Future.delayed(const Duration(milliseconds: 650));
 
         final state = container.read(deckBuilderProvider);
 
@@ -179,6 +180,7 @@ void main() {
           mockDeckRepository.fetchAiSuggestions(
             formatName: anyNamed('formatName'),
             currentCards: anyNamed('currentCards'),
+            cancelToken: anyNamed('cancelToken'),
           ),
         ).called(1);
 

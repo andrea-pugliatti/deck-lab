@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../domain/enums/enums.dart';
@@ -80,8 +82,16 @@ class DeckBuilderState {
 /// Manages add, remove, and quantity edits, format switches, validation rule calls,
 /// AI suggestions retrieval, and wizard-driven generation.
 class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
+  Timer? _debounceTimer;
+  CancelToken? _aiCancelToken;
+
   @override
   DeckBuilderState build() {
+    ref.onDispose(() {
+      _debounceTimer?.cancel();
+      _aiCancelToken?.cancel();
+    });
+
     return const DeckBuilderState(
       id: null,
       name: '',
@@ -279,11 +289,24 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
   }
 
   /// Fetches AI suggestions matching current cards list.
-  Future<void> triggerAiSuggestions() async {
+  Future<void> triggerAiSuggestions({bool debounce = true}) async {
+    _debounceTimer?.cancel();
+    if (!debounce) {
+      return _executeAiSuggestions();
+    }
+    _debounceTimer = Timer(const Duration(milliseconds: 600), () {
+      _executeAiSuggestions();
+    });
+  }
+
+  Future<void> _executeAiSuggestions() async {
     if (state.cards.isEmpty) {
-      state = state.copyWith(aiSuggestions: []);
+      state = state.copyWith(aiSuggestions: [], isLoadingSuggestions: false);
       return;
     }
+
+    _aiCancelToken?.cancel();
+    _aiCancelToken = CancelToken();
 
     state = state.copyWith(isLoadingSuggestions: true);
     try {
@@ -291,12 +314,16 @@ class DeckBuilderNotifier extends Notifier<DeckBuilderState> {
       final suggestions = await repo.fetchAiSuggestions(
         formatName: state.formatName,
         currentCards: state.cards,
+        cancelToken: _aiCancelToken,
       );
       state = state.copyWith(
         isLoadingSuggestions: false,
         aiSuggestions: suggestions,
       );
     } catch (e) {
+      if (e is DioException && CancelToken.isCancel(e)) {
+        return;
+      }
       state = state.copyWith(
         isLoadingSuggestions: false,
         error: 'Failed to load AI suggestions: $e',

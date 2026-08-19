@@ -64,27 +64,38 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      // Wrapper for Bottom Navigation tabs
-      ShellRoute(
-        navigatorKey: shellNavigatorKey,
-        builder: (context, state, child) {
-          return _ShellScaffold(state: state, child: child);
+      // Persistent IndexedStack for Bottom Navigation tabs
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return _StatefulShellScaffold(navigationShell: navigationShell);
         },
-        routes: [
-          GoRoute(
-            path: AppRoutes.home,
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: DecksScreen()),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: DecksScreen()),
+              ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.cards,
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: CardDbScreen()),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.cards,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: CardDbScreen()),
+              ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.simulator,
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: HandSimulatorScreen()),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.simulator,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: HandSimulatorScreen()),
+              ),
+            ],
           ),
         ],
       ),
@@ -193,35 +204,23 @@ Page<dynamic> _fadeTransitionPage({
   );
 }
 
-/// Private scaffold widget housing the persistent Bottom Navigation Bar.
-class _ShellScaffold extends StatelessWidget {
-  final GoRouterState state;
-  final Widget child;
+/// Private scaffold widget housing the persistent Bottom Navigation Bar with IndexedStack tabs.
+class _StatefulShellScaffold extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  const _ShellScaffold({required this.state, required this.child});
+  const _StatefulShellScaffold({required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
-    final activeIndex = switch (state.matchedLocation) {
-      AppRoutes.cards => 1,
-      AppRoutes.simulator => 2,
-      _ => 0,
-    };
-
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: activeIndex,
+        currentIndex: navigationShell.currentIndex,
         onTap: (index) {
-          final targetPath = switch (index) {
-            0 => AppRoutes.home,
-            1 => AppRoutes.cards,
-            2 => AppRoutes.simulator,
-            _ => null,
-          };
-          if (targetPath != null) {
-            context.go(targetPath);
-          }
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
         },
         backgroundColor: DeckLabTheme.darkSurface,
         selectedItemColor: DeckLabTheme.goldAccent,

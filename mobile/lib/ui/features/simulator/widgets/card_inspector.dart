@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/domain/models/simulator_card_instance.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 import 'package:mobile/ui/features/simulator/view_models/simulator_provider.dart';
 
 import '../../../core/theme/theme.dart';
@@ -33,7 +34,12 @@ class CardInspector extends StatelessWidget {
                 borderRadius: .circular(4),
               ),
               child: card.imageUrl != null
-                  ? Image.network(card.imageUrl!, fit: .cover)
+                  ? AppNetworkImage(
+                      imageUrl: card.imageUrl,
+                      fit: .cover,
+                      borderRadius: 4,
+                      memCacheWidth: 112,
+                    )
                   : Icon(
                       Icons.image,
                       color: cs.onSurface.withValues(alpha: 0.24),

@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../enums/enums.dart';
 import '../models/card_suggestion.dart';
 import '../models/deck_card.dart';
@@ -63,6 +65,7 @@ abstract class DeckRepository {
   Future<List<CardSuggestion>> fetchAiSuggestions({
     required Format formatName,
     required List<DeckCard> currentCards,
+    CancelToken? cancelToken,
   });
 
   /// Requests AI deck layout generation.

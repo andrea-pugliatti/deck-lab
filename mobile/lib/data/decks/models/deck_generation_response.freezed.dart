@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'deck_generation_response.dart';
@@ -9,6 +9,7 @@ part of 'deck_generation_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -66,7 +67,7 @@ class _$DeckGenerationResponseCopyWithImpl<$Res>
 /// Create a copy of DeckGenerationResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? description = null,Object? formatName = null,Object? deckCards = null,Object? validationWarnings = null,}) {
-  return _then(_self.copyWith(
+  return _then(DeckGenerationResponse(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,formatName: null == formatName ? _self.formatName : formatName // ignore: cast_nullable_to_non_nullable
@@ -213,7 +214,7 @@ return $default(_that.name,_that.description,_that.formatName,_that.deckCards,_t
 @JsonSerializable()
 
 class _DeckGenerationResponse implements DeckGenerationResponse {
-  const _DeckGenerationResponse({required this.name, required this.description, required this.formatName, final  List<DeckCardResponse> deckCards = const [], final  List<String> validationWarnings = const []}): _deckCards = deckCards,_validationWarnings = validationWarnings;
+  const _DeckGenerationResponse({required this.name, required this.description, required this.formatName,  List<DeckCardResponse> deckCards = const [],  List<String> validationWarnings = const []}): _deckCards = deckCards,_validationWarnings = validationWarnings;
   factory _DeckGenerationResponse.fromJson(Map<String, dynamic> json) => _$DeckGenerationResponseFromJson(json);
 
 @override final  String name;

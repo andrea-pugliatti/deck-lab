@@ -177,6 +177,12 @@ final cardDbProvider = NotifierProvider<CardDbNotifier, CardDbState>(
   CardDbNotifier.new,
 );
 
+/// Dedicated scoped autoDispose provider for the Deck Builder's card catalog search panel.
+final builderCardCatalogProvider =
+    NotifierProvider.autoDispose<CardDbNotifier, CardDbState>(
+      CardDbNotifier.new,
+    );
+
 /// Provider fetching card classification types dynamically from the database.
 final cardTypesProvider = FutureProvider<List<String>>((ref) async {
   return await ref.watch(cardRepositoryProvider).fetchMetadataValues('types');

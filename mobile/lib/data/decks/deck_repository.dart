@@ -72,6 +72,7 @@ class DeckRepositoryImpl implements DeckRepository {
   Future<List<CardSuggestion>> fetchAiSuggestions({
     required Format formatName,
     required List<DeckCard> currentCards,
+    CancelToken? cancelToken,
   }) async {
     try {
       final request = DeckSuggestRequest(
@@ -89,6 +90,7 @@ class DeckRepositoryImpl implements DeckRepository {
       final response = await apiClient.dio.post(
         '/api/decks/ai/suggest',
         data: request.toJson(),
+        cancelToken: cancelToken,
         options: Options(
           receiveTimeout: const Duration(seconds: 60),
           sendTimeout: const Duration(seconds: 60),
@@ -103,6 +105,9 @@ class DeckRepositoryImpl implements DeckRepository {
           )
           .toList();
     } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) {
+        rethrow;
+      }
       throw Exception(_parseError(e));
     }
   }

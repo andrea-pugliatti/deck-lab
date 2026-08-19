@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/domain/models/deck_card.dart';
 import 'package:mobile/navigation/routes.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 
 import '../../../core/theme/theme.dart';
 
@@ -83,11 +84,11 @@ class DeckSection extends StatelessWidget {
                   border: .all(color: DeckLabTheme.borderDim),
                 ),
                 child: card.imageUrl != null
-                    ? Image.network(
-                        card.imageUrl!,
+                    ? AppNetworkImage(
+                        imageUrl: card.imageUrl,
                         fit: .cover,
-                        errorBuilder: (_, _, _) =>
-                            const Icon(Icons.broken_image, size: 16),
+                        borderRadius: 4,
+                        memCacheWidth: 80,
                       )
                     : const Icon(Icons.image_outlined, size: 16),
               ),

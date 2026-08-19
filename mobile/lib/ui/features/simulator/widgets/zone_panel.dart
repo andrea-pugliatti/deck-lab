@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile/domain/models/simulator_card_instance.dart';
+import 'package:mobile/ui/core/widgets/app_network_image.dart';
 import 'package:mobile/ui/features/simulator/view_models/simulator_provider.dart';
 import 'package:mobile/ui/features/simulator/widgets/zone_transfer_menu.dart';
 
@@ -87,26 +88,18 @@ class ZonePanel extends StatelessWidget {
                             borderRadius: .circular(4),
                             border: .all(color: DeckLabTheme.borderDim),
                           ),
-                          child: ClipRRect(
-                            borderRadius: .circular(4),
-                            child: card.imageUrl != null
-                                ? Image.network(
-                                    card.imageUrl!,
-                                    fit: .cover,
-                                    errorBuilder: (_, _, _) => Icon(
-                                      Icons.broken_image,
-                                      size: 14,
-                                      color: cs.onSurface.withValues(
-                                        alpha: 0.24,
-                                      ),
-                                    ),
-                                  )
-                                : Icon(
-                                    Icons.image_outlined,
-                                    size: 14,
-                                    color: cs.onSurface.withValues(alpha: 0.24),
-                                  ),
-                          ),
+                          child: card.imageUrl != null
+                              ? AppNetworkImage(
+                                  imageUrl: card.imageUrl,
+                                  fit: .cover,
+                                  borderRadius: 4,
+                                  memCacheWidth: 96,
+                                )
+                              : Icon(
+                                  Icons.image_outlined,
+                                  size: 14,
+                                  color: cs.onSurface.withValues(alpha: 0.24),
+                                ),
                         ),
                       ),
                     );

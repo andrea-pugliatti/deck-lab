@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:mobile/domain/enums/enums.dart';
 import 'package:mobile/domain/models/auth_session.dart';
 import 'package:mobile/domain/models/card.dart';
@@ -209,6 +210,7 @@ class MockDeckRepository implements DeckRepository {
   Future<List<CardSuggestion>> fetchAiSuggestions({
     required Format formatName,
     required List<DeckCard> currentCards,
+    CancelToken? cancelToken,
   }) async {
     if (shouldFail) throw Exception('AI Suggestion failed');
     return aiSuggestions;
