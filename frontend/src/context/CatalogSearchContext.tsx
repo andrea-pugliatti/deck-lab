@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useCatalogSearch } from "../hooks/useCatalogSearch";
@@ -39,6 +39,8 @@ const CatalogSearchContext = createContext<CatalogSearchContextType | undefined>
  * @param props - Children components.
  * @returns React Context Provider wrapping the children.
  */
+const DEFAULT_FORMATS = ["TCG", "OCG", "Goat", "Speed Duel"];
+
 export function CatalogSearchProvider({ children }: { children: ReactNode }) {
   const searchState = useCatalogSearch({ defaultPageSize: 9 });
 
@@ -47,23 +49,24 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
     queryKey: ["formats"],
     queryFn: ({ signal }) => getFormats(signal),
   });
-  const formats = formatsData || ["TCG", "OCG", "Goat", "Speed Duel"];
+  const formats = formatsData || DEFAULT_FORMATS;
 
   const { types, attributes, races, archetypes } = useCardMetadata();
 
+  const contextValue = useMemo<CatalogSearchContextType>(
+    () => ({
+      ...searchState,
+      formats,
+      types,
+      attributes,
+      races,
+      archetypes,
+    }),
+    [searchState, formats, types, attributes, races, archetypes],
+  );
+
   return (
-    <CatalogSearchContext.Provider
-      value={{
-        ...searchState,
-        formats,
-        types,
-        attributes,
-        races,
-        archetypes,
-      }}
-    >
-      {children}
-    </CatalogSearchContext.Provider>
+    <CatalogSearchContext.Provider value={contextValue}>{children}</CatalogSearchContext.Provider>
   );
 }
 

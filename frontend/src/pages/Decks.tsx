@@ -44,7 +44,7 @@ const PAGE_SIZE = 9;
  */
 export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Element {
   const { isAuthenticated, user } = useAuth();
-  const [tab, setTab] = useState<"all" | "user">(initialTab);
+  const tab = initialTab;
   const [viewMode, setViewMode] = useViewPreference("decks-view-mode", "grid");
 
   const { data: formatsData } = useQuery<string[]>({
@@ -54,13 +54,6 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];
-
-  const [prevInitialTab, setPrevInitialTab] = useState(initialTab);
-
-  if (initialTab !== prevInitialTab) {
-    setPrevInitialTab(initialTab);
-    setTab(initialTab);
-  }
 
   const {
     page,

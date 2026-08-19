@@ -94,16 +94,6 @@ function DeckBuilderContent(): React.JSX.Element {
   }, [searchPage]);
 
   /**
-   * Submits the form to save the deck.
-   *
-   * @param {React.SubmitEvent} e - Form submission event.
-   */
-  const handleSave = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    saveDeck();
-  };
-
-  /**
    * Callback triggered when the AI Deck Wizard generates a deck layout.
    * Updates current name, description, format, and card listing based on output.
    *
@@ -212,7 +202,7 @@ function DeckBuilderContent(): React.JSX.Element {
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="bg-dark-surface border-border-dim flex h-[82vh] flex-col rounded-2xl border p-5 lg:col-span-5">
           <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
             <h2 className="font-display flex items-center gap-2 text-sm font-bold text-white">
@@ -328,8 +318,9 @@ function DeckBuilderContent(): React.JSX.Element {
               </Button>
 
               <Button
-                type="submit"
+                type="button"
                 variant="primary"
+                onClick={() => saveDeck()}
                 isLoading={isSaving}
                 disabled={deckCards.length === 0}
                 className="px-6 py-2.5 font-bold"
@@ -339,7 +330,7 @@ function DeckBuilderContent(): React.JSX.Element {
             </div>
           </div>
         </div>
-      </form>
+      </div>
 
       <AiDeckWizard
         isOpen={isWizardOpen}

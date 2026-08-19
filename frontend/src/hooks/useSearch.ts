@@ -67,14 +67,16 @@ export function useSearch<TData, TFilters>(
 
   // URL State Parsing (if syncUrl is enabled)
   const urlPage = useMemo(() => {
-    if (!syncUrl) return 0;
-    return parseInt(searchParams.get("page") || "0", 10);
-  }, [syncUrl, searchParams]);
+    if (!syncUrl) return initialPage;
+    const pageParam = searchParams.get("page");
+    return pageParam !== null ? parseInt(pageParam, 10) : initialPage;
+  }, [syncUrl, searchParams, initialPage]);
 
   const urlQuery = useMemo(() => {
-    if (!syncUrl) return "";
-    return searchParams.get("q") || "";
-  }, [syncUrl, searchParams]);
+    if (!syncUrl) return initialSearchQuery;
+    const qParam = searchParams.get("q");
+    return qParam !== null ? qParam : initialSearchQuery;
+  }, [syncUrl, searchParams, initialSearchQuery]);
 
   const urlFilters = useMemo(() => {
     if (!syncUrl || !urlConfig) return initialFilters as TFilters;
@@ -88,12 +90,12 @@ export function useSearch<TData, TFilters>(
 
   // Uncontrolled URL-sync local query (updates immediately on keystrokes)
   const [urlLocalQuery, setUrlLocalQuery] = useState(urlQuery);
-  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
 
-  if (syncUrl && urlQuery !== prevUrlQuery) {
-    setPrevUrlQuery(urlQuery);
-    setUrlLocalQuery(urlQuery);
-  }
+  useEffect(() => {
+    if (syncUrl) {
+      setUrlLocalQuery(urlQuery);
+    }
+  }, [syncUrl, urlQuery]);
 
   // Compute Active State Values
   const activePage = useMemo(() => {
@@ -120,67 +122,56 @@ export function useSearch<TData, TFilters>(
   const setPage = (nextPage: number) => {
     if (syncUrl) {
       const params = new URLSearchParams(searchParams);
-      if (nextPage > 0) {
-        params.set("page", nextPage.toString());
-      } else {
+      if (nextPage === 0) {
         params.delete("page");
+      } else {
+        params.set("page", nextPage.toString());
       }
       setSearchParams(params);
+    }
+    if (controlledSetPage) {
+      controlledSetPage(nextPage);
     } else {
-      if (controlledSetPage) {
-        controlledSetPage(nextPage);
-      } else {
-        setLocalPage(nextPage);
-      }
+      setLocalPage(nextPage);
     }
   };
 
   const setSearchQuery = (nextQuery: string) => {
     if (syncUrl) {
-      if (controlledSetSearchQuery) {
-        controlledSetSearchQuery(nextQuery);
-      } else {
-        setUrlLocalQuery(nextQuery);
-      }
+      setUrlLocalQuery(nextQuery);
+    }
+    if (controlledSetSearchQuery) {
+      controlledSetSearchQuery(nextQuery);
     } else {
-      if (controlledSetSearchQuery) {
-        controlledSetSearchQuery(nextQuery);
-      } else {
-        setLocalSearchQuery(nextQuery);
-      }
+      setLocalSearchQuery(nextQuery);
+      setLocalPage(0);
     }
   };
 
-  const setFilters = (nextFilters: TFilters | ((prev: TFilters) => TFilters)) => {
+  const setFilters = (valueOrUpdater: TFilters | ((prev: TFilters) => TFilters)) => {
+    const next =
+      typeof valueOrUpdater === "function"
+        ? (valueOrUpdater as (prev: TFilters) => TFilters)(activeFilters)
+        : valueOrUpdater;
+
     if (syncUrl) {
-      const resolved =
-        typeof nextFilters === "function"
-          ? (nextFilters as (prev: TFilters) => TFilters)(urlFilters)
-          : nextFilters;
-
-      const params = new URLSearchParams(searchParams);
       if (urlConfig) {
-        urlConfig.serialize(params, resolved);
+        const params = new URLSearchParams(searchParams);
+        urlConfig.serialize(params, next);
+        params.delete("page");
+        setSearchParams(params);
       }
-      params.delete("page"); // Reset page on filter changes
-      setSearchParams(params);
+    }
+
+    if (controlledSetFilters) {
+      controlledSetFilters(next);
     } else {
-      if (controlledSetFilters) {
-        controlledSetFilters(nextFilters);
-      } else {
-        setLocalFilters((prev) => {
-          const resolved =
-            typeof nextFilters === "function"
-              ? (nextFilters as (prev: TFilters) => TFilters)(prev)
-              : nextFilters;
-          setLocalPage(0); // Reset page on filter changes
-          return resolved;
-        });
-      }
+      setLocalFilters(next);
+      setLocalPage(0);
     }
   };
 
-  // Sync debounced query to URL
+  // Sync debounced search queries to URL parameters (only when active query differs)
   useEffect(() => {
     if (syncUrl && debouncedQuery.trim() !== urlQuery.trim()) {
       const params = new URLSearchParams(searchParams);
@@ -193,15 +184,6 @@ export function useSearch<TData, TFilters>(
       setSearchParams(params);
     }
   }, [syncUrl, debouncedQuery, urlQuery, searchParams, setSearchParams]);
-
-  // Reset page when debouncedQuery changes (in uncontrolled non-url-synced mode)
-  const [prevDebouncedQuery, setPrevDebouncedQuery] = useState(debouncedQuery);
-  if (debouncedQuery !== prevDebouncedQuery) {
-    setPrevDebouncedQuery(debouncedQuery);
-    if (!syncUrl && controlledPage === undefined) {
-      setLocalPage(0);
-    }
-  }
 
   // Execute fetch
   const fetchUrl = endpointBuilder(debouncedQuery, activePage, activeFilters);
