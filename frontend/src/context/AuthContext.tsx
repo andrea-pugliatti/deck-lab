@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import {
   login as apiLogin,
@@ -40,21 +40,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const isAuthenticated = !!accessToken;
 
-  const handleAuthSuccess = (token: string, username: string) => {
+  const handleAuthSuccess = useCallback((token: string, username: string) => {
     setAccessTokenState(token);
     const decoded = parseJwt(token);
     const email = decoded?.subject || "";
     setUser({ username, email });
     localStorage.setItem("username", username);
-  };
+  }, []);
 
-  const handleLogoutState = () => {
+  const handleLogoutState = useCallback(() => {
     setAccessTokenState(undefined);
     setUser(undefined);
     localStorage.removeItem("username");
-  };
+  }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     const storedUsername = localStorage.getItem("username");
     if (!storedUsername) {
       handleLogoutState();
@@ -70,19 +70,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [handleAuthSuccess, handleLogoutState]);
 
-  const login = async (usernameOrEmail: string, password: string) => {
-    const data = await apiLogin(usernameOrEmail, password);
-    handleAuthSuccess(data.accessToken, data.username || usernameOrEmail);
-  };
+  const login = useCallback(
+    async (usernameOrEmail: string, password: string) => {
+      const data = await apiLogin(usernameOrEmail, password);
+      handleAuthSuccess(data.accessToken, data.username || usernameOrEmail);
+    },
+    [handleAuthSuccess],
+  );
 
-  const register = async (username: string, email: string, password: string) => {
-    const data = await apiRegister(username, email, password);
-    handleAuthSuccess(data.accessToken, data.username || username);
-  };
+  const register = useCallback(
+    async (username: string, email: string, password: string) => {
+      const data = await apiRegister(username, email, password);
+      handleAuthSuccess(data.accessToken, data.username || username);
+    },
+    [handleAuthSuccess],
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await apiLogout();
     } catch {
@@ -90,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       handleLogoutState();
     }
-  };
+  }, [handleLogoutState]);
 
   useEffect(() => {
     const handleTokenUpdate = (e: Event) => {
@@ -109,23 +115,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("auth-logout", handleLogoutState);
       window.removeEventListener("auth-token-update", handleTokenUpdate);
     };
-  }, []);
+  }, [checkAuth, handleLogoutState]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        accessToken,
-        isAuthenticated,
-        loading,
-        login,
-        register,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const contextValue = useMemo<AuthContextType>(
+    () => ({
+      user,
+      accessToken,
+      isAuthenticated,
+      loading,
+      login,
+      register,
+      logout,
+    }),
+    [user, accessToken, isAuthenticated, loading, login, register, logout],
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 /**

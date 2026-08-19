@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router";
 
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import LoadingSpinner from "../components/LoadingSpinner";
 import ScrollToTop from "../components/ScrollToTop";
 
 /**
@@ -17,7 +19,9 @@ export default function DefaultLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={<LoadingSpinner size="lg" className="min-h-[50vh]" />}>
+          <Outlet />
+        </Suspense>
       </main>
       <ScrollToTop />
       <Footer />

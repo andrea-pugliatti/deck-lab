@@ -1,4 +1,7 @@
+import { Suspense } from "react";
 import { Link, Outlet } from "react-router";
+
+import LoadingSpinner from "../components/LoadingSpinner";
 
 /**
  * AuthLayout component.
@@ -22,7 +25,9 @@ export default function AuthLayout() {
 
         {/* Credentials Form Box */}
         <div className="bg-dark-surface border-border-dim w-full rounded-lg border p-8 shadow-xl">
-          <Outlet />
+          <Suspense fallback={<LoadingSpinner size="md" className="py-8" />}>
+            <Outlet />
+          </Suspense>
         </div>
       </div>
     </div>
