@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import com.deck.lab.backend.model.Card;
 
@@ -28,6 +29,15 @@ import com.deck.lab.backend.model.Card;
  * (like {@code findAll(Specification, Pageable)}) allowing it to process programmatically chained
  * search criteria. This is crucial for enabling the dynamic paginated search system used in card
  * catalog listings.
+ * </p>
+ * <p>
+ * <strong>Specification Pattern Integration:</strong>
+ * </p>
+ * <p>
+ * By also extending {@link JpaSpecificationExecutor}, the repository gains dynamic querying
+ * capabilities. This allows filtering cards by compound, optional predicates (such as matching card
+ * types, attributes, and archetypes) configured programmatically at runtime across multiple catalog
+ * listings.
  * </p>
  */
 public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificationExecutor<Card> {
@@ -74,11 +84,11 @@ public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificat
     List<Card> findByPasscodeIn(List<Long> passcodes);
 
     /**
-     * Retrieves all unique cards having a non-null and non-empty archetype string. Used to build
-     * search filter lists.
+     * Retrieves all unique archetype strings projected directly from the database in sorted order.
      *
-     * @param empty the empty boundary string to exclude
-     * @return list of Cards with distinct archetypes
+     * @return sorted list of distinct archetype strings
      */
-    List<Card> findDistinctByArchetypeNotNullAndArchetypeNot(String empty);
+    @Query("SELECT DISTINCT c.archetype FROM Card c WHERE c.archetype IS NOT NULL AND TRIM(c.archetype) <> '' ORDER BY c.archetype ASC")
+    List<String> findDistinctArchetypes();
+
 }

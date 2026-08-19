@@ -1,5 +1,7 @@
 package com.deck.lab.backend.model;
 
+import org.hibernate.annotations.BatchSize;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,6 +53,7 @@ import jakarta.validation.constraints.NotNull;
 @Table(name = "cards", indexes = {
         @Index(name = "idx_card_passcode", columnList = "passcode")
 })
+@BatchSize(size = 60)
 public class Card {
 
     @Id

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -77,18 +78,14 @@ public class CardService {
     }
 
     /**
-     * Queries and filters the database to retrieve all distinct card archetypes.
+     * Queries and filters the database to retrieve all distinct card archetypes. Cached to avoid
+     * repetitive database execution.
      *
      * @return sorted list of unique archetype name strings
      */
+    @Cacheable("archetypes")
     public List<String> findDistinctArchetypes() {
-        return cardRepository.findDistinctByArchetypeNotNullAndArchetypeNot("")
-                .stream()
-                .map(card -> card.getArchetype())
-                .filter(a -> a != null && !a.isBlank())
-                .distinct()
-                .sorted()
-                .toList();
+        return cardRepository.findDistinctArchetypes();
     }
 
     /**
