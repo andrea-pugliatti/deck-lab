@@ -95,9 +95,8 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
       console.error(err);
       setDeleteError(err instanceof Error ? err.message : "Failed to delete the deck.");
       setDeckToDelete(undefined);
-    } finally {
-      setIsDeleting(false);
     }
+    setIsDeleting(false);
   };
 
   return (

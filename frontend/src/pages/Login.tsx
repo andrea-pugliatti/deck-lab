@@ -39,9 +39,8 @@ export default function Login(): React.JSX.Element {
       void navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setSubmitting(false);
     }
+    setSubmitting(false);
   };
 
   return (

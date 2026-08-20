@@ -50,9 +50,8 @@ export default function AiSuggestionsPanel({
       setSuggestions(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not retrieve recommendations.");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const addSuggestedCard = (suggested: Suggestion) => {

@@ -47,9 +47,8 @@ export default function Register(): React.JSX.Element {
       void navigate("/decks");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
-    } finally {
-      setSubmitting(false);
     }
+    setSubmitting(false);
   };
 
   return (

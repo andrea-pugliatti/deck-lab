@@ -146,11 +146,10 @@ function DeckBuilderContent(): React.JSX.Element {
       }
     } catch (err) {
       setImportWarnings([err instanceof Error ? err.message : "Failed to import .ydk file"]);
-    } finally {
-      setIsImporting(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+    }
+    setIsImporting(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 

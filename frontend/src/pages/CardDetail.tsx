@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
-import { useRef, useState, type MouseEvent } from "react";
+import { useRef, type MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import ErrorAlert from "../components/ErrorAlert";
@@ -25,20 +25,19 @@ export default function CardDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+  const cardArtworkRef = useRef<HTMLDivElement>(null);
 
   /**
-   * Calculates and sets the 3D rotation angles (X and Y) based on the cursor position
-   * relative to the artwork container to create a tilting effect.
+   * Calculates and sets the 3D rotation angles (X and Y) using requestAnimationFrame
+   * to avoid triggering component-level React re-renders on mousemove.
    *
    * @param {MouseEvent<HTMLDivElement>} e - The mouse move event.
    */
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !cardArtworkRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    const width = rect.width || 1;
+    const height = rect.height || 1;
 
     const mouseX = e.clientX - rect.left - width / 2;
     const mouseY = e.clientY - rect.top - height / 2;
@@ -46,16 +45,16 @@ export default function CardDetail(): React.JSX.Element {
     const rX = -(mouseY / (height / 2)) * 12;
     const rY = (mouseX / (width / 2)) * 12;
 
-    setRotateX(rX);
-    setRotateY(rY);
+    cardArtworkRef.current.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
   };
 
   /**
    * Resets the 3D rotation angles to 0 when the mouse leaves the artwork container.
    */
   const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
+    if (cardArtworkRef.current) {
+      cardArtworkRef.current.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
   };
 
   const {
@@ -113,9 +112,9 @@ export default function CardDetail(): React.JSX.Element {
             }}
           >
             <div
+              ref={cardArtworkRef}
               className="bg-dark-surface-elevated border-border-dim group relative aspect-244/356 w-full max-w-sm overflow-hidden rounded-xl border shadow-2xl transition-transform duration-300 ease-out"
               style={{
-                transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
                 transformStyle: "preserve-3d",
               }}
             >

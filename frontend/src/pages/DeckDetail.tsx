@@ -14,6 +14,7 @@ import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useViewPreference } from "../hooks/useViewPreference";
 import { deleteDeck, exportYdk, getDeck } from "../services/deck";
+import { getFormatRules } from "../reducers/deckReducer";
 import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
@@ -85,6 +86,7 @@ export default function DeckDetail(): React.JSX.Element {
   }
 
   const isOwner = isAuthenticated && user && deck.creatorUsername === user.username;
+  const rules = getFormatRules(deck.formatName);
 
   const mainCards = (deck.deckCards || []).filter((c) => c.section === "MAIN" || !c.section);
   const extraCards = (deck.deckCards || []).filter((c) => c.section === "EXTRA");
@@ -203,19 +205,19 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Main Deck</span>
-                  <span className="font-bold text-white">{mainCount} / 60</span>
+                  <span className="font-bold text-white">{mainCount} / {rules.maxMainSize}</span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
-                      mainCount < 40 ? "bg-amber-500" : "bg-cyan-accent"
+                      mainCount < rules.minMainSize ? "bg-amber-500" : "bg-cyan-accent"
                     }`}
-                    style={{ width: `${Math.min(100, (mainCount / 60) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (mainCount / rules.maxMainSize) * 100)}%` }}
                   ></div>
                 </div>
-                {mainCount < 40 && (
+                {mainCount < rules.minMainSize && (
                   <span className="mt-1 block text-[10px] text-amber-400">
-                    * Format limit requires at least 40 cards.
+                    * Format limit requires at least {rules.minMainSize} cards.
                   </span>
                 )}
               </div>
@@ -223,12 +225,12 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Extra Deck</span>
-                  <span className="font-bold text-white">{extraCount} / 15</span>
+                  <span className="font-bold text-white">{extraCount} / {rules.maxExtraSize}</span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
                     className="bg-gold-accent h-full rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, (extraCount / 15) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (extraCount / rules.maxExtraSize) * 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -236,12 +238,12 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Side Deck</span>
-                  <span className="font-bold text-white">{sideCount} / 15</span>
+                  <span className="font-bold text-white">{sideCount} / {rules.maxSideSize}</span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
                     className="h-full rounded-full bg-purple-400 transition-all duration-500"
-                    style={{ width: `${Math.min(100, (sideCount / 15) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (sideCount / rules.maxSideSize) * 100)}%` }}
                   ></div>
                 </div>
               </div>

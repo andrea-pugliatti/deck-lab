@@ -119,6 +119,10 @@ export default function SearchBar() {
           className="h-13 w-full border-none bg-transparent font-sans text-base text-white placeholder-slate-500 outline-none"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
+          aria-expanded={isOpen && query.trim().length >= 2}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          aria-controls="search-suggestions-list"
         />
         {loading && (
           <div className="border-cyan-accent/20 border-t-cyan-accent ml-2 h-4 w-4 animate-spin rounded-full border-2"></div>
@@ -126,12 +130,19 @@ export default function SearchBar() {
       </form>
 
       {isOpen && query.trim().length >= 2 && (
-        <div className="bg-dark-surface/95 border-border-dim absolute right-0 left-0 z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-lg border py-2 shadow-xl backdrop-blur-md">
+        <div
+          id="search-suggestions-list"
+          role="listbox"
+          aria-label="Search suggestions"
+          className="bg-dark-surface/95 border-border-dim absolute right-0 left-0 z-50 mt-2 max-h-60 w-full overflow-y-auto rounded-lg border py-2 shadow-xl backdrop-blur-md"
+        >
           {cardSuggestions.length > 0
             ? cardSuggestions.map((card, idx) => (
                 <button
                   key={card.id}
                   onClick={() => handleSuggestionClick(card.name)}
+                  role="option"
+                  aria-selected={focusedIndex === idx}
                   className={`flex w-full cursor-pointer items-center justify-between border-none px-4 py-2.5 text-left text-sm transition-all duration-150 outline-none ${
                     focusedIndex === idx
                       ? "bg-cyan-accent/15 text-cyan-accent"

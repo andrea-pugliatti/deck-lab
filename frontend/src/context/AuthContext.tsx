@@ -67,9 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       handleAuthSuccess(data.accessToken, storedUsername);
     } catch {
       handleLogoutState();
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   });
 
   const login = async (usernameOrEmail: string, password: string) => {
@@ -87,9 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await apiLogout();
     } catch {
       // Ignore logout request errors, clear local state anyway
-    } finally {
-      handleLogoutState();
     }
+    handleLogoutState();
   };
 
   useEffect(() => {

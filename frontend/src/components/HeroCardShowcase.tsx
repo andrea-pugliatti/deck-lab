@@ -1,5 +1,5 @@
 import { Flame, Sparkles, Star, Zap } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { MouseEvent } from "react";
 
 import { API_BASE_URL } from "../config/env";
@@ -46,14 +46,13 @@ const getAttributeStyles = (attr?: string): string => {
  */
 export default function HeroCardShowcase({ cards, loading }: HeroCardShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+  const showcaseRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !showcaseRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    const width = rect.width || 1;
+    const height = rect.height || 1;
 
     const mouseX = e.clientX - rect.left - width / 2;
     const mouseY = e.clientY - rect.top - height / 2;
@@ -61,13 +60,13 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
     const rX = -(mouseY / (height / 2)) * 12;
     const rY = (mouseX / (width / 2)) * 12;
 
-    setRotateX(rX);
-    setRotateY(rY);
+    showcaseRef.current.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
   };
 
   const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
+    if (showcaseRef.current) {
+      showcaseRef.current.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
   };
 
   if (!loading && (!cards || cards.length === 0)) {
@@ -85,9 +84,9 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
       }}
     >
       <div
+        ref={showcaseRef}
         className="relative flex h-full w-full items-center justify-center transition-transform duration-300 ease-out"
         style={{
-          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transformStyle: "preserve-3d",
         }}
       >
