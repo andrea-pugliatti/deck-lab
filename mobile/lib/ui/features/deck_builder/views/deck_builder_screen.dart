@@ -1,4 +1,3 @@
-
 import 'package:file_picker/file_picker.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +45,9 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(deckBuilderProvider.notifier).initialize(widget.deckId);
-      ref.read(builderCardCatalogProvider.notifier).fetchNextPage(isRefresh: true);
+      ref
+          .read(builderCardCatalogProvider.notifier)
+          .fetchNextPage(isRefresh: true);
     });
   }
 
@@ -356,7 +357,9 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
                                   controller: _catalogSearchController,
                                   onChanged: (val) {
                                     ref
-                                        .read(builderCardCatalogProvider.notifier)
+                                        .read(
+                                          builderCardCatalogProvider.notifier,
+                                        )
                                         .setSearchQuery(val);
                                   },
                                   style: Theme.of(context).textTheme.bodyMedium!

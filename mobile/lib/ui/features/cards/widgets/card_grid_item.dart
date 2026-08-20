@@ -32,9 +32,9 @@ class CardGridItem extends StatelessWidget {
                 borderRadius: const .vertical(top: .circular(8)),
                 child: card.imageUrl != null
                     ? AppNetworkImage(
-                        imageUrl: card.imageUrl,
+                        imageUrl: card.imageUrlCropped,
                         fit: .cover,
-                        memCacheWidth: 200,
+                        memCacheWidth: 500,
                       )
                     : Center(
                         child: Icon(

@@ -10,7 +10,9 @@ String? resolveImageUrl(String? path, String baseUrl) {
   final isCropped = uri.pathSegments.contains('cropped');
   final subPath = isCropped ? 'cropped/' : '';
 
-  var normalizedBase = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+  var normalizedBase = baseUrl.endsWith('/')
+      ? baseUrl.substring(0, baseUrl.length - 1)
+      : baseUrl;
   if (normalizedBase.endsWith('/api')) {
     normalizedBase = normalizedBase.substring(0, normalizedBase.length - 4);
   }

@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 
 /// Parses descriptive error details from a [DioException].
-String parseDioError(DioException e, {String defaultFallback = 'Network request failed'}) {
+String parseDioError(
+  DioException e, {
+  String defaultFallback = 'Network request failed',
+}) {
   if (e.error != null) {
     return e.error.toString();
   }

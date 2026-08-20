@@ -133,7 +133,9 @@ class _AiWizardModalState extends ConsumerState<AiWizardModal> {
               ] else ...[
                 // Archetype
                 Autocomplete<String>(
-                  initialValue: TextEditingValue(text: _archetypeController.text),
+                  initialValue: TextEditingValue(
+                    text: _archetypeController.text,
+                  ),
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
                       return const Iterable<String>.empty();
