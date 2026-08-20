@@ -85,6 +85,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers("/api/auth/**")
                                 .permitAll()
+                                .requestMatchers("/actuator/**")
+                                .permitAll()
                                 .requestMatchers("/api/cards/images/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/cards/**")

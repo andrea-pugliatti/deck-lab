@@ -110,9 +110,6 @@ public class DeckController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<DeckResponseDto> show(@PathVariable Long id) {
-        if (!deckService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(deckService.getDeckById(id));
     }
 
@@ -165,9 +162,6 @@ public class DeckController {
     public ResponseEntity<DeckResponseDto> update(@PathVariable Long id,
                                                   @Valid @RequestBody DeckSaveRequestDto deckDto,
                                                   @AuthenticationPrincipal User user) {
-        if (!deckService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         deckSaveRateLimiter.checkLimit("user:" + user.getId());
         return ResponseEntity.ok(deckService.updateDeck(id, deckDto, user));
     }
@@ -182,10 +176,6 @@ public class DeckController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
-
-        if (!deckService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         deckService.deleteDeck(id, user);
         return ResponseEntity.noContent().build();
     }
@@ -233,10 +223,6 @@ public class DeckController {
      */
     @GetMapping("/{id}/export/ydk")
     public ResponseEntity<String> exportYdk(@PathVariable Long id) {
-        if (!deckService.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
         String ydkContent = ydkService.exportYdk(id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(

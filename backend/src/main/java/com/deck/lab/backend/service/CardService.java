@@ -134,16 +134,6 @@ public class CardService {
     }
 
     /**
-     * Verifies if a card exists by its ID.
-     *
-     * @param id the unique card ID
-     * @return true if the card exists
-     */
-    public Boolean existsById(Long id) {
-        return cardRepository.existsById(id);
-    }
-
-    /**
      * Retrieves a single Card entity by its unique ID.
      *
      * @param id the unique card ID
@@ -181,11 +171,11 @@ public class CardService {
      * Deletes a Card record from database by its ID.
      *
      * @param id the ID of the card to delete
+     * @throws ResourceNotFoundException if no card matches the ID
      */
     @Transactional
     public void deleteById(Long id) {
-        if (cardRepository.existsById(id)) {
-            cardRepository.deleteById(id);
-        }
+        Card card = getById(id);
+        cardRepository.delete(card);
     }
 }

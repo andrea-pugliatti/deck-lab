@@ -102,6 +102,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Intercepts {@link ResourceNotFoundException} errors when resources are missing.
+     * Maps them directly to a 404 Not Found response.
+     *
+     * @param ex the caught resource not found exception
+     * @return 404 Not Found status response
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Void> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
      * Intercepts {@link YdkImportException} errors when .ydk file import or parsing fails.
      * Returns a 400 Bad Request with a structured {@link ValidationErrorResponseDto}.
      *

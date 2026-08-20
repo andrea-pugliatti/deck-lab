@@ -102,15 +102,6 @@ public class DeckService {
         return deckRepository.findAll(spec, pageable).map(deckMapper::toDto);
     }
 
-    /**
-     * Verifies if a deck exists by its ID.
-     *
-     * @param id the unique deck ID
-     * @return true if the deck exists in the database
-     */
-    public Boolean existsById(Long id) {
-        return deckRepository.existsById(id);
-    }
 
     /**
      * Retrieves a single deck by its ID.
@@ -182,7 +173,8 @@ public class DeckService {
         if (deckDto.getDeckCards() != null) {
             for (DeckCardResponseDto c : deckDto.getDeckCards()) {
                 if (c != null) {
-                    cardDtos.add(new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
+                    cardDtos.add(
+                            new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
                 }
             }
         }
@@ -232,7 +224,8 @@ public class DeckService {
         if (deckDto.getDeckCards() != null) {
             for (DeckCardResponseDto c : deckDto.getDeckCards()) {
                 if (c != null) {
-                    cardDtos.add(new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
+                    cardDtos.add(
+                            new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
                 }
             }
         }

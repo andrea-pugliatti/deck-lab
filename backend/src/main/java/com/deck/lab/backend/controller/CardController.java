@@ -109,9 +109,6 @@ public class CardController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<CardResponseDto> show(@PathVariable Long id) {
-        if (!service.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(mapper.toDto(service.getById(id)));
     }
 
@@ -138,9 +135,6 @@ public class CardController {
     @PutMapping("/{id}")
     public ResponseEntity<CardResponseDto> update(@PathVariable Long id,
                                                   @Valid @RequestBody CardResponseDto cardDto) {
-        if (!service.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         Card existingCard = service.getById(id);
         mapper.updateEntityFromDto(cardDto, existingCard);
         Card updatedCard = service.edit(existingCard);
@@ -155,9 +149,6 @@ public class CardController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (!service.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }

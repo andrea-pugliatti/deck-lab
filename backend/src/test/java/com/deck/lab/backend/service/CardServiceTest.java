@@ -1,6 +1,5 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -83,12 +82,6 @@ class CardServiceTest {
     }
 
     @Test
-    void existsById_returnsCorrectBoolean() {
-        assertTrue(cardService.existsById(testCard.getId()));
-        assertFalse(cardService.existsById(999999L));
-    }
-
-    @Test
     void getById_whenCardExists_returnsCard() {
         Card result = cardService.getById(testCard.getId());
         assertNotNull(result);
@@ -145,7 +138,7 @@ class CardServiceTest {
     }
 
     @Test
-    void deleteById_whenCardDoesNotExist_doesNotThrow() {
-        assertDoesNotThrow(() -> cardService.deleteById(999999L));
+    void deleteById_whenCardDoesNotExist_throwsResourceNotFoundException() {
+        assertThrows(ResourceNotFoundException.class, () -> cardService.deleteById(999999L));
     }
 }
