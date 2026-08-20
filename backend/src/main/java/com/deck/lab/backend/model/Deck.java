@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -55,9 +56,13 @@ import jakarta.persistence.Table;
  * methods automatically before writing (persisting) or updating database records, allowing
  * automatic auditing of creation and modification timestamps.</li>
  * </ul>
+ * </li>
+ * </ul>
  */
 @Entity
-@Table(name = "decks")
+@Table(name = "decks", indexes = {
+        @Index(name = "idx_deck_user_format", columnList = "user_id, format_name")
+})
 public class Deck {
 
     @Id

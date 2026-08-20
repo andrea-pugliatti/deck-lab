@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -45,7 +46,9 @@ import jakarta.validation.constraints.NotNull;
  * </ul>
  */
 @Entity
-@Table(name = "deck_cards")
+@Table(name = "deck_cards", indexes = {
+        @Index(name = "idx_deck_card_deck_card", columnList = "deck_id, card_id")
+})
 public class DeckCard {
 
     @Id

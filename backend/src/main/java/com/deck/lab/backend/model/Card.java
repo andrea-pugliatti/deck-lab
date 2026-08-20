@@ -51,7 +51,9 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "cards", indexes = {
-        @Index(name = "idx_card_passcode", columnList = "passcode")
+        @Index(name = "idx_card_passcode", columnList = "passcode"),
+        @Index(name = "idx_card_name", columnList = "name"),
+        @Index(name = "idx_card_archetype", columnList = "archetype")
 })
 @BatchSize(size = 60)
 public class Card {
