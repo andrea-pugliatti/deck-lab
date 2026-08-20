@@ -13,8 +13,8 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import ViewToggle from "../components/ui/ViewToggle";
 import { useAuth } from "../context/AuthContext";
 import { useViewPreference } from "../hooks/useViewPreference";
-import { deleteDeck, exportYdk, getDeck } from "../services/deck";
 import { getFormatRules } from "../reducers/deckReducer";
+import { deleteDeck, exportYdk, getDeck } from "../services/deck";
 import type { Deck } from "../types";
 import { getCardTheme } from "../utils/card";
 import { formatRelativeTime } from "../utils/date";
@@ -205,7 +205,9 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Main Deck</span>
-                  <span className="font-bold text-white">{mainCount} / {rules.maxMainSize}</span>
+                  <span className="font-bold text-white">
+                    {mainCount} / {rules.maxMainSize}
+                  </span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
@@ -225,7 +227,9 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Extra Deck</span>
-                  <span className="font-bold text-white">{extraCount} / {rules.maxExtraSize}</span>
+                  <span className="font-bold text-white">
+                    {extraCount} / {rules.maxExtraSize}
+                  </span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div
@@ -238,7 +242,9 @@ export default function DeckDetail(): React.JSX.Element {
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-medium text-slate-400">
                   <span>Side Deck</span>
-                  <span className="font-bold text-white">{sideCount} / {rules.maxSideSize}</span>
+                  <span className="font-bold text-white">
+                    {sideCount} / {rules.maxSideSize}
+                  </span>
                 </div>
                 <div className="border-border-dim/40 h-2 w-full overflow-hidden rounded-full border bg-slate-950">
                   <div

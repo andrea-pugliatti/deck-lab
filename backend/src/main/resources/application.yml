@@ -34,7 +34,7 @@ app:
     secure: ${COOKIE_SECURE:true}
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:ejM4YTNjNWQ3ZTkxYmI4Y2U5Mzg1NzlkMmVkMjE5ODk5ZjhkMDgxODg0YzdkNjU5YTJmZWFhMGM1NWFkMDE1YTNmZjRmMWIyYjBiODIyY2QxNWQ2YzE1YjBmMDBhMDg=}
   expiration: 900000
 
 refresh-token:
