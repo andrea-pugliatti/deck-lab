@@ -128,8 +128,8 @@ class _DeckBuilderScreenState extends ConsumerState<DeckBuilderScreen>
                   type: FileType.custom,
                   allowedExtensions: ['ydk'],
                 );
-                if (result != null && result.files.isNotEmpty) {
-                  final file = result.files.first;
+                if (result.isNotEmpty) {
+                  final file = result.first;
                   final bytes = await file.readAsBytes();
                   ref
                       .read(deckBuilderProvider.notifier)

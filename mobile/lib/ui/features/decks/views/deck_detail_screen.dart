@@ -178,7 +178,7 @@ class DeckDetailScreen extends ConsumerWidget {
                     bytes: bytes,
                   );
                   if (outputPath != null) {
-                    final file = File(outputPath);
+                    final file = File(outputPath.toString());
                     await file.parent.create(recursive: true);
                     await file.writeAsString(ydkContent);
                     if (context.mounted) {
