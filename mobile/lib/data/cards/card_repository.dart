@@ -4,6 +4,7 @@ import '../../domain/models/card.dart';
 import '../../domain/models/page.dart';
 import '../../domain/repositories/card_repository.dart';
 import '../core/api_client.dart';
+import '../core/dio_error_parser.dart';
 import 'models/card_response.dart';
 import 'mappers/mappers.dart';
 
@@ -147,19 +148,6 @@ class CardRepositoryImpl implements CardRepository {
   }
 
   /// Private helper method to parse error details from a [DioException].
-  String _parseError(DioException e) {
-    if (e.error != null) {
-      return e.error.toString();
-    }
-    switch (e.response?.data) {
-      case {'errors': List errorsList} when errorsList.isNotEmpty:
-        return errorsList.join(', ');
-      case {'message': var msg}:
-        return msg.toString();
-      case {'error': var err}:
-        return err.toString();
-      default:
-        return 'Card query failed. Status: ${e.response?.statusCode}';
-    }
-  }
+  String _parseError(DioException e) =>
+      parseDioError(e, defaultFallback: 'Card query failed');
 }

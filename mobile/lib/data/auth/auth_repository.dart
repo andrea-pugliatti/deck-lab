@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../domain/models/auth_session.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../core/api_client.dart';
+import '../core/dio_error_parser.dart';
 import '../core/session_storage.dart';
 import 'models/auth_response.dart';
 import 'models/login_request.dart';
@@ -124,19 +125,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   /// Private helper method to parse error details from a [DioException].
-  String _parseError(DioException e) {
-    if (e.error != null) {
-      return e.error.toString();
-    }
-    switch (e.response?.data) {
-      case {'errors': List errorsList} when errorsList.isNotEmpty:
-        return errorsList.join(', ');
-      case {'message': var msg}:
-        return msg.toString();
-      case {'error': var err}:
-        return err.toString();
-      default:
-        return 'Connection failed. Status: ${e.response?.statusCode}';
-    }
-  }
+  String _parseError(DioException e) =>
+      parseDioError(e, defaultFallback: 'Connection failed');
 }

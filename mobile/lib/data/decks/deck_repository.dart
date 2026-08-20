@@ -10,6 +10,7 @@ import '../../domain/models/deck_validation.dart';
 import '../../domain/models/page.dart';
 import '../../domain/repositories/deck_repository.dart';
 import '../core/api_client.dart';
+import '../core/dio_error_parser.dart';
 import 'mappers/mappers.dart';
 import 'models/card_entry.dart';
 import 'models/card_suggestion_response.dart';
@@ -347,19 +348,5 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   /// Private helper method to parse error details from a [DioException].
-  String _parseError(DioException e) {
-    if (e.error != null) {
-      return e.error.toString();
-    }
-    switch (e.response?.data) {
-      case {'errors': List errorsList} when errorsList.isNotEmpty:
-        return errorsList.join(', ');
-      case {'message': var msg}:
-        return msg.toString();
-      case {'error': var err}:
-        return err.toString();
-      default:
-        return 'Network request failed. Status: ${e.response?.statusCode}';
-    }
-  }
+  String _parseError(DioException e) => parseDioError(e);
 }

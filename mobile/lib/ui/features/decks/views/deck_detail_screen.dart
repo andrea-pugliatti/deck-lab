@@ -41,7 +41,11 @@ class DeckDetailScreen extends ConsumerWidget {
           .deleteDeck();
       if (!context.mounted) return;
       if (success) {
-        context.pop();
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(AppRoutes.home);
+        }
       } else {
         final state = ref.read(deckDetailProvider(deckId));
         if (state.error != null) {

@@ -71,6 +71,7 @@ class CustomButton extends StatelessWidget {
       shadowColor: bg.withValues(alpha: 0.12),
       elevation: variant.startsWith('outline') || variant == 'ghost' ? 0 : 4,
       padding: .symmetric(vertical: py, horizontal: px),
+      minimumSize: const Size(48, 48),
       shape: RoundedRectangleBorder(borderRadius: .circular(12), side: border),
     );
 
