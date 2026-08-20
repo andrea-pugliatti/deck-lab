@@ -181,3 +181,35 @@ jobs:
       - name: Run Flutter tests
         working-directory: mobile
         run: flutter test
+
+  infra:
+    name: Infrastructure validation
+    runs-on: ubuntu-latest
+    env:
+      TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v2
+
+      - name: Create OpenTofu Plugin Cache Directory
+        run: mkdir -p ${{ github.workspace }}/.terraform.d/plugin-cache
+
+      - name: Cache OpenTofu Plugins
+        uses: actions/cache@v6
+        with:
+          path: ${{ github.workspace }}/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-opentofu-${{ hashFiles('infra/**/*.tf') }}
+          restore-keys: |
+            ${{ runner.os }}-opentofu-
+
+      - name: Check OpenTofu formatting
+        run: tofu fmt -check -recursive infra/
+
+      - name: Initialize and validate OpenTofu modules
+        working-directory: infra
+        run: |
+          tofu init -backend=false
+          tofu validate

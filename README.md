@@ -21,10 +21,13 @@ DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strat
 ## Tech Stack
 
 - **Backend**: Java 25, Maven, Spring Boot 4.1, Spring Data JPA, Spring Security, Spring AI (Gemini Integration)
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL 18
 - **Frontend**: React 19, Lucide React, TypeScript, Vite 8, Tailwind CSS 4, React Router 8, Oxlint (linting), Oxfmt (formatting), pnpm
+- **Mobile**: Flutter 3, Dart 3, Riverpod, GoRouter, Dio, CachedNetworkImage
+- **Infrastructure & Cloud**: OpenTofu/Terraform (IaC for GCP Cloud Run, Cloud SQL, Cloud Storage, Artifact Registry), Docker Compose
 - **Frontend Testing**: Vitest, React Testing Library
 - **Backend Testing**: JUnit, Mockito
+- **Mobile Testing**: Flutter Test
 
 ---
 
@@ -54,14 +57,15 @@ DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strat
 
 ## Directory Structure & Architecture
 
-The code is split into modular layers. The frontend and backend each own their responsibilities:
+The code is split into modular layers. The frontend, backend, mobile app, and infrastructure each own their responsibilities:
 
 ```text
 deck-lab/
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml           # CI pipeline (backend/frontend build and tests)
-│       └── deploy.yml       # CD pipeline (GCP deployment setup)
+│       ├── ci.yml           # CI pipeline (backend/frontend/mobile build and tests)
+│       ├── deploy.yml       # CD pipeline (GCP deployment setup)
+│       └── mobile-release.yml # Mobile release workflow
 ├── backend/
 │   ├── src/main/java/
 │   │   └── com/deck/lab/backend/
@@ -102,6 +106,14 @@ deck-lab/
 │   ├── src/test/                # Vitest test environment and setup files
 │   ├── src/types/               # Shared TypeScript interfaces and schemas
 │   └── src/utils/               # Utility helpers for math, formatting, and themed visuals
+├── mobile/
+│   ├── lib/
+│   │   ├── data/                # Remote API repositories and mappers (Dio)
+│   │   ├── domain/              # Domain models and repository interfaces
+│   │   ├── navigation/          # GoRouter navigation and stateful tabs
+│   │   └── ui/                  # Feature views, view models (Riverpod), and widgets
+│   └── test/                    # Mobile unit, widget, and architecture tests
+├── infra/                       # OpenTofu IaC modules for GCP
 ├── bruno/                       # API request collection for local development
 ├── .env.example                 # Template for environment configuration variables
 ├── docker-compose.yml           # Local orchestration for db, backend, and frontend

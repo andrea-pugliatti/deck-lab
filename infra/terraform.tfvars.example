@@ -1,0 +1,24 @@
+# OpenTofu Configuration Variables Template (DeckLab)
+# Copy this file to terraform.tfvars (which is gitignored) and fill in your values.
+
+project              = "deck-lab"
+region               = "europe-west8"
+environment          = "prod"
+domain               = "decklab.games"
+subdomain            = "www.decklab.games"
+
+frontend_bucket_name = "deck-lab-frontend-prod"
+images_bucket_name   = "deck-lab-images-prod"
+
+db_user              = "postgres"
+db_password          = "secure-postgres-password"
+db_tier              = "db-custom-2-8192"
+
+jwt_secret           = "prod-jwt-secret-base64-512-bit"
+gemini_api_key       = "google-gemini-api-key"
+cors_origins         = "https://decklab.games,https://www.decklab.games,http://localhost:5173"
+
+# Optional Cloudflare Integration
+enable_cloudflare_dns = false
+cloudflare_zone_id    = "zone-id-from-dashboard"
+cloudflare_api_token  = "cloudflare-api-key"
