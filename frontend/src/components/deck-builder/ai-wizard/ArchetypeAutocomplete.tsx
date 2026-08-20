@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import Input from "../../ui/Input";
 import Label from "../../ui/Label";
@@ -28,14 +28,10 @@ export default function ArchetypeAutocomplete({
 }: ArchetypeAutocompleteProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const suggestions = useMemo(() => {
-    if (!value.trim() || !archetypes.length) {
-      return [];
-    }
-    return archetypes
-      .filter((arch) => arch.toLowerCase().includes(value.toLowerCase()))
-      .slice(0, 5);
-  }, [value, archetypes]);
+  const suggestions =
+    !value.trim() || !archetypes.length
+      ? []
+      : archetypes.filter((arch) => arch.toLowerCase().includes(value.toLowerCase())).slice(0, 5);
 
   return (
     <div className="relative">

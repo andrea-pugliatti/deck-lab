@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useEffectEvent, useState } from "react";
 
 import {
   login as apiLogin,
@@ -40,21 +40,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const isAuthenticated = !!accessToken;
 
-  const handleAuthSuccess = useCallback((token: string, username: string) => {
+  const handleAuthSuccess = (token: string, username: string) => {
     setAccessTokenState(token);
     const decoded = parseJwt(token);
     const email = decoded?.subject || "";
     setUser({ username, email });
     localStorage.setItem("username", username);
-  }, []);
+  };
 
-  const handleLogoutState = useCallback(() => {
+  const handleLogoutState = useEffectEvent(() => {
     setAccessTokenState(undefined);
     setUser(undefined);
     localStorage.removeItem("username");
-  }, []);
+  });
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = useEffectEvent(async () => {
     const storedUsername = localStorage.getItem("username");
     if (!storedUsername) {
       handleLogoutState();
@@ -70,25 +70,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, [handleAuthSuccess, handleLogoutState]);
+  });
 
-  const login = useCallback(
-    async (usernameOrEmail: string, password: string) => {
-      const data = await apiLogin(usernameOrEmail, password);
-      handleAuthSuccess(data.accessToken, data.username || usernameOrEmail);
-    },
-    [handleAuthSuccess],
-  );
+  const login = async (usernameOrEmail: string, password: string) => {
+    const data = await apiLogin(usernameOrEmail, password);
+    handleAuthSuccess(data.accessToken, data.username || usernameOrEmail);
+  };
 
-  const register = useCallback(
-    async (username: string, email: string, password: string) => {
-      const data = await apiRegister(username, email, password);
-      handleAuthSuccess(data.accessToken, data.username || username);
-    },
-    [handleAuthSuccess],
-  );
+  const register = async (username: string, email: string, password: string) => {
+    const data = await apiRegister(username, email, password);
+    handleAuthSuccess(data.accessToken, data.username || username);
+  };
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     try {
       await apiLogout();
     } catch {
@@ -96,9 +90,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       handleLogoutState();
     }
-  }, [handleLogoutState]);
+  };
 
   useEffect(() => {
+    const handleLogout = () => handleLogoutState();
     const handleTokenUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<string | undefined>;
       setAccessTokenState(customEvent.detail);
@@ -108,27 +103,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       void checkAuth();
     });
 
-    window.addEventListener("auth-logout", handleLogoutState);
+    window.addEventListener("auth-logout", handleLogout);
     window.addEventListener("auth-token-update", handleTokenUpdate);
 
     return () => {
-      window.removeEventListener("auth-logout", handleLogoutState);
+      window.removeEventListener("auth-logout", handleLogout);
       window.removeEventListener("auth-token-update", handleTokenUpdate);
     };
-  }, [checkAuth, handleLogoutState]);
+  }, []);
 
-  const contextValue = useMemo<AuthContextType>(
-    () => ({
-      user,
-      accessToken,
-      isAuthenticated,
-      loading,
-      login,
-      register,
-      logout,
-    }),
-    [user, accessToken, isAuthenticated, loading, login, register, logout],
-  );
+  const contextValue: AuthContextType = {
+    user,
+    accessToken,
+    isAuthenticated,
+    loading,
+    login,
+    register,
+    logout,
+  };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }

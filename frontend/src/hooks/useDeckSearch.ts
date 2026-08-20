@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { getDecksQueryEndpoint } from "../services/deck";
 import type { Deck, Format, Page } from "../types";
 import { useSearch } from "./useSearch";
@@ -65,34 +63,30 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
   } = options;
 
   // Map flat format/username options to structured DeckFiltersState for the generic hook
-  const controlledFilters = useMemo(() => {
-    if (format !== undefined || username !== undefined) {
-      return {
-        format: format !== undefined ? format : "ALL",
-        username: username !== undefined ? username : "",
-      };
-    }
-    return undefined;
-  }, [format, username]);
-
-  const controlledSetFilters = useMemo(() => {
-    if (setFormat || setUsername) {
-      return (nextFilters: DeckFiltersState | ((prev: DeckFiltersState) => DeckFiltersState)) => {
-        const prev = {
+  const controlledFilters =
+    format !== undefined || username !== undefined
+      ? {
           format: format !== undefined ? format : "ALL",
           username: username !== undefined ? username : "",
-        };
-        const resolved = typeof nextFilters === "function" ? nextFilters(prev) : nextFilters;
-        if (setFormat && resolved.format !== prev.format) {
-          setFormat(resolved.format);
         }
-        if (setUsername && resolved.username !== prev.username) {
-          setUsername(resolved.username);
+      : undefined;
+
+  const controlledSetFilters =
+    setFormat || setUsername
+      ? (nextFilters: DeckFiltersState | ((prev: DeckFiltersState) => DeckFiltersState)) => {
+          const prev = {
+            format: format !== undefined ? format : "ALL",
+            username: username !== undefined ? username : "",
+          };
+          const resolved = typeof nextFilters === "function" ? nextFilters(prev) : nextFilters;
+          if (setFormat && resolved.format !== prev.format) {
+            setFormat(resolved.format);
+          }
+          if (setUsername && resolved.username !== prev.username) {
+            setUsername(resolved.username);
+          }
         }
-      };
-    }
-    return undefined;
-  }, [setFormat, setUsername, format, username]);
+      : undefined;
 
   const {
     page: activePage,

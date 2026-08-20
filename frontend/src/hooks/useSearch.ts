@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 
 import { apiFetch, parseResponseError } from "../services/api";
@@ -66,22 +66,22 @@ export function useSearch<TData, TFilters>(
   const [searchParams, setSearchParams] = useSearchParams();
 
   // URL State Parsing (if syncUrl is enabled)
-  const urlPage = useMemo(() => {
-    if (!syncUrl) return initialPage;
-    const pageParam = searchParams.get("page");
-    return pageParam !== null ? parseInt(pageParam, 10) : initialPage;
-  }, [syncUrl, searchParams, initialPage]);
+  const urlPage = !syncUrl
+    ? initialPage
+    : (() => {
+        const pageParam = searchParams.get("page");
+        return pageParam !== null ? parseInt(pageParam, 10) : initialPage;
+      })();
 
-  const urlQuery = useMemo(() => {
-    if (!syncUrl) return initialSearchQuery;
-    const qParam = searchParams.get("q");
-    return qParam !== null ? qParam : initialSearchQuery;
-  }, [syncUrl, searchParams, initialSearchQuery]);
+  const urlQuery = !syncUrl
+    ? initialSearchQuery
+    : (() => {
+        const qParam = searchParams.get("q");
+        return qParam !== null ? qParam : initialSearchQuery;
+      })();
 
-  const urlFilters = useMemo(() => {
-    if (!syncUrl || !urlConfig) return initialFilters as TFilters;
-    return urlConfig.parse(searchParams);
-  }, [syncUrl, urlConfig, searchParams, initialFilters]);
+  const urlFilters =
+    !syncUrl || !urlConfig ? (initialFilters as TFilters) : urlConfig.parse(searchParams);
 
   // Uncontrolled State Fallbacks
   const [localPage, setLocalPage] = useState(initialPage);
@@ -90,30 +90,29 @@ export function useSearch<TData, TFilters>(
 
   // Uncontrolled URL-sync local query (updates immediately on keystrokes)
   const [urlLocalQuery, setUrlLocalQuery] = useState(urlQuery);
+  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
 
-  useEffect(() => {
-    if (syncUrl) {
-      setUrlLocalQuery(urlQuery);
-    }
-  }, [syncUrl, urlQuery]);
+  // Adjust during render — no effect, no extra commit
+  if (syncUrl && urlQuery !== prevUrlQuery) {
+    setPrevUrlQuery(urlQuery);
+    setUrlLocalQuery(urlQuery);
+  }
 
   // Compute Active State Values
-  const activePage = useMemo(() => {
-    if (syncUrl) return urlPage;
-    return controlledPage !== undefined ? controlledPage : localPage;
-  }, [syncUrl, urlPage, controlledPage, localPage]);
+  const activePage = syncUrl ? urlPage : controlledPage !== undefined ? controlledPage : localPage;
 
-  const activeFilters = useMemo(() => {
-    if (syncUrl) return urlFilters;
-    return controlledFilters !== undefined ? controlledFilters : localFilters;
-  }, [syncUrl, urlFilters, controlledFilters, localFilters]);
+  const activeFilters = syncUrl
+    ? urlFilters
+    : controlledFilters !== undefined
+      ? controlledFilters
+      : localFilters;
 
-  const activeSearchQuery = useMemo(() => {
-    if (syncUrl) {
-      return controlledSearchQuery !== undefined ? controlledSearchQuery : urlLocalQuery;
-    }
-    return controlledSearchQuery !== undefined ? controlledSearchQuery : localSearchQuery;
-  }, [syncUrl, controlledSearchQuery, urlLocalQuery, localSearchQuery]);
+  const activeSearchQuery =
+    controlledSearchQuery !== undefined
+      ? controlledSearchQuery
+      : syncUrl
+        ? urlLocalQuery
+        : localSearchQuery;
 
   // Debouncing search queries
   const debouncedQuery = useDebounce(activeSearchQuery, debounceTime);

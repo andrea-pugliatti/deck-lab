@@ -1,5 +1,5 @@
 import { Calculator, TrendingUp, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { DeckCardItem } from "../../types";
 import { getCardTheme } from "../../utils/card";
@@ -41,17 +41,9 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
     }
   }, [onClose]);
 
-  const mainCards = useMemo(() => {
-    return cards.filter((c) => c.section === "MAIN" || !c.section);
-  }, [cards]);
-
-  const totalMainCount = useMemo(() => {
-    return mainCards.reduce((acc, c) => acc + (c.quantity || 0), 0);
-  }, [mainCards]);
-
-  const uniqueCardsList = useMemo(() => {
-    return [...mainCards].sort((a, b) => a.name.localeCompare(b.name));
-  }, [mainCards]);
+  const mainCards = cards.filter((c) => c.section === "MAIN" || !c.section);
+  const totalMainCount = mainCards.reduce((acc, c) => acc + (c.quantity || 0), 0);
+  const uniqueCardsList = [...mainCards].sort((a, b) => a.name.localeCompare(b.name));
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {

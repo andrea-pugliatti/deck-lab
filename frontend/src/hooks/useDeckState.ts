@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import { deckReducer, initialState } from "../reducers/deckReducer";
 import { getDeck } from "../services/deck";
@@ -103,35 +103,35 @@ export function useDeckState(
     }
   }, [deckData]);
 
-  const setName = useCallback((name: string) => {
+  const setName = (name: string) => {
     dispatch({ type: "SET_NAME", name });
-  }, []);
+  };
 
-  const setDescription = useCallback((description: string) => {
+  const setDescription = (description: string) => {
     dispatch({ type: "SET_DESCRIPTION", description: description.slice(0, 255) });
-  }, []);
+  };
 
-  const setFormatName = useCallback((formatName: Format) => {
+  const setFormatName = (formatName: Format) => {
     dispatch({ type: "SET_FORMAT_NAME", formatName });
-  }, []);
+  };
 
-  const setDeckCards = useCallback((deckCards: DeckCardItem[]) => {
+  const setDeckCards = (deckCards: DeckCardItem[]) => {
     dispatch({ type: "SET_DECK_CARDS", deckCards });
-  }, []);
+  };
 
-  const addCard = useCallback((card: Card, section: CardSection) => {
+  const addCard = (card: Card, section: CardSection) => {
     dispatch({ type: "ADD_CARD", card, section });
-  }, []);
+  };
 
-  const updateQuantity = useCallback((cardId: number, section: CardSection, delta: number) => {
+  const updateQuantity = (cardId: number, section: CardSection, delta: number) => {
     dispatch({ type: "UPDATE_QUANTITY", cardId, section, delta });
-  }, []);
+  };
 
-  const removeCard = useCallback((cardId: number, section: CardSection) => {
+  const removeCard = (cardId: number, section: CardSection) => {
     dispatch({ type: "REMOVE_CARD", cardId, section });
-  }, []);
+  };
 
-  const validateDeckPayload = useCallback(async (): Promise<boolean> => {
+  const validateDeckPayload = async (): Promise<boolean> => {
     dispatch({ type: "START_VALIDATION" });
 
     const payload = buildDeckPayload(
@@ -151,7 +151,7 @@ export function useDeckState(
       dispatch({ type: "SET_VALIDATION_RESULT", ok: false, errors });
       return false;
     }
-  }, [state.name, state.description, state.formatName, state.deckCards]);
+  };
 
   const saveDeckMutation = useMutation({
     mutationFn: async (payload: DeckPayload) => {
@@ -173,7 +173,7 @@ export function useDeckState(
     },
   });
 
-  const saveDeck = useCallback(async () => {
+  const saveDeck = async () => {
     if (!state.name.trim()) {
       dispatch({ type: "SET_SUBMIT_ERROR", error: "Deck name is required." });
       return;
@@ -205,14 +205,7 @@ export function useDeckState(
     );
 
     saveDeckMutation.mutate(payload);
-  }, [
-    state.name,
-    state.description,
-    state.formatName,
-    state.deckCards,
-    validateDeckPayload,
-    saveDeckMutation,
-  ]);
+  };
 
   return {
     isEditMode,

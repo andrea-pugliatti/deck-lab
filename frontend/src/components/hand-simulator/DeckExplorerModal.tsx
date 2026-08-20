@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { API_BASE_URL } from "../../config/env";
 import type { SimulatorCardInstance } from "../../types";
@@ -50,14 +50,13 @@ export default function DeckExplorerModal({
     }
   }, [setShowDeckExplorer]);
 
-  const filteredDeckExplorerCards = useMemo(() => {
-    if (!deckSearchQuery.trim()) return deck;
-    return deck.filter(
-      (c: SimulatorCardInstance) =>
-        c.name.toLowerCase().includes(deckSearchQuery.toLowerCase()) ||
-        c.type?.toLowerCase().includes(deckSearchQuery.toLowerCase()),
-    );
-  }, [deck, deckSearchQuery]);
+  const filteredDeckExplorerCards = !deckSearchQuery.trim()
+    ? deck
+    : deck.filter(
+        (c: SimulatorCardInstance) =>
+          c.name.toLowerCase().includes(deckSearchQuery.toLowerCase()) ||
+          c.type?.toLowerCase().includes(deckSearchQuery.toLowerCase()),
+      );
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {

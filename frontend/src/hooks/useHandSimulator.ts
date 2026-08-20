@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import { simulatorReducer, initialSimulatorState } from "../reducers/simulatorReducer";
 import type { Deck, SimulatorCardInstance } from "../types";
@@ -38,40 +38,34 @@ export function useHandSimulator(deck?: Deck, initialHandSize: number = 5) {
     }
   }, [deck, initialHandSize]);
 
-  const draw = useCallback((count: number) => {
+  const draw = (count: number) => {
     dispatch({ type: "DRAW", count });
-  }, []);
+  };
 
-  const shuffleDeck = useCallback(() => {
+  const shuffleDeck = () => {
     dispatch({ type: "SHUFFLE" });
-  }, []);
+  };
 
-  const reset = useCallback(
-    (startingHandSize: number) => {
-      if (deck) {
-        const cardsKey = JSON.stringify(
-          (deck.deckCards || []).map((dc) => ({
-            cardId: dc.cardId,
-            quantity: dc.quantity,
-            section: dc.section,
-          })),
-        );
-        lastDeckKeyRef.current = `${deck.id}-${deck.updatedAt || ""}-${startingHandSize}-${cardsKey}`;
-        dispatch({ type: "INIT", deck, initialHandSize: startingHandSize });
-      }
-    },
-    [deck],
-  );
+  const reset = (startingHandSize: number) => {
+    if (deck) {
+      const cardsKey = JSON.stringify(
+        (deck.deckCards || []).map((dc) => ({
+          cardId: dc.cardId,
+          quantity: dc.quantity,
+          section: dc.section,
+        })),
+      );
+      lastDeckKeyRef.current = `${deck.id}-${deck.updatedAt || ""}-${startingHandSize}-${cardsKey}`;
+      dispatch({ type: "INIT", deck, initialHandSize: startingHandSize });
+    }
+  };
 
-  const moveCard = useCallback(
-    (
-      card: SimulatorCardInstance,
-      toZone: "hand" | "field" | "graveyard" | "banished" | "deck-top" | "deck-bottom",
-    ) => {
-      dispatch({ type: "MOVE_CARD", card, toZone });
-    },
-    [],
-  );
+  const moveCard = (
+    card: SimulatorCardInstance,
+    toZone: "hand" | "field" | "graveyard" | "banished" | "deck-top" | "deck-bottom",
+  ) => {
+    dispatch({ type: "MOVE_CARD", card, toZone });
+  };
 
   return {
     hand: state.hand,

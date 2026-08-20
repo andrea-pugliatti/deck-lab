@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 
 import { useCardMetadata } from "../hooks/useCardMetadata";
 import { useCatalogSearch } from "../hooks/useCatalogSearch";
@@ -53,17 +53,14 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
 
   const { types, attributes, races, archetypes } = useCardMetadata();
 
-  const contextValue = useMemo<CatalogSearchContextType>(
-    () => ({
-      ...searchState,
-      formats,
-      types,
-      attributes,
-      races,
-      archetypes,
-    }),
-    [searchState, formats, types, attributes, races, archetypes],
-  );
+  const contextValue: CatalogSearchContextType = {
+    ...searchState,
+    formats,
+    types,
+    attributes,
+    races,
+    archetypes,
+  };
 
   return (
     <CatalogSearchContext.Provider value={contextValue}>{children}</CatalogSearchContext.Provider>
