@@ -6,7 +6,7 @@
 [![CD](https://github.com/andrea-pugliatti/deck-lab/actions/workflows/deploy.yml/badge.svg)](https://github.com/andrea-pugliatti/deck-lab/actions/workflows/deploy.yml)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strategy tool designed to help players build and refine decks in a single workflow. Play it live at [decklab.games](https://decklab.games). The project combines a React + Vite frontend with a Spring Boot backend and PostgreSQL persistence so that deck editing, legality checks, AI suggestions, and account-backed storage all work together seamlessly. This application was built as a hands-on learning experience to explore full-stack development patterns, Spring Boot, React, and generative AI integrations.
+DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strategy tool. Play it live at [decklab.games](https://decklab.games). I built it to keep deck building, legality checks, AI suggestions, and saved decks in one place. The frontend is React + Vite. The backend is Spring Boot and PostgreSQL. It started as a learning project about full-stack development, Spring Boot, React, and AI integrations, and it grew into something I actually reach for myself.
 
 ## Key Features
 
@@ -54,7 +54,7 @@ DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strat
 
 ## Directory Structure & Architecture
 
-The application is organized into modular layers so the frontend and backend stay focused on their responsibilities:
+The code is split into modular layers. The frontend and backend each own their responsibilities:
 
 ```text
 deck-lab/
@@ -141,34 +141,34 @@ flowchart LR
 
 #### State Management
 
-- Local component state is used for focused UI behavior.
-- Shared state is managed with React Context and reducers for deck editing, hand simulation, and search/query state.
-- The frontend keeps user experience state lightweight while the backend remains the source of truth for persistence and validation.
+- Local component state handles focused UI behavior.
+- Shared state lives in React Context and reducers for deck editing, hand simulation, and search/query state.
+- The frontend owns UX state. The backend is the source of truth for persistence and validation.
 
 #### Custom Hooks
 
-- URL synchronization hooks keep search and filter state in the browser address bar so deck browsing remains shareable and bookmarkable.
-- Fetching hooks encapsulate loading and error states for API calls and metadata lookups.
+- URL sync hooks keep search and filter state in the address bar, so deck links are shareable and bookmarkable.
+- Fetch hooks wrap loading and error states for API calls and metadata lookups.
 
 #### Deck Legality Validation
 
-- **Validation Pipeline**: The backend runs decks through a validation engine containing composite rules (`DeckRule`) like card quantity limits (e.g., maximum 3 copies), proper card type placements (e.g., Fusion/Synchro/Link monsters in the Extra Deck), and deck size boundaries (Main, Extra, and Side deck limits).
-- **Format-Specific Enforcement**: The validation engine fetches format legality mappings dynamically from database banlists (Advanced, Goat, Edison, etc.) to check card restrictions in real-time.
+- **Validation pipeline**: The backend checks decks against composite rules (`DeckRule`): copy limits (max 3 per card), type placement (Fusion/Synchro/Link monsters in the Extra Deck only), and deck-size bounds for Main, Extra, and Side.
+- **Format rules**: The validator pulls banlists (Advanced, Goat, Edison, etc.) from the database and applies card restrictions in real time.
 
 #### AI Suggestion & Generation
 
-- **Structured Prompts**: The backend leverages Spring AI's chat client to interface with Gemini. It uses structured output models to construct cohesive deck lists and card suggestions matching a user's chosen archetype or strategy constraints.
-- **Spring AI Function Calling**: External database and business-rule access is encapsulated via registered callback functions inside the `tool/` sub-package (e.g., `CardSearchTool`, `CardDetailsTool`, `GetFormatRulesTool`, `GetArchetypeCardsTool`, and `AnalyzeDeckStatsTool`), each utilizing isolated request/response parameters from the `tool/dto/` package to preserve context size limits.
-- **Contextual Search & Resolution**: AI outputs are mapped to structured JSON DTOs defined in `model/` (like `CardEntry` and `DeckGenerateAiResponse`) and resolved against the local PostgreSQL database using the `CardResolver` to guarantee generated card names exist in the catalog.
+- **Structured Prompts**: The backend uses Spring AI's chat client to talk to Gemini. It sends structured output models to build deck lists and card suggestions around a user's archetype or strategy.
+- **Spring AI Tool Calling**: Database and business-rule lookups run through registered callback functions in the `tool/` sub-package (`CardSearchTool`, `CardDetailsTool`, `GetFormatRulesTool`, `GetArchetypeCardsTool`, and `AnalyzeDeckStatsTool`). Each tool pulls its request/response shape from the `tool/dto/` package to keep context sizes down.
+- **Contextual Search**: The backend maps AI output to JSON DTOs in `model/` (`CardEntry`, `DeckGenerateAiResponse`) and resolves them against the local PostgreSQL database with `CardResolver`. That's how we make sure every generated card name actually exists in the catalog.
 
 #### Asynchronous Seeding & Graceful Shutdown
 
-To handle large dataset imports safely without blocking application startup (especially important on serverless platforms like Google Cloud Run):
+Seeding pulls a large card dataset without blocking startup, which matters on serverless platforms like Google Cloud Run:
 
-- **Non-Blocking Startup**: Database seeding is offloaded to a dedicated, single-threaded task executor (`databaseSeederExecutor`) so that the main thread can quickly bind to the required port and pass container startup probes.
-- **Startup Image Validation**: Even if the database has already been populated with card records, the seeder scans all records and compares them against files on disk. Any missing card illustrations are queued for background download asynchronously.
-- **Graceful Interruption**: During scale-downs, redeployments, or container restarts, Spring's `@PreDestroy` hook triggers an interrupt signal to the seeder thread, allowing it to halt any current card retrieval loops or batch database writes cleanly.
-- **Async Artwork Downloads**: Artwork downloads are processed by a pooled `imageDownloadExecutor` configured with a `CallerRunsPolicy` rejection handler. This applies natural backpressure to the seeding thread when the pool is saturated, and discards any remaining tasks gracefully upon context shutdown without throwing `RejectedExecutionException`.
+- **Non-Blocking Startup**: Seeding runs on a dedicated single-threaded executor (`databaseSeederExecutor`), so the main thread binds to its port and passes container probes fast.
+- **Image validation at startup**: Even with a populated database, the seeder scans every record and compares it to files on disk. Missing illustrations go into a background download queue.
+- **Graceful interruption**: On scale-downs, redeployments, or container restarts, Spring's `@PreDestroy` hook signals the seeder thread to stop, halting in-flight card downloads and batch writes.
+- **Async artwork downloads**: A pooled `imageDownloadExecutor` with a `CallerRunsPolicy` rejection handler runs downloads. When the pool fills up, that handler pushes work back to the seeding thread and slows it down naturally. On context shutdown it drops whatever's left. No `RejectedExecutionException`.
 
 ---
 
@@ -211,13 +211,13 @@ docker compose up -d
 
 This starts:
 
-- `db` — PostgreSQL 16
-- `backend` — Spring Boot app on port 8080 (loads env from `.env`)
-- `frontend` — Vite dev server on port 5173
+- `db`: PostgreSQL 16
+- `backend`: Spring Boot app on port 8080 (loads env from `.env`)
+- `frontend`: Vite dev server on port 5173
 
 ##### Live Development with Compose Watch
 
-The Compose environment is preconfigured to support **Docker Compose Watch** for hot reloading and file syncing. To run container services with file syncing and auto-rebuilds enabled, run:
+The Compose setup supports **Docker Compose Watch** for hot reloading and file syncing. To run services with file syncing and auto-rebuilds, run:
 
 ```bash
 docker compose watch
@@ -225,7 +225,7 @@ docker compose watch
 
 #### Option 2: Run services manually
 
-To run services manually, you must first have the PostgreSQL database running. You can run only the database container using:
+To run services manually, you need PostgreSQL up first. Start just the database container with:
 
 ```bash
 docker compose up -d db
@@ -233,7 +233,7 @@ docker compose up -d db
 
 ##### Backend
 
-Set up the required environment variables in your shell (note that Spring Boot does not automatically load the `.env` file when run manually, so you must export the variables or rely on defaults if running on localhost), then run:
+Set the required environment variables in your shell. Spring Boot doesn't load `.env` when run manually, so export the variables or rely on defaults on localhost. Then run:
 
 ```bash
 cd backend
@@ -262,35 +262,35 @@ Run these from their respective subdirectories:
 
 ## Backend Configuration
 
-Important settings are defined in `backend/src/main/resources/application.yml` (or configured as fallbacks in code):
+Key settings live in `backend/src/main/resources/application.yml`, with fallbacks in code:
 
-- `spring.datasource.url` — Database connection URL
-- `spring.ai.google.genai.api-key` — Gemini API Key for AI features (defaults to `${GEMINI_API_KEY}`)
-- `spring.ai.google.genai.chat.model` — Model version used for GenAI tasks (defaults to `gemini-3.1-flash-lite`)
-- `jwt.secret` — HMAC signature key for JWT authentication
-- `jwt.expiration` — Token expiration duration in milliseconds
-- `refresh-token.duration-days` — Refresh token lifetime in days
-- `refresh-token.max-per-user` — Session concurrency limit per user
-- `refresh-token.cleanup-schedule` — Cron expression for clearing expired refresh tokens
-- `refresh-token.grace-period-seconds` — Token replacement grace period in seconds
-- `app.upload-dir` — Folder destination for cached card images
-- `app.seed.cards` — Flag to seed cards from YGOPRODeck on startup
-- `app.seed.users` — Flag to seed admin and sample users on startup (configured in code, defaults to true)
-- `app.ygoprodeck.api-url` — External card catalog data source endpoint (configured in code, defaults to YGOProDeck api v7)
+- `spring.datasource.url`: Database connection URL
+- `spring.ai.google.genai.api-key`: Gemini API key for AI features (defaults to `${GEMINI_API_KEY}`)
+- `spring.ai.google.genai.chat.model`: Model version used for GenAI tasks (defaults to `gemini-3.1-flash-lite`)
+- `jwt.secret`: HMAC signature key for JWT authentication
+- `jwt.expiration`: Token expiration duration in milliseconds
+- `refresh-token.duration-days`: Refresh token lifetime in days
+- `refresh-token.max-per-user`: Session concurrency limit per user
+- `refresh-token.cleanup-schedule`: Cron expression for clearing expired refresh tokens
+- `refresh-token.grace-period-seconds`: Token replacement grace period in seconds
+- `app.upload-dir`: Folder destination for cached card images
+- `app.seed.cards`: Flag to seed cards from YGOPRODeck on startup
+- `app.seed.users`: Flag to seed admin and sample users on startup (configured in code, defaults to true)
+- `app.ygoprodeck.api-url`: External card catalog data source endpoint (configured in code, defaults to YGOProDeck api v7)
 
 ### Docker/System environment variables
 
-- `DB_HOST` — Database address host (defaults to `localhost`, or `db` inside Docker)
-- `POSTGRES_USER` — Database user (defaults to `postgres`)
-- `POSTGRES_PASSWORD` — Database password (defaults to `postgres`)
-- `IMAGE_UPLOAD_DIR` — Path to save card illustrations
-- `GEMINI_API_KEY` — API Key required for Spring AI integration
-- `ALLOWED_CORS_ORIGINS` — Allowed client domains for CORS headers
-- `JWT_SECRET` — Custom secret override for token signatures
-- `VITE_API_URL` — Base API URL used by the Vite development server proxy (points to http://backend:8080 inside Docker Compose, or http://localhost:8080 for host-local dev)
-- `PRODUCTION_API_URL` — Redundant variable defined for deployment pipelines (the production bundle only uses relative `/api` paths handled by the cloud load balancer)
+- `DB_HOST`: Database address host (defaults to `localhost`, or `db` inside Docker)
+- `POSTGRES_USER`: Database user (defaults to `postgres`)
+- `POSTGRES_PASSWORD`: Database password (defaults to `postgres`)
+- `IMAGE_UPLOAD_DIR`: Path to save card illustrations
+- `GEMINI_API_KEY`: API key required for Spring AI integration
+- `ALLOWED_CORS_ORIGINS`: Allowed client domains for CORS headers
+- `JWT_SECRET`: Custom secret override for token signatures
+- `VITE_API_URL`: Base API URL used by the Vite development server proxy (points to http://backend:8080 inside Docker Compose, or http://localhost:8080 for host-local dev)
+- `PRODUCTION_API_URL`: Redundant variable defined for deployment pipelines (the production bundle only uses relative `/api` paths handled by the cloud load balancer)
 
-## Backend Behavior
+## Backend behavior
 
 Unless the flags `app.seed.cards` and `app.seed.users` are set to false, on startup the backend will:
 
@@ -308,11 +308,11 @@ The default seeded accounts are:
 
 ## API Collection Usage
 
-The repository includes a Bruno collection under the `bruno/` folder for exercising the app locally. It is useful for:
+The `bruno/` folder holds a Bruno collection for hitting the API locally. It's handy for:
 
-- testing authentication flows such as login and logout
+- testing auth flows like login and logout
 - creating and validating decks through the API
-- exploring card and deck endpoints without needing to build a custom client
+- exploring card and deck endpoints without building a custom client
 - quickly verifying backend behavior while frontend changes are in progress
 
 To use it:
@@ -323,19 +323,19 @@ To use it:
 
 ## Troubleshooting
 
-- If the frontend cannot reach the backend, verify that the backend container is running and that `VITE_API_URL` points to the correct origin.
-- If the backend fails to start, confirm that PostgreSQL is reachable and that required environment variables such as `GEMINI_API_KEY` are set.
-- If you see port conflicts, stop existing services that are using ports `5173`, `8080`, or `5432` before restarting the stack.
-- To reset local state completely, run `docker compose down -v` and start again from a clean database. The `-v` flag removes named volumes (including the database).
+- If the frontend cannot reach the backend, verify the backend container is running and that `VITE_API_URL` points to the correct origin.
+- If the backend fails to start, confirm PostgreSQL is reachable and env vars like `GEMINI_API_KEY` are set.
+- If you see port conflicts, stop services on ports `5173`, `8080`, or `5432` before restarting the stack.
+- To reset local state, run `docker compose down -v` to start over with a clean database. The `-v` flag drops named volumes (including the database).
 
 ## CI/CD & Deployment
 
-- **Continuous Integration (`ci.yml`)**: Triggered on pull requests and pushes to `main`, `master`, and `**/feature/**`. Runs linting/formatting checks on the frontend, executes Maven tests on the backend, and builds the deployable artifacts.
-- **Continuous Deployment (`deploy.yml`)**: Triggered on push to `main` (or run manually via workflow dispatch). Authenticates to Google Cloud using Workload Identity Federation (WIF) and performs the following pipeline:
-  1. Builds and pushes the Backend Docker image to GCP Artifact Registry.
-  2. Deploys the Backend to Google Cloud Run, mounting a Cloud Storage bucket for persistent card artwork image caching and hooking up Cloud SQL connection.
-  3. Builds the frontend with production configurations and copies static assets to a Google Cloud Storage bucket.
-  4. Invalidates the GCP Load Balancer Cloud CDN cache.
+- **Continuous Integration (`ci.yml`)**: Triggered on pull requests and pushes to `main`, `master`, and `**/feature/**`. It runs frontend lint/format checks, Maven tests on the backend, and builds deployable artifacts.
+- **Continuous Deployment (`deploy.yml`)**: Triggered on push to `main` (or on manual dispatch). It authenticates to Google Cloud with Workload Identity Federation (WIF) and runs this pipeline:
+  1. Builds and pushes the backend image to Artifact Registry.
+  2. Deploys the backend to Cloud Run, mounting a Cloud Storage bucket for card artwork and connecting Cloud SQL.
+  3. Builds the frontend for production and copies static assets to a Cloud Storage bucket.
+  4. Invalidates the Cloud CDN cache.
 
 To enable the CD pipeline in your GitHub repository, configure the following secrets and variables:
 
