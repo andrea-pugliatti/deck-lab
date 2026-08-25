@@ -3,22 +3,22 @@ import { BookOpen, Layers, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 
-import DeckGridCard from "../components/deck/DeckGridCard";
-import DeckListCard from "../components/deck/DeckListCard";
-import FormatSelector from "../components/deck/FormatSelector";
-import EmptyState from "../components/EmptyState";
-import ErrorAlert from "../components/ErrorAlert";
-import LoadingSpinner from "../components/LoadingSpinner";
-import PageHeader from "../components/PageHeader";
-import Pagination from "../components/Pagination";
-import ShowingPageIndicator from "../components/ShowingPageIndicator";
-import ConfirmDialog from "../components/ui/ConfirmDialog";
-import Input from "../components/ui/Input";
-import ViewToggle from "../components/ui/ViewToggle";
-import { useAuth } from "../context/AuthContext";
-import { useDeckSearch } from "../hooks/useDeckSearch";
-import { useViewPreference } from "../hooks/useViewPreference";
-import { deleteDeck, getFormats } from "../services/deck";
+import EmptyState from "../../../components/feedback/EmptyState";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import PageHeader from "../../../components/navigation/PageHeader";
+import Pagination from "../../../components/navigation/Pagination";
+import ShowingPageIndicator from "../../../components/navigation/ShowingPageIndicator";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
+import Input from "../../../components/ui/Input";
+import ViewToggle from "../../../components/ui/ViewToggle";
+import { useAuth } from "../../../features/auth";
+import { deleteDeck, getFormats } from "../../../features/decks";
+import DeckGridCard from "../../../features/decks/components/DeckGridCard";
+import DeckListCard from "../../../features/decks/components/DeckListCard";
+import FormatSelector from "../../../features/decks/components/FormatSelector";
+import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
+import { useViewPreference } from "../../../hooks/useViewPreference";
 
 /**
  * Properties for the Decks page component.

@@ -1,5 +1,8 @@
 import { SlidersHorizontal } from "lucide-react";
 
+import Button from "../../../components/ui/Button";
+import Label from "../../../components/ui/Label";
+import Select from "../../../components/ui/Select";
 import {
   isCardAttribute,
   isCardRace,
@@ -8,10 +11,7 @@ import {
   type CardFiltersState,
   type CardRace,
   type CardType,
-} from "../../types";
-import Button from "../ui/Button";
-import Label from "../ui/Label";
-import Select from "../ui/Select";
+} from "../../../types";
 
 /**
  * Properties for the {@link CardFilters} component.

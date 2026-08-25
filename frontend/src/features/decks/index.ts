@@ -1,5 +1,3 @@
-export { default as Decks } from "./pages/Decks";
-export { default as DeckDetail } from "./pages/DeckDetail";
 export { default as DeckGridCard } from "./components/DeckGridCard";
 export { default as DeckGridItem } from "./components/DeckGridItem";
 export { default as DeckListCard } from "./components/DeckListCard";

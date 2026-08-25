@@ -6,8 +6,8 @@ import {
   refreshToken as apiRefreshToken,
   register as apiRegister,
   parseJwt,
-} from "../services/auth";
-import type { User } from "../types";
+} from "../../../features/auth";
+import type { User } from "../../../types";
 
 /**
  * Properties and authentication functions provided by the AuthContext.

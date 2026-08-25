@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { Format } from "../../types";
+import type { Format } from "../../../types";
 import DeckListCard from "./DeckListCard";
 
 // Mock useNavigate from react-router

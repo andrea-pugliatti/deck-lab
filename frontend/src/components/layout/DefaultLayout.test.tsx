@@ -4,15 +4,15 @@ import { describe, expect, it, vi } from "vitest";
 
 import DefaultLayout from "./DefaultLayout";
 
-vi.mock("../components/Header", () => ({
+vi.mock("./Header", () => ({
   default: () => <div data-testid="mock-header">Header</div>,
 }));
 
-vi.mock("../components/Footer", () => ({
+vi.mock("./Footer", () => ({
   default: () => <div data-testid="mock-footer">Footer</div>,
 }));
 
-vi.mock("../components/ScrollToTop", () => ({
+vi.mock("./ScrollToTop", () => ({
   default: () => null,
 }));
 

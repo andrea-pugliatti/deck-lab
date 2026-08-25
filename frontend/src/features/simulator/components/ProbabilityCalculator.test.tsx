@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import type { DeckCardItem } from "../../types";
+import type { DeckCardItem } from "../../../types";
 import ProbabilityCalculator from "./ProbabilityCalculator";
 
 describe("ProbabilityCalculator component", () => {

@@ -1,7 +1,7 @@
-import { API_BASE_URL } from "../../config/env";
-import { getCardTheme } from "../../utils/card";
-import Badge from "../ui/Badge";
-import Button from "../ui/Button";
+import Badge from "../../../components/ui/Badge";
+import Button from "../../../components/ui/Button";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import type { SearchCardListItemProps } from "./SearchCardListItem";
 
 /**

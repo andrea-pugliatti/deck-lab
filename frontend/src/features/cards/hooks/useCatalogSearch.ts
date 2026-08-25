@@ -1,4 +1,5 @@
-import { getCardsEndpoint } from "../services/card";
+import { getCardsEndpoint } from "../../../features/cards";
+import { useSearch } from "../../../hooks/useSearch";
 import {
   isCardAttribute,
   isCardRace,
@@ -6,8 +7,7 @@ import {
   type Card,
   type CardFiltersState,
   type Page,
-} from "../types";
-import { useSearch } from "./useSearch";
+} from "../../../types";
 
 /**
  * Options configuration for configuring the catalog search hooks.

@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { generateAiDeck } from "../../../services/deck";
-import type { Format } from "../../../types";
+import { generateAiDeck } from "../../../../features/decks";
+import type { Format } from "../../../../types";
 import AiDeckWizard from "./AiDeckWizard";
 
 // Mock services
-vi.mock("../../../services/deck", () => ({
+vi.mock("../../../../features/decks", () => ({
   generateAiDeck: vi.fn(),
 }));
 

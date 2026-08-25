@@ -1,4 +1,4 @@
-import type { Card, CardSection, DeckCardItem, Format } from "../types";
+import type { Card, CardSection, DeckCardItem, Format } from "../../../types";
 
 /**
  * Rules and sizing limitations enforced by a specific Yu-Gi-Oh! game format.

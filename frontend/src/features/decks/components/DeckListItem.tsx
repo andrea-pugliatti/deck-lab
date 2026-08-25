@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 
-import { API_BASE_URL } from "../../config/env";
-import { getCardTheme } from "../../utils/card";
-import Badge from "../ui/Badge";
+import Badge from "../../../components/ui/Badge";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import type { DeckGridItemProps } from "./DeckGridItem";
 
 /**

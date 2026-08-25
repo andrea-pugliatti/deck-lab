@@ -2,15 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Calendar, Layers } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 
-import ErrorAlert from "../components/ErrorAlert";
-import DeckSelector from "../components/hand-simulator/DeckSelector";
-import SimulatorWorkspace from "../components/hand-simulator/SimulatorWorkspace";
-import LoadingSpinner from "../components/LoadingSpinner";
-import PageHeader from "../components/PageHeader";
-import Button from "../components/ui/Button";
-import { getDeck } from "../services/deck";
-import type { Deck } from "../types";
-import { formatRelativeTime } from "../utils/date";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import PageHeader from "../../../components/navigation/PageHeader";
+import Button from "../../../components/ui/Button";
+import { getDeck } from "../../../features/decks";
+import DeckSelector from "../../../features/simulator/components/DeckSelector";
+import SimulatorWorkspace from "../../../features/simulator/components/SimulatorWorkspace";
+import type { Deck } from "../../../types";
+import { formatRelativeTime } from "../../../utils/date";
 
 /**
  * HandSimulator Page Component.

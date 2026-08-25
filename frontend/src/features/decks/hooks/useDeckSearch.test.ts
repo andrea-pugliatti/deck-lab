@@ -13,7 +13,7 @@ vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock("./useDebounce", () => ({
+vi.mock("../../../hooks/useDebounce", () => ({
   useDebounce: vi.fn((val) => val),
 }));
 

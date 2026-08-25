@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearch } from "../hooks/useCatalogSearch";
-import { getFormats } from "../services/deck";
-import type { Card, CardFiltersState } from "../types";
+import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
+import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
+import { getFormats } from "../../../features/decks";
+import type { Card, CardFiltersState } from "../../../types";
 
 /**
  * Properties and state values provided by the CatalogSearchContext.

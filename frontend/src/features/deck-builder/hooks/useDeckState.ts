@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useReducer } from "react";
 
-import { deckReducer, initialState } from "../reducers/deckReducer";
-import { getDeck } from "../services/deck";
-import { saveDeck as saveDeckService, validateDeck } from "../services/deck";
-import type { Card, CardSection, Deck, DeckCardItem, Format, DeckPayload } from "../types";
+import { deckReducer, initialState } from "../../../features/deck-builder/reducers/deckReducer";
+import { getDeck } from "../../../features/decks";
+import { saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
+import type { Card, CardSection, Deck, DeckCardItem, Format, DeckPayload } from "../../../types";
 
 /**
  * Helper function to map state components into a DeckPayload object for API calls.

@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
 
-import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
-import Input from "../ui/Input";
-import Label from "../ui/Label";
-import Select from "../ui/Select";
+import Input from "../../../components/ui/Input";
+import Label from "../../../components/ui/Label";
+import Select from "../../../components/ui/Select";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../../types";
 
 /**
  * Properties for the {@link DeckBuilderFilters} component.

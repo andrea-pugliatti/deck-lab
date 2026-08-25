@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import type { SimulatorCardInstance } from "../../types";
+import type { SimulatorCardInstance } from "../../../types";
 import SimulatorCard from "./SimulatorCard";
 
 /**

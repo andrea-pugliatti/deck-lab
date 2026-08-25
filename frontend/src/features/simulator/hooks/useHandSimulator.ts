@@ -1,7 +1,10 @@
 import { useEffect, useReducer, useRef } from "react";
 
-import { simulatorReducer, initialSimulatorState } from "../reducers/simulatorReducer";
-import type { Deck, SimulatorCardInstance } from "../types";
+import {
+  simulatorReducer,
+  initialSimulatorState,
+} from "../../../features/simulator/reducers/simulatorReducer";
+import type { Deck, SimulatorCardInstance } from "../../../types";
 
 /**
  * Custom React hook that coordinates drawing simulations and card zoning.

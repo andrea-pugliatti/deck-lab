@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import DeckBuilder from "./DeckBuilder";
 
-vi.mock("../services/api", () => ({
+vi.mock("../../../services/api", () => ({
   apiFetch: vi.fn().mockImplementation(async (_url: string) => {
     return {
       ok: true,
@@ -13,15 +13,15 @@ vi.mock("../services/api", () => ({
   }),
 }));
 
-vi.mock("../components/deck-builder/DeckBuilderFilters", () => ({
+vi.mock("../../../features/deck-builder/components/DeckBuilderFilters", () => ({
   default: () => <div data-testid="builder-filters">BuilderFilters</div>,
 }));
 
-vi.mock("../components/deck-builder/DeckBuilderCardList", () => ({
+vi.mock("../../../features/deck-builder/components/DeckBuilderCardList", () => ({
   default: () => <div data-testid="card-list">CardList</div>,
 }));
 
-vi.mock("../components/deck-builder/DeckSectionList", () => ({
+vi.mock("../../../features/deck-builder/components/DeckSectionList", () => ({
   default: () => <div data-testid="sections">Sections</div>,
 }));
 

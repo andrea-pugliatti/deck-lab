@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { CardType, DeckCardItem, Format } from "../../types";
+import type { CardType, DeckCardItem, Format } from "../../../types";
 import DeckSectionList from "./DeckSectionList";
 
 describe("DeckSectionList component", () => {

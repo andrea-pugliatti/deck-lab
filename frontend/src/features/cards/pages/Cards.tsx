@@ -1,20 +1,20 @@
 import { BookOpen, Search } from "lucide-react";
 
-import CardFilters from "../components/card/CardFilters";
-import CardGridItem from "../components/card/CardGridItem";
-import CardListItem from "../components/card/CardListItem";
-import EmptyState from "../components/EmptyState";
-import ErrorAlert from "../components/ErrorAlert";
-import LoadingSpinner from "../components/LoadingSpinner";
-import PageHeader from "../components/PageHeader";
-import Pagination from "../components/Pagination";
-import ShowingPageIndicator from "../components/ShowingPageIndicator";
-import Input from "../components/ui/Input";
-import ViewToggle from "../components/ui/ViewToggle";
-import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearch } from "../hooks/useCatalogSearch";
-import { useViewPreference } from "../hooks/useViewPreference";
-import type { CardAttribute, CardRace, CardType } from "../types";
+import EmptyState from "../../../components/feedback/EmptyState";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import PageHeader from "../../../components/navigation/PageHeader";
+import Pagination from "../../../components/navigation/Pagination";
+import ShowingPageIndicator from "../../../components/navigation/ShowingPageIndicator";
+import Input from "../../../components/ui/Input";
+import ViewToggle from "../../../components/ui/ViewToggle";
+import CardFilters from "../../../features/cards/components/CardFilters";
+import CardGridItem from "../../../features/cards/components/CardGridItem";
+import CardListItem from "../../../features/cards/components/CardListItem";
+import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
+import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
+import { useViewPreference } from "../../../hooks/useViewPreference";
+import type { CardAttribute, CardRace, CardType } from "../../../types";
 
 /**
  * Number of cards to display per page in the pagination grid.

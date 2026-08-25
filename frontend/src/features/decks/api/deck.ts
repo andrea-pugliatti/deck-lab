@@ -1,3 +1,4 @@
+import { apiFetch, parseResponseError, parseResponseErrors } from "../../../services/api";
 import type {
   AiGeneratedDeck,
   Deck,
@@ -9,8 +10,7 @@ import type {
   Strategy,
   Suggestion,
   YdkImportResponse,
-} from "../types";
-import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
+} from "../../../types";
 
 /**
  * Generates the API endpoint URL with query parameters for search/paging decks.

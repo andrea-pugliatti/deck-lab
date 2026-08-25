@@ -1,9 +1,9 @@
 import { Eye, Flame, Shield, Star } from "lucide-react";
 
-import { API_BASE_URL } from "../../config/env";
-import type { SimulatorCardInstance } from "../../types";
-import { getCardTheme } from "../../utils/card";
-import Badge from "../ui/Badge";
+import Badge from "../../../components/ui/Badge";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import type { SimulatorCardInstance } from "../../../types";
 
 /**
  * Props for the {@link CardInspector} component.

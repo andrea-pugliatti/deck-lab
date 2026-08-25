@@ -1,10 +1,10 @@
 import { Layers } from "lucide-react";
 
-import type { Format } from "../../types";
-import Input from "../ui/Input";
-import Label from "../ui/Label";
-import Select from "../ui/Select";
-import Textarea from "../ui/Textarea";
+import Input from "../../../components/ui/Input";
+import Label from "../../../components/ui/Label";
+import Select from "../../../components/ui/Select";
+import Textarea from "../../../components/ui/Textarea";
+import type { Format } from "../../../types";
 
 /**
  * Properties for the {@link DeckFormHeader} component.

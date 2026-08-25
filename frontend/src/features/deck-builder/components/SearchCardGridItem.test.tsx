@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Card, CardAttribute, CardRace, CardType } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../../types";
 import SearchCardGridItem from "./SearchCardGridItem";
 
 describe("SearchCardGridItem component", () => {

@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 
-import Button from "../../ui/Button";
+import Button from "../../../../components/ui/Button";
 
 /**
  * Props for the {@link WizardWarnings} component.

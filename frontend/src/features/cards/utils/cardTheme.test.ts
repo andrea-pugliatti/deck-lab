@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getCardTheme } from "./card";
+import { getCardTheme } from "./cardTheme";
 
 describe("card utility", () => {
   describe("getCardTheme", () => {

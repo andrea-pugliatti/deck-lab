@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { CardType, Deck } from "../types";
+import type { CardType, Deck } from "../../../types";
 import { useHandSimulator } from "./useHandSimulator";
 
 describe("useHandSimulator hook", () => {

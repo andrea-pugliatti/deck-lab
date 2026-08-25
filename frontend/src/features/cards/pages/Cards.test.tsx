@@ -2,27 +2,27 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearch } from "../hooks/useCatalogSearch";
+import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
+import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import Cards from "./Cards";
 
-vi.mock("../hooks/useCatalogSearch", () => ({
+vi.mock("../../../features/cards/hooks/useCatalogSearch", () => ({
   useCatalogSearch: vi.fn(),
 }));
 
-vi.mock("../hooks/useCardMetadata", () => ({
+vi.mock("../../../features/cards/hooks/useCardMetadata", () => ({
   useCardMetadata: vi.fn(),
 }));
 
-vi.mock("../components/card/CardFilters", () => ({
+vi.mock("../../../features/cards/components/CardFilters", () => ({
   default: () => <div data-testid="card-filters">CardFilters</div>,
 }));
 
-vi.mock("../components/card/CardGridItem", () => ({
+vi.mock("../../../features/cards/components/CardGridItem", () => ({
   default: ({ name }: { name: string }) => <div data-testid="card-grid-item">{name}</div>,
 }));
 
-vi.mock("../components/card/CardListItem", () => ({
+vi.mock("../../../features/cards/components/CardListItem", () => ({
   default: ({ name }: { name: string }) => <div data-testid="card-list-item">{name}</div>,
 }));
 

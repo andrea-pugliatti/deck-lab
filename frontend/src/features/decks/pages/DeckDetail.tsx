@@ -3,21 +3,21 @@ import { ArrowLeft, Calendar, Download, Edit, Eye, Layers, Sparkles, Trash2 } fr
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
-import DeckGridItem from "../components/deck/DeckGridItem";
-import DeckListItem from "../components/deck/DeckListItem";
-import ErrorAlert from "../components/ErrorAlert";
-import LoadingSpinner from "../components/LoadingSpinner";
-import Badge from "../components/ui/Badge";
-import Button from "../components/ui/Button";
-import ConfirmDialog from "../components/ui/ConfirmDialog";
-import ViewToggle from "../components/ui/ViewToggle";
-import { useAuth } from "../context/AuthContext";
-import { useViewPreference } from "../hooks/useViewPreference";
-import { getFormatRules } from "../reducers/deckReducer";
-import { deleteDeck, exportYdk, getDeck } from "../services/deck";
-import type { Deck } from "../types";
-import { getCardTheme } from "../utils/card";
-import { formatRelativeTime } from "../utils/date";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import Badge from "../../../components/ui/Badge";
+import Button from "../../../components/ui/Button";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
+import ViewToggle from "../../../components/ui/ViewToggle";
+import { useAuth } from "../../../features/auth";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
+import { deleteDeck, exportYdk, getDeck } from "../../../features/decks";
+import DeckGridItem from "../../../features/decks/components/DeckGridItem";
+import DeckListItem from "../../../features/decks/components/DeckListItem";
+import { useViewPreference } from "../../../hooks/useViewPreference";
+import type { Deck } from "../../../types";
+import { formatRelativeTime } from "../../../utils/date";
 
 /**
  * DeckDetail Page Component.

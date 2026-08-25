@@ -2,22 +2,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import ErrorBoundary from "./components/ErrorBoundary";
-import { AuthProvider } from "./context/AuthContext";
-import AuthLayout from "./layouts/AuthLayout";
-import DefaultLayout from "./layouts/DefaultLayout";
-import ProtectedRoute from "./layouts/ProtectedRoute";
+import ErrorBoundary from "./components/feedback/ErrorBoundary";
+import DefaultLayout from "./components/layout/DefaultLayout";
+import { AuthLayout, AuthProvider, ProtectedRoute } from "./features/auth";
 
-const CardDetail = lazy(() => import("./pages/CardDetail"));
-const Cards = lazy(() => import("./pages/Cards"));
-const DeckBuilder = lazy(() => import("./pages/DeckBuilder"));
-const DeckDetail = lazy(() => import("./pages/DeckDetail"));
-const Decks = lazy(() => import("./pages/Decks"));
-const HandSimulator = lazy(() => import("./pages/HandSimulator"));
-const Home = lazy(() => import("./pages/Home"));
-const Login = lazy(() => import("./pages/Login"));
+const CardDetail = lazy(() => import("./features/cards/pages/CardDetail"));
+const Cards = lazy(() => import("./features/cards/pages/Cards"));
+const DeckBuilder = lazy(() => import("./features/deck-builder/pages/DeckBuilder"));
+const DeckDetail = lazy(() => import("./features/decks/pages/DeckDetail"));
+const Decks = lazy(() => import("./features/decks/pages/Decks"));
+const HandSimulator = lazy(() => import("./features/simulator/pages/HandSimulator"));
+const Home = lazy(() => import("./features/home/pages/Home"));
+const Login = lazy(() => import("./features/auth/pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const Register = lazy(() => import("./pages/Register"));
+const Register = lazy(() => import("./features/auth/pages/Register"));
 
 const queryClient = new QueryClient({
   defaultOptions: {

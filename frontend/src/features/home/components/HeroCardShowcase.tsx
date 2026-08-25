@@ -2,8 +2,8 @@ import { Flame, Sparkles, Star, Zap } from "lucide-react";
 import { useRef } from "react";
 import type { MouseEvent } from "react";
 
-import { API_BASE_URL } from "../config/env";
-import type { Card } from "../types";
+import { API_BASE_URL } from "../../../config/env";
+import type { Card } from "../../../types";
 
 /**
  * Props for the {@link HeroCardShowcase} component.

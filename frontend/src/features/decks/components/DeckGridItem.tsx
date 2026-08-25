@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 
-import { API_BASE_URL } from "../../config/env";
-import { getCardTheme } from "../../utils/card";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 
 /**
  * Properties for the {@link DeckGridItem} component.

@@ -1,8 +1,8 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 
-import { API_BASE_URL } from "../../config/env";
-import { getCardTheme } from "../../utils/card";
-import Button from "../ui/Button";
+import Button from "../../../components/ui/Button";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import type { EditorCardListItemProps } from "./EditorCardListItem";
 
 /**

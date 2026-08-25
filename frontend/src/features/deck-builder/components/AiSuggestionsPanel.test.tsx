@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import { fetchAiSuggestions } from "../../services/deck";
-import type { CardType, DeckCardItem, Format, Suggestion } from "../../types";
+import { fetchAiSuggestions } from "../../../features/decks";
+import type { CardType, DeckCardItem, Format, Suggestion } from "../../../types";
 import AiSuggestionsPanel from "./AiSuggestionsPanel";
 
-vi.mock("../../services/deck", () => ({
+vi.mock("../../../features/decks", () => ({
   fetchAiSuggestions: vi.fn(),
 }));
 

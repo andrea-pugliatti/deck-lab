@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { Card, CardAttribute, CardRace, CardType, Format } from "../types";
+import type { Card, CardAttribute, CardRace, CardType, Format } from "../../../types";
 import {
   canAddCard,
   clampQuantity,

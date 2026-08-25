@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it } from "vitest";
 
-import type { Card, CardAttribute, CardRace, CardType } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../../types";
 import CardListItem from "./CardListItem";
 
 describe("CardListItem component", () => {

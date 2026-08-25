@@ -1,6 +1,6 @@
-import { getFormatRules } from "../../reducers/deckReducer";
-import type { CardSection, DeckCardItem, Format } from "../../types";
-import Badge from "../ui/Badge";
+import Badge from "../../../components/ui/Badge";
+import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
+import type { CardSection, DeckCardItem, Format } from "../../../types";
 import EditorCardGridItem from "./EditorCardGridItem";
 import EditorCardListItem from "./EditorCardListItem";
 

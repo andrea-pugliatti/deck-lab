@@ -1,10 +1,10 @@
 import { Calendar, Edit, Layers, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 
-import type { Format } from "../../types";
-import { formatRelativeTime } from "../../utils/date";
-import Badge from "../ui/Badge";
-import Button, { getButtonClasses } from "../ui/Button";
+import Badge from "../../../components/ui/Badge";
+import Button, { getButtonClasses } from "../../../components/ui/Button";
+import type { Format } from "../../../types";
+import { formatRelativeTime } from "../../../utils/date";
 
 /**
  * Properties for the {@link DeckGridCard} component.

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getMetadata } from "../services/card";
+import { getMetadata } from "../../../features/cards";
 
 type MetadataKey = "types" | "attributes" | "races" | "archetypes";
 

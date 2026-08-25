@@ -1,7 +1,9 @@
 import { AlertCircle, RotateCcw, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
 
-import { fetchAiSuggestions } from "../../services/deck";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import Button from "../../../components/ui/Button";
+import { fetchAiSuggestions } from "../../../features/decks";
 import type {
   Card,
   CardAttribute,
@@ -10,9 +12,7 @@ import type {
   DeckCardItem,
   Format,
   Suggestion,
-} from "../../types";
-import LoadingSpinner from "../LoadingSpinner";
-import Button from "../ui/Button";
+} from "../../../types";
 import AiSuggestionItem from "./AiSuggestionItem";
 
 /**

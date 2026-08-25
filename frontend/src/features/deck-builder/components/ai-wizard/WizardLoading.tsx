@@ -1,4 +1,4 @@
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../../../components/feedback/LoadingSpinner";
 
 /**
  * WizardLoading renders a centralized loading state with a spinner

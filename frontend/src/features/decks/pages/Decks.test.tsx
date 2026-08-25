@@ -2,21 +2,21 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useAuth } from "../context/AuthContext";
-import { useDeckSearch } from "../hooks/useDeckSearch";
-import { deleteDeck } from "../services/deck";
+import { useAuth } from "../../../features/auth";
+import { deleteDeck } from "../../../features/decks";
+import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
 import Decks from "./Decks";
 
-vi.mock("../hooks/useDeckSearch", () => ({
+vi.mock("../../../features/decks/hooks/useDeckSearch", () => ({
   useDeckSearch: vi.fn(),
 }));
 
-vi.mock("../context/AuthContext", () => ({
+vi.mock("../../../features/auth", () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock("../services/deck", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../services/deck")>();
+vi.mock("../../../features/decks", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../api/deck")>();
   return {
     ...actual,
     deleteDeck: vi.fn(),

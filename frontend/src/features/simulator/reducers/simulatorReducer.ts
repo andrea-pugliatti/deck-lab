@@ -1,4 +1,4 @@
-import type { Deck, SimulatorCardInstance } from "../types";
+import type { Deck, SimulatorCardInstance } from "../../../types";
 
 /**
  * State representing all active cards in various game zones

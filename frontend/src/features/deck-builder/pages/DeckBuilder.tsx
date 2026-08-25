@@ -2,22 +2,22 @@ import { ArrowLeft, RotateCcw, Sparkles, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import AiDeckWizard from "../components/deck-builder/ai-wizard/AiDeckWizard";
-import AiSuggestionsPanel from "../components/deck-builder/AiSuggestionsPanel";
-import DeckBuilderCardList from "../components/deck-builder/DeckBuilderCardList";
-import DeckBuilderFilters from "../components/deck-builder/DeckBuilderFilters";
-import DeckFormHeader from "../components/deck-builder/DeckFormHeader";
-import DeckSectionList from "../components/deck-builder/DeckSectionList";
-import DeckValidationErrors from "../components/deck-builder/DeckValidationErrors";
-import Pagination from "../components/Pagination";
-import Button from "../components/ui/Button";
-import ConfirmDialog from "../components/ui/ConfirmDialog";
-import ViewToggle from "../components/ui/ViewToggle";
-import { CatalogSearchProvider, useCatalogSearchContext } from "../context/CatalogSearchContext";
-import { useDeckState } from "../hooks/useDeckState";
-import { useViewPreference } from "../hooks/useViewPreference";
-import { importYdk } from "../services/deck";
-import type { AiGeneratedDeck } from "../types";
+import Pagination from "../../../components/navigation/Pagination";
+import Button from "../../../components/ui/Button";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
+import ViewToggle from "../../../components/ui/ViewToggle";
+import { CatalogSearchProvider, useCatalogSearchContext } from "../../../features/cards";
+import AiDeckWizard from "../../../features/deck-builder/components/ai-wizard/AiDeckWizard";
+import AiSuggestionsPanel from "../../../features/deck-builder/components/AiSuggestionsPanel";
+import DeckBuilderCardList from "../../../features/deck-builder/components/DeckBuilderCardList";
+import DeckBuilderFilters from "../../../features/deck-builder/components/DeckBuilderFilters";
+import DeckFormHeader from "../../../features/deck-builder/components/DeckFormHeader";
+import DeckSectionList from "../../../features/deck-builder/components/DeckSectionList";
+import DeckValidationErrors from "../../../features/deck-builder/components/DeckValidationErrors";
+import { useDeckState } from "../../../features/deck-builder/hooks/useDeckState";
+import { importYdk } from "../../../features/decks";
+import { useViewPreference } from "../../../hooks/useViewPreference";
+import type { AiGeneratedDeck } from "../../../types";
 
 /**
  * DeckBuilderContent Component.

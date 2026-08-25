@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Card, CardAttribute, CardRace, CardType, DeckCardItem } from "../../types";
+import type { Card, CardAttribute, CardRace, CardType, DeckCardItem } from "../../../types";
 import DeckBuilderCardList from "./DeckBuilderCardList";
 
 describe("DeckBuilderCardList component", () => {

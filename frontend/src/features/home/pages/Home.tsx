@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
 
-import CardGridItem from "../components/card/CardGridItem";
-import DeckGridCard from "../components/deck/DeckGridCard";
-import HeroCardShowcase from "../components/HeroCardShowcase";
-import SearchBar from "../components/SearchBar";
-import { getCards, getCardsEndpoint } from "../services/card";
-import { getDecks, getDecksQueryEndpoint } from "../services/deck";
-import type { Card, Deck, Page } from "../types";
+import SearchBar from "../../../components/navigation/SearchBar";
+import { getCards, getCardsEndpoint } from "../../../features/cards";
+import CardGridItem from "../../../features/cards/components/CardGridItem";
+import { getDecks, getDecksQueryEndpoint } from "../../../features/decks";
+import DeckGridCard from "../../../features/decks/components/DeckGridCard";
+import HeroCardShowcase from "../../../features/home/components/HeroCardShowcase";
+import type { Card, Deck, Page } from "../../../types";
 
 /**
  * URLSearchParams configurations used to fetch spotlight/showcase items on the home landing page.

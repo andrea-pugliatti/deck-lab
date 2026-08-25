@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getDeck, saveDeck as saveDeckService, validateDeck } from "../services/deck";
+import { getDeck, saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
 import { useDeckState } from "./useDeckState";
 
 vi.mock("@tanstack/react-query", () => ({
@@ -16,7 +16,7 @@ vi.mock("@tanstack/react-query", () => ({
   }),
 }));
 
-vi.mock("../services/deck", () => ({
+vi.mock("../../../features/decks", () => ({
   getDeck: vi.fn(),
   saveDeck: vi.fn(),
   validateDeck: vi.fn(),

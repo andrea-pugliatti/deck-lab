@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Link, Outlet } from "react-router";
 
-import LoadingSpinner from "../components/LoadingSpinner";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 
 /**
  * AuthLayout component.

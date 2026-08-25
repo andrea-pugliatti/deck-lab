@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../../features/auth";
 import Login from "./Login";
 
 vi.mock("../context/AuthContext", () => ({

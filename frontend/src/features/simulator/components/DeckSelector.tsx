@@ -2,21 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Globe, Search, Shuffle, User } from "lucide-react";
 import { useState } from "react";
 
-import { useAuth } from "../../context/AuthContext";
-import { useDeckSearch } from "../../hooks/useDeckSearch";
-import { useViewPreference } from "../../hooks/useViewPreference";
-import { getFormats } from "../../services/deck";
-import type { Format } from "../../types";
-import DeckGridCard from "../deck/DeckGridCard";
-import DeckListCard from "../deck/DeckListCard";
-import EmptyState from "../EmptyState";
-import ErrorAlert from "../ErrorAlert";
-import LoadingSpinner from "../LoadingSpinner";
-import Pagination from "../Pagination";
-import ShowingPageIndicator from "../ShowingPageIndicator";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import ViewToggle from "../ui/ViewToggle";
+import EmptyState from "../../../components/feedback/EmptyState";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import Pagination from "../../../components/navigation/Pagination";
+import ShowingPageIndicator from "../../../components/navigation/ShowingPageIndicator";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
+import ViewToggle from "../../../components/ui/ViewToggle";
+import { useAuth } from "../../../features/auth";
+import { getFormats } from "../../../features/decks";
+import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
+import { useViewPreference } from "../../../hooks/useViewPreference";
+import type { Format } from "../../../types";
+import DeckGridCard from "../../decks/components/DeckGridCard";
+import DeckListCard from "../../decks/components/DeckListCard";
 
 /**
  * Props for the {@link DeckSelector} component.

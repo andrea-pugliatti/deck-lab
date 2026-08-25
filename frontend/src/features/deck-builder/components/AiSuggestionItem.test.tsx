@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { CardType, DeckCardItem, Format, Suggestion } from "../../types";
+import type { CardType, DeckCardItem, Format, Suggestion } from "../../../types";
 import AiSuggestionItem from "./AiSuggestionItem";
 
 describe("AiSuggestionItem component", () => {

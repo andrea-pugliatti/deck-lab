@@ -1,5 +1,5 @@
-import type { Card, CardType, Page } from "../types";
-import { apiFetch, parseResponseError } from "./api";
+import { apiFetch, parseResponseError } from "../../../services/api";
+import type { Card, CardType, Page } from "../../../types";
 
 /**
  * Generates the API endpoint URL for searching/paging cards.

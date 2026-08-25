@@ -1,6 +1,6 @@
-import { getDecksQueryEndpoint } from "../services/deck";
-import type { Deck, Format, Page } from "../types";
-import { useSearch } from "./useSearch";
+import { getDecksQueryEndpoint } from "../../../features/decks";
+import { useSearch } from "../../../hooks/useSearch";
+import type { Deck, Format, Page } from "../../../types";
 
 /**
  * Filter state representation for decks.

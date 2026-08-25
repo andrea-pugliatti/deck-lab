@@ -1,10 +1,10 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { API_BASE_URL } from "../../config/env";
-import type { SimulatorCardInstance } from "../../types";
-import { getCardTheme } from "../../utils/card";
-import Input from "../ui/Input";
+import Input from "../../../components/ui/Input";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import type { SimulatorCardInstance } from "../../../types";
 
 /**
  * Props for the {@link DeckExplorerModal} component.

@@ -1,5 +1,5 @@
-import type { Card, CardSection, DeckCardItem } from "../../types";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import type { Card, CardSection, DeckCardItem } from "../../../types";
 import SearchCardGridItem from "./SearchCardGridItem";
 import SearchCardListItem from "./SearchCardListItem";
 

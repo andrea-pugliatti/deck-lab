@@ -1,5 +1,3 @@
-export { default as Cards } from "./pages/Cards";
-export { default as CardDetail } from "./pages/CardDetail";
 export { default as CardFilters } from "./components/CardFilters";
 export { default as CardGridItem } from "./components/CardGridItem";
 export { default as CardListItem } from "./components/CardListItem";

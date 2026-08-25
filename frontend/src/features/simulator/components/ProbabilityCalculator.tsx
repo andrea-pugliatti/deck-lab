@@ -1,10 +1,10 @@
 import { Calculator, TrendingUp, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import type { DeckCardItem } from "../../types";
-import { getCardTheme } from "../../utils/card";
-import { calculateProbability } from "../../utils/probability";
-import Badge from "../ui/Badge";
+import Badge from "../../../components/ui/Badge";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { calculateProbability } from "../../../features/simulator/utils/probability";
+import type { DeckCardItem } from "../../../types";
 
 /**
  * Props for the {@link ProbabilityCalculator} component.

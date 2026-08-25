@@ -1,9 +1,9 @@
 import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
-import { API_BASE_URL } from "../../config/env";
-import type { Card } from "../../types";
-import { getCardTheme } from "../../utils/card";
+import { API_BASE_URL } from "../../../config/env";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import type { Card } from "../../../types";
 
 /**
  * CardGridItem component renders a preview card representation in a grid layout.

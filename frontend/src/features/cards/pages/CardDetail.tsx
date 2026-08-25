@@ -3,14 +3,14 @@ import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
 import { useRef, type MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import ErrorAlert from "../components/ErrorAlert";
-import LoadingSpinner from "../components/LoadingSpinner";
-import Badge from "../components/ui/Badge";
-import Button from "../components/ui/Button";
-import { API_BASE_URL } from "../config/env";
-import { getCard } from "../services/card";
-import type { Card } from "../types";
-import { getCardTheme } from "../utils/card";
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import Badge from "../../../components/ui/Badge";
+import Button from "../../../components/ui/Button";
+import { API_BASE_URL } from "../../../config/env";
+import { getCard } from "../../../features/cards";
+import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import type { Card } from "../../../types";
 
 /**
  * CardDetail Page Component.

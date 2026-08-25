@@ -2,8 +2,8 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router";
 
-import { useAuth } from "../context/AuthContext";
-import Button, { getButtonClasses } from "./ui/Button";
+import Button, { getButtonClasses } from "../../components/ui/Button";
+import { useAuth } from "../../features/auth";
 
 /**
  * Representation of a single navigation link item.

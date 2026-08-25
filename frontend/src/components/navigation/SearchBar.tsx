@@ -3,10 +3,10 @@ import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-import { useDebounce } from "../hooks/useDebounce";
-import { getSuggestions } from "../services/card";
-import { getCardSuggestionsEndpoint } from "../services/card";
-import type { CardType } from "../types";
+import { getSuggestions } from "../../features/cards";
+import { getCardSuggestionsEndpoint } from "../../features/cards";
+import { useDebounce } from "../../hooks/useDebounce";
+import type { CardType } from "../../types";
 
 /**
  * Representation of a card suggestion result returned in the search suggestions dropdown.

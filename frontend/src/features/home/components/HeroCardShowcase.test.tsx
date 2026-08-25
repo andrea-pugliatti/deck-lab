@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { Card, CardAttribute, CardRace, CardType } from "../types";
+import type { Card, CardAttribute, CardRace, CardType } from "../../../types";
 import HeroCardShowcase from "./HeroCardShowcase";
 
 describe("HeroCardShowcase component", () => {

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router";
 
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import LoadingSpinner from "../components/LoadingSpinner";
-import ScrollToTop from "../components/ScrollToTop";
+import LoadingSpinner from "../../components/feedback/LoadingSpinner";
+import Footer from "../../components/layout/Footer";
+import Header from "../../components/layout/Header";
+import ScrollToTop from "../../components/layout/ScrollToTop";
 
 /**
  * DefaultLayout component.

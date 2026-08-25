@@ -5,27 +5,27 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import Home from "./Home";
 
-vi.mock("../components/SearchBar", () => ({
+vi.mock("../../../components/navigation/SearchBar", () => ({
   default: () => <div data-testid="searchbar">SearchBar</div>,
 }));
 
-vi.mock("../components/HeroCardShowcase", () => ({
+vi.mock("../../../features/home/components/HeroCardShowcase", () => ({
   default: () => <div data-testid="showcase">HeroCardShowcase</div>,
 }));
 
-vi.mock("../components/deck/DeckGridCard", () => ({
+vi.mock("../../../features/decks/components/DeckGridCard", () => ({
   default: ({ name }: { name: string }) => <div data-testid="deck-grid-card">{name}</div>,
 }));
 
-vi.mock("../components/deck/DeckListCard", () => ({
+vi.mock("../../../features/decks/components/DeckListCard", () => ({
   default: ({ name }: { name: string }) => <div data-testid="deck-list-card">{name}</div>,
 }));
 
-vi.mock("../components/card/CardGridItem", () => ({
+vi.mock("../../../features/cards/components/CardGridItem", () => ({
   default: ({ name }: { name: string }) => <div data-testid="card-grid-item">{name}</div>,
 }));
 
-vi.mock("../components/card/CardListItem", () => ({
+vi.mock("../../../features/cards/components/CardListItem", () => ({
   default: ({ name }: { name: string }) => <div data-testid="card-list-item">{name}</div>,
 }));
 

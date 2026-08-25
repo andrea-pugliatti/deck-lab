@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import type { SimulatorCardInstance } from "../../types";
+import type { SimulatorCardInstance } from "../../../types";
 import CardInspector from "./CardInspector";
 
 describe("CardInspector component", () => {

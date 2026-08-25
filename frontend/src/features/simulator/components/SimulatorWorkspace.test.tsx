@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useHandSimulator } from "../../hooks/useHandSimulator";
-import type { Deck, DeckCardItem, SimulatorCardInstance } from "../../types";
+import { useHandSimulator } from "../../../features/simulator/hooks/useHandSimulator";
+import type { Deck, DeckCardItem, SimulatorCardInstance } from "../../../types";
 import SimulatorWorkspace from "./SimulatorWorkspace";
 
-vi.mock("../../hooks/useHandSimulator", () => ({
+vi.mock("../../../features/simulator/hooks/useHandSimulator", () => ({
   useHandSimulator: vi.fn(),
 }));
 

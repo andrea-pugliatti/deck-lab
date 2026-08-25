@@ -6,7 +6,7 @@
  */
 
 import { API_BASE_URL } from "../config/env";
-import { getAccessToken, setAccessToken } from "./auth";
+import { getAccessToken, setAccessToken } from "../features/auth";
 
 /** Flag indicating if an access token refresh operation is currently in progress. */
 let isRefreshing = false;

@@ -3,11 +3,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useAuth } from "../../context/AuthContext";
-import { useDeckSearch } from "../../hooks/useDeckSearch";
+import { useAuth } from "../../../features/auth";
+import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
 import DeckSelector from "./DeckSelector";
 
-vi.mock("../../context/AuthContext", () => ({
+vi.mock("../../../features/auth", () => ({
   useAuth: vi.fn(),
 }));
 
@@ -15,7 +15,7 @@ vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock("../../hooks/useDeckSearch", () => ({
+vi.mock("../../../features/decks/hooks/useDeckSearch", () => ({
   useDeckSearch: vi.fn(),
 }));
 

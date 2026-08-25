@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import { API_BASE_URL } from "../../config/env";
-import { getFormatRules } from "../../reducers/deckReducer";
-import type { DeckCardItem, Format, Suggestion } from "../../types";
-import Badge from "../ui/Badge";
-import Button from "../ui/Button";
+import Badge from "../../../components/ui/Badge";
+import Button from "../../../components/ui/Button";
+import { API_BASE_URL } from "../../../config/env";
+import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
+import type { DeckCardItem, Format, Suggestion } from "../../../types";
 
 /**
  * Properties for the {@link AiSuggestionItem} component.

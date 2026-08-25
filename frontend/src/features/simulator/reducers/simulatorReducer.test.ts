@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { CardType, Deck, SimulatorCardInstance } from "../types";
+import type { CardType, Deck, SimulatorCardInstance } from "../../../types";
 import { initialSimulatorState, simulatorReducer, type SimulatorState } from "./simulatorReducer";
 
 describe("simulatorReducer", () => {

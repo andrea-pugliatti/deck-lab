@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import SearchBar from "./SearchBar";
 
-vi.mock("../hooks/useDebounce", () => ({
+vi.mock("../../hooks/useDebounce", () => ({
   useDebounce: vi.fn((q) => q),
 }));
 

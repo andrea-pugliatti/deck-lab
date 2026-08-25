@@ -1,4 +1,4 @@
-import type { Format } from "../../types";
+import type { Format } from "../../../types";
 
 /**
  * Properties for the {@link FormatSelector} component.

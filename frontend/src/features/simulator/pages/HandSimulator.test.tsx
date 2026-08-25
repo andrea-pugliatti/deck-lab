@@ -13,11 +13,11 @@ vi.mock("react-router", async (importOriginal) => {
   };
 });
 
-vi.mock("../components/hand-simulator/DeckSelector", () => ({
+vi.mock("../../../features/simulator/components/DeckSelector", () => ({
   default: () => <div data-testid="deck-selector">DeckSelector</div>,
 }));
 
-vi.mock("../components/hand-simulator/SimulatorWorkspace", () => ({
+vi.mock("../../../features/simulator/components/SimulatorWorkspace", () => ({
   default: () => <div data-testid="simulator-workspace">SimulatorWorkspace</div>,
 }));
 

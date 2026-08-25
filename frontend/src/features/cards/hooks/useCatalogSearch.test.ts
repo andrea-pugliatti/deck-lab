@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 import { useSearchParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { CardAttribute, CardRace, CardType } from "../types";
+import type { CardAttribute, CardRace, CardType } from "../../../types";
 import { useCatalogSearch } from "./useCatalogSearch";
 
 vi.mock("react-router", () => ({
@@ -14,7 +14,7 @@ vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock("./useDebounce", () => ({
+vi.mock("../../../hooks/useDebounce", () => ({
   useDebounce: vi.fn((val) => val),
 }));
 

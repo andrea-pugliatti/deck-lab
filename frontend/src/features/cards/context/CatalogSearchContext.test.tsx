@@ -2,15 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { useCardMetadata } from "../hooks/useCardMetadata";
-import { useCatalogSearch } from "../hooks/useCatalogSearch";
+import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
+import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import { CatalogSearchProvider, useCatalogSearchContext } from "./CatalogSearchContext";
 
-vi.mock("../hooks/useCatalogSearch", () => ({
+vi.mock("../../../features/cards/hooks/useCatalogSearch", () => ({
   useCatalogSearch: vi.fn(),
 }));
 
-vi.mock("../hooks/useCardMetadata", () => ({
+vi.mock("../../../features/cards/hooks/useCardMetadata", () => ({
   useCardMetadata: vi.fn(),
 }));
 

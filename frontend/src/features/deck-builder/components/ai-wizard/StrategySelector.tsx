@@ -1,5 +1,5 @@
-import type { Strategy } from "../../../types";
-import Label from "../../ui/Label";
+import Label from "../../../../components/ui/Label";
+import type { Strategy } from "../../../../types";
 
 /**
  * Represents a strategic playstyle option that can be applied to the deck generator.

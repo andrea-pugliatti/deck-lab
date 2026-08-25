@@ -1,5 +1,5 @@
-import type { Format, Strategy } from "../types";
-import { apiFetch } from "./api";
+import { apiFetch } from "../../../services/api";
+import type { Format, Strategy } from "../../../types";
 import {
   deleteDeck,
   fetchAiSuggestions,
@@ -10,7 +10,7 @@ import {
   validateDeck,
 } from "./deck";
 
-vi.mock("./api", () => ({
+vi.mock("../../../services/api", () => ({
   apiFetch: vi.fn(),
   parseResponseError: vi.fn().mockImplementation(async () => new Error("Mocked parsing error")),
   parseResponseErrors: vi.fn().mockImplementation(async () => ["Mocked field error"]),

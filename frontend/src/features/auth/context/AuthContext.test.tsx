@@ -6,10 +6,10 @@ import {
   logout as apiLogout,
   refreshToken as apiRefreshToken,
   register as apiRegister,
-} from "../services/auth";
+} from "../../../features/auth";
 import { AuthProvider, useAuth } from "./AuthContext";
 
-vi.mock("../services/auth", () => ({
+vi.mock("../api/auth", () => ({
   login: vi.fn(),
   logout: vi.fn(),
   refreshToken: vi.fn(),

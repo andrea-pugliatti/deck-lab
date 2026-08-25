@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../types";
+import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../../types";
 import CardFilters from "./CardFilters";
 
 describe("CardFilters component", () => {

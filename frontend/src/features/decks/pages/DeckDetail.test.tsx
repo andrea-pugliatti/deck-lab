@@ -3,10 +3,10 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../../features/auth";
 import DeckDetail from "./DeckDetail";
 
-vi.mock("../context/AuthContext", () => ({
+vi.mock("../../../features/auth", () => ({
   useAuth: vi.fn(),
 }));
 

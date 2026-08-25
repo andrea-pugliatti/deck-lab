@@ -1,9 +1,9 @@
 import { Calculator, Hand, Layers, RotateCcw, Search, Shuffle } from "lucide-react";
 import { useState } from "react";
 
-import { useHandSimulator } from "../../hooks/useHandSimulator";
-import type { Deck, SimulatorCardInstance } from "../../types";
-import Button from "../ui/Button";
+import Button from "../../../components/ui/Button";
+import { useHandSimulator } from "../../../features/simulator/hooks/useHandSimulator";
+import type { Deck, SimulatorCardInstance } from "../../../types";
 import CardInspector from "./CardInspector";
 import DeckExplorerModal from "./DeckExplorerModal";
 import ProbabilityCalculator from "./ProbabilityCalculator";

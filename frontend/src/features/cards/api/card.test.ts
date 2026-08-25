@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { apiFetch } from "./api";
+import { apiFetch } from "../../../services/api";
 import { getCard, getCardsEndpoint, getCardSuggestionsEndpoint } from "./card";
 
-vi.mock("./api", () => ({
+vi.mock("../../../services/api", () => ({
   apiFetch: vi.fn(),
   parseResponseError: vi.fn().mockImplementation(async () => new Error("Fetch error")),
 }));

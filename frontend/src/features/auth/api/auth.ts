@@ -1,4 +1,4 @@
-import { apiFetch } from "./api";
+import { apiFetch } from "../../../services/api";
 
 /** Current JWT access token stored in memory. */
 let accessToken: string | undefined = undefined;
