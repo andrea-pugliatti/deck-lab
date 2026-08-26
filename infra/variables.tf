@@ -48,7 +48,7 @@ variable "db_password" {
 variable "db_tier" {
   description = "Cloud SQL machine tier."
   type        = string
-  default     = "db-custom-2-8192"
+  default     = "db-f1-micro"
 }
 
 variable "jwt_secret" {

@@ -12,7 +12,7 @@ images_bucket_name   = "deck-lab-images-prod"
 
 db_user              = "postgres"
 db_password          = "secure-postgres-password"
-db_tier              = "db-custom-2-8192"
+db_tier              = "db-f1-micro"
 
 jwt_secret           = "prod-jwt-secret-base64-512-bit"
 gemini_api_key       = "google-gemini-api-key"

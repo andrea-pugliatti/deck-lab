@@ -175,6 +175,10 @@ resource "google_cloud_run_v2_service" "backend" {
         name  = "COOKIE_SAME_SITE"
         value = "Lax"
       }
+      env {
+        name  = "JAVA_OPTS"
+        value = "-XX:TieredStopAtLevel=1 -Xmx512m"
+      }
 
       env {
         name = "POSTGRES_PASSWORD"

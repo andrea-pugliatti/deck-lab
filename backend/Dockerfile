@@ -23,5 +23,6 @@ RUN addgroup --system --gid 1001 appgroup && \
     adduser --system --uid 1001 --ingroup appgroup --no-create-home appuser
 COPY --from=build --chown=appuser:appgroup /app/target/*.jar app.jar
 USER appuser
+ENV JAVA_OPTS="-XX:TieredStopAtLevel=1 -Xmx512m"
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -jar app.jar"]
