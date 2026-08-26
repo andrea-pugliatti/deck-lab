@@ -75,7 +75,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
 
   return (
     <div
-      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default touch-none items-center justify-center select-none sm:h-120"
+      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default items-center justify-center select-none sm:h-120"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
