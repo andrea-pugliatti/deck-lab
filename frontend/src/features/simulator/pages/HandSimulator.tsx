@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Calendar, Layers } from "lucide-react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
@@ -23,7 +23,6 @@ import { formatRelativeTime } from "../../../utils/date";
  */
 export default function HandSimulator(): React.JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const deckId = searchParams.get("deckId");
 
   const {
@@ -35,6 +34,28 @@ export default function HandSimulator(): React.JSX.Element {
     queryFn: ({ signal }) => getDeck(deckId!, signal),
     enabled: !!deckId,
   });
+
+  const handleSelectDeck = (id: number) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("deckId", String(id));
+        return next;
+      },
+      { preventScrollReset: true },
+    );
+  };
+
+  const handleClearSelectedDeck = () => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("deckId");
+        return next;
+      },
+      { preventScrollReset: true },
+    );
+  };
 
   const mainCardsCount =
     deck?.deckCards
@@ -57,12 +78,12 @@ export default function HandSimulator(): React.JSX.Element {
           <div className="mb-8 flex items-center justify-between">
             <Button
               variant="ghost"
-              onClick={() => navigate(-1)}
+              onClick={handleClearSelectedDeck}
               className="group px-2.5 py-1 font-normal text-slate-400"
               type="button"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              <span>Back</span>
+              <span>Select Another Deck</span>
             </Button>
 
             <Link
@@ -121,7 +142,7 @@ export default function HandSimulator(): React.JSX.Element {
             title="Hand Simulator"
             description="Simulate drawing starting hands, test card combos, and verify deck consistency."
           />
-          <DeckSelector onSelect={(id) => setSearchParams({ deckId: String(id) })} />
+          <DeckSelector onSelect={handleSelectDeck} />
         </div>
       )}
     </div>
