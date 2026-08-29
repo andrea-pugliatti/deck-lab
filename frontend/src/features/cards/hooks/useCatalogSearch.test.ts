@@ -139,6 +139,13 @@ describe("useCatalogSearch hook", () => {
   });
 
   describe("with syncUrl: true", () => {
+    const getUpdatedParams = (callIndex = 0) => {
+      const call = setSearchParamsMock.mock.calls[callIndex];
+      if (!call) return null;
+      const [arg] = call;
+      return typeof arg === "function" ? arg(mockSearchParams) : arg;
+    };
+
     it("should parse initial state from searchParams", () => {
       mockSearchParams.set("page", "2");
       mockSearchParams.set("type", "Normal Monster");
@@ -170,7 +177,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("type")).toBe("Spell Card");
       expect(params.get("attribute")).toBe("LIGHT");
       expect(params.get("race")).toBe("Zombie");
@@ -186,7 +193,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("page")).toBe("3");
     });
 
@@ -198,7 +205,7 @@ describe("useCatalogSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("q")).toBe("Magician");
       expect(params.get("page")).toBeNull(); // Reset page
     });

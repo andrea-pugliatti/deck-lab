@@ -70,7 +70,9 @@ export function useSearch<TData, TFilters>(
     ? initialPage
     : (() => {
         const pageParam = searchParams.get("page");
-        return pageParam !== null ? parseInt(pageParam, 10) : initialPage;
+        if (pageParam === null) return initialPage;
+        const parsed = parseInt(pageParam, 10);
+        return !isNaN(parsed) && parsed >= 0 ? parsed : initialPage;
       })();
 
   const urlQuery = !syncUrl
@@ -120,13 +122,18 @@ export function useSearch<TData, TFilters>(
   // State Setters
   const setPage = (nextPage: number) => {
     if (syncUrl) {
-      const params = new URLSearchParams(searchParams);
-      if (nextPage === 0) {
-        params.delete("page");
-      } else {
-        params.set("page", nextPage.toString());
-      }
-      setSearchParams(params);
+      setSearchParams(
+        (prev) => {
+          const params = new URLSearchParams(prev);
+          if (nextPage <= 0) {
+            params.delete("page");
+          } else {
+            params.set("page", nextPage.toString());
+          }
+          return params;
+        },
+        { preventScrollReset: true },
+      );
     }
     if (controlledSetPage) {
       controlledSetPage(nextPage);
@@ -155,10 +162,15 @@ export function useSearch<TData, TFilters>(
 
     if (syncUrl) {
       if (urlConfig) {
-        const params = new URLSearchParams(searchParams);
-        urlConfig.serialize(params, next);
-        params.delete("page");
-        setSearchParams(params);
+        setSearchParams(
+          (prev) => {
+            const params = new URLSearchParams(prev);
+            urlConfig.serialize(params, next);
+            params.delete("page");
+            return params;
+          },
+          { preventScrollReset: true },
+        );
       }
     }
 
@@ -173,16 +185,21 @@ export function useSearch<TData, TFilters>(
   // Sync debounced search queries to URL parameters (only when active query differs)
   useEffect(() => {
     if (syncUrl && debouncedQuery.trim() !== urlQuery.trim()) {
-      const params = new URLSearchParams(searchParams);
-      if (debouncedQuery.trim()) {
-        params.set("q", debouncedQuery.trim());
-      } else {
-        params.delete("q");
-      }
-      params.delete("page"); // Reset page on query changes
-      setSearchParams(params);
+      setSearchParams(
+        (prev) => {
+          const params = new URLSearchParams(prev);
+          if (debouncedQuery.trim()) {
+            params.set("q", debouncedQuery.trim());
+          } else {
+            params.delete("q");
+          }
+          params.delete("page"); // Reset page on query changes
+          return params;
+        },
+        { replace: true, preventScrollReset: true },
+      );
     }
-  }, [syncUrl, debouncedQuery, urlQuery, searchParams, setSearchParams]);
+  }, [syncUrl, debouncedQuery, urlQuery, setSearchParams]);
 
   // Execute fetch
   const fetchUrl = endpointBuilder(debouncedQuery, activePage, activeFilters);

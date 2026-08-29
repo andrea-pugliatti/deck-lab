@@ -180,6 +180,13 @@ describe("useSearch hook", () => {
       },
     };
 
+    const getUpdatedParams = (callIndex = 0) => {
+      const call = setSearchParamsMock.mock.calls[callIndex];
+      if (!call) return null;
+      const [arg] = call;
+      return typeof arg === "function" ? arg(mockSearchParams) : arg;
+    };
+
     it("should parse initial state from searchParams and update state", () => {
       mockSearchParams.set("page", "4");
       mockSearchParams.set("q", "Blue-Eyes");
@@ -197,7 +204,21 @@ describe("useSearch hook", () => {
       expect(result.current.filters).toEqual({ type: "Spell" });
     });
 
-    it("should update searchParams on page change", () => {
+    it("should safely fall back to initialPage when page parameter is invalid or NaN", () => {
+      mockSearchParams.set("page", "invalid-number");
+
+      const { result } = renderHook(() =>
+        useSearch(mockEndpointBuilder, {
+          initialPage: 0,
+          syncUrl: true,
+          urlConfig,
+        }),
+      );
+
+      expect(result.current.page).toBe(0);
+    });
+
+    it("should update searchParams on page change with preventScrollReset", () => {
       const { result } = renderHook(() =>
         useSearch(mockEndpointBuilder, {
           syncUrl: true,
@@ -210,8 +231,10 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("page")).toBe("3");
+      const options = setSearchParamsMock.mock.calls[0]![1];
+      expect(options).toEqual({ preventScrollReset: true });
     });
 
     it("should delete page parameter when page is set to 0", () => {
@@ -229,7 +252,7 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("page")).toBeNull();
     });
 
@@ -249,12 +272,14 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("type")).toBe("Spell");
       expect(params.get("page")).toBeNull(); // Reset page
+      const options = setSearchParamsMock.mock.calls[0]![1];
+      expect(options).toEqual({ preventScrollReset: true });
     });
 
-    it("should update searchParams on query changes after debouncing and reset page", () => {
+    it("should update searchParams on query changes with replace: true after debouncing and reset page", () => {
       mockSearchParams.set("page", "2");
 
       const { result } = renderHook(() =>
@@ -269,9 +294,11 @@ describe("useSearch hook", () => {
       });
 
       expect(setSearchParamsMock).toHaveBeenCalled();
-      const params = setSearchParamsMock.mock.calls[0]![0];
+      const params = getUpdatedParams();
       expect(params.get("q")).toBe("Magician");
       expect(params.get("page")).toBeNull();
+      const options = setSearchParamsMock.mock.calls[0]![1];
+      expect(options).toEqual({ replace: true, preventScrollReset: true });
     });
   });
 
