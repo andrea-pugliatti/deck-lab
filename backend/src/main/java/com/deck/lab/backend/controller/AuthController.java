@@ -95,12 +95,14 @@ public class AuthController {
      * Authenticates a user with username and password, returning JWT access token and setting the
      * refresh token as an HttpOnly secure cookie.
      *
-     * @param loginRequest DTO containing username and password
-     * @return 200 OK with AuthResponseDto, or 401 Unauthorized if login fails
+     * @param loginRequest   DTO containing username and password
+     * @param servletRequest HTTP servlet request used to determine remote IP for rate limiting
+     * @return response entity containing the authentication response with access token, or 401 Unauthorized if login fails
+     * @throws ResponseStatusException if client exceeds rate limit attempts
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto loginRequest,
-                                   HttpServletRequest servletRequest) {
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequest,
+                                                 HttpServletRequest servletRequest) {
         String ipAddress = servletRequest.getRemoteAddr();
         loginRateLimiter.checkLimit(ipAddress);
         Optional<AuthResponseDto> authResponse = service.login(loginRequest);
@@ -120,11 +122,13 @@ public class AuthController {
      * token as an HttpOnly secure cookie.
      *
      * @param registerRequest DTO containing registration details
-     * @return 200 OK with AuthResponseDto, or 400 Bad Request if registration fails
+     * @param servletRequest  HTTP servlet request used to determine remote IP for rate limiting
+     * @return response entity containing the authentication response with access token, or 400 Bad Request if registration fails
+     * @throws ResponseStatusException if client exceeds rate limit attempts
      */
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequest,
-                                      HttpServletRequest servletRequest) {
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto registerRequest,
+                                                    HttpServletRequest servletRequest) {
         String ipAddress = servletRequest.getRemoteAddr();
         registerRateLimiter.checkLimit(ipAddress);
         Optional<AuthResponseDto> authResponse = service.register(registerRequest);
@@ -145,12 +149,12 @@ public class AuthController {
      *
      * @param refreshToken   the current refresh token extracted from HTTP cookie
      * @param servletRequest the raw servlet request to identify remote IP for rate limiting
-     * @return 200 OK with TokenRefreshResponseDto, or 401 Unauthorized if token is missing
+     * @return response entity containing the refreshed access token, or 401 Unauthorized if token is missing
      * @throws TokenRefreshException   if token is expired, revoked, or reused
      * @throws ResponseStatusException if client exceeds rate limit attempts
      */
     @PostMapping("/refresh")
-    public ResponseEntity<?>
+    public ResponseEntity<TokenRefreshResponseDto>
             refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken,
                     HttpServletRequest servletRequest) {
         if (refreshToken == null || refreshToken.isBlank()) {
@@ -171,10 +175,10 @@ public class AuthController {
      * Revokes the current refresh token session and clears the client's refresh token cookie.
      *
      * @param refreshToken the refresh token extracted from HTTP cookie to be revoked
-     * @return 200 OK with cleared cookie header
+     * @return response entity with cleared cookie header and no body
      */
     @PostMapping("/logout")
-    public ResponseEntity<?>
+    public ResponseEntity<Void>
             logout(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
         service.revoke(refreshToken);
         return ResponseEntity.ok()
