@@ -5,10 +5,10 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.deck.lab.backend.config.properties.JwtProperties;
 import com.deck.lab.backend.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -50,17 +50,22 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtProperties jwtProperties;
 
-    @Value("${jwt.expiration}")
-    private long expiration;
+    /**
+     * Constructs a new JwtService with the given configuration properties.
+     *
+     * @param jwtProperties the configuration properties for JWT
+     */
+    public JwtService(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
 
     /**
      * Helper to decode the base64-encoded secret and generate a HMAC signing key.
      */
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -75,7 +80,7 @@ public class JwtService {
                 .builder()
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
                 .signWith(getSigningKey())
                 .compact();
     }

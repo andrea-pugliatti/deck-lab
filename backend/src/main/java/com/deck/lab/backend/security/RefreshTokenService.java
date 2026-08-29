@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deck.lab.backend.config.properties.RefreshTokenProperties;
 import com.deck.lab.backend.exception.TokenRefreshException;
 import com.deck.lab.backend.model.RefreshToken;
 import com.deck.lab.backend.model.User;
@@ -30,23 +30,19 @@ import com.deck.lab.backend.repository.RefreshTokenRepository;
  * are tracked in the database. To minimize the risk of stolen tokens, this service implements two
  * core security patterns:
  * </p>
- * <ul>
- * <li><strong>Token Rotation:</strong> Every time a client uses their refresh token to request a
- * new access token, the current refresh token is rotated (invalidated) and a new refresh token is
- * issued.</li>
- * <li><strong>Reuse Detection (Replay Protection):</strong> If the system receives a refresh
- * request for an already rotated/revoked token, it implies that an attacker intercepted the token
- * and is trying to reuse it. To protect the user, the service immediately revokes the entire family
- * of tokens associated with that session, forcing the legitimate owner to re-authenticate with
- * their password.</li>
- * <li><strong>Grace Period:</strong> Single-page applications (SPAs) often trigger concurrent
- * requests. If two parallel API requests try to refresh the token at the exact same millisecond,
- * token rotation could reject the second request as a reuse attempt. A short configuration-defined
- * grace period prevents these race conditions from triggering false-positive security revocs.</li>
- * </ul>
+ * Service managing refresh token lifecycle, persistence, rotation, and scheduled purging.
  *
  * <p>
- * <strong>IP-Based Rate Limiting & Background Cleanup:</strong>
+ * <strong>Session Persistence & Lifecycle Management</strong>
+ * </p>
+ * <p>
+ * Manages long-lived user sessions via secure database tokens. Implements critical security
+ * protocols including automatic token rotation upon each refresh, reuse detection to detect token
+ * theft, and strict session cardinality limits per user.
+ * </p>
+ *
+ * <p>
+ * <strong>Security Hardening:</strong>
  * </p>
  * <ul>
  * <li>In-Memory Rate Limiting: Tracks request attempts per client IP address in a thread-safe
@@ -60,22 +56,22 @@ import com.deck.lab.backend.repository.RefreshTokenRepository;
 @Service
 public class RefreshTokenService {
 
-    @Value("${refresh-token.duration-days:7}")
-    private int durationDays;
-
-    @Value("${refresh-token.max-per-user:5}")
-    private int maxPerUser;
-
-    @Value("${refresh-token.grace-period-seconds:10}")
-    private int gracePeriodSeconds;
-
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenProperties properties;
 
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
+    /**
+     * Constructs a new RefreshTokenService with required repositories and properties.
+     *
+     * @param refreshTokenRepository repository managing persisted tokens
+     * @param properties            configuration properties for refresh token handling
+     */
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
+                               RefreshTokenProperties properties) {
         this.refreshTokenRepository = refreshTokenRepository;
+        this.properties = properties;
     }
 
     /**
@@ -108,8 +104,8 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(User user) {
         List<RefreshToken> activeTokens = refreshTokenRepository
                 .findByUserAndRevokedFalseOrderByCreatedAtAsc(user);
-        if (activeTokens.size() >= maxPerUser) {
-            int toRevoke = activeTokens.size() - maxPerUser + 1;
+        if (activeTokens.size() >= properties.getMaxPerUser()) {
+            int toRevoke = activeTokens.size() - properties.getMaxPerUser() + 1;
             for (int i = 0; i < toRevoke; i++) {
                 RefreshToken token = activeTokens.get(i);
                 token.setRevoked(true);
@@ -119,7 +115,7 @@ public class RefreshTokenService {
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
-        refreshToken.setExpiryDate(Instant.now().plus(durationDays, ChronoUnit.DAYS));
+        refreshToken.setExpiryDate(Instant.now().plus(properties.getDurationDays(), ChronoUnit.DAYS));
         refreshToken.setToken(generateSecureToken());
         refreshToken.setRevoked(false);
 
@@ -145,7 +141,7 @@ public class RefreshTokenService {
 
         if (token.isRevoked()) {
             if (token.getRotatedAt() != null && Instant.now()
-                    .isBefore(token.getRotatedAt().plus(gracePeriodSeconds, ChronoUnit.SECONDS))) {
+                    .isBefore(token.getRotatedAt().plus(properties.getGracePeriodSeconds(), ChronoUnit.SECONDS))) {
                 throw new TokenRefreshException(token.getToken(),
                         "Refresh token has already been rotated. Please use the new token.");
             }
@@ -212,15 +208,30 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByExpiryDateBeforeOrRevokedTrue(Instant.now());
     }
 
+    /**
+     * Sets the token duration in days for testing or dynamic configuration.
+     *
+     * @param durationDays the duration in days
+     */
     public void setDurationDays(int durationDays) {
-        this.durationDays = durationDays;
+        this.properties.setDurationDays(durationDays);
     }
 
+    /**
+     * Sets the maximum sessions allowed per user for testing or dynamic configuration.
+     *
+     * @param maxPerUser the maximum sessions per user
+     */
     public void setMaxPerUser(int maxPerUser) {
-        this.maxPerUser = maxPerUser;
+        this.properties.setMaxPerUser(maxPerUser);
     }
 
+    /**
+     * Sets the rotation grace period in seconds for testing or dynamic configuration.
+     *
+     * @param gracePeriodSeconds the grace period in seconds
+     */
     public void setGracePeriodSeconds(int gracePeriodSeconds) {
-        this.gracePeriodSeconds = gracePeriodSeconds;
+        this.properties.setGracePeriodSeconds(gracePeriodSeconds);
     }
 }

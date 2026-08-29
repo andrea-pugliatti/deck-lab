@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
+import com.deck.lab.backend.config.properties.RefreshTokenProperties;
+
 /**
  * Implementation of the {@link RefreshTokenCookieAdapter} interface.
  *
@@ -23,10 +25,17 @@ public class HttpCookieAdapter implements RefreshTokenCookieAdapter {
     private final String sameSite;
     private final boolean secure;
 
-    public HttpCookieAdapter(@Value("${refresh-token.duration-days:7}") int durationDays,
+    /**
+     * Constructs a new HttpCookieAdapter with configured token properties and cookie attributes.
+     *
+     * @param refreshTokenProperties properties containing refresh token expiration duration
+     * @param sameSite               SameSite cookie policy
+     * @param secure                 flag indicating if cookie requires HTTPS
+     */
+    public HttpCookieAdapter(RefreshTokenProperties refreshTokenProperties,
                              @Value("${app.cookie.same-site:Lax}") String sameSite,
                              @Value("${app.cookie.secure:true}") boolean secure) {
-        this.maxAgeSeconds = durationDays * 24 * 60 * 60L;
+        this.maxAgeSeconds = (long) refreshTokenProperties.getDurationDays() * 24 * 60 * 60L;
         this.sameSite = sameSite;
         this.secure = secure;
     }

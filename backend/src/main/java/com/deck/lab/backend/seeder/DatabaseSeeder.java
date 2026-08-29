@@ -5,7 +5,6 @@ import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.deck.lab.backend.config.properties.SeederProperties;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.repository.UserRepository;
 
@@ -38,8 +38,8 @@ import jakarta.annotation.PreDestroy;
  * </p>
  * <p>
  * Uses {@link TransactionTemplate} to manage transactions programmatically, ensuring that seeding
- * users, importing cards, and writing sample decks occur in isolated, controlled transactional
- * scopes.
+ * operations are isolated into explicit chunks rather than wrapping the entire boot phase in one
+ * monolithic transaction.
  * </p>
  *
  * <p>
@@ -81,22 +81,27 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final BanlistImporter banlistImporter;
     private final DeckSeeder deckSeeder;
     private final ThreadPoolTaskExecutor databaseSeederExecutor;
+    private final SeederProperties seederProperties;
 
     private Future<?> seedingTask;
 
-    @Value("${app.seed.cards:true}")
-    private boolean seedCardsEnabled;
-
-    @Value("${app.seed.users:true}")
-    private boolean seedUsersEnabled;
-
-    @Value("${app.seed.password:12345678}")
-    private String seedPassword = "12345678";
-
+    /**
+     * Constructs a DatabaseSeeder with the required repositories, importers, executors, and properties.
+     *
+     * @param userRepository          repository managing user persistence
+     * @param passwordEncoder         encoder for encrypting default seed passwords
+     * @param transactionManager      transaction manager for atomic seeding transactions
+     * @param cardImporter            service importing card database entries
+     * @param banlistImporter         service importing format rule restrictions
+     * @param deckSeeder              service populating default sample decks
+     * @param databaseSeederExecutor  thread pool executor running asynchronous seeding jobs
+     * @param seederProperties        configuration properties controlling seeding behavior
+     */
     public DatabaseSeeder(UserRepository userRepository, PasswordEncoder passwordEncoder,
                           PlatformTransactionManager transactionManager, CardImporter cardImporter,
                           BanlistImporter banlistImporter, DeckSeeder deckSeeder,
-                          ThreadPoolTaskExecutor databaseSeederExecutor) {
+                          ThreadPoolTaskExecutor databaseSeederExecutor,
+                          SeederProperties seederProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -104,6 +109,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.banlistImporter = banlistImporter;
         this.deckSeeder = deckSeeder;
         this.databaseSeederExecutor = databaseSeederExecutor;
+        this.seederProperties = seederProperties;
     }
 
     /**
@@ -126,7 +132,7 @@ public class DatabaseSeeder implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        if (seedCardsEnabled) {
+        if (seederProperties.isCards()) {
             seedingTask = databaseSeederExecutor.submit(() -> {
                 try {
                     logger.info("Starting background database seeding...");
@@ -150,10 +156,10 @@ public class DatabaseSeeder implements CommandLineRunner {
                         logger.info("Database seeder interrupted before seeding users. Exiting.");
                         return;
                     }
-                    if (seedUsersEnabled) {
+                    if (seederProperties.isUsers()) {
                         transactionTemplate.executeWithoutResult(status -> {
-                            seedUser("admin", seedPassword, "admin@example.com");
-                            seedUser("yugi", seedPassword, "yugi@example.com");
+                            seedUser("admin", seederProperties.getPassword(), "admin@example.com");
+                            seedUser("yugi", seederProperties.getPassword(), "yugi@example.com");
                         });
                     } else {
                         logger.info("User seeding is disabled (app.seed.users=false). Skipping.");
@@ -174,10 +180,10 @@ public class DatabaseSeeder implements CommandLineRunner {
             });
         } else {
             logger.info("Card seeding is disabled (app.seed.cards=false). Skipping.");
-            if (seedUsersEnabled) {
+            if (seederProperties.isUsers()) {
                 transactionTemplate.executeWithoutResult(status -> {
-                    seedUser("admin", seedPassword, "admin@example.com");
-                    seedUser("yugi", seedPassword, "yugi@example.com");
+                    seedUser("admin", seederProperties.getPassword(), "admin@example.com");
+                    seedUser("yugi", seederProperties.getPassword(), "yugi@example.com");
                 });
             } else {
                 logger.info("User seeding is disabled (app.seed.users=false). Skipping.");

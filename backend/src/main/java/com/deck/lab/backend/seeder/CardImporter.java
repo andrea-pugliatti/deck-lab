@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -23,6 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.deck.lab.backend.config.properties.YgoProDeckProperties;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -31,8 +31,6 @@ import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.annotation.PreDestroy;
 
 /**
  * Importer class responsible for fetching Yu-Gi-Oh! card catalog datasets from external APIs and
@@ -55,14 +53,15 @@ import jakarta.annotation.PreDestroy;
  * and risks table locks. This importer splits data into sublists (defined by {@code batchSize}) and
  * runs each batch save inside a separate programmatic {@link TransactionTemplate} boundary. This
  * optimizes Hibernate's batch write settings.</li>
- * <li><strong>Background Image Caching:</strong> Card artwork images are large. To prevent blocking
- * the main boot thread, images are queued and downloaded concurrently using a fixed-size thread
- * pool managed by {@link ExecutorService}. Downloaded files are cached locally in the filesystem
- * configuration directory so that the application serves them locally.</li>
- * <li><strong>Graceful Shutdown via {@link PreDestroy}:</strong> When the Spring container is
- * stopped, the method decorated with {@code @PreDestroy} is automatically invoked to shut down the
- * image download thread pool, terminating active tasks and preventing memory leaks or orphaned OS
- * threads.</li>
+ * <li><strong>Local-First Ingestion:</strong> To optimize boot performance in air-gapped or
+ * containerized test environments, the importer checks for a bundled
+ * {@code classpath:cards_full.json} dataset. If present, it populates cards without hitting
+ * external network endpoints.</li>
+ * <li><strong>Remote Fallback:</strong> If no local snapshot exists, it fetches all cards via the
+ * external YGOPRODeck API in batches.</li>
+ * <li><strong>Asynchronous Image Ingestion:</strong> Large binary asset downloads (such as full and
+ * cropped JPEG artwork) are queued asynchronously on an {@link Executor} pool, decoupling database
+ * persistence from slow media transfers.</li>
  * </ul>
  */
 @Component
@@ -75,25 +74,23 @@ public class CardImporter {
     private final RestClient restClient;
     private final Executor imageDownloadExecutor;
     private final ObjectMapper objectMapper;
-
-    @Value("${app.ygoprodeck.api-url:https://db.ygoprodeck.com/api/v7/cardinfo.php}")
-    private String apiUrl;
-
-    @Value("${app.ygoprodeck.batch-size:500}")
-    private int batchSize;
-
-    @Value("${app.ygoprodeck.connect-timeout:5000}")
-    private int connectTimeout;
-
-    @Value("${app.ygoprodeck.read-timeout:5000}")
-    private int readTimeout;
+    private final YgoProDeckProperties properties;
 
     @Value("${app.upload-dir:data/images}")
     private String uploadDir;
 
+    /**
+     * Constructs a new CardImporter with required repositories, executors, and properties.
+     *
+     * @param cardRepository        repository managing persisted cards
+     * @param transactionManager    transaction manager for chunked card batch saves
+     * @param imageDownloadExecutor executor managing asynchronous artwork downloads
+     * @param properties            configuration properties for YGOPRODeck API integration
+     */
     public CardImporter(CardRepository cardRepository,
                         PlatformTransactionManager transactionManager,
-                        Executor imageDownloadExecutor) {
+                        Executor imageDownloadExecutor,
+                        YgoProDeckProperties properties) {
         this.cardRepository = cardRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.restClient = RestClient.builder()
@@ -102,6 +99,7 @@ public class CardImporter {
                 .build();
         this.imageDownloadExecutor = imageDownloadExecutor;
         this.objectMapper = new ObjectMapper();
+        this.properties = properties;
     }
 
     /**
@@ -353,7 +351,8 @@ public class CardImporter {
             boolean fromLocal = true;
             if (apiCards == null || apiCards.isEmpty()) {
                 logger.info("Falling back to YGOProDeck API for card seeding...");
-                apiCards = fetchAllCards(apiUrl, batchSize, connectTimeout, readTimeout);
+                apiCards = fetchAllCards(properties.getApiUrl(), properties.getBatchSize(),
+                        properties.getConnectTimeout(), properties.getReadTimeout());
                 fromLocal = false;
             }
 

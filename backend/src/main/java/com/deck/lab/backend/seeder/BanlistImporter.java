@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -19,6 +18,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.deck.lab.backend.config.properties.YgoProDeckProperties;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardStatus;
 import com.deck.lab.backend.model.Format;
@@ -29,24 +29,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Importer class responsible for seeding Yu-Gi-Oh! format legality and banlist rules.
- *
- * <p>
- * <strong>Rules Importer</strong>
- * </p>
- * <p>
- * Exposes functions to populate the {@code format_rules} table. Resolves card restriction rules
- * (Forbidden, Limited, Semi-Limited) through two distinct mechanisms:
- * </p>
- * <ul>
- * <li><strong>API Banlist Seeding:</strong> Queries the external YGOPRODeck API for current, active
- * formats (like TCG/OCG), identifying restricted cards and saving their current limitations in our
- * database.</li>
- * <li><strong>Historical Banlist Seeding:</strong> Historical retro formats (like Edison, Goat,
- * Tengu Plant, HAT) are static and do not change over time. This class seeds these classic formats
- * using local predefined card restriction collections, insulating the application from API downtime
- * when loading classic game formats.</li>
- * </ul>
+ * Component responsible for fetching, parsing, and persisting format banlist rules from external
+ * YGOPRODeck API endpoints or local JSON fallbacks.
  *
  * <p>
  * Runs all database operations inside programmatic {@link TransactionTemplate} segments to ensure
@@ -62,13 +46,20 @@ public class BanlistImporter {
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+    private final YgoProDeckProperties properties;
 
-    @Value("${app.ygoprodeck.api-url:https://db.ygoprodeck.com/api/v7/cardinfo.php}")
-    private String apiUrl;
-
+    /**
+     * Constructs a new BanlistImporter with required repositories and properties.
+     *
+     * @param cardRepository        repository managing card entities
+     * @param formatRulesRepository repository managing format rules
+     * @param transactionManager    transaction manager for atomic database operations
+     * @param properties            configuration properties for YGOPRODeck integration
+     */
     public BanlistImporter(CardRepository cardRepository,
                            FormatRulesRepository formatRulesRepository,
-                           PlatformTransactionManager transactionManager) {
+                           PlatformTransactionManager transactionManager,
+                           YgoProDeckProperties properties) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -77,6 +68,7 @@ public class BanlistImporter {
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
         this.objectMapper = new ObjectMapper();
+        this.properties = properties;
     }
 
     @SuppressWarnings("unchecked")
@@ -151,7 +143,7 @@ public class BanlistImporter {
 
                 if (dataList == null) {
                     logger.info("Fetching banlist for {} from API...", localFormat);
-                    URI uri = UriComponentsBuilder.fromUriString(apiUrl)
+                    URI uri = UriComponentsBuilder.fromUriString(properties.getApiUrl())
                             .queryParam("banlist", apiFormat)
                             .build()
                             .toUri();
