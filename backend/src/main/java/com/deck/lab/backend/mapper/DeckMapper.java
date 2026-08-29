@@ -62,24 +62,6 @@ public class DeckMapper {
     }
 
     /**
-     * Converts an incoming {@link DeckResponseDto} payload into a new {@link Deck} JPA entity.
-     *
-     * @param dto the DTO data received from client API request
-     * @return a new transient (unsaved) Deck entity populated with the DTO values
-     */
-    public Deck toEntity(DeckResponseDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        Deck deck = new Deck();
-        deck.setId(dto.getId());
-        deck.setName(dto.getName());
-        deck.setDescription(dto.getDescription());
-        deck.setFormatName(dto.getFormatName());
-        return deck;
-    }
-
-    /**
      * Updates an existing database-managed {@link Deck} entity with new parameters from a request
      * DTO.
      *
@@ -87,22 +69,6 @@ public class DeckMapper {
      * @param deck the existing database entity to update
      */
     public void updateEntityFromDto(DeckSaveRequestDto dto, Deck deck) {
-        if (dto == null || deck == null) {
-            return;
-        }
-        deck.setName(dto.getName());
-        deck.setDescription(dto.getDescription());
-        deck.setFormatName(dto.getFormatName());
-    }
-
-    /**
-     * Updates an existing database-managed {@link Deck} entity with new parameters from a response
-     * DTO.
-     *
-     * @param dto  the incoming updated DTO parameters
-     * @param deck the existing database entity to update
-     */
-    public void updateEntityFromDto(DeckResponseDto dto, Deck deck) {
         if (dto == null || deck == null) {
             return;
         }

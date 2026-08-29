@@ -1,19 +1,24 @@
-package com.deck.lab.backend.dto.response;
+package com.deck.lab.backend.dto.request;
 
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.FrameType;
 
-/**
- * Data Transfer Object (DTO) representing detailed card statistics and attributes returned by API
- * responses.
- */
-public class CardResponseDto {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-    private Long id;
+/**
+ * Data Transfer Object representing an inbound card create or update request.
+ */
+public class CardSaveRequestDto {
+
     private Long passcode;
+
+    @NotBlank(message = "Card name is required")
     private String name;
+
+    @NotNull(message = "Card type is required")
     private CardType type;
 
     private String description;
@@ -35,25 +40,47 @@ public class CardResponseDto {
     private Integer linkVal;
     private Integer scale;
 
-    public CardResponseDto() {
+    /**
+     * Default no-argument constructor.
+     */
+    public CardSaveRequestDto() {
     }
 
-    public CardResponseDto(Long id,
-                           String name,
-                           CardType type,
-                           String description,
-                           CardRace race,
-                           CardAttribute attribute,
-                           String archetype,
-                           String imageUrl,
-                           String imageUrlCropped,
-                           FrameType frameType,
-                           Integer atk,
-                           Integer def,
-                           Integer level,
-                           Integer linkVal,
-                           Integer scale) {
-        this.id = id;
+    /**
+     * Full constructor initializing all fields of the card save request.
+     *
+     * @param passcode        the unique passcode of the card
+     * @param name            the name of the card
+     * @param type            the classification type of the card
+     * @param description     the card text or effect description
+     * @param race            the race or subtype of the card
+     * @param attribute       the element attribute of the card
+     * @param archetype       the archetype grouping of the card
+     * @param imageUrl        the relative URL to the full card image
+     * @param imageUrlCropped the relative URL to the cropped card art image
+     * @param frameType       the frame border style
+     * @param atk             the attack stat value
+     * @param def             the defense stat value
+     * @param level           the level, rank, or link rating
+     * @param linkVal         the link value
+     * @param scale           the pendulum scale
+     */
+    public CardSaveRequestDto(Long passcode,
+                              String name,
+                              CardType type,
+                              String description,
+                              CardRace race,
+                              CardAttribute attribute,
+                              String archetype,
+                              String imageUrl,
+                              String imageUrlCropped,
+                              FrameType frameType,
+                              Integer atk,
+                              Integer def,
+                              Integer level,
+                              Integer linkVal,
+                              Integer scale) {
+        this.passcode = passcode;
         this.name = name;
         this.type = type;
         this.description = description;
@@ -68,14 +95,6 @@ public class CardResponseDto {
         this.level = level;
         this.linkVal = linkVal;
         this.scale = scale;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getPasscode() {

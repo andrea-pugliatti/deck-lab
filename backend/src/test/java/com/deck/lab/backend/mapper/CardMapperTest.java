@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.deck.lab.backend.dto.request.CardSaveRequestDto;
 import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -14,6 +16,7 @@ import com.deck.lab.backend.model.CardRace;
 import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.FrameType;
 
+@DisplayName("CardMapper Unit Tests")
 class CardMapperTest {
 
     private CardMapper cardMapper;
@@ -71,8 +74,8 @@ class CardMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsAllFields() {
-        CardResponseDto dto = new CardResponseDto();
-        dto.setId(15L);
+        CardSaveRequestDto dto = new CardSaveRequestDto();
+        dto.setPasscode(46986414L);
         dto.setName("Dark Magician");
         dto.setType(CardType.NORMAL_MONSTER);
         dto.setDescription("The ultimate wizard in terms of attack and defense.");
@@ -91,7 +94,7 @@ class CardMapperTest {
         Card card = cardMapper.toEntity(dto);
 
         assertNotNull(card);
-        assertEquals(dto.getId(), card.getId());
+        assertEquals(dto.getPasscode(), card.getPasscode());
         assertEquals(dto.getName(), card.getName());
         assertEquals(CardType.NORMAL_MONSTER, card.getType());
         assertEquals(dto.getDescription(), card.getDescription());
@@ -117,6 +120,7 @@ class CardMapperTest {
     void updateEntityFromDto_updatesFieldsCorrectly() {
         Card card = new Card();
         card.setId(20L);
+        card.setPasscode(12345678L);
         card.setName("Red-Eyes Black Dragon");
         card.setType(CardType.NORMAL_MONSTER);
         card.setDescription("A ferocious dragon with a deadly attack.");
@@ -130,7 +134,8 @@ class CardMapperTest {
         card.setDef(2000);
         card.setLevel(7);
 
-        CardResponseDto dto = new CardResponseDto();
+        CardSaveRequestDto dto = new CardSaveRequestDto();
+        dto.setPasscode(87654321L);
         dto.setName("Red-Eyes Black Dragon Updated");
         dto.setType(CardType.EFFECT_MONSTER);
         dto.setDescription("Updated desc");
@@ -152,6 +157,7 @@ class CardMapperTest {
         assertEquals(20L, card.getId());
 
         // Other fields should be updated
+        assertEquals(dto.getPasscode(), card.getPasscode());
         assertEquals(dto.getName(), card.getName());
         assertEquals(CardType.EFFECT_MONSTER, card.getType());
         assertEquals(dto.getDescription(), card.getDescription());
@@ -173,7 +179,7 @@ class CardMapperTest {
         Card card = new Card();
         // Should handle null gracefully
         cardMapper.updateEntityFromDto(null, card);
-        cardMapper.updateEntityFromDto(new CardResponseDto(), null);
+        cardMapper.updateEntityFromDto(new CardSaveRequestDto(), null);
         cardMapper.updateEntityFromDto(null, null);
     }
 }

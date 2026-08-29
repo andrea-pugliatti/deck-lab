@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
-import com.deck.lab.backend.dto.response.DeckCardResponseDto;
-import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
 import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
@@ -130,29 +128,7 @@ public class DeckValidationService {
         return cardMap;
     }
 
-    /**
-     * Validates the structure and legality of a deck based on the provided DeckResponseDto.
-     *
-     * @param deckDto the DTO representing the deck to validate
-     * @return a map of database-resolved Card objects mapped by their IDs, for subsequent save
-     *             reuse
-     * @throws DeckValidationException containing all validation errors if any rules are violated
-     */
-    @Transactional(readOnly = true)
-    public Map<Long, Card> validate(DeckResponseDto deckDto) {
-        List<DeckCardRequestDto> cardDtos = new ArrayList<>();
-        if (deckDto.getDeckCards() != null) {
-            for (DeckCardResponseDto c : deckDto.getDeckCards()) {
-                if (c != null) {
-                    cardDtos.add(
-                            new DeckCardRequestDto(c.getCardId(), c.getSection(), c.getQuantity()));
-                }
-            }
-        }
-        DeckSaveRequestDto req = new DeckSaveRequestDto(deckDto.getName(), deckDto.getDescription(),
-                deckDto.getFormatName(), cardDtos);
-        return validate(req);
-    }
+
 
     /**
      * Resolves and fetches full Card records from database based on DTO card IDs.

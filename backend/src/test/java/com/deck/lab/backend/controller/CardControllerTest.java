@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deck.lab.backend.dto.request.CardSaveRequestDto;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -38,6 +40,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@DisplayName("CardController Integration Tests")
 public class CardControllerTest {
 
     @Autowired
@@ -137,21 +140,21 @@ public class CardControllerTest {
 
     @Test
     void testCreateCard() throws Exception {
-        Card newCard = new Card();
-        newCard.setName("Dark Magician");
-        newCard.setType(CardType.NORMAL_MONSTER);
-        newCard.setFrameType(FrameType.NORMAL);
-        newCard.setDescription("The ultimate wizard.");
-        newCard.setRace(CardRace.SPELLCASTER);
-        newCard.setAttribute(CardAttribute.DARK);
-        newCard.setAtk(2500);
-        newCard.setDef(2100);
-        newCard.setLevel(7);
+        CardSaveRequestDto requestDto = new CardSaveRequestDto();
+        requestDto.setName("Dark Magician");
+        requestDto.setType(CardType.NORMAL_MONSTER);
+        requestDto.setFrameType(FrameType.NORMAL);
+        requestDto.setDescription("The ultimate wizard.");
+        requestDto.setRace(CardRace.SPELLCASTER);
+        requestDto.setAttribute(CardAttribute.DARK);
+        requestDto.setAtk(2500);
+        requestDto.setDef(2100);
+        requestDto.setLevel(7);
 
         mockMvc.perform(post("/api/cards")
                 .with(authentication(testUserAuth))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newCard))
+                .content(objectMapper.writeValueAsString(requestDto))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
@@ -159,16 +162,53 @@ public class CardControllerTest {
     }
 
     @Test
+    void testCreateCard_withInvalidPayload_returnsBadRequest() throws Exception {
+        CardSaveRequestDto invalidRequest = new CardSaveRequestDto();
+        invalidRequest.setName(""); // Blank name is invalid
+        invalidRequest.setType(null); // Missing type is invalid
+
+        mockMvc.perform(post("/api/cards")
+                .with(authentication(testUserAuth))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testUpdateCard() throws Exception {
-        testCard.setName("MyUniqueCardUpdated");
+        CardSaveRequestDto updateRequest = new CardSaveRequestDto();
+        updateRequest.setName("MyUniqueCardUpdated");
+        updateRequest.setType(testCard.getType());
+        updateRequest.setFrameType(testCard.getFrameType());
+        updateRequest.setDescription(testCard.getDescription());
+        updateRequest.setRace(testCard.getRace());
+        updateRequest.setAttribute(testCard.getAttribute());
+        updateRequest.setAtk(testCard.getAtk());
+        updateRequest.setDef(testCard.getDef());
+        updateRequest.setLevel(testCard.getLevel());
 
         mockMvc.perform(put("/api/cards/" + testCard.getId())
                 .with(authentication(testUserAuth))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(testCard))
+                .content(objectMapper.writeValueAsString(updateRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("MyUniqueCardUpdated")));
+    }
+
+    @Test
+    void testUpdateCard_withInvalidPayload_returnsBadRequest() throws Exception {
+        CardSaveRequestDto invalidRequest = new CardSaveRequestDto();
+        invalidRequest.setName("  "); // Blank name
+        invalidRequest.setType(null); // Null type
+
+        mockMvc.perform(put("/api/cards/" + testCard.getId())
+                .with(authentication(testUserAuth))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

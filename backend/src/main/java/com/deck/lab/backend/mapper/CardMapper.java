@@ -2,12 +2,13 @@ package com.deck.lab.backend.mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.deck.lab.backend.dto.request.CardSaveRequestDto;
 import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.model.Card;
 
 /**
- * Mapper component that translates between {@link Card} database entities and
- * {@link CardResponseDto} DTO records.
+ * Mapper component that translates between {@link Card} database entities,
+ * {@link CardSaveRequestDto} request payloads, and {@link CardResponseDto} DTO records.
  */
 @Component
 public class CardMapper {
@@ -43,18 +44,17 @@ public class CardMapper {
     }
 
     /**
-     * Converts a {@link CardResponseDto} API payload into a new transient {@link Card} database
-     * entity.
+     * Converts a {@link CardSaveRequestDto} API request payload into a new transient {@link Card}
+     * database entity.
      *
-     * @param dto input DTO data
+     * @param dto input card save request DTO
      * @return new transient Card entity, or null if parameter is null
      */
-    public Card toEntity(CardResponseDto dto) {
+    public Card toEntity(CardSaveRequestDto dto) {
         if (dto == null) {
             return null;
         }
         Card card = new Card();
-        card.setId(dto.getId());
         card.setPasscode(dto.getPasscode());
         card.setName(dto.getName());
         card.setType(dto.getType());
@@ -75,12 +75,12 @@ public class CardMapper {
 
     /**
      * Updates an existing database-managed {@link Card} entity with values from a
-     * {@link CardResponseDto}.
+     * {@link CardSaveRequestDto}.
      *
      * @param dto  incoming updated DTO parameters
      * @param card the existing database entity instance to modify
      */
-    public void updateEntityFromDto(CardResponseDto dto, Card card) {
+    public void updateEntityFromDto(CardSaveRequestDto dto, Card card) {
         if (dto == null || card == null) {
             return;
         }

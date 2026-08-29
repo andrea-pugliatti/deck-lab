@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.model.Card;
@@ -23,6 +24,9 @@ import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.User;
 
+import org.junit.jupiter.api.DisplayName;
+
+@DisplayName("DeckMapper Unit Tests")
 class DeckMapperTest {
 
     private DeckMapper deckMapper;
@@ -134,8 +138,7 @@ class DeckMapperTest {
 
     @Test
     void toEntity_withValidDto_mapsFieldsCorrectly() {
-        DeckResponseDto dto = new DeckResponseDto();
-        dto.setId(30L);
+        DeckSaveRequestDto dto = new DeckSaveRequestDto();
         dto.setName("New Deck");
         dto.setDescription("Some description");
         dto.setFormatName(Format.GOAT);
@@ -143,7 +146,6 @@ class DeckMapperTest {
         Deck deck = deckMapper.toEntity(dto);
 
         assertNotNull(deck);
-        assertEquals(30L, deck.getId());
         assertEquals("New Deck", deck.getName());
         assertEquals("Some description", deck.getDescription());
         assertEquals(Format.GOAT, deck.getFormatName());
@@ -151,7 +153,7 @@ class DeckMapperTest {
 
     @Test
     void toEntity_withNullDto_returnsNull() {
-        assertNull(deckMapper.toEntity((DeckResponseDto) null));
+        assertNull(deckMapper.toEntity((DeckSaveRequestDto) null));
     }
 
     @Test
@@ -159,8 +161,7 @@ class DeckMapperTest {
         Deck deck = new Deck("Old Name", "Old Desc", Format.TCG, null);
         deck.setId(40L);
 
-        DeckResponseDto dto = new DeckResponseDto();
-        dto.setId(50L);
+        DeckSaveRequestDto dto = new DeckSaveRequestDto();
         dto.setName("Updated Name");
         dto.setDescription("Updated Desc");
         dto.setFormatName(Format.GOAT);

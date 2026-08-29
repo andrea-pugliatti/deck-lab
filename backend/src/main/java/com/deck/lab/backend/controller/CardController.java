@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deck.lab.backend.dto.request.CardSaveRequestDto;
 import com.deck.lab.backend.dto.response.CardResponseDto;
 import com.deck.lab.backend.mapper.CardMapper;
 import com.deck.lab.backend.model.Card;
@@ -39,8 +40,8 @@ import jakarta.validation.Valid;
  * </p>
  * <p>
  * Exposes endpoints to query the card catalog. Relies on {@link CardService} for data retrieval and
- * uses MapStruct {@link CardMapper} to translate database entities ({@link Card}) into client-safe
- * DTO structures ({@link CardResponseDto}).
+ * uses {@link CardMapper} to translate database entities ({@link Card}) into client-safe
+ * DTO structures ({@link CardResponseDto}) and process inbound save requests ({@link CardSaveRequestDto}).
  * </p>
  *
  * <p>
@@ -115,11 +116,11 @@ public class CardController {
     /**
      * Creates a new card entry in the database.
      *
-     * @param cardDto the card definition details
-     * @return 201 Created with the saved CardDto
+     * @param cardDto the card definition details to save
+     * @return 201 Created with the saved CardResponseDto
      */
     @PostMapping
-    public ResponseEntity<CardResponseDto> create(@Valid @RequestBody CardResponseDto cardDto) {
+    public ResponseEntity<CardResponseDto> create(@Valid @RequestBody CardSaveRequestDto cardDto) {
         Card card = mapper.toEntity(cardDto);
         Card savedCard = service.save(card);
         return new ResponseEntity<>(mapper.toDto(savedCard), HttpStatus.CREATED);
@@ -130,11 +131,11 @@ public class CardController {
      *
      * @param id      the ID of the card to update
      * @param cardDto the updated card details
-     * @return 200 OK with the updated CardDto, or 404 Not Found if card doesn't exist
+     * @return 200 OK with the updated CardResponseDto, or 404 Not Found if card doesn't exist
      */
     @PutMapping("/{id}")
     public ResponseEntity<CardResponseDto> update(@PathVariable Long id,
-                                                  @Valid @RequestBody CardResponseDto cardDto) {
+                                                  @Valid @RequestBody CardSaveRequestDto cardDto) {
         Card existingCard = service.getById(id);
         mapper.updateEntityFromDto(cardDto, existingCard);
         Card updatedCard = service.edit(existingCard);
