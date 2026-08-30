@@ -18,7 +18,11 @@ export default function Footer() {
     <footer className="bg-dark-surface/30 border-border-dim mt-16 border-t py-12 text-slate-500">
       <div className="mx-auto mb-8 grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <Link to="/" className="mb-4 flex items-center gap-2 text-white no-underline">
+          <Link
+            to="/"
+            viewTransition
+            className="mb-4 flex items-center gap-2 text-white no-underline"
+          >
             <img src="/logo.webp" className="h-20 w-20 rounded-full" alt="DeckLab Logo" />
             <span className="font-display text-gold-accent text-4xl font-bold tracking-wide">
               DeckLab
@@ -63,12 +67,20 @@ export default function Footer() {
       <div className="border-border-dim/50 mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t px-6 pt-6 text-xs sm:flex-row">
         <p>&copy; {currentYear} DeckLab. All rights reserved.</p>
         <div className="flex gap-4">
-          <a href="#privacy" className="hover:text-cyan-hover transition-colors duration-200">
+          <button
+            type="button"
+            onClick={() => alert("Privacy policy is coming soon.")}
+            className="hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-slate-500 transition-colors duration-200"
+          >
             Privacy Policy
-          </a>
-          <a href="#terms" className="hover:text-cyan-hover transition-colors duration-200">
+          </button>
+          <button
+            type="button"
+            onClick={() => alert("Terms of service are coming soon.")}
+            className="hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-slate-500 transition-colors duration-200"
+          >
             Terms of Service
-          </a>
+          </button>
         </div>
       </div>
     </footer>

@@ -1,26 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter, useNavigate } from "react-router";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import { describe, expect, it } from "vitest";
 
 import NotFound from "./NotFound";
 
-vi.mock("react-router", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("react-router")>();
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-  };
-});
-
 describe("NotFound page component", () => {
-  const navigateMock = vi.fn();
-
-  beforeEach(() => {
-    navigateMock.mockReset();
-    vi.mocked(useNavigate).mockReturnValue(navigateMock);
-  });
-
-  it("should render error details in a card shape layout", () => {
+  it("should render error details in a card shape layout and provide a home link", () => {
     render(
       <MemoryRouter>
         <NotFound />
@@ -29,17 +14,9 @@ describe("NotFound page component", () => {
 
     expect(screen.getByText("404: Lost in Lab")).toBeInTheDocument();
     expect(screen.getByText(/banished to the Shadow Realm/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Return Home/i })).toBeInTheDocument();
-  });
 
-  it("should navigate back home when return home button is clicked", () => {
-    render(
-      <MemoryRouter>
-        <NotFound />
-      </MemoryRouter>,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /Return Home/i }));
-    expect(navigateMock).toHaveBeenCalledWith("/");
+    const homeLink = screen.getByRole("link", { name: /Return Home/i });
+    expect(homeLink).toBeInTheDocument();
+    expect(homeLink).toHaveAttribute("href", "/");
   });
 });

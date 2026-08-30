@@ -1,20 +1,18 @@
 import { Compass, HelpCircle, Star } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import Badge from "../components/ui/Badge";
-import Button from "../components/ui/Button";
+import { getButtonClasses } from "../components/ui/Button";
 
 /**
  * NotFound Page Component.
  *
  * Renders a custom 404 error page themed as a Yu-Gi-Oh! card layout. Displays a banished card animation
- * and includes a CTA button to navigate back to the home route.
+ * and includes a CTA link to navigate back to the home route.
  *
  * @returns {React.JSX.Element} The rendered NotFound error page.
  */
 export default function NotFound(): React.JSX.Element {
-  const navigate = useNavigate();
-
   return (
     <div className="relative flex min-h-[75vh] flex-col items-center justify-center px-6 py-12 select-none">
       <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[100px]"></div>
@@ -69,15 +67,14 @@ export default function NotFound(): React.JSX.Element {
         </div>
 
         <div className="mt-10 w-full max-w-sm">
-          <Button
-            onClick={() => navigate("/")}
-            variant="primary"
-            size="lg"
-            className="w-full shadow-lg"
+          <Link
+            to="/"
+            viewTransition
+            className={`${getButtonClasses({ variant: "primary", size: "lg" })} w-full no-underline shadow-lg`}
           >
             <Compass className="h-4 w-4" />
-            Return Home
-          </Button>
+            <span>Return Home</span>
+          </Link>
         </div>
       </div>
     </div>

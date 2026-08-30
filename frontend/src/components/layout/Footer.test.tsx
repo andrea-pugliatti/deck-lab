@@ -17,6 +17,8 @@ describe("Footer component", () => {
     expect(screen.getByText("Card Database")).toBeInTheDocument();
     expect(screen.getByText("Hand Simulator")).toBeInTheDocument();
     expect(screen.getByText(/unofficial fan-made simulator/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Privacy Policy" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Terms of Service" })).toBeInTheDocument();
   });
 
   it("should render current year in copy notice", () => {

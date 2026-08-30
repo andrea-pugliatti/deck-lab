@@ -16,7 +16,7 @@ interface NavLinkItem {
 
 const NAV_LINKS: NavLinkItem[] = [
   { to: "/", label: "Home", end: true },
-  { to: "/decks", label: "Public Decks" },
+  { to: "/decks", label: "Public Decks", end: true },
   { to: "/cards", label: "Card Database" },
   { to: "/simulator", label: "Hand Simulator" },
 ];
