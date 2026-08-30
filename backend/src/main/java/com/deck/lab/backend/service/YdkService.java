@@ -25,7 +25,7 @@ import com.deck.lab.backend.repository.CardRepository;
  * Service for parsing, importing, and exporting Yu-Gi-Oh! deck files in `.ydk` format.
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class YdkService {
 
     private final CardRepository cardRepository;

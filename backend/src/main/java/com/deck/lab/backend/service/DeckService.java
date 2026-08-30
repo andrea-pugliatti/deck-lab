@@ -52,7 +52,7 @@ import com.deck.lab.backend.repository.specification.DeckSpecification;
  * </ul>
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class DeckService {
     private final DeckRepository deckRepository;
     private final DeckMapper deckMapper;
