@@ -77,28 +77,32 @@ public class CardImporter {
     private final YgoProDeckProperties properties;
 
     @Value("${app.upload-dir:data/images}")
-    private String uploadDir;
+    private String uploadDir = "data/images";
 
     /**
-     * Constructs a new CardImporter with required repositories, executors, and properties.
+     * Constructs a new CardImporter with required repositories, executors, object mapper, REST client builder, and properties.
      *
      * @param cardRepository        repository managing persisted cards
      * @param transactionManager    transaction manager for chunked card batch saves
      * @param imageDownloadExecutor executor managing asynchronous artwork downloads
+     * @param objectMapper          Spring-managed JSON object mapper
+     * @param restClientBuilder     Spring-managed REST client builder
      * @param properties            configuration properties for YGOPRODeck API integration
      */
     public CardImporter(CardRepository cardRepository,
                         PlatformTransactionManager transactionManager,
                         Executor imageDownloadExecutor,
+                        ObjectMapper objectMapper,
+                        RestClient.Builder restClientBuilder,
                         YgoProDeckProperties properties) {
         this.cardRepository = cardRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.restClient = RestClient.builder()
+        this.imageDownloadExecutor = imageDownloadExecutor;
+        this.objectMapper = objectMapper;
+        this.restClient = restClientBuilder
                 .defaultHeader("User-Agent",
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
-        this.imageDownloadExecutor = imageDownloadExecutor;
-        this.objectMapper = new ObjectMapper();
         this.properties = properties;
     }
 

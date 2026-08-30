@@ -49,25 +49,29 @@ public class BanlistImporter {
     private final YgoProDeckProperties properties;
 
     /**
-     * Constructs a new BanlistImporter with required repositories and properties.
+     * Constructs a new BanlistImporter with required repositories, transaction manager, object mapper, REST client builder, and properties.
      *
      * @param cardRepository        repository managing card entities
      * @param formatRulesRepository repository managing format rules
      * @param transactionManager    transaction manager for atomic database operations
+     * @param objectMapper          Spring-managed JSON object mapper
+     * @param restClientBuilder     Spring-managed REST client builder
      * @param properties            configuration properties for YGOPRODeck integration
      */
     public BanlistImporter(CardRepository cardRepository,
                            FormatRulesRepository formatRulesRepository,
                            PlatformTransactionManager transactionManager,
+                           ObjectMapper objectMapper,
+                           RestClient.Builder restClientBuilder,
                            YgoProDeckProperties properties) {
         this.cardRepository = cardRepository;
         this.formatRulesRepository = formatRulesRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.restClient = RestClient.builder()
+        this.objectMapper = objectMapper;
+        this.restClient = restClientBuilder
                 .defaultHeader("User-Agent",
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build();
-        this.objectMapper = new ObjectMapper();
         this.properties = properties;
     }
 
