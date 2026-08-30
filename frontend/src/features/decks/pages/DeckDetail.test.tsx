@@ -65,5 +65,9 @@ describe("DeckDetail page component", () => {
     // Stats calculations: 3 monsters + 1 spell = 4 main deck cards
     expect(screen.getAllByText("Main Deck")[0]).toBeInTheDocument();
     expect(screen.getByText("4 / 60")).toBeInTheDocument();
+
+    const backLink = screen.getByRole("link", { name: /Back to Decks/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/decks");
   });
 });

@@ -37,5 +37,9 @@ describe("DeckBuilder page component", () => {
     expect(screen.getByTestId("builder-filters")).toBeInTheDocument();
     expect(screen.getByTestId("card-list")).toBeInTheDocument();
     expect(screen.getAllByTestId("sections")[0]).toBeInTheDocument();
+
+    const backLink = screen.getByRole("link", { name: /Back to Decks/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/my-decks");
   });
 });

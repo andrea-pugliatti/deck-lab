@@ -1,6 +1,6 @@
 import { ArrowLeft, RotateCcw, Sparkles, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 import Pagination from "../../../components/navigation/Pagination";
 import Button from "../../../components/ui/Button";
@@ -157,15 +157,14 @@ function DeckBuilderContent(): React.JSX.Element {
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="group mb-2 px-2.5 py-1 text-sm font-normal text-slate-400"
-            type="button"
+          <Link
+            to={isEditMode && id ? `/decks/${id}` : "/my-decks"}
+            viewTransition
+            className="group mb-2 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span>Back to Decks</span>
-          </Button>
+            <span>{isEditMode ? "Back to Deck" : "Back to Decks"}</span>
+          </Link>
           <h1 className="font-display text-2xl font-black text-white md:text-3xl">
             {isEditMode ? "Edit Deck Build" : "Construct New Deck"}
           </h1>

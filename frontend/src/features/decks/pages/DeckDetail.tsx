@@ -41,6 +41,7 @@ export default function DeckDetail(): React.JSX.Element {
     data: deck,
     isLoading: loading,
     error,
+    refetch,
   } = useQuery<Deck>({
     queryKey: ["deck", id],
     queryFn: ({ signal }) => getDeck(id!, signal),
@@ -75,11 +76,19 @@ export default function DeckDetail(): React.JSX.Element {
   if (error || !deck) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
+        <Link
+          to="/decks"
+          viewTransition
+          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Decks</span>
+        </Link>
         <ErrorAlert
           title="Failed to load deck details"
           message={error?.message || "Deck not found"}
-          onRetry={() => navigate("/decks")}
-          retryText="Back to Public Decks"
+          onRetry={() => refetch()}
+          retryText="Retry"
         />
       </div>
     );
@@ -112,15 +121,14 @@ export default function DeckDetail(): React.JSX.Element {
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
       <div className="mb-8 flex items-center justify-between">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="group px-2.5 py-1 font-normal text-slate-400"
-          type="button"
+        <Link
+          to="/decks"
+          viewTransition
+          className="group inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          <span>Back</span>
-        </Button>
+          <span>Back to Decks</span>
+        </Link>
 
         <div className="flex items-center gap-3">
           <Link

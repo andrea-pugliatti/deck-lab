@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, useNavigate, useParams } from "react-router";
+import { MemoryRouter, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import CardDetail from "./CardDetail";
@@ -9,21 +9,16 @@ vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
   return {
     ...actual,
-    useNavigate: vi.fn(),
     useParams: vi.fn(),
   };
 });
 
 describe("CardDetail page component", () => {
-  const navigateMock = vi.fn();
-
   beforeEach(() => {
-    navigateMock.mockReset();
-    vi.mocked(useNavigate).mockReturnValue(navigateMock);
     vi.mocked(useParams).mockReturnValue({ id: "100" });
   });
 
-  it("should render card detail page correctly", () => {
+  it("should render card detail page correctly and provide link back to catalog", () => {
     vi.mocked(useQuery).mockReturnValue({
       data: {
         id: 100,
@@ -52,5 +47,9 @@ describe("CardDetail page component", () => {
     expect(screen.getByText("A fiend with dark powers.")).toBeInTheDocument();
     expect(screen.getByText("2500")).toBeInTheDocument();
     expect(screen.getByText("1200")).toBeInTheDocument();
+
+    const backLink = screen.getByRole("link", { name: /Back to Catalog/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/cards");
   });
 });

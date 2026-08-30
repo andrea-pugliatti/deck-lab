@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
 import { useRef, type MouseEvent } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
-import Button from "../../../components/ui/Button";
 import { API_BASE_URL } from "../../../config/env";
 import { getCard } from "../../../features/cards";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
@@ -23,7 +22,6 @@ import type { Card } from "../../../types";
  */
 export default function CardDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const cardArtworkRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +59,7 @@ export default function CardDetail(): React.JSX.Element {
     data: card,
     isLoading: loading,
     error,
+    refetch,
   } = useQuery<Card>({
     queryKey: ["card", id],
     queryFn: ({ signal }) => getCard(id!, signal),
@@ -74,11 +73,19 @@ export default function CardDetail(): React.JSX.Element {
   if (error || !card) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
+        <Link
+          to="/cards"
+          viewTransition
+          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Catalog</span>
+        </Link>
         <ErrorAlert
           title="Failed to load card details"
           message={error?.message || "Card not found"}
-          onRetry={() => navigate("/cards")}
-          retryText="Back to Catalog"
+          onRetry={() => refetch()}
+          retryText="Retry"
         />
       </div>
     );
@@ -90,15 +97,14 @@ export default function CardDetail(): React.JSX.Element {
   return (
     <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="group mb-8 px-2.5 py-1 font-normal text-slate-400"
-          type="button"
+        <Link
+          to="/cards"
+          viewTransition
+          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          <span>Back</span>
-        </Button>
+          <span>Back to Catalog</span>
+        </Link>
 
         <div className="bg-dark-surface border-border-dim grid grid-cols-1 gap-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm md:grid-cols-12 md:p-10">
           {/* Card Artwork */}
