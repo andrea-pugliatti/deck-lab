@@ -1,27 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter, useNavigate } from "react-router";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MemoryRouter } from "react-router";
+import { describe, expect, it, vi } from "vitest";
 
 import type { Format } from "../../../types";
 import DeckGridCard from "./DeckGridCard";
 
-// Mock useNavigate from react-router
-vi.mock("react-router", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("react-router")>();
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-  };
-});
-
 describe("DeckGridCard component", () => {
-  const navigateMock = vi.fn();
-
-  beforeEach(() => {
-    navigateMock.mockReset();
-    vi.mocked(useNavigate).mockReturnValue(navigateMock);
-  });
-
   const defaultProps = {
     id: 42,
     name: "Stardust Dragon Deck",
@@ -102,23 +86,11 @@ describe("DeckGridCard component", () => {
     expect(handleSelect).toHaveBeenCalledWith(42);
   });
 
-  it("navigates to deck page when container is clicked (when showActions is true)", () => {
+  it("calls onSelect when enter or space key is pressed (when onSelect is provided)", () => {
+    const handleSelect = vi.fn();
     render(
       <MemoryRouter>
-        <DeckGridCard {...defaultProps} showActions={true} />
-      </MemoryRouter>,
-    );
-
-    const container = screen.getByRole("button", { name: /stardust dragon deck/i });
-    fireEvent.click(container);
-
-    expect(navigateMock).toHaveBeenCalledWith("/decks/42", { viewTransition: true });
-  });
-
-  it("navigates when enter or space key is pressed on container", () => {
-    render(
-      <MemoryRouter>
-        <DeckGridCard {...defaultProps} showActions={true} />
+        <DeckGridCard {...defaultProps} onSelect={handleSelect} />
       </MemoryRouter>,
     );
 
@@ -126,15 +98,15 @@ describe("DeckGridCard component", () => {
 
     // Press Space
     fireEvent.keyDown(container, { key: " " });
-    expect(navigateMock).toHaveBeenCalledWith("/decks/42", { viewTransition: true });
+    expect(handleSelect).toHaveBeenCalledWith(42);
 
     // Press Enter
-    navigateMock.mockClear();
+    handleSelect.mockClear();
     fireEvent.keyDown(container, { key: "Enter" });
-    expect(navigateMock).toHaveBeenCalledWith("/decks/42", { viewTransition: true });
+    expect(handleSelect).toHaveBeenCalledWith(42);
   });
 
-  it("renders action buttons and calls onDelete when delete button is clicked", () => {
+  it("renders deck title link and action buttons when showActions is true", () => {
     const handleDelete = vi.fn();
     render(
       <MemoryRouter>
@@ -142,32 +114,21 @@ describe("DeckGridCard component", () => {
       </MemoryRouter>,
     );
 
+    // Deck title should be a native Link to deck details
+    const deckLink = screen.getByRole("link", { name: "Stardust Dragon Deck" });
+    expect(deckLink).toBeInTheDocument();
+    expect(deckLink).toHaveAttribute("href", "/decks/42");
+
     // Edit link should be present
     const editLink = screen.getByTitle("Edit Deck");
     expect(editLink).toBeInTheDocument();
     expect(editLink).toHaveAttribute("href", "/decks/42/edit");
 
-    // Delete button should be present
+    // Delete button should be present and functional
     const deleteBtn = screen.getByTitle("Delete Deck");
     expect(deleteBtn).toBeInTheDocument();
 
     fireEvent.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith(42);
-    // Click on delete should stop propagation and not navigate
-    expect(navigateMock).not.toHaveBeenCalled();
-  });
-
-  it("does not navigate when edit link is clicked", () => {
-    render(
-      <MemoryRouter>
-        <DeckGridCard {...defaultProps} showActions={true} />
-      </MemoryRouter>,
-    );
-
-    const editLink = screen.getByTitle("Edit Deck");
-    fireEvent.click(editLink);
-
-    // Click on edit should stop propagation and not navigate using useNavigate
-    expect(navigateMock).not.toHaveBeenCalled();
   });
 });

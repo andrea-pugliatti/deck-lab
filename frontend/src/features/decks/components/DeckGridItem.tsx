@@ -33,6 +33,7 @@ export default function DeckGridItem({
   return (
     <Link
       to={`/cards/${cardId}`}
+      viewTransition
       className="group bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated border-border-dim hover:border-border-glow relative flex flex-col overflow-hidden rounded-xl border no-underline transition-all duration-200 hover:shadow-md"
     >
       <div className="border-border-dim/40 relative flex aspect-video w-full items-center justify-center overflow-hidden border-b bg-slate-900">
