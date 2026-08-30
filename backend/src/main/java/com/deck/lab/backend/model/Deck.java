@@ -176,4 +176,20 @@ public class Deck {
     public void setDeckCards(List<DeckCard> deckCards) {
         this.deckCards = deckCards;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Deck other)) {
+            return false;
+        }
+        return id != null && id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
