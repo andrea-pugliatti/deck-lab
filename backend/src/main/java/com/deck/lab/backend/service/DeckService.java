@@ -3,7 +3,6 @@ package com.deck.lab.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import com.deck.lab.backend.dto.request.DeckCardRequestDto;
 import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
+import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.mapper.DeckMapper;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.Deck;
@@ -107,13 +107,13 @@ public class DeckService {
      *
      * @param id the unique ID of the deck
      * @return mapped DeckDto
-     * @throws NoSuchElementException if no deck is found matching the ID
+     * @throws ResourceNotFoundException if no deck is found matching the ID
      */
     public DeckResponseDto getDeckById(Long id) {
         Specification<Deck> spec = Specification.where(DeckSpecification.fetchCards())
                 .and((root, query, builder) -> builder.equal(root.get("id"), id));
         Deck deck = deckRepository.findOne(spec)
-                .orElseThrow(() -> new NoSuchElementException("Deck not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Deck not found with id: " + id));
         return deckMapper.toDto(deck);
     }
 
@@ -155,13 +155,13 @@ public class DeckService {
      * @param deckDto the updated deck save request
      * @param user    the owner user requesting the change
      * @return the updated and saved DeckDto
-     * @throws NoSuchElementException  if the deck doesn't exist or doesn't belong to the user
-     * @throws DeckValidationException if the updated deck list is invalid
+     * @throws ResourceNotFoundException if the deck doesn't exist or doesn't belong to the user
+     * @throws DeckValidationException    if the updated deck list is invalid
      */
     @Transactional
     public DeckResponseDto updateDeck(Long id, DeckSaveRequestDto deckDto, User user) {
         Deck deck = deckRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
+                .orElseThrow(() -> new ResourceNotFoundException("Deck not found with id: " + id));
 
         Map<Long, Card> cardMap = deckValidationService.validate(deckDto);
 
@@ -245,12 +245,12 @@ public class DeckService {
      *
      * @param id   the ID of the deck to delete
      * @param user the owner user account requesting deletion
-     * @throws NoSuchElementException if the deck is not found or user is unauthorized
+     * @throws ResourceNotFoundException if the deck is not found or user is unauthorized
      */
     @Transactional
     public void deleteDeck(Long id, User user) {
         Deck deck = deckRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchElementException("Deck not found or unauthorized"));
+                .orElseThrow(() -> new ResourceNotFoundException("Deck not found with id: " + id));
         deckRepository.delete(deck);
     }
 }

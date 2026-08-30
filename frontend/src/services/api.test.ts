@@ -70,6 +70,35 @@ describe("api service", () => {
       expect(await parseResponseErrors(resErr)).toEqual(["Direct error"]);
     });
 
+    it("should parse ProblemDetail response with detail or title", async () => {
+      const resDetail = {
+        headers: {
+          get: (name: string) => (name === "content-type" ? "application/problem+json" : null),
+        },
+        json: async () => ({
+          type: "about:blank",
+          title: "Resource Not Found",
+          status: 404,
+          detail: "Deck not found with id: 123",
+        }),
+      } as unknown as Response;
+
+      expect(await parseResponseErrors(resDetail)).toEqual(["Deck not found with id: 123"]);
+
+      const resTitle = {
+        headers: {
+          get: (name: string) => (name === "content-type" ? "application/problem+json" : null),
+        },
+        json: async () => ({
+          type: "about:blank",
+          title: "Unauthorized Access",
+          status: 401,
+        }),
+      } as unknown as Response;
+
+      expect(await parseResponseErrors(resTitle)).toEqual(["Unauthorized Access"]);
+    });
+
     it("should parse text response if not JSON", async () => {
       const response = {
         headers: {

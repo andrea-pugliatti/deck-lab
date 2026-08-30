@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +24,7 @@ import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckCardResponseDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
+import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
 import com.deck.lab.backend.model.CardRace;
@@ -145,8 +145,8 @@ class DeckServiceTest {
     }
 
     @Test
-    void getDeckById_whenDeckDoesNotExist_throwsNoSuchElementException() {
-        assertThrows(NoSuchElementException.class, () -> {
+    void getDeckById_whenDeckDoesNotExist_throwsResourceNotFoundException() {
+        assertThrows(ResourceNotFoundException.class, () -> {
             deckService.getDeckById(999999L);
         });
     }
@@ -290,12 +290,12 @@ class DeckServiceTest {
     }
 
     @Test
-    void updateDeck_whenUnauthorized_throwsNoSuchElementException() {
+    void updateDeck_whenUnauthorized_throwsResourceNotFoundException() {
         DeckSaveRequestDto request = new DeckSaveRequestDto();
         request.setName("Hacked Deck");
         request.setFormatName(Format.TCG);
 
-        assertThrows(NoSuchElementException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             deckService.updateDeck(testDeck.getId(), request, unauthorizedUser);
         });
     }
@@ -311,8 +311,8 @@ class DeckServiceTest {
     }
 
     @Test
-    void deleteDeck_whenUnauthorized_throwsNoSuchElementException() {
-        assertThrows(NoSuchElementException.class, () -> {
+    void deleteDeck_whenUnauthorized_throwsResourceNotFoundException() {
+        assertThrows(ResourceNotFoundException.class, () -> {
             deckService.deleteDeck(testDeck.getId(), unauthorizedUser);
         });
         assertTrue(deckRepository.existsById(testDeck.getId()));

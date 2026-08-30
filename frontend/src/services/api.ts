@@ -67,12 +67,14 @@ function onRefreshFailed(err: unknown) {
 export async function parseResponseErrors(response: Response): Promise<string[]> {
   try {
     const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    if (contentType && (contentType.includes("application/json") || contentType.includes("application/problem+json"))) {
       const errData = (await response.json()) as
         | {
             errors?: unknown[];
             message?: string;
             error?: string;
+            detail?: string;
+            title?: string;
           }
         | null
         | undefined;
@@ -82,7 +84,7 @@ export async function parseResponseErrors(response: Response): Promise<string[]>
             if (typeof e === "string") return e;
             if (e && typeof e === "object") {
               const errObj = e as Record<string, unknown>;
-              const msg = errObj.defaultMessage || errObj.message || errObj.error;
+              const msg = errObj.defaultMessage || errObj.message || errObj.error || errObj.detail;
               if (typeof msg === "string") return msg;
               return Object.prototype.toString.call(e);
             }
@@ -90,10 +92,14 @@ export async function parseResponseErrors(response: Response): Promise<string[]>
               ? String(e)
               : "Unknown validation error";
           });
+        } else if (errData.detail) {
+          return [errData.detail];
         } else if (errData.message) {
           return [errData.message];
         } else if (errData.error) {
           return [errData.error];
+        } else if (errData.title) {
+          return [errData.title];
         }
       }
     } else {

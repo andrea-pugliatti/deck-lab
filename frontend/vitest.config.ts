@@ -8,7 +8,6 @@ export default mergeConfig(
     test: {
       globals: true,
       environment: "jsdom",
-      execArgv: ["--no-webstorage"],
       setupFiles: "./src/test/setup.ts",
       coverage: {
         provider: "v8",

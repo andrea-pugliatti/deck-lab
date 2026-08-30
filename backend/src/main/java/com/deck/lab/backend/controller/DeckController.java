@@ -3,7 +3,6 @@ package com.deck.lab.backend.controller;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -29,6 +28,7 @@ import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
 import com.deck.lab.backend.dto.response.DeckResponseDto;
 import com.deck.lab.backend.dto.response.YdkImportResponseDto;
 import com.deck.lab.backend.exception.DeckValidationException;
+import com.deck.lab.backend.exception.ResourceNotFoundException;
 import com.deck.lab.backend.exception.YdkImportException;
 import com.deck.lab.backend.model.User;
 import com.deck.lab.backend.security.RateLimiter;
@@ -155,8 +155,8 @@ public class DeckController {
      * @param deckDto the updated deck definition data
      * @param user    the authenticated user requesting the update
      * @return 200 OK with the updated DeckDto, or 404 Not Found if the deck doesn't exist
-     * @throws NoSuchElementException  if the deck is not found or user is unauthorized
-     * @throws DeckValidationException if the updated deck list is invalid
+     * @throws ResourceNotFoundException if the deck is not found or user is unauthorized
+     * @throws DeckValidationException    if the updated deck list is invalid
      */
     @PutMapping("/{id}")
     public ResponseEntity<DeckResponseDto> update(@PathVariable Long id,
@@ -171,8 +171,8 @@ public class DeckController {
      *
      * @param id   the ID of the deck to delete
      * @param user the authenticated user requesting deletion
-     * @return 24 No Content on success, or 404 Not Found if the deck doesn't exist
-     * @throws NoSuchElementException if the deck is not found or user is unauthorized
+     * @return 204 No Content on success, or 404 Not Found if the deck doesn't exist
+     * @throws ResourceNotFoundException if the deck is not found or user is unauthorized
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
