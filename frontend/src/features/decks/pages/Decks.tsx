@@ -57,7 +57,6 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
 
   const {
     page,
-    setPage,
     searchQuery,
     setSearchQuery,
     format: selectedFormat,
@@ -69,7 +68,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
     totalElements,
     refetch,
   } = useDeckSearch({
-    pageSize: 9,
+    pageSize: PAGE_SIZE,
     username: tab === "user" ? user?.username || "" : "",
     skip: tab === "user" && !user?.username,
     syncUrl: true,
@@ -214,7 +213,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             </div>
           )}
 
-          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination page={page} totalPages={totalPages} />
         </>
       ) : tab === "user" ? (
         <EmptyState

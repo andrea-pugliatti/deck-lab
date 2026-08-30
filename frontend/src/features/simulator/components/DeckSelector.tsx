@@ -73,7 +73,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     pageSize: PAGE_SIZE,
     username: activeTab === "my-decks" ? user?.username || "" : "",
     skip: activeTab === "my-decks" && !user?.username,
-    syncUrl: true,
+    syncUrl: false,
   });
 
   const selectRandomDeck = () => {

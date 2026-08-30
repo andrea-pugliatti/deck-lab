@@ -33,7 +33,6 @@ export default function Cards(): React.JSX.Element {
   const [viewMode, setViewMode] = useViewPreference("cards-view-mode", "grid");
   const {
     searchPage: page,
-    setSearchPage: handlePageChange,
     searchQuery,
     setSearchQuery,
     filters,
@@ -115,7 +114,7 @@ export default function Cards(): React.JSX.Element {
                 </div>
               )}
 
-              <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
+              <Pagination page={page} totalPages={totalPages} />
             </>
           ) : (
             <EmptyState
