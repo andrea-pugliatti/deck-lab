@@ -1,30 +1,33 @@
 import { AlertTriangle, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import Label from "../../../components/ui/Label";
-import { useAuth } from "../../../features/auth";
+import { getRedirectPath, useAuth } from "../../../features/auth";
 
 /**
  * Register Page Component.
  *
  * Provides a registration interface for new users to create their profile.
  * Performs client-side password matching checks and makes an API call via context registry helper.
- * Automatically logs in the user and redirects to the decks catalogue on successful account creation.
+ * Automatically logs in the user and redirects to the intended page (from location.state.from) or decks catalogue.
  *
  * @returns {React.JSX.Element} The rendered Register page.
  */
 export default function Register(): React.JSX.Element {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
+
+  const from = getRedirectPath(location.state);
 
   /**
    * Handles user submission of registration details.
@@ -44,7 +47,7 @@ export default function Register(): React.JSX.Element {
     setSubmitting(true);
     try {
       await register(username, email, password);
-      void navigate("/decks");
+      void navigate(from, { replace: true, viewTransition: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     }
@@ -133,6 +136,7 @@ export default function Register(): React.JSX.Element {
           Already have a profile?{" "}
           <Link
             to="/login"
+            state={location.state}
             viewTransition
             className="text-cyan-accent hover:text-cyan-hover font-semibold transition-all duration-200 hover:underline"
           >

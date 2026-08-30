@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 
 import { useAuth } from "../../../features/auth";
 
@@ -8,12 +8,13 @@ import { useAuth } from "../../../features/auth";
  * Checks the authentication state using the {@link useAuth} hook.
  * If authentication state is still loading, displays a spinner.
  * If authenticated, renders the child routes via {@link Outlet}.
- * If not authenticated, redirects the user to the "/login" page.
+ * If not authenticated, redirects the user to the "/login" page preserving the attempted location in state.
  *
  * @returns A JSX element wrapping the protected content or redirect logic.
  */
 export default function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -26,5 +27,5 @@ export default function ProtectedRoute() {
     );
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
 }

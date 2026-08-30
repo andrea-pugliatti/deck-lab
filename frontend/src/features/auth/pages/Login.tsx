@@ -1,32 +1,35 @@
 import { AlertTriangle, Lock, Mail } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import Label from "../../../components/ui/Label";
-import { useAuth } from "../../../features/auth";
+import { getRedirectPath, useAuth } from "../../../features/auth";
 
 /**
  * Login Page Component.
  *
  * Provides a login interface for registered users. Handles username/email and password submission
  * by communicating with the authentication context. Displays failure messages and redirects to
- * the decks dashboard on success.
+ * the previous attempted page (stored in location.state.from) or default decks dashboard on success.
  *
  * @returns {React.JSX.Element} The rendered Login form page.
  */
 export default function Login(): React.JSX.Element {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
 
+  const from = getRedirectPath(location.state);
+
   /**
    * Handles form submission for signing in.
-   * Prevents default browser submission, invokes AuthContext login, and redirects to dashboard.
+   * Prevents default browser submission, invokes AuthContext login, and redirects to destination.
    *
    * @param {React.SubmitEvent} e - Form submission event.
    */
@@ -36,7 +39,7 @@ export default function Login(): React.JSX.Element {
     setSubmitting(true);
     try {
       await login(usernameOrEmail, password);
-      void navigate("/decks");
+      void navigate(from, { replace: true, viewTransition: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     }
@@ -74,12 +77,13 @@ export default function Login(): React.JSX.Element {
         <div>
           <div className="mb-2 flex items-center justify-between">
             <Label className="text-xs">Password</Label>
-            <a
-              href="#forgot-password"
-              className="text-cyan-accent hover:text-cyan-hover text-[10px] transition-all duration-200 hover:underline"
+            <button
+              type="button"
+              className="text-cyan-accent hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-[10px] transition-all duration-200 hover:underline"
+              onClick={() => alert("Password reset functionality is not available.")}
             >
               Forgot Password?
-            </a>
+            </button>
           </div>
           <Input
             type="password"
@@ -107,6 +111,7 @@ export default function Login(): React.JSX.Element {
           New to the Lab?{" "}
           <Link
             to="/register"
+            state={location.state}
             viewTransition
             className="text-cyan-accent hover:text-cyan-hover font-semibold transition-all duration-200 hover:underline"
           >

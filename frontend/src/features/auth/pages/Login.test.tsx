@@ -42,7 +42,7 @@ describe("Login page component", () => {
     expect(screen.getByRole("button", { name: "Enter the Lab" })).toBeInTheDocument();
   });
 
-  it("should handle successful submission and navigate", async () => {
+  it("should handle successful submission and navigate to /decks by default", async () => {
     loginMock.mockResolvedValueOnce(undefined);
 
     render(
@@ -61,7 +61,43 @@ describe("Login page component", () => {
 
     expect(loginMock).toHaveBeenCalledWith("kaiba", "rules");
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith("/decks");
+      expect(navigateMock).toHaveBeenCalledWith("/decks", {
+        replace: true,
+        viewTransition: true,
+      });
+    });
+  });
+
+  it("should redirect to location.state.from when redirected from a protected route", async () => {
+    loginMock.mockResolvedValueOnce(undefined);
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: "/login",
+            state: { from: { pathname: "/decks/create", search: "?format=Goat" } },
+          },
+        ]}
+      >
+        <Login />
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/e.g. SetoKaiba/i), {
+      target: { value: "kaiba" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("••••••••"), {
+      target: { value: "rules" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Enter the Lab" }));
+
+    expect(loginMock).toHaveBeenCalledWith("kaiba", "rules");
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith("/decks/create?format=Goat", {
+        replace: true,
+        viewTransition: true,
+      });
     });
   });
 

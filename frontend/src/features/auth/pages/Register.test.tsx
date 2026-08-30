@@ -63,7 +63,7 @@ describe("Register page component", () => {
     expect(registerMock).not.toHaveBeenCalled();
   });
 
-  it("should call register and navigate on success", async () => {
+  it("should call register and navigate to /decks by default on success", async () => {
     registerMock.mockResolvedValueOnce(undefined);
 
     render(
@@ -84,7 +84,45 @@ describe("Register page component", () => {
 
     expect(registerMock).toHaveBeenCalledWith("yugi", "yugi@mutou.com", "pass1");
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith("/decks");
+      expect(navigateMock).toHaveBeenCalledWith("/decks", {
+        replace: true,
+        viewTransition: true,
+      });
+    });
+  });
+
+  it("should redirect to location.state.from upon successful registration", async () => {
+    registerMock.mockResolvedValueOnce(undefined);
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: "/register",
+            state: { from: { pathname: "/decks/create" } },
+          },
+        ]}
+      >
+        <Register />
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/e.g. SetoKaiba/i), { target: { value: "yugi" } });
+    fireEvent.change(screen.getByPlaceholderText(/e.g. kaiba@corp.com/i), {
+      target: { value: "yugi@mutou.com" },
+    });
+    const pwInputs = screen.getAllByPlaceholderText("••••••••");
+    fireEvent.change(pwInputs[0]!, { target: { value: "pass1" } });
+    fireEvent.change(pwInputs[1]!, { target: { value: "pass1" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+    expect(registerMock).toHaveBeenCalledWith("yugi", "yugi@mutou.com", "pass1");
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith("/decks/create", {
+        replace: true,
+        viewTransition: true,
+      });
     });
   });
 });
