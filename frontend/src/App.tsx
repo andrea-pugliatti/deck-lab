@@ -37,16 +37,25 @@ function App() {
             <Routes>
               <Route element={<DefaultLayout />}>
                 <Route index element={<Home />} />
-                <Route path="cards" element={<Cards />} />
-                <Route path="cards/:id" element={<CardDetail />} />
-                <Route path="decks" element={<Decks />} />
-                <Route path="decks/:id" element={<DeckDetail />} />
+
+                <Route path="cards">
+                  <Route index element={<Cards />} />
+                  <Route path=":id" element={<CardDetail />} />
+                </Route>
+
+                <Route path="decks">
+                  <Route index element={<Decks />} />
+                  <Route path=":id" element={<DeckDetail />} />
+                </Route>
+
                 <Route path="simulator" element={<HandSimulator />} />
 
                 <Route element={<ProtectedRoute />}>
                   <Route path="my-decks" element={<Decks initialTab="user" />} />
-                  <Route path="decks/create" element={<DeckBuilder />} />
-                  <Route path="decks/:id/edit" element={<DeckBuilder />} />
+                  <Route path="decks">
+                    <Route path="create" element={<DeckBuilder />} />
+                    <Route path=":id/edit" element={<DeckBuilder />} />
+                  </Route>
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
