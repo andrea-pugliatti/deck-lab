@@ -43,7 +43,7 @@ describe("Pagination component", () => {
       expect(prevDisabled).toHaveAttribute("aria-disabled", "true");
 
       const nextLink = screen.getByRole("link", { name: "Next page" });
-      expect(nextLink).toHaveAttribute("href", "?page=1");
+      expect(nextLink).toHaveAttribute("href", "/?page=1");
     });
 
     it("should render both links when on a middle page and preserve existing search params", () => {
@@ -57,10 +57,10 @@ describe("Pagination component", () => {
       );
 
       const prevLink = screen.getByRole("link", { name: "Previous page" });
-      expect(prevLink).toHaveAttribute("href", "?q=dragon&type=Monster&page=1");
+      expect(prevLink).toHaveAttribute("href", "/?q=dragon&type=Monster&page=1");
 
       const nextLink = screen.getByRole("link", { name: "Next page" });
-      expect(nextLink).toHaveAttribute("href", "?q=dragon&type=Monster&page=3");
+      expect(nextLink).toHaveAttribute("href", "/?q=dragon&type=Monster&page=3");
     });
 
     it("should remove page parameter when previous link leads to page 0", () => {
@@ -74,7 +74,7 @@ describe("Pagination component", () => {
       );
 
       const prevLink = screen.getByRole("link", { name: "Previous page" });
-      expect(prevLink).toHaveAttribute("href", "?q=dragon");
+      expect(prevLink).toHaveAttribute("href", "/?q=dragon");
     });
 
     it("should render disabled next span on last page", () => {
@@ -88,7 +88,7 @@ describe("Pagination component", () => {
       expect(nextDisabled).toHaveAttribute("aria-disabled", "true");
 
       const prevLink = screen.getByRole("link", { name: "Previous page" });
-      expect(prevLink).toHaveAttribute("href", "?page=3");
+      expect(prevLink).toHaveAttribute("href", "/?page=3");
     });
 
     it("should use custom getPageUrl when provided", () => {

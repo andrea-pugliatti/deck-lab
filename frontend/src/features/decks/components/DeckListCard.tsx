@@ -128,8 +128,7 @@ export default function DeckListCard({
 
   if (onSelect) {
     return (
-      <button
-        type="button"
+      <div
         onClick={() => onSelect(id)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -143,7 +142,7 @@ export default function DeckListCard({
           {cardBody}
           {cardActions}
         </div>
-      </button>
+      </div>
     );
   }
 

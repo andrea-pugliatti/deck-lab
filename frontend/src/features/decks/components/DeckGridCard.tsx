@@ -140,8 +140,7 @@ export default function DeckGridCard({
 
   if (onSelect) {
     return (
-      <button
-        type="button"
+      <div
         onClick={() => onSelect(id)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -153,7 +152,7 @@ export default function DeckGridCard({
       >
         {cardBody}
         {cardFooter}
-      </button>
+      </div>
     );
   }
 

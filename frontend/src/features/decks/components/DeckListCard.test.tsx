@@ -81,7 +81,7 @@ describe("DeckListCard component", () => {
       </MemoryRouter>,
     );
 
-    const container = screen.getByRole("button", { name: /stardust dragon deck/i });
+    const container = screen.getByText("Stardust Dragon Deck").closest("div.cursor-pointer")!;
     fireEvent.click(container);
     expect(handleSelect).toHaveBeenCalledWith(42);
   });
@@ -94,7 +94,7 @@ describe("DeckListCard component", () => {
       </MemoryRouter>,
     );
 
-    const container = screen.getByRole("button", { name: /stardust dragon deck/i });
+    const container = screen.getByText("Stardust Dragon Deck").closest("div.cursor-pointer")!;
 
     // Press Space
     fireEvent.keyDown(container, { key: " " });
