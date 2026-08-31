@@ -23,6 +23,11 @@ public class CardResolver {
 
     private final CardRepository cardRepository;
 
+    /**
+     * Constructs a new {@link CardResolver} with the required card repository.
+     *
+     * @param cardRepository the repository for card database lookups
+     */
     public CardResolver(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
     }
@@ -30,7 +35,7 @@ public class CardResolver {
     /**
      * Resolves card names to database records and normalizes quantity/sections.
      *
-     * @param entries list of raw card entries from the AI response
+     * @param entries the list of raw card entries from the AI response
      * @return a list of resolved card entries containing the database entity and quantity
      */
     public List<ResolvedCardEntry> resolveCards(List<CardEntry> entries) {
@@ -92,7 +97,7 @@ public class CardResolver {
     /**
      * Resolves card suggestions by mapping suggested names to real database records.
      *
-     * @param suggestions list of suggestions from the AI response
+     * @param suggestions the list of suggestions from the AI response
      * @return a list of resolved card suggestions containing database attributes
      */
     public List<CardSuggestionResponseDto>
@@ -152,6 +157,9 @@ public class CardResolver {
 
     /**
      * Resolves a card by exact matching name, or falls back to case-insensitive substring search.
+     *
+     * @param name the card name to look up
+     * @return the optional containing the matching card if found
      */
     public Optional<Card> lookupCard(String name) {
         Optional<Card> cardOpt = cardRepository.findByName(name.trim());

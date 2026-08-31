@@ -1,9 +1,6 @@
 package com.deck.lab.backend.service.generation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -56,6 +54,7 @@ import com.deck.lab.backend.service.generation.tool.dto.FormatRulesRequest;
 import com.deck.lab.backend.service.generation.tool.dto.FormatRulesResponse;
 import com.deck.lab.backend.validation.DeckValidationEngine;
 
+@DisplayName("AI Generation Submodules Unit Tests")
 class AiGenerationSubModulesTest {
 
     @Mock
@@ -104,24 +103,27 @@ class AiGenerationSubModulesTest {
     }
 
     @Test
-    void testPromptBuilderDraft() {
+    @DisplayName("PromptBuilder should inject archetype, strategy, custom prompt, and rules into draft prompt")
+    void buildDraftPrompt_should_populateSystemAndUserPrompts_when_requested() {
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
                 Format.EDISON, "Include JD");
         Prompt prompt = promptBuilder.buildDraftPrompt(request, "formatInstructionsTemplate");
 
-        assertNotNull(prompt);
+        assertThat(prompt).isNotNull();
         String systemContent = prompt.getInstructions().get(0).getText();
         String userContent = prompt.getInstructions().get(1).getText();
 
-        assertTrue(systemContent.contains("Lightsworn"));
-        assertTrue(systemContent.contains("None"));
-        assertTrue(systemContent.contains("Include JD"));
-        assertTrue(systemContent.contains("formatInstructionsTemplate"));
-        assertTrue(userContent.contains("Edison"));
+        assertThat(systemContent)
+                .contains("Lightsworn")
+                .contains("None")
+                .contains("Include JD")
+                .contains("formatInstructionsTemplate");
+        assertThat(userContent).contains("Edison");
     }
 
     @Test
-    void testPromptBuilderRefinement() {
+    @DisplayName("PromptBuilder should inject resolved cards, unresolved names, and warnings into refinement prompt")
+    void buildRefinementPrompt_should_includeContextAndWarnings_when_requested() {
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
                 Format.EDISON, "Include JD");
         com.deck.lab.backend.model.Card card = new com.deck.lab.backend.model.Card();
@@ -140,61 +142,66 @@ class AiGenerationSubModulesTest {
                 warnings,
                 "formatInstructionsTemplate");
 
-        assertNotNull(prompt);
+        assertThat(prompt).isNotNull();
         String systemContent = prompt.getInstructions().get(0).getText();
-        assertTrue(systemContent.contains("Judgment Dragon"));
-        assertTrue(systemContent.contains("UnresolvedCard"));
-        assertTrue(systemContent.contains("Warning 1"));
-        assertTrue(systemContent.contains("formatInstructionsTemplate"));
+        assertThat(systemContent)
+                .contains("Judgment Dragon")
+                .contains("UnresolvedCard")
+                .contains("Warning 1")
+                .contains("formatInstructionsTemplate");
     }
 
     @Test
-    void testPromptBuilderSuggestions() {
+    @DisplayName("PromptBuilder should populate suggestion prompt with current cards or empty deck marker")
+    void buildSuggestionPrompt_should_includeFormatAndCards_when_invoked() {
         DeckSuggestRequestDto request = new DeckSuggestRequestDto("Edison", List.of());
         Prompt prompt = promptBuilder.buildSuggestionPrompt(request, "formatInstructionsTemplate");
 
-        assertNotNull(prompt);
+        assertThat(prompt).isNotNull();
         String systemContent = prompt.getInstructions().get(0).getText();
-        assertTrue(systemContent.contains("Edison"));
-        assertTrue(systemContent.contains("(Empty Deck)"));
+        assertThat(systemContent)
+                .contains("Edison")
+                .contains("(Empty Deck)");
     }
 
     @Test
-    void testResponseParser() {
+    @DisplayName("ResponseParser should sanitize markdown blocks and trailing commas when parsing JSON")
+    void parseGenerationResponse_should_sanitizeAndParseJson_when_rawAiOutputReceived() {
         String rawGenResponse = "{\"name\": \"Lightsworn Mill\", \"description\": \"Fast milling deck\", \"cards\": [{\"name\": \"Judgment Dragon\", \"section\": \"MAIN\", \"quantity\": 3}]}";
         DeckGenerateAiResponse genResponse = responseParser.parseGenerationResponse(rawGenResponse);
 
-        assertNotNull(genResponse);
-        assertEquals("Lightsworn Mill", genResponse.getName());
-        assertEquals(1, genResponse.getCards().size());
-        assertEquals("Judgment Dragon", genResponse.getCards().get(0).getName());
+        assertThat(genResponse).isNotNull();
+        assertThat(genResponse.getName()).isEqualTo("Lightsworn Mill");
+        assertThat(genResponse.getCards()).hasSize(1);
+        assertThat(genResponse.getCards().get(0).getName()).isEqualTo("Judgment Dragon");
 
         String rawSuggestResponse = "{\"suggestions\": [{\"name\": \"Solar Recharge\", \"section\": \"MAIN\", \"synergyReason\": \"Draw and mill.\"}]}";
         CardSuggestionListResponseDto suggestResponse = responseParser
                 .parseSuggestionResponse(rawSuggestResponse);
 
-        assertNotNull(suggestResponse);
-        assertEquals(1, suggestResponse.getSuggestions().size());
-        assertEquals("Solar Recharge", suggestResponse.getSuggestions().get(0).getName());
+        assertThat(suggestResponse).isNotNull();
+        assertThat(suggestResponse.getSuggestions()).hasSize(1);
+        assertThat(suggestResponse.getSuggestions().get(0).getName()).isEqualTo("Solar Recharge");
 
         // Test with trailing commas
         String trailingCommas = "{\"name\": \"Lightsworn, Mill,\", \"description\": \"Fast mill\", \"cards\": [{\"name\": \"Judgment Dragon\", \"section\": \"MAIN\", \"quantity\": 3},]}";
         DeckGenerateAiResponse cleanResponse1 = responseParser
                 .parseGenerationResponse(trailingCommas);
-        assertNotNull(cleanResponse1);
-        assertEquals("Lightsworn, Mill,", cleanResponse1.getName());
+        assertThat(cleanResponse1).isNotNull();
+        assertThat(cleanResponse1.getName()).isEqualTo("Lightsworn, Mill,");
 
         // Test with markdown code blocks and duplicate commas
         String markdownWithDuplicateCommas = "```json\n{\"name\": \"Lightsworn\", \"cards\": [{\"name\": \"JD\"}, , {\"name\": \"Lumina\"}]}\n```";
         DeckGenerateAiResponse cleanResponse2 = responseParser
                 .parseGenerationResponse(markdownWithDuplicateCommas);
-        assertNotNull(cleanResponse2);
-        assertEquals("Lightsworn", cleanResponse2.getName());
-        assertEquals(2, cleanResponse2.getCards().size());
+        assertThat(cleanResponse2).isNotNull();
+        assertThat(cleanResponse2.getName()).isEqualTo("Lightsworn");
+        assertThat(cleanResponse2.getCards()).hasSize(2);
     }
 
     @Test
-    void testCardResolver() {
+    @DisplayName("CardResolver should lookup card by exact name and resolve section/quantity")
+    void resolveCards_should_resolveExactNameMatches_when_cardsExist() {
         Card jdCard = new Card();
         jdCard.setId(1L);
         jdCard.setName("Judgment Dragon");
@@ -208,14 +215,15 @@ class AiGenerationSubModulesTest {
 
         List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
 
-        assertEquals(1, resolved.size());
-        assertEquals(jdCard, resolved.get(0).card());
-        assertEquals(DeckSection.MAIN, resolved.get(0).section());
-        assertEquals(3, resolved.get(0).quantity());
+        assertThat(resolved).hasSize(1);
+        assertThat(resolved.get(0).card()).isEqualTo(jdCard);
+        assertThat(resolved.get(0).section()).isEqualTo(DeckSection.MAIN);
+        assertThat(resolved.get(0).quantity()).isEqualTo(3);
     }
 
     @Test
-    void testCardResolverFallbackSearch() {
+    @DisplayName("CardResolver should use case-insensitive substring fallback when exact match is missing")
+    void lookupCard_should_fallbackToSubstringMatch_when_exactMatchNotFound() {
         Card lumina = new Card();
         lumina.setId(2L);
         lumina.setName("Lumina, Lightsworn Summoner");
@@ -225,12 +233,13 @@ class AiGenerationSubModulesTest {
 
         Optional<Card> resolved = cardResolver.lookupCard("Lumina");
 
-        assertTrue(resolved.isPresent());
-        assertEquals("Lumina, Lightsworn Summoner", resolved.get().getName());
+        assertThat(resolved).isPresent();
+        assertThat(resolved.get().getName()).isEqualTo("Lumina, Lightsworn Summoner");
     }
 
     @Test
-    void testCardSearchTool() {
+    @DisplayName("CardSearchTool should query repository and map results to DTOs")
+    void apply_should_searchCards_when_invoked() {
         Card card = new Card();
         card.setId(3L);
         card.setName("Honest");
@@ -242,13 +251,14 @@ class AiGenerationSubModulesTest {
         CardSearchResponse response = cardSearchTool
                 .apply(new CardSearchRequest("Honest"));
 
-        assertNotNull(response);
-        assertEquals(1, response.results().size());
-        assertEquals("Honest", response.results().get(0).name());
+        assertThat(response).isNotNull();
+        assertThat(response.results()).hasSize(1);
+        assertThat(response.results().get(0).name()).isEqualTo("Honest");
     }
 
     @Test
-    void testDeckAssembler() {
+    @DisplayName("DeckAssembler should build Deck entity and response DTOs from resolved cards")
+    void assembleDeck_should_buildDeckEntity_when_resolvedCardsProvided() {
         Card card = new Card();
         card.setId(5L);
         card.setName("Judgment Dragon");
@@ -259,21 +269,22 @@ class AiGenerationSubModulesTest {
 
         Deck deck = deckAssembler.assembleDeck("AI Deck", "Edison", resolved);
 
-        assertEquals("AI Deck", deck.getName());
-        assertEquals(Format.EDISON, deck.getFormatName());
-        assertEquals(1, deck.getDeckCards().size());
-        assertEquals(card, deck.getDeckCards().get(0).getCard());
-        assertEquals(DeckSection.MAIN, deck.getDeckCards().get(0).getSection());
-        assertEquals(3, deck.getDeckCards().get(0).getQuantity());
+        assertThat(deck.getName()).isEqualTo("AI Deck");
+        assertThat(deck.getFormatName()).isEqualTo(Format.EDISON);
+        assertThat(deck.getDeckCards()).hasSize(1);
+        assertThat(deck.getDeckCards().get(0).getCard()).isEqualTo(card);
+        assertThat(deck.getDeckCards().get(0).getSection()).isEqualTo(DeckSection.MAIN);
+        assertThat(deck.getDeckCards().get(0).getQuantity()).isEqualTo(3);
 
         List<DeckCardResponseDto> dtos = deckAssembler.toDeckCardDtos(resolved);
-        assertEquals(1, dtos.size());
-        assertEquals("Judgment Dragon", dtos.get(0).getName());
-        assertEquals(3, dtos.get(0).getQuantity());
+        assertThat(dtos).hasSize(1);
+        assertThat(dtos.get(0).getName()).isEqualTo("Judgment Dragon");
+        assertThat(dtos.get(0).getQuantity()).isEqualTo(3);
     }
 
     @Test
-    void testDeckAssemblerFromDtos() {
+    @DisplayName("DeckAssembler should build Deck entity from request DTOs and card lookup map")
+    void assembleDeckFromDtos_should_buildDeck_when_dtosAndMapProvided() {
         Card card = new Card();
         card.setId(5L);
         card.setName("Judgment Dragon");
@@ -284,13 +295,14 @@ class AiGenerationSubModulesTest {
 
         Deck deck = deckAssembler.assembleDeckFromDtos("Test Deck", "Edison", dtos, cardMap);
 
-        assertEquals("Test Deck", deck.getName());
-        assertEquals(1, deck.getDeckCards().size());
-        assertEquals(card, deck.getDeckCards().get(0).getCard());
+        assertThat(deck.getName()).isEqualTo("Test Deck");
+        assertThat(deck.getDeckCards()).hasSize(1);
+        assertThat(deck.getDeckCards().get(0).getCard()).isEqualTo(card);
     }
 
     @Test
-    void testValidationAdapter() {
+    @DisplayName("ValidationAdapter should invoke validation engine and return format warnings")
+    void validate_should_returnValidationWarnings_when_deckViolatesRules() {
         Card card = new Card();
         card.setId(5L);
         card.setName("Judgment Dragon");
@@ -306,15 +318,13 @@ class AiGenerationSubModulesTest {
 
         List<String> warnings = validationAdapter.validate(deck);
 
-        assertNotNull(warnings);
-        // Edison rules will flag Judgment Dragon if not legal or deck size is invalid
-        // (under 40 cards)
-        assertFalse(warnings.isEmpty());
-        assertTrue(warnings.get(0).contains("Main Deck must contain between 40 and 60 cards"));
+        assertThat(warnings).isNotNull().isNotEmpty();
+        assertThat(warnings.get(0)).contains("Main Deck must contain between 40 and 60 cards");
     }
 
     @Test
-    void testCardDetailsTool() {
+    @DisplayName("CardDetailsTool should return full card statistics when card name is found")
+    void apply_should_returnCardDetails_when_cardExists() {
         Card detailsCard = new Card();
         detailsCard.setId(101L);
         detailsCard.setName("Honest");
@@ -329,17 +339,18 @@ class AiGenerationSubModulesTest {
         CardDetailsTool tool = new CardDetailsTool(cardRepository);
         CardDetailsResponse response = tool.apply(new CardDetailsRequest("Honest"));
 
-        assertNotNull(response);
-        assertEquals("Honest", response.name());
-        assertEquals("Effect Monster", response.type());
-        assertEquals("Send this card to GY to boost ATK.", response.description());
-        assertEquals(1100, response.atk());
-        assertEquals(1900, response.def());
-        assertEquals(4, response.level());
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo("Honest");
+        assertThat(response.type()).isEqualTo("Effect Monster");
+        assertThat(response.description()).isEqualTo("Send this card to GY to boost ATK.");
+        assertThat(response.atk()).isEqualTo(1100);
+        assertThat(response.def()).isEqualTo(1900);
+        assertThat(response.level()).isEqualTo(4);
     }
 
     @Test
-    void testGetFormatRulesTool() {
+    @DisplayName("GetFormatRulesTool should query format banlist rules and map to response DTO")
+    void apply_should_returnFormatRules_when_formatQueried() {
         Card limitedCard = new Card();
         limitedCard.setName("Monster Reborn");
 
@@ -352,15 +363,16 @@ class AiGenerationSubModulesTest {
         FormatRulesResponse response = tool
                 .apply(new FormatRulesRequest("Edison"));
 
-        assertNotNull(response);
-        assertEquals("EDISON", response.format());
-        assertEquals(1, response.rules().size());
-        assertEquals("Monster Reborn", response.rules().get(0).cardName());
-        assertEquals(CardStatus.LIMITED, response.rules().get(0).status());
+        assertThat(response).isNotNull();
+        assertThat(response.format()).isEqualTo("EDISON");
+        assertThat(response.rules()).hasSize(1);
+        assertThat(response.rules().get(0).cardName()).isEqualTo("Monster Reborn");
+        assertThat(response.rules().get(0).status()).isEqualTo(CardStatus.LIMITED);
     }
 
     @Test
-    void testGetArchetypeCardsTool() {
+    @DisplayName("GetArchetypeCardsTool should search archetype cards via JPA specification")
+    void apply_should_returnArchetypeCards_when_archetypeMatches() {
         Card card = new Card();
         card.setName("Lumina, Lightsworn Summoner");
         card.setType(CardType.EFFECT_MONSTER);
@@ -373,15 +385,16 @@ class AiGenerationSubModulesTest {
         ArchetypeCardsResponse response = tool
                 .apply(new ArchetypeCardsRequest("Lightsworn"));
 
-        assertNotNull(response);
-        assertEquals("Lightsworn", response.archetype());
-        assertEquals(1, response.cards().size());
-        assertEquals("Lumina, Lightsworn Summoner", response.cards().get(0).name());
-        assertEquals("Effect Monster", response.cards().get(0).type());
+        assertThat(response).isNotNull();
+        assertThat(response.archetype()).isEqualTo("Lightsworn");
+        assertThat(response.cards()).hasSize(1);
+        assertThat(response.cards().get(0).name()).isEqualTo("Lumina, Lightsworn Summoner");
+        assertThat(response.cards().get(0).type()).isEqualTo("Effect Monster");
     }
 
     @Test
-    void testAnalyzeDeckStatsTool() {
+    @DisplayName("AnalyzeDeckStatsTool should compute aggregated deck composition and stat averages")
+    void apply_should_computeDeckStats_when_cardListProvided() {
         Card monster = new Card();
         monster.setName("Judgment Dragon");
         monster.setType(CardType.EFFECT_MONSTER);
@@ -406,32 +419,34 @@ class AiGenerationSubModulesTest {
                 new DeckStatsRequest(
                         List.of("Judgment Dragon", "Solar Recharge", "Beckoning Light")));
 
-        assertNotNull(response);
-        assertEquals(3, response.totalCards());
-        assertEquals(1, response.monsterCount());
-        assertEquals(1, response.spellCount());
-        assertEquals(1, response.trapCount());
-        assertEquals(3000.0, response.averageAtk());
-        assertEquals(2600.0, response.averageDef());
-        assertEquals(8.0, response.averageLevel());
+        assertThat(response).isNotNull();
+        assertThat(response.totalCards()).isEqualTo(3);
+        assertThat(response.monsterCount()).isEqualTo(1);
+        assertThat(response.spellCount()).isEqualTo(1);
+        assertThat(response.trapCount()).isEqualTo(1);
+        assertThat(response.averageAtk()).isEqualTo(3000.0);
+        assertThat(response.averageDef()).isEqualTo(2600.0);
+        assertThat(response.averageLevel()).isEqualTo(8.0);
     }
 
     @Test
-    void testCardResolverNullAndEmptyInputs() {
-        assertTrue(cardResolver.resolveCards(null).isEmpty());
-        assertTrue(cardResolver.resolveSuggestions(null).isEmpty());
+    @DisplayName("CardResolver should handle null and empty input collections gracefully")
+    void resolveCards_should_handleNullAndEmptyInputs() {
+        assertThat(cardResolver.resolveCards(null)).isEmpty();
+        assertThat(cardResolver.resolveSuggestions(null)).isEmpty();
 
-        assertTrue(cardResolver.resolveCards(List.of()).isEmpty());
-        assertTrue(cardResolver.resolveSuggestions(List.of()).isEmpty());
+        assertThat(cardResolver.resolveCards(List.of())).isEmpty();
+        assertThat(cardResolver.resolveSuggestions(List.of())).isEmpty();
 
         List<CardEntry> rawEntries = List.of(
                 new CardEntry(null, "MAIN", 3),
                 new CardEntry("  ", "MAIN", 3));
-        assertTrue(cardResolver.resolveCards(rawEntries).isEmpty());
+        assertThat(cardResolver.resolveCards(rawEntries)).isEmpty();
     }
 
     @Test
-    void testCardResolverQuantityAndSectionNormalization() {
+    @DisplayName("CardResolver should clamp quantities to positive range and default invalid sections to MAIN")
+    void resolveCards_should_normalizeQuantitiesAndSections_when_inputsAreNonStandard() {
         Card card = new Card();
         card.setId(10L);
         card.setName("Sangan");
@@ -446,11 +461,11 @@ class AiGenerationSubModulesTest {
                 new CardEntry("Sangan", "MAIN", 5));
 
         List<ResolvedCardEntry> resolved = cardResolver.resolveCards(rawEntries);
-        assertEquals(4, resolved.size());
-        assertEquals(1, resolved.get(0).quantity());
-        assertEquals(1, resolved.get(1).quantity());
-        assertEquals(1, resolved.get(2).quantity());
-        assertEquals(3, resolved.get(3).quantity());
+        assertThat(resolved).hasSize(4);
+        assertThat(resolved.get(0).quantity()).isEqualTo(1);
+        assertThat(resolved.get(1).quantity()).isEqualTo(1);
+        assertThat(resolved.get(2).quantity()).isEqualTo(1);
+        assertThat(resolved.get(3).quantity()).isEqualTo(3);
 
         List<CardEntry> sectionEntries = List.of(
                 new CardEntry("Sangan", (DeckSection) null, 1),
@@ -459,15 +474,16 @@ class AiGenerationSubModulesTest {
                 new CardEntry("Sangan", DeckSection.EXTRA, 1));
 
         List<ResolvedCardEntry> resolvedSections = cardResolver.resolveCards(sectionEntries);
-        assertEquals(4, resolvedSections.size());
-        assertEquals(DeckSection.MAIN, resolvedSections.get(0).section());
-        assertEquals(DeckSection.MAIN, resolvedSections.get(1).section());
-        assertEquals(DeckSection.SIDE, resolvedSections.get(2).section());
-        assertEquals(DeckSection.EXTRA, resolvedSections.get(3).section());
+        assertThat(resolvedSections).hasSize(4);
+        assertThat(resolvedSections.get(0).section()).isEqualTo(DeckSection.MAIN);
+        assertThat(resolvedSections.get(1).section()).isEqualTo(DeckSection.MAIN);
+        assertThat(resolvedSections.get(2).section()).isEqualTo(DeckSection.SIDE);
+        assertThat(resolvedSections.get(3).section()).isEqualTo(DeckSection.EXTRA);
     }
 
     @Test
-    void testCardResolverResolveSuggestions() {
+    @DisplayName("CardResolver should resolve suggestion metadata with card details and defaults")
+    void resolveSuggestions_should_populateMetadata_when_cardFound() {
         Card card = new Card();
         card.setId(11L);
         card.setName("Cyber Dragon");
@@ -482,29 +498,30 @@ class AiGenerationSubModulesTest {
                         null));
 
         List<CardSuggestionResponseDto> resolved = cardResolver.resolveSuggestions(suggestions);
-        assertEquals(1, resolved.size());
-        assertEquals("Cyber Dragon", resolved.get(0).getName());
-        assertEquals(DeckSection.MAIN, resolved.get(0).getSection());
-        assertEquals("Great attacker", resolved.get(0).getSynergyReason());
-        assertEquals(11L, resolved.get(0).getCardId());
-        assertEquals(CardType.EFFECT_MONSTER, resolved.get(0).getType());
-        assertEquals("http://images/cropped.jpg", resolved.get(0).getImageUrl());
+        assertThat(resolved).hasSize(1);
+        assertThat(resolved.get(0).getName()).isEqualTo("Cyber Dragon");
+        assertThat(resolved.get(0).getSection()).isEqualTo(DeckSection.MAIN);
+        assertThat(resolved.get(0).getSynergyReason()).isEqualTo("Great attacker");
+        assertThat(resolved.get(0).getCardId()).isEqualTo(11L);
+        assertThat(resolved.get(0).getType()).isEqualTo(CardType.EFFECT_MONSTER);
+        assertThat(resolved.get(0).getImageUrl()).isEqualTo("http://images/cropped.jpg");
 
         List<CardSuggestionResponseDto> sparseSuggestions = List.of(
                 new CardSuggestionResponseDto("Cyber Dragon", null, null, null, null, null));
 
         List<CardSuggestionResponseDto> sparseResolved = cardResolver
                 .resolveSuggestions(sparseSuggestions);
-        assertEquals(1, sparseResolved.size());
-        assertEquals(DeckSection.MAIN, sparseResolved.get(0).getSection());
-        assertEquals("Provides good synergy.", sparseResolved.get(0).getSynergyReason());
+        assertThat(sparseResolved).hasSize(1);
+        assertThat(sparseResolved.get(0).getSection()).isEqualTo(DeckSection.MAIN);
+        assertThat(sparseResolved.get(0).getSynergyReason()).isEqualTo("Provides good synergy.");
     }
 
     @Test
-    void testDeckAssemblerInvalidInputs() {
+    @DisplayName("DeckAssembler should handle invalid format and section inputs gracefully")
+    void assembleDeck_should_handleInvalidFormatAndSection_when_provided() {
         Deck deck = deckAssembler.assembleDeck("Test Deck", "INVALID_FORMAT", List.of());
-        assertEquals("Test Deck", deck.getName());
-        org.junit.jupiter.api.Assertions.assertNull(deck.getFormatName());
+        assertThat(deck.getName()).isEqualTo("Test Deck");
+        assertThat(deck.getFormatName()).isNull();
 
         Card card = new Card();
         card.setId(12L);
@@ -512,12 +529,13 @@ class AiGenerationSubModulesTest {
         List<ResolvedCardEntry> resolved = List.of(
                 new ResolvedCardEntry(card, "INVALID_SECTION", 1));
         Deck assembled = deckAssembler.assembleDeck("Gorz Deck", "Edison", resolved);
-        assertEquals(1, assembled.getDeckCards().size());
-        assertEquals(DeckSection.MAIN, assembled.getDeckCards().get(0).getSection());
+        assertThat(assembled.getDeckCards()).hasSize(1);
+        assertThat(assembled.getDeckCards().get(0).getSection()).isEqualTo(DeckSection.MAIN);
     }
 
     @Test
-    void testValidationAdapterNullFormat() {
+    @DisplayName("ValidationAdapter should handle null format name gracefully with default rules")
+    void validate_should_handleNullFormat_when_deckHasNoFormat() {
         Card card = new Card();
         card.setId(13L);
         card.setName("Green Gadget");
@@ -530,8 +548,7 @@ class AiGenerationSubModulesTest {
         deck.setDeckCards(List.of(deckCard));
 
         List<String> warnings = validationAdapter.validate(deck);
-        assertNotNull(warnings);
-        assertFalse(warnings.isEmpty());
-        assertTrue(warnings.get(0).contains("Main Deck must contain between 40 and 60 cards"));
+        assertThat(warnings).isNotNull().isNotEmpty();
+        assertThat(warnings.get(0)).contains("Main Deck must contain between 40 and 60 cards");
     }
 }

@@ -29,6 +29,12 @@ public class PromptBuilder {
     private final CardRepository cardRepository;
     private final PromptConfig promptConfig;
 
+    /**
+     * Constructs a new {@link PromptBuilder} with the required card repository and prompt configuration.
+     *
+     * @param cardRepository the repository for card database queries
+     * @param promptConfig   the prompt template configuration properties
+     */
     public PromptBuilder(CardRepository cardRepository, PromptConfig promptConfig) {
         this.cardRepository = cardRepository;
         this.promptConfig = promptConfig;
@@ -124,6 +130,13 @@ public class PromptBuilder {
 
     /**
      * Builds a Spring AI Prompt for the deck refinement phase.
+     *
+     * @param request            the deck generation request parameters
+     * @param resolvedCards      the list of resolved card entries from the draft
+     * @param unresolvedNames    the list of unresolved card names to be replaced or removed
+     * @param validationWarnings the list of validation warning messages to be addressed
+     * @param formatInstructions format-specific syntax constraints/rules for JSON output
+     * @return the constructed refinement Prompt object
      */
     public Prompt buildRefinementPrompt(DeckGenerateRequestDto request,
                                         List<ResolvedCardEntry> resolvedCards,
@@ -276,6 +289,10 @@ public class PromptBuilder {
     /**
      * Builds a Spring AI Prompt for generating card suggestions based on the current deck
      * composition.
+     *
+     * @param request            the deck suggestion request containing current cards and format
+     * @param formatInstructions format-specific syntax constraints/rules for JSON output
+     * @return the constructed suggestion Prompt object
      */
     public Prompt buildSuggestionPrompt(DeckSuggestRequestDto request, String formatInstructions) {
         String systemInstruction = null;

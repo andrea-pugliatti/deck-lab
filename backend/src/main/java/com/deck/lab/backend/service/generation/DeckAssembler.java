@@ -23,9 +23,9 @@ public class DeckAssembler {
     /**
      * Assembles a transient Deck domain entity and its nested DeckCards.
      *
-     * @param name          deck name
-     * @param format        target format
-     * @param resolvedCards list of database-resolved cards
+     * @param name          the deck name
+     * @param format        the target Format
+     * @param resolvedCards the list of database-resolved cards
      * @return an assembled Deck entity ready for validation or persistence
      */
     public Deck assembleDeck(String name,
@@ -45,6 +45,14 @@ public class DeckAssembler {
         return deck;
     }
 
+    /**
+     * Assembles a transient Deck domain entity using a string format name.
+     *
+     * @param name          the deck name
+     * @param formatName    the format name string
+     * @param resolvedCards the list of database-resolved cards
+     * @return an assembled Deck entity ready for validation or persistence
+     */
     public Deck assembleDeck(String name,
                              String formatName,
                              List<ResolvedCardEntry> resolvedCards) {
@@ -60,7 +68,13 @@ public class DeckAssembler {
     }
 
     /**
-     * Helper to assemble a transient Deck from raw DTO lists and pre-resolved Card map.
+     * Helper to assemble a transient Deck from raw DTO lists, string format name, and pre-resolved Card map.
+     *
+     * @param name       the deck name
+     * @param formatName the format name string
+     * @param cardDtos   the list of card request DTOs
+     * @param cardMap    the pre-fetched database cards keyed by ID
+     * @return an assembled Deck entity ready for validation or persistence
      */
     public Deck assembleDeckFromDtos(String name,
                                      String formatName,
@@ -77,6 +91,15 @@ public class DeckAssembler {
         return assembleDeckFromDtos(name, format, cardDtos, cardMap);
     }
 
+    /**
+     * Helper to assemble a transient Deck from raw DTO lists, typed Format, and pre-resolved Card map.
+     *
+     * @param name     the deck name
+     * @param format   the target Format
+     * @param cardDtos the list of card request DTOs
+     * @param cardMap  the pre-fetched database cards keyed by ID
+     * @return an assembled Deck entity ready for validation or persistence
+     */
     public Deck assembleDeckFromDtos(String name,
                                      Format format,
                                      List<DeckCardRequestDto> cardDtos,
@@ -96,8 +119,8 @@ public class DeckAssembler {
     /**
      * Maps resolved card list to response DTOs.
      *
-     * @param resolvedCards list of database resolved cards
-     * @return a list of mapped DeckCardDto objects
+     * @param resolvedCards the list of database-resolved cards
+     * @return a list of mapped DeckCardResponseDto objects
      */
     public List<DeckCardResponseDto> toDeckCardDtos(List<ResolvedCardEntry> resolvedCards) {
         List<DeckCardResponseDto> dtos = new ArrayList<>();
