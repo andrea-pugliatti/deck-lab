@@ -31,6 +31,12 @@ public class YdkService {
     private final CardRepository cardRepository;
     private final DeckService deckService;
 
+    /**
+     * Constructs a new {@link YdkService} with the required card repository and deck service.
+     *
+     * @param cardRepository the repository for looking up cards by passcode or ID
+     * @param deckService    the service for retrieving decks during export
+     */
     public YdkService(CardRepository cardRepository, DeckService deckService) {
         this.cardRepository = cardRepository;
         this.deckService = deckService;
@@ -40,8 +46,8 @@ public class YdkService {
      * Parses a `.ydk` content string, resolves card passcodes against the database, and constructs
      * a populated {@link YdkImportResponseDto}.
      *
-     * @param content raw `.ydk` text file content
-     * @return YdkImportResponseDto containing deck details and warnings for unmapped passcodes
+     * @param content the raw `.ydk` text file content
+     * @return the import response containing deck details and unmapped passcode warnings
      */
     public YdkImportResponseDto importYdk(String content) {
         if (content == null || content.isBlank()) {
@@ -151,8 +157,9 @@ public class YdkService {
     /**
      * Serializes a deck into `.ydk` file format string by deck ID.
      *
-     * @param deckId unique deck ID
-     * @return standard `.ydk` text string
+     * @param deckId the unique deck ID
+     * @return the standard `.ydk` text representation of the deck
+     * @throws ResourceNotFoundException if no deck matches the specified ID
      */
     public String exportYdk(Long deckId) {
         DeckResponseDto deck = deckService.getDeckById(deckId);

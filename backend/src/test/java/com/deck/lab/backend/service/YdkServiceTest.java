@@ -1,12 +1,11 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,7 @@ import com.deck.lab.backend.repository.UserRepository;
 
 @SpringBootTest
 @Transactional
+@DisplayName("YdkService Integration Tests")
 class YdkServiceTest {
 
     @Autowired
@@ -70,7 +70,8 @@ class YdkServiceTest {
     }
 
     @Test
-    void importYdk_validContent_parsesSectionsAndQuantities() {
+    @DisplayName("importYdk should parse valid YDK structure into main, extra, and side sections with aggregated quantities")
+    void importYdk_should_parseSectionsAndQuantities_when_contentIsValid() {
         String ydkContent = """
                 #created by DeckLab
                 #main
@@ -85,37 +86,38 @@ class YdkServiceTest {
 
         YdkImportResponseDto result = ydkService.importYdk(ydkContent);
 
-        assertNotNull(result);
-        assertNotNull(result.getDeck());
-        assertTrue(result.getWarnings().isEmpty());
+        assertThat(result).isNotNull();
+        assertThat(result.getDeck()).isNotNull();
+        assertThat(result.getWarnings()).isEmpty();
 
         List<DeckCardResponseDto> cards = result.getDeck().getCards();
-        assertEquals(3, cards.size());
+        assertThat(cards).hasSize(3);
 
         DeckCardResponseDto mainCard = cards.stream()
                 .filter(c -> c.getSection() == DeckSection.MAIN)
                 .findFirst()
                 .orElseThrow();
-        assertEquals("Ydk Test Card 1", mainCard.getName());
-        assertEquals(3, mainCard.getQuantity());
+        assertThat(mainCard.getName()).isEqualTo("Ydk Test Card 1");
+        assertThat(mainCard.getQuantity()).isEqualTo(3);
 
         DeckCardResponseDto extraCard = cards.stream()
                 .filter(c -> c.getSection() == DeckSection.EXTRA)
                 .findFirst()
                 .orElseThrow();
-        assertEquals("Ydk Test Card 2", extraCard.getName());
-        assertEquals(1, extraCard.getQuantity());
+        assertThat(extraCard.getName()).isEqualTo("Ydk Test Card 2");
+        assertThat(extraCard.getQuantity()).isEqualTo(1);
 
         DeckCardResponseDto sideCard = cards.stream()
                 .filter(c -> c.getSection() == DeckSection.SIDE)
                 .findFirst()
                 .orElseThrow();
-        assertEquals("Ydk Test Card 3", sideCard.getName());
-        assertEquals(1, sideCard.getQuantity());
+        assertThat(sideCard.getName()).isEqualTo("Ydk Test Card 3");
+        assertThat(sideCard.getQuantity()).isEqualTo(1);
     }
 
     @Test
-    void importYdk_unresolvedPasscode_returnsWarning() {
+    @DisplayName("importYdk should log warning for unknown or unresolvable card passcodes")
+    void importYdk_should_recordWarning_when_passcodeIsUnresolved() {
         String ydkContent = """
                 #main
                 46986414
@@ -124,13 +126,14 @@ class YdkServiceTest {
 
         YdkImportResponseDto result = ydkService.importYdk(ydkContent);
 
-        assertNotNull(result);
-        assertEquals(1, result.getWarnings().size());
-        assertTrue(result.getWarnings().get(0).contains("99999999"));
+        assertThat(result).isNotNull();
+        assertThat(result.getWarnings()).hasSize(1);
+        assertThat(result.getWarnings().get(0)).contains("99999999");
     }
 
     @Test
-    void exportYdk_validDeckId_returnsYdkFormattedString() {
+    @DisplayName("exportYdk should format deck cards into YDK file specification string")
+    void exportYdk_should_returnYdkFormattedString_when_deckExists() {
         User user = new User("ydk_user", "password", "ydk_user@example.com");
         user = userRepository.save(user);
 
@@ -142,12 +145,13 @@ class YdkServiceTest {
 
         String exportedYdk = ydkService.exportYdk(deck.getId());
 
-        assertTrue(exportedYdk.contains("#created by DeckLab"));
-        assertTrue(exportedYdk.contains("#main"));
-        assertTrue(exportedYdk.contains("46986414"));
-        assertTrue(exportedYdk.contains("#extra"));
-        assertTrue(exportedYdk.contains("83755611"));
-        assertTrue(exportedYdk.contains("!side"));
-        assertTrue(exportedYdk.contains("14558127"));
+        assertThat(exportedYdk)
+                .contains("#created by DeckLab")
+                .contains("#main")
+                .contains("46986414")
+                .contains("#extra")
+                .contains("83755611")
+                .contains("!side")
+                .contains("14558127");
     }
 }

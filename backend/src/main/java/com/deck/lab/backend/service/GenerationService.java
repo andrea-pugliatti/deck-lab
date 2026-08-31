@@ -39,6 +39,16 @@ public class GenerationService {
     private final DeckAssembler deckAssembler;
     private final ValidationAdapter validationAdapter;
 
+    /**
+     * Constructs a new {@link GenerationService} with required generation sub-modules and clients.
+     *
+     * @param promptBuilder     the builder constructing structured Spring AI prompts
+     * @param aiClient          the AI client executing LLM queries
+     * @param responseParser    the parser converting raw LLM output into structured DTOs
+     * @param cardResolver      the resolver mapping AI suggestions to database cards
+     * @param deckAssembler     the assembler constructing transient deck models
+     * @param validationAdapter the adapter evaluating format legality rules
+     */
     public GenerationService(PromptBuilder promptBuilder,
                              AiClient aiClient,
                              ResponseParser responseParser,

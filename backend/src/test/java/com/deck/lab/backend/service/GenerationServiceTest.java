@@ -1,7 +1,6 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -10,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,6 +39,7 @@ import com.deck.lab.backend.service.generation.model.DeckGenerateAiResponse;
 import com.deck.lab.backend.service.generation.model.ResolvedCardEntry;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("GenerationService Unit Tests")
 class GenerationServiceTest {
 
     @Mock
@@ -68,7 +69,8 @@ class GenerationServiceTest {
     }
 
     @Test
-    void testSuggestCards() {
+    @DisplayName("suggestCards should return resolved card suggestions from AI prompt")
+    void suggestCards_should_returnSuggestions_when_called() {
         // Arrange
         DeckSuggestRequestDto request = new DeckSuggestRequestDto(Format.EDISON, List.of());
         Prompt mockPrompt = new Prompt("test");
@@ -93,9 +95,8 @@ class GenerationServiceTest {
         List<CardSuggestionResponseDto> suggestions = deckGenerationService.suggestCards(request);
 
         // Assert
-        assertNotNull(suggestions);
-        assertEquals(1, suggestions.size());
-        assertEquals("Lumina", suggestions.get(0).getName());
+        assertThat(suggestions).isNotNull().hasSize(1);
+        assertThat(suggestions.get(0).getName()).isEqualTo("Lumina");
         verify(promptBuilder).buildSuggestionPrompt(eq(request), any());
         verify(aiClient).call(mockPrompt);
         verify(responseParser).parseSuggestionResponse(rawResponse);
@@ -103,7 +104,8 @@ class GenerationServiceTest {
     }
 
     @Test
-    void testGenerateDeck_FastPath() {
+    @DisplayName("generateDeck should fast-path return assembled deck when draft has zero validation warnings")
+    void generateDeck_should_returnDeckImmediately_when_fastPathSucceeds() {
         // Arrange
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
                 Format.EDISON, "None");
@@ -140,12 +142,12 @@ class GenerationServiceTest {
         DeckGenerationResponseDto responseDto = deckGenerationService.generateDeck(request);
 
         // Assert
-        assertNotNull(responseDto);
-        assertEquals("AI Lightsworn", responseDto.getName());
-        assertEquals("Fast deck", responseDto.getDescription());
-        assertEquals(Format.EDISON, responseDto.getFormatName());
-        assertEquals(cardDtos, responseDto.getDeckCards());
-        assertEquals(0, responseDto.getValidationWarnings().size());
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.getName()).isEqualTo("AI Lightsworn");
+        assertThat(responseDto.getDescription()).isEqualTo("Fast deck");
+        assertThat(responseDto.getFormatName()).isEqualTo(Format.EDISON);
+        assertThat(responseDto.getDeckCards()).isEqualTo(cardDtos);
+        assertThat(responseDto.getValidationWarnings()).isEmpty();
 
         verify(promptBuilder).buildDraftPrompt(eq(request), any());
         verify(aiClient).call(mockDraftPrompt);
@@ -157,7 +159,8 @@ class GenerationServiceTest {
     }
 
     @Test
-    void testGenerateDeck_RefinementLoopSuccess() {
+    @DisplayName("generateDeck should invoke refinement prompt loop when draft produces warnings or unresolved cards")
+    void generateDeck_should_executeRefinementLoop_when_draftHasUnresolvedCardsOrWarnings() {
         // Arrange
         DeckGenerateRequestDto request = new DeckGenerateRequestDto("Lightsworn", Strategy.NONE,
                 Format.EDISON, "None");
@@ -234,12 +237,12 @@ class GenerationServiceTest {
         DeckGenerationResponseDto responseDto = deckGenerationService.generateDeck(request);
 
         // Assert
-        assertNotNull(responseDto);
-        assertEquals("AI Lightsworn Final", responseDto.getName());
-        assertEquals("Final deck", responseDto.getDescription());
-        assertEquals(Format.EDISON, responseDto.getFormatName());
-        assertEquals(cardDtos, responseDto.getDeckCards());
-        assertEquals(0, responseDto.getValidationWarnings().size());
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.getName()).isEqualTo("AI Lightsworn Final");
+        assertThat(responseDto.getDescription()).isEqualTo("Final deck");
+        assertThat(responseDto.getFormatName()).isEqualTo(Format.EDISON);
+        assertThat(responseDto.getDeckCards()).isEqualTo(cardDtos);
+        assertThat(responseDto.getValidationWarnings()).isEmpty();
 
         verify(promptBuilder).buildRefinementPrompt(eq(request),
                 eq(draftResolved),
