@@ -1,17 +1,14 @@
 package com.deck.lab.backend.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +41,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@DisplayName("AuthController Integration and Security Tests")
 public class AuthControllerTest {
 
     @TestConfiguration
@@ -101,7 +99,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testSuccessfulLoginAndTokenExtraction() throws Exception {
+    @DisplayName("login should succeed and return JWT tokens when credentials are valid")
+    void login_should_succeedAndIssueTokens_when_credentialsAreValid() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
 
         String responseBody = mockMvc.perform(post("/api/auth/login")
@@ -118,11 +117,12 @@ public class AuthControllerTest {
 
         String token = objectMapper.readTree(responseBody).get("accessToken").asString();
         String extractedSubject = jwtService.extractUsername(token);
-        assertEquals("auth-test-email@example.com", extractedSubject);
+        assertThat(extractedSubject).isEqualTo("auth-test-email@example.com");
     }
 
     @Test
-    void testLoginWithInvalidCredentials() throws Exception {
+    @DisplayName("login should return 401 Unauthorized when credentials are invalid")
+    void login_should_returnUnauthorized_when_credentialsAreInvalid() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "wrongpassword");
 
         mockMvc.perform(post("/api/auth/login")
@@ -133,7 +133,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testAccessProtectedResourceWithAndWithoutToken() throws Exception {
+    @DisplayName("protected endpoints should require valid JWT token header")
+    void accessProtectedResource_should_requireAuthentication() throws Exception {
         mockMvc.perform(post("/api/decks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")
@@ -151,7 +152,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testRegisterSuccess() throws Exception {
+    @DisplayName("register should succeed and issue tokens when payload is valid")
+    void register_should_succeedAndIssueTokens_when_payloadIsValid() throws Exception {
         RegisterRequestDto registerRequest = new RegisterRequestDto("new-user",
                 "new-email@example.com",
                 "newsecurepassword");
@@ -170,11 +172,12 @@ public class AuthControllerTest {
 
         String token = objectMapper.readTree(responseBody).get("accessToken").asString();
         String extractedSubject = jwtService.extractUsername(token);
-        assertEquals("new-email@example.com", extractedSubject);
+        assertThat(extractedSubject).isEqualTo("new-email@example.com");
     }
 
     @Test
-    void testRegisterDuplicateUsername() throws Exception {
+    @DisplayName("register should fail when username already exists")
+    void register_should_fail_when_usernameIsDuplicate() throws Exception {
         RegisterRequestDto registerRequest = new RegisterRequestDto("auth-test-user",
                 "new-email-2@example.com",
                 "newsecurepassword");
@@ -187,7 +190,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testRegisterDuplicateEmail() throws Exception {
+    @DisplayName("register should fail when email already exists")
+    void register_should_fail_when_emailIsDuplicate() throws Exception {
         RegisterRequestDto registerRequest = new RegisterRequestDto("new-user-2",
                 "auth-test-email@example.com",
                 "newsecurepassword");
@@ -200,7 +204,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testTokenRotationFlow() throws Exception {
+    @DisplayName("refresh should rotate refresh token and revoke old token")
+    void refresh_should_rotateRefreshToken_when_validTokenSupplied() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
 
         Cookie loginCookie = mockMvc.perform(post("/api/auth/login")
@@ -213,7 +218,7 @@ public class AuthControllerTest {
                 .getResponse()
                 .getCookie("refreshToken");
 
-        assertNotNull(loginCookie);
+        assertThat(loginCookie).isNotNull();
         String oldRefreshToken = loginCookie.getValue();
 
         Cookie refreshCookie = mockMvc.perform(post("/api/auth/refresh")
@@ -226,15 +231,15 @@ public class AuthControllerTest {
                 .getResponse()
                 .getCookie("refreshToken");
 
-        assertNotNull(refreshCookie);
+        assertThat(refreshCookie).isNotNull();
         String newRefreshToken = refreshCookie.getValue();
-        assertNotEquals(oldRefreshToken, newRefreshToken);
+        assertThat(newRefreshToken).isNotEqualTo(oldRefreshToken);
 
         RefreshToken oldTokenDb = refreshTokenRepository.findByToken(oldRefreshToken).orElseThrow();
-        assertTrue(oldTokenDb.isRevoked());
+        assertThat(oldTokenDb.isRevoked()).isTrue();
 
         RefreshToken newTokenDb = refreshTokenRepository.findByToken(newRefreshToken).orElseThrow();
-        assertFalse(newTokenDb.isRevoked());
+        assertThat(newTokenDb.isRevoked()).isFalse();
 
         mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", oldRefreshToken))
@@ -243,7 +248,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testTokenReuseDetection() throws Exception {
+    @DisplayName("refresh should revoke token family on reuse attempt")
+    void refresh_should_detectTokenReuse_when_oldTokenUsedMultipleTimes() throws Exception {
         refreshTokenService.setGracePeriodSeconds(0);
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
         Cookie loginCookie = mockMvc.perform(post("/api/auth/login")
@@ -255,7 +261,7 @@ public class AuthControllerTest {
                 .getResponse()
                 .getCookie("refreshToken");
 
-        assertNotNull(loginCookie);
+        assertThat(loginCookie).isNotNull();
         String token1 = loginCookie.getValue();
 
         Cookie refreshCookie = mockMvc.perform(post("/api/auth/refresh")
@@ -266,11 +272,11 @@ public class AuthControllerTest {
                 .getResponse()
                 .getCookie("refreshToken");
 
-        assertNotNull(refreshCookie);
+        assertThat(refreshCookie).isNotNull();
         String token2 = refreshCookie.getValue();
 
         RefreshToken token2DbBefore = refreshTokenRepository.findByToken(token2).orElseThrow();
-        assertFalse(token2DbBefore.isRevoked());
+        assertThat(token2DbBefore.isRevoked()).isFalse();
 
         mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", token1))
@@ -278,7 +284,7 @@ public class AuthControllerTest {
                 .andExpect(status().isForbidden());
 
         RefreshToken token2DbAfter = refreshTokenRepository.findByToken(token2).orElseThrow();
-        assertTrue(token2DbAfter.isRevoked());
+        assertThat(token2DbAfter.isRevoked()).isTrue();
 
         mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", token2))
@@ -288,7 +294,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testSessionLimiting() throws Exception {
+    @DisplayName("session limiting should revoke oldest refresh token when max limit is exceeded")
+    void sessionLimiting_should_revokeOldestToken_when_limitExceeded() throws Exception {
         refreshTokenService.setMaxPerUser(2);
 
         RefreshToken r1 = refreshTokenService.createRefreshToken(testUser);
@@ -299,15 +306,16 @@ public class AuthControllerTest {
         RefreshToken r2Db = refreshTokenRepository.findById(r2.getId()).orElseThrow();
         RefreshToken r3Db = refreshTokenRepository.findById(r3.getId()).orElseThrow();
 
-        assertTrue(r1Db.isRevoked());
-        assertFalse(r2Db.isRevoked());
-        assertFalse(r3Db.isRevoked());
+        assertThat(r1Db.isRevoked()).isTrue();
+        assertThat(r2Db.isRevoked()).isFalse();
+        assertThat(r3Db.isRevoked()).isFalse();
 
         refreshTokenService.setMaxPerUser(5);
     }
 
     @Test
-    void testRefreshRateLimiting() throws Exception {
+    @DisplayName("refresh should enforce rate limit of 5 requests per window")
+    void refresh_should_blockWithTooManyRequests_when_rateLimitExceeded() throws Exception {
         for (int i = 0; i < 5; i++) {
             mockMvc.perform(post("/api/auth/refresh")
                     .cookie(new Cookie("refreshToken", "dummy-token"))
@@ -321,7 +329,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testLoginRateLimiting() throws Exception {
+    @DisplayName("login should enforce rate limit of 10 requests per window")
+    void login_should_blockWithTooManyRequests_when_rateLimitExceeded() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
         for (int i = 0; i < 10; i++) {
             mockMvc.perform(post("/api/auth/login")
@@ -338,7 +347,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testRegisterRateLimiting() throws Exception {
+    @DisplayName("register should enforce rate limit of 5 requests per window")
+    void register_should_blockWithTooManyRequests_when_rateLimitExceeded() throws Exception {
         for (int i = 0; i < 5; i++) {
             RegisterRequestDto registerRequest = new RegisterRequestDto("new-user-" + i,
                     "new-user-" + i + "@example.com", "securepassword");
@@ -359,7 +369,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testLogout() throws Exception {
+    @DisplayName("logout should clear cookie, revoke refresh token, and prevent subsequent token reuse")
+    void logout_should_revokeTokenAndClearCookie_when_called() throws Exception {
         LoginRequestDto loginRequest = new LoginRequestDto("auth-test-user", "securepassword");
         Cookie loginCookie = mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -370,7 +381,7 @@ public class AuthControllerTest {
                 .getResponse()
                 .getCookie("refreshToken");
 
-        assertNotNull(loginCookie);
+        assertThat(loginCookie).isNotNull();
         String refreshToken = loginCookie.getValue();
 
         mockMvc.perform(post("/api/auth/logout")
@@ -380,7 +391,7 @@ public class AuthControllerTest {
                 .andExpect(cookie().maxAge("refreshToken", 0));
 
         RefreshToken tokenDb = refreshTokenRepository.findByToken(refreshToken).orElseThrow();
-        assertTrue(tokenDb.isRevoked());
+        assertThat(tokenDb.isRevoked()).isTrue();
 
         mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", refreshToken))
@@ -389,7 +400,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void testExpiredTokenRefreshRejection() throws Exception {
+    @DisplayName("refresh should reject expired tokens and clean them from repository")
+    void refresh_should_rejectExpiredToken_when_tokenHasExpired() throws Exception {
         RefreshToken expiredToken = new RefreshToken();
         expiredToken.setUser(testUser);
         expiredToken.setToken("expired-dummy-token");
@@ -403,6 +415,6 @@ public class AuthControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
 
-        assertTrue(refreshTokenRepository.findByToken("expired-dummy-token").isEmpty());
+        assertThat(refreshTokenRepository.findByToken("expired-dummy-token")).isEmpty();
     }
 }

@@ -1,7 +1,6 @@
 package com.deck.lab.backend.config.properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,10 +41,8 @@ class ConfigurationPropertiesBindingTest {
                     .run(context -> {
                         assertThat(context).hasNotFailed();
                         JwtProperties properties = context.getBean(JwtProperties.class);
-                        assertAll("Verify custom JWT property binding",
-                                () -> assertThat(properties.getSecret()).isEqualTo("custom-injected-secret-key-12345"),
-                                () -> assertThat(properties.getExpiration()).isEqualTo(1800000L)
-                        );
+                        assertThat(properties.getSecret()).isEqualTo("custom-injected-secret-key-12345");
+                        assertThat(properties.getExpiration()).isEqualTo(1800000L);
                     });
         }
     }
@@ -67,12 +64,10 @@ class ConfigurationPropertiesBindingTest {
                     .run(context -> {
                         assertThat(context).hasNotFailed();
                         RefreshTokenProperties properties = context.getBean(RefreshTokenProperties.class);
-                        assertAll("Verify custom RefreshToken property binding",
-                                () -> assertThat(properties.getDurationDays()).isEqualTo(14),
-                                () -> assertThat(properties.getMaxPerUser()).isEqualTo(10),
-                                () -> assertThat(properties.getGracePeriodSeconds()).isEqualTo(25),
-                                () -> assertThat(properties.getCleanupSchedule()).isEqualTo("0 0 12 * * *")
-                        );
+                        assertThat(properties.getDurationDays()).isEqualTo(14);
+                        assertThat(properties.getMaxPerUser()).isEqualTo(10);
+                        assertThat(properties.getGracePeriodSeconds()).isEqualTo(25);
+                        assertThat(properties.getCleanupSchedule()).isEqualTo("0 0 12 * * *");
                     });
         }
     }
@@ -91,11 +86,9 @@ class ConfigurationPropertiesBindingTest {
                     .run(context -> {
                         assertThat(context).hasNotFailed();
                         CorsProperties properties = context.getBean(CorsProperties.class);
-                        assertAll("Verify custom CORS allowed origins binding",
-                                () -> assertThat(properties.getAllowedOrigins()).containsExactly(
-                                        "http://staging.domain.com",
-                                        "https://prod.domain.com"
-                                )
+                        assertThat(properties.getAllowedOrigins()).containsExactly(
+                                "http://staging.domain.com",
+                                "https://prod.domain.com"
                         );
                     });
         }
@@ -118,12 +111,10 @@ class ConfigurationPropertiesBindingTest {
                     .run(context -> {
                         assertThat(context).hasNotFailed();
                         YgoProDeckProperties properties = context.getBean(YgoProDeckProperties.class);
-                        assertAll("Verify custom YGOPRODeck property binding",
-                                () -> assertThat(properties.getApiUrl()).isEqualTo("https://custom-mock-server/cards"),
-                                () -> assertThat(properties.getBatchSize()).isEqualTo(250),
-                                () -> assertThat(properties.getConnectTimeout()).isEqualTo(8000),
-                                () -> assertThat(properties.getReadTimeout()).isEqualTo(9000)
-                        );
+                        assertThat(properties.getApiUrl()).isEqualTo("https://custom-mock-server/cards");
+                        assertThat(properties.getBatchSize()).isEqualTo(250);
+                        assertThat(properties.getConnectTimeout()).isEqualTo(8000);
+                        assertThat(properties.getReadTimeout()).isEqualTo(9000);
                     });
         }
     }
@@ -144,11 +135,9 @@ class ConfigurationPropertiesBindingTest {
                     .run(context -> {
                         assertThat(context).hasNotFailed();
                         SeederProperties properties = context.getBean(SeederProperties.class);
-                        assertAll("Verify custom Seeder property binding",
-                                () -> assertThat(properties.isCards()).isTrue(),
-                                () -> assertThat(properties.isUsers()).isTrue(),
-                                () -> assertThat(properties.getPassword()).isEqualTo("SuperSecretSeed123!")
-                        );
+                        assertThat(properties.isCards()).isTrue();
+                        assertThat(properties.isUsers()).isTrue();
+                        assertThat(properties.getPassword()).isEqualTo("SuperSecretSeed123!");
                     });
         }
     }

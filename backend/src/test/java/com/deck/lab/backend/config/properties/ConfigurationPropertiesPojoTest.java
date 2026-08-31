@@ -1,10 +1,6 @@
 package com.deck.lab.backend.config.properties;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -26,11 +22,8 @@ class ConfigurationPropertiesPojoTest {
             JwtProperties properties = new JwtProperties();
 
             // Assert
-            assertAll("Verify JwtProperties defaults",
-                    () -> assertNotNull(properties.getSecret()),
-                    () -> assertFalse(properties.getSecret().isEmpty()),
-                    () -> assertEquals(900000L, properties.getExpiration())
-            );
+            assertThat(properties.getSecret()).isNotNull().isNotEmpty();
+            assertThat(properties.getExpiration()).isEqualTo(900000L);
         }
 
         @Test
@@ -44,10 +37,8 @@ class ConfigurationPropertiesPojoTest {
             properties.setExpiration(3600000L);
 
             // Assert
-            assertAll("Verify mutated JwtProperties",
-                    () -> assertEquals("custom-secret-key", properties.getSecret()),
-                    () -> assertEquals(3600000L, properties.getExpiration())
-            );
+            assertThat(properties.getSecret()).isEqualTo("custom-secret-key");
+            assertThat(properties.getExpiration()).isEqualTo(3600000L);
         }
     }
 
@@ -62,12 +53,10 @@ class ConfigurationPropertiesPojoTest {
             RefreshTokenProperties properties = new RefreshTokenProperties();
 
             // Assert
-            assertAll("Verify RefreshTokenProperties defaults",
-                    () -> assertEquals(7, properties.getDurationDays()),
-                    () -> assertEquals(5, properties.getMaxPerUser()),
-                    () -> assertEquals(10, properties.getGracePeriodSeconds()),
-                    () -> assertEquals("0 0 3 * * *", properties.getCleanupSchedule())
-            );
+            assertThat(properties.getDurationDays()).isEqualTo(7);
+            assertThat(properties.getMaxPerUser()).isEqualTo(5);
+            assertThat(properties.getGracePeriodSeconds()).isEqualTo(10);
+            assertThat(properties.getCleanupSchedule()).isEqualTo("0 0 3 * * *");
         }
 
         @Test
@@ -83,12 +72,10 @@ class ConfigurationPropertiesPojoTest {
             properties.setCleanupSchedule("0 0 4 * * *");
 
             // Assert
-            assertAll("Verify mutated RefreshTokenProperties",
-                    () -> assertEquals(14, properties.getDurationDays()),
-                    () -> assertEquals(10, properties.getMaxPerUser()),
-                    () -> assertEquals(30, properties.getGracePeriodSeconds()),
-                    () -> assertEquals("0 0 4 * * *", properties.getCleanupSchedule())
-            );
+            assertThat(properties.getDurationDays()).isEqualTo(14);
+            assertThat(properties.getMaxPerUser()).isEqualTo(10);
+            assertThat(properties.getGracePeriodSeconds()).isEqualTo(30);
+            assertThat(properties.getCleanupSchedule()).isEqualTo("0 0 4 * * *");
         }
     }
 
@@ -103,10 +90,9 @@ class ConfigurationPropertiesPojoTest {
             CorsProperties properties = new CorsProperties();
 
             // Assert
-            assertAll("Verify CorsProperties defaults",
-                    () -> assertNotNull(properties.getAllowedOrigins()),
-                    () -> assertTrue(properties.getAllowedOrigins().contains("http://localhost:5173"))
-            );
+            assertThat(properties.getAllowedOrigins())
+                    .isNotNull()
+                    .contains("http://localhost:5173");
         }
 
         @Test
@@ -119,11 +105,9 @@ class ConfigurationPropertiesPojoTest {
             properties.setAllowedOrigins(List.of("https://example.com", "https://app.example.com"));
 
             // Assert
-            assertAll("Verify mutated CorsProperties",
-                    () -> assertEquals(2, properties.getAllowedOrigins().size()),
-                    () -> assertTrue(properties.getAllowedOrigins().contains("https://example.com")),
-                    () -> assertTrue(properties.getAllowedOrigins().contains("https://app.example.com"))
-            );
+            assertThat(properties.getAllowedOrigins())
+                    .hasSize(2)
+                    .containsExactly("https://example.com", "https://app.example.com");
         }
     }
 
@@ -138,12 +122,10 @@ class ConfigurationPropertiesPojoTest {
             YgoProDeckProperties properties = new YgoProDeckProperties();
 
             // Assert
-            assertAll("Verify YgoProDeckProperties defaults",
-                    () -> assertEquals("https://db.ygoprodeck.com/api/v7/cardinfo.php", properties.getApiUrl()),
-                    () -> assertEquals(500, properties.getBatchSize()),
-                    () -> assertEquals(5000, properties.getConnectTimeout()),
-                    () -> assertEquals(5000, properties.getReadTimeout())
-            );
+            assertThat(properties.getApiUrl()).isEqualTo("https://db.ygoprodeck.com/api/v7/cardinfo.php");
+            assertThat(properties.getBatchSize()).isEqualTo(500);
+            assertThat(properties.getConnectTimeout()).isEqualTo(5000);
+            assertThat(properties.getReadTimeout()).isEqualTo(5000);
         }
 
         @Test
@@ -159,12 +141,10 @@ class ConfigurationPropertiesPojoTest {
             properties.setReadTimeout(15000);
 
             // Assert
-            assertAll("Verify mutated YgoProDeckProperties",
-                    () -> assertEquals("https://custom.api/cards", properties.getApiUrl()),
-                    () -> assertEquals(100, properties.getBatchSize()),
-                    () -> assertEquals(10000, properties.getConnectTimeout()),
-                    () -> assertEquals(15000, properties.getReadTimeout())
-            );
+            assertThat(properties.getApiUrl()).isEqualTo("https://custom.api/cards");
+            assertThat(properties.getBatchSize()).isEqualTo(100);
+            assertThat(properties.getConnectTimeout()).isEqualTo(10000);
+            assertThat(properties.getReadTimeout()).isEqualTo(15000);
         }
     }
 
@@ -179,11 +159,9 @@ class ConfigurationPropertiesPojoTest {
             SeederProperties properties = new SeederProperties();
 
             // Assert
-            assertAll("Verify SeederProperties defaults",
-                    () -> assertFalse(properties.isCards()),
-                    () -> assertFalse(properties.isUsers()),
-                    () -> assertEquals("12345678", properties.getPassword())
-            );
+            assertThat(properties.isCards()).isFalse();
+            assertThat(properties.isUsers()).isFalse();
+            assertThat(properties.getPassword()).isEqualTo("12345678");
         }
 
         @Test
@@ -198,11 +176,9 @@ class ConfigurationPropertiesPojoTest {
             properties.setPassword("customPassword!9");
 
             // Assert
-            assertAll("Verify mutated SeederProperties",
-                    () -> assertTrue(properties.isCards()),
-                    () -> assertTrue(properties.isUsers()),
-                    () -> assertEquals("customPassword!9", properties.getPassword())
-            );
+            assertThat(properties.isCards()).isTrue();
+            assertThat(properties.isUsers()).isTrue();
+            assertThat(properties.getPassword()).isEqualTo("customPassword!9");
         }
     }
 }
