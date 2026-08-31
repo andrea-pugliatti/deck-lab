@@ -58,6 +58,13 @@ public class DeckService {
     private final DeckMapper deckMapper;
     private final DeckValidationService deckValidationService;
 
+    /**
+     * Constructs a new {@link DeckService} with the required dependencies.
+     *
+     * @param deckRepository        the repository for deck persistence operations
+     * @param deckMapper            the mapper for transforming between deck entities and DTOs
+     * @param deckValidationService the service for validating deck structure and format legality
+     */
     public DeckService(DeckRepository deckRepository,
                        DeckMapper deckMapper,
                        DeckValidationService deckValidationService) {
@@ -69,7 +76,7 @@ public class DeckService {
     /**
      * Retrieves all distinct supported formats mapped as displayable strings.
      *
-     * @return sorted list of supported format values
+     * @return the sorted list of supported format values
      */
     public List<String> findDistinctFormats() {
         return Stream.of(Format.values())
@@ -81,10 +88,11 @@ public class DeckService {
     /**
      * Finds and filters decks based on search parameters. Performs JPA Eager Card fetches.
      *
-     * @param name     optional substring match for the deck's name
-     * @param format   optional exact match for the format name
-     * @param username optional exact match for the owner's username
-     * @return a list of sorted, matching DeckDto objects
+     * @param name     the optional substring match for the deck's name
+     * @param format   the optional exact match for the format name
+     * @param username the optional exact match for the owner's username
+     * @param pageable the pagination information
+     * @return a page of matching DeckResponseDto records
      */
     public Page<DeckResponseDto> findAllWithFilters(String name, String format, String username,
                                                     Pageable pageable) {
@@ -106,7 +114,7 @@ public class DeckService {
      * Retrieves a single deck by its ID.
      *
      * @param id the unique ID of the deck
-     * @return mapped DeckDto
+     * @return the mapped DeckResponseDto for the requested deck
      * @throws ResourceNotFoundException if no deck is found matching the ID
      */
     public DeckResponseDto getDeckById(Long id) {
@@ -132,7 +140,7 @@ public class DeckService {
      *
      * @param deckDto the deck save request to persist
      * @param user    the owner user account
-     * @return the saved DeckDto
+     * @return the saved DeckResponseDto
      * @throws DeckValidationException if the deck format or size is invalid
      */
     @Transactional
@@ -154,7 +162,7 @@ public class DeckService {
      * @param id      the ID of the deck to update
      * @param deckDto the updated deck save request
      * @param user    the owner user requesting the change
-     * @return the updated and saved DeckDto
+     * @return the updated and saved DeckResponseDto
      * @throws ResourceNotFoundException if the deck doesn't exist or doesn't belong to the user
      * @throws DeckValidationException    if the updated deck list is invalid
      */
@@ -178,8 +186,8 @@ public class DeckService {
      * newly mapped list.
      *
      * @param deck     the target Deck entity
-     * @param cardDtos the list of DeckCardDto items to map
-     * @param cardMap  pre-fetched database Cards keyed by ID
+     * @param cardDtos the list of DeckCardRequestDto items to map
+     * @param cardMap  the pre-fetched database Cards keyed by ID
      * @throws IllegalArgumentException if a card specified in the DTO is missing from cardMap
      */
     public void saveDeckCards(Deck deck,

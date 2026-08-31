@@ -57,6 +57,15 @@ public class DeckValidationService {
     private final DeckValidationEngine validationEngine;
     private final DeckAssembler deckAssembler;
 
+    /**
+     * Constructs a new {@link DeckValidationService} with required repositories and engine components.
+     *
+     * @param cardRepository        the repository for querying card entities
+     * @param formatRulesRepository the repository for format banlist and limit rules
+     * @param deckMapper            the mapper for converting between deck DTOs and entities
+     * @param validationEngine      the pure validation engine executing deck rules
+     * @param deckAssembler         the assembler component constructing transient deck models
+     */
     public DeckValidationService(CardRepository cardRepository,
                                  FormatRulesRepository formatRulesRepository, DeckMapper deckMapper,
                                  DeckValidationEngine validationEngine,
@@ -76,7 +85,7 @@ public class DeckValidationService {
      * @param deckDto the DTO representing the inbound deck save request to validate
      * @return a map of database-resolved Card objects mapped by their IDs, for subsequent save
      *             reuse
-     * @throws DeckValidationException containing all validation errors if any rules are violated
+     * @throws DeckValidationException if any validation rules are violated
      */
     @Transactional(readOnly = true)
     public Map<Long, Card> validate(DeckSaveRequestDto deckDto) {
@@ -133,7 +142,7 @@ public class DeckValidationService {
     /**
      * Resolves and fetches full Card records from database based on DTO card IDs.
      *
-     * @param cardDtos list of deck card references
+     * @param cardDtos the list of deck card references
      * @return a map of database resolved Card objects keyed by ID
      */
     public Map<Long, Card> fetchCardMap(List<DeckCardRequestDto> cardDtos) {

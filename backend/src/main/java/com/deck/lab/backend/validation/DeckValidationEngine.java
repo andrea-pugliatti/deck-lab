@@ -47,6 +47,11 @@ import com.deck.lab.backend.validation.rules.QuantityLimitRule;
 public class DeckValidationEngine {
     private final List<DeckRule> rules;
 
+    /**
+     * Constructs a new {@link DeckValidationEngine} with injected validation rules.
+     *
+     * @param rules the list of validation rules to evaluate
+     */
     public DeckValidationEngine(List<DeckRule> rules) {
         this.rules = rules != null
                 ? Collections.unmodifiableList(new ArrayList<>(rules))
@@ -70,7 +75,7 @@ public class DeckValidationEngine {
      * Evaluates a deck against all configured rule checks.
      *
      * @param deck         the Deck entity list to evaluate
-     * @param formatLimits database mapped limitations for format cards
+     * @param formatLimits the database mapped limitations for format cards
      * @return a list containing all accumulated validation errors, or empty if valid
      */
     public List<ValidationError> validate(Deck deck, Map<Long, CardStatus> formatLimits) {

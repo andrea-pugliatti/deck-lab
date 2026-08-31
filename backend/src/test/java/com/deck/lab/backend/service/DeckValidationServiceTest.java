@@ -1,16 +1,15 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,7 @@ import com.deck.lab.backend.repository.CardRepository;
 
 @SpringBootTest
 @Transactional
+@DisplayName("DeckValidationService Integration Tests")
 class DeckValidationServiceTest {
 
     @Autowired
@@ -74,39 +74,41 @@ class DeckValidationServiceTest {
     }
 
     @Test
-    void validateDeck_withValidDeck_doesNotThrow() {
+    @DisplayName("validate should succeed without throwing exceptions when deck conforms to format constraints")
+    void validate_should_succeedWithoutException_when_deckIsValid() {
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Validation Test Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
 
-        assertDoesNotThrow(() -> {
+        assertThatCode(() -> {
             deckValidationService.validate(requestDto);
-        });
+        }).doesNotThrowAnyException();
     }
 
     @Test
-    void validateDeck_withInvalidDeck_throwsDeckValidationException() {
+    @DisplayName("validate should throw DeckValidationException when deck violates format constraints")
+    void validate_should_throwDeckValidationException_when_deckIsInvalid() {
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Too Small Validation Test Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of()); // Empty deck
 
-        assertThrows(DeckValidationException.class, () -> {
-            deckValidationService.validate(requestDto);
-        });
+        assertThatThrownBy(() -> deckValidationService.validate(requestDto))
+                .isInstanceOf(DeckValidationException.class);
     }
 
     @Test
-    void validateAndGetCardMap_withValidDeck_returnsCorrectMap() {
+    @DisplayName("validate should return map of resolved Card entities keyed by ID when deck is valid")
+    void validate_should_returnCardMap_when_deckIsValid() {
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Map Test Deck");
         requestDto.setFormatName(Format.GOAT);
         requestDto.setDeckCards(createValidDeckCards());
 
         Map<Long, Card> cardMap = deckValidationService.validate(requestDto);
-        assertNotNull(cardMap);
-        assertEquals(14, cardMap.size());
-        assertTrue(cardMap.containsKey(testCard.getId()));
+        assertThat(cardMap).isNotNull();
+        assertThat(cardMap).hasSize(14);
+        assertThat(cardMap).containsKey(testCard.getId());
     }
 }

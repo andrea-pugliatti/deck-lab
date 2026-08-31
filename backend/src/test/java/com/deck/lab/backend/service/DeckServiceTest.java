@@ -1,17 +1,15 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +39,7 @@ import com.deck.lab.backend.repository.UserRepository;
 
 @SpringBootTest
 @Transactional
+@DisplayName("DeckService Integration Tests")
 class DeckServiceTest {
 
     @Autowired
@@ -118,41 +117,44 @@ class DeckServiceTest {
     }
 
     @Test
-    void getDecksByUser_returnsMatchingDecks() {
+    @DisplayName("findAllWithFilters should return matching decks when filtered by creator")
+    void findAllWithFilters_should_returnMatchingDecks_when_filteredByCreator() {
         Page<DeckResponseDto> result = deckService.findAllWithFilters(null,
                 null,
                 testUser.getUsername(),
                 PageRequest.of(0, 10));
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals("ServiceTest Deck", result.getContent().get(0).getName());
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent().get(0).getName()).isEqualTo("ServiceTest Deck");
 
         Page<DeckResponseDto> otherResult = deckService.findAllWithFilters(null,
                 null,
                 unauthorizedUser.getUsername(),
                 PageRequest.of(0, 10));
-        assertTrue(otherResult.isEmpty());
+        assertThat(otherResult).isEmpty();
     }
 
     @Test
-    void getDeckById_returnsDeckDto() {
+    @DisplayName("getDeckById should return DeckResponseDto when deck exists")
+    void getDeckById_should_returnDeckDto_when_deckExists() {
         DeckResponseDto result = deckService.getDeckById(testDeck.getId());
-        assertNotNull(result);
-        assertEquals(testDeck.getId(), result.getId());
-        assertEquals("ServiceTest Deck", result.getName());
-        assertEquals(1, result.getCards().size());
-        assertEquals(testCard.getId(), result.getCards().get(0).getCardId());
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(testDeck.getId());
+        assertThat(result.getName()).isEqualTo("ServiceTest Deck");
+        assertThat(result.getCards()).hasSize(1);
+        assertThat(result.getCards().get(0).getCardId()).isEqualTo(testCard.getId());
     }
 
     @Test
-    void getDeckById_whenDeckDoesNotExist_throwsResourceNotFoundException() {
-        assertThrows(ResourceNotFoundException.class, () -> {
-            deckService.getDeckById(999999L);
-        });
+    @DisplayName("getDeckById should throw ResourceNotFoundException when deck does not exist")
+    void getDeckById_should_throwResourceNotFoundException_when_deckDoesNotExist() {
+        assertThatThrownBy(() -> deckService.getDeckById(999999L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
-    void createDeck_savesDeckAndReturnsDto() {
+    @DisplayName("createDeck should persist new deck and return DeckResponseDto when payload is valid")
+    void createDeck_should_saveDeckAndReturnDto_when_valid() {
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("New Created Deck");
         requestDto.setDescription("Freshly created");
@@ -160,19 +162,20 @@ class DeckServiceTest {
         requestDto.setDeckCards(createValidDeckCards());
 
         DeckResponseDto result = deckService.createDeck(requestDto, testUser);
-        assertNotNull(result.getId());
-        assertEquals("New Created Deck", result.getName());
-        assertEquals(Format.GOAT, result.getFormatName());
-        assertEquals(14, result.getCards().size());
-        assertEquals(3, result.getCards().get(0).getQuantity());
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getName()).isEqualTo("New Created Deck");
+        assertThat(result.getFormatName()).isEqualTo(Format.GOAT);
+        assertThat(result.getCards()).hasSize(14);
+        assertThat(result.getCards().get(0).getQuantity()).isEqualTo(3);
 
         Optional<Deck> savedDeck = deckRepository.findById(result.getId());
-        assertTrue(savedDeck.isPresent());
-        assertEquals(testUser.getId(), savedDeck.get().getUser().getId());
+        assertThat(savedDeck).isPresent();
+        assertThat(savedDeck.get().getUser().getId()).isEqualTo(testUser.getId());
     }
 
     @Test
-    void createDeck_whenCardNotFound_throwsDeckValidationException() {
+    @DisplayName("createDeck should throw DeckValidationException when referenced card ID does not exist")
+    void createDeck_should_throwDeckValidationException_when_cardNotFound() {
         List<DeckCardRequestDto> cardDtos = createValidDeckCards();
         cardDtos.get(0).setCardId(999999L); // Replace first card with non-existent ID
 
@@ -181,13 +184,13 @@ class DeckServiceTest {
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(cardDtos);
 
-        assertThrows(DeckValidationException.class, () -> {
-            deckService.createDeck(requestDto, testUser);
-        });
+        assertThatThrownBy(() -> deckService.createDeck(requestDto, testUser))
+                .isInstanceOf(DeckValidationException.class);
     }
 
     @Test
-    void createDeck_whenDeckSizeInvalid_throwsDeckValidationException() {
+    @DisplayName("createDeck should throw DeckValidationException when deck size is below format minimum")
+    void createDeck_should_throwDeckValidationException_when_deckSizeInvalid() {
         // Only 1 card (qty 3) = size 3, which is less than 40
         DeckCardRequestDto cardDto = new DeckCardRequestDto();
         cardDto.setCardId(testCard.getId());
@@ -199,13 +202,13 @@ class DeckServiceTest {
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of(cardDto));
 
-        assertThrows(DeckValidationException.class, () -> {
-            deckService.createDeck(requestDto, testUser);
-        });
+        assertThatThrownBy(() -> deckService.createDeck(requestDto, testUser))
+                .isInstanceOf(DeckValidationException.class);
     }
 
     @Test
-    void updateDeck_whenAuthorized_updatesDeckFieldsAndCards() {
+    @DisplayName("updateDeck should update deck properties and cards when authorized")
+    void updateDeck_should_updateDeckFieldsAndCards_when_authorized() {
         List<DeckCardRequestDto> validCards = createValidDeckCards();
         validCards.get(0).setQuantity(1);
 
@@ -225,30 +228,31 @@ class DeckServiceTest {
         updateRequest.setDeckCards(newCardsList);
 
         DeckResponseDto result = deckService.updateDeck(testDeck.getId(), updateRequest, testUser);
-        assertEquals("ServiceTest Deck Updated", result.getName());
-        assertEquals("An updated description", result.getDescription());
-        assertEquals(Format.EDISON, result.getFormatName());
-        assertEquals(15, result.getCards().size());
+        assertThat(result.getName()).isEqualTo("ServiceTest Deck Updated");
+        assertThat(result.getDescription()).isEqualTo("An updated description");
+        assertThat(result.getFormatName()).isEqualTo(Format.EDISON);
+        assertThat(result.getCards()).hasSize(15);
 
         DeckCardResponseDto resFirst = result.getCards()
                 .stream()
                 .filter(c -> c.getCardId().equals(testCard.getId()))
                 .findFirst()
                 .orElseThrow();
-        assertEquals(1, resFirst.getQuantity());
-        assertEquals(DeckSection.MAIN, resFirst.getSection());
+        assertThat(resFirst.getQuantity()).isEqualTo(1);
+        assertThat(resFirst.getSection()).isEqualTo(DeckSection.MAIN);
 
         DeckCardResponseDto resSecond = result.getCards()
                 .stream()
                 .filter(c -> c.getCardId().equals(testFusionCard.getId()))
                 .findFirst()
                 .orElseThrow();
-        assertEquals(2, resSecond.getQuantity());
-        assertEquals(DeckSection.EXTRA, resSecond.getSection());
+        assertThat(resSecond.getQuantity()).isEqualTo(2);
+        assertThat(resSecond.getSection()).isEqualTo(DeckSection.EXTRA);
     }
 
     @Test
-    void updateDeck_withPopulatedIds_doesNotThrowLockingException() {
+    @DisplayName("updateDeck should handle existing card row IDs cleanly without optimistic lock conflicts")
+    void updateDeck_should_notThrowLockingException_when_idsPopulated() {
         List<DeckCardRequestDto> validCards = createValidDeckCards();
         DeckSaveRequestDto updateRequest = new DeckSaveRequestDto();
         updateRequest.setName("ServiceTest Deck Initial");
@@ -258,7 +262,7 @@ class DeckServiceTest {
 
         DeckResponseDto firstResult = deckService
                 .updateDeck(testDeck.getId(), updateRequest, testUser);
-        assertNotNull(firstResult.getCards().get(0).getId());
+        assertThat(firstResult.getCards().get(0).getId()).isNotNull();
 
         // Build a new request list from the response, adjusting quantity
         List<DeckCardRequestDto> updatedCards = firstResult.getCards()
@@ -281,65 +285,67 @@ class DeckServiceTest {
         secondRequest.setFormatName(Format.TCG);
         secondRequest.setDeckCards(updatedCards);
 
-        assertDoesNotThrow(() -> {
+        assertThatCode(() -> {
             deckService.updateDeck(testDeck.getId(), secondRequest, testUser);
-        });
+        }).doesNotThrowAnyException();
 
         DeckResponseDto finalResult = deckService.getDeckById(testDeck.getId());
-        assertEquals(2, finalResult.getCards().get(0).getQuantity());
+        assertThat(finalResult.getCards().get(0).getQuantity()).isEqualTo(2);
     }
 
     @Test
-    void updateDeck_whenUnauthorized_throwsResourceNotFoundException() {
+    @DisplayName("updateDeck should throw ResourceNotFoundException when non-owner attempts modification")
+    void updateDeck_should_throwResourceNotFoundException_when_unauthorized() {
         DeckSaveRequestDto request = new DeckSaveRequestDto();
         request.setName("Hacked Deck");
         request.setFormatName(Format.TCG);
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            deckService.updateDeck(testDeck.getId(), request, unauthorizedUser);
-        });
+        assertThatThrownBy(() -> deckService.updateDeck(testDeck.getId(), request, unauthorizedUser))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
-    void deleteDeck_whenAuthorized_deletesDeck() {
+    @DisplayName("deleteDeck should delete deck when owner invokes delete")
+    void deleteDeck_should_removeDeck_when_authorized() {
         Long deckId = testDeck.getId();
-        assertTrue(deckRepository.existsById(deckId));
+        assertThat(deckRepository.existsById(deckId)).isTrue();
 
         deckService.deleteDeck(deckId, testUser);
 
-        assertFalse(deckRepository.existsById(deckId));
+        assertThat(deckRepository.existsById(deckId)).isFalse();
     }
 
     @Test
-    void deleteDeck_whenUnauthorized_throwsResourceNotFoundException() {
-        assertThrows(ResourceNotFoundException.class, () -> {
-            deckService.deleteDeck(testDeck.getId(), unauthorizedUser);
-        });
-        assertTrue(deckRepository.existsById(testDeck.getId()));
+    @DisplayName("deleteDeck should throw ResourceNotFoundException when non-owner invokes delete")
+    void deleteDeck_should_throwResourceNotFoundException_when_unauthorized() {
+        assertThatThrownBy(() -> deckService.deleteDeck(testDeck.getId(), unauthorizedUser))
+                .isInstanceOf(ResourceNotFoundException.class);
+        assertThat(deckRepository.existsById(testDeck.getId())).isTrue();
     }
 
     @Test
-    void validateDeck_withValidDeck_doesNotThrow() {
+    @DisplayName("validateDeck should succeed without throwing exception when deck is valid")
+    void validateDeck_should_notThrow_when_deckIsValid() {
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Valid Deck");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(createValidDeckCards());
 
-        assertDoesNotThrow(() -> {
+        assertThatCode(() -> {
             deckService.validateDeck(requestDto);
-        });
+        }).doesNotThrowAnyException();
     }
 
     @Test
-    void validateDeck_withInvalidDeck_throwsDeckValidationException() {
+    @DisplayName("validateDeck should throw DeckValidationException when deck violates rules")
+    void validateDeck_should_throwDeckValidationException_when_deckIsInvalid() {
         // Less than 40 cards
         DeckSaveRequestDto requestDto = new DeckSaveRequestDto();
         requestDto.setName("Too Small");
         requestDto.setFormatName(Format.TCG);
         requestDto.setDeckCards(List.of());
 
-        assertThrows(DeckValidationException.class, () -> {
-            deckService.validateDeck(requestDto);
-        });
+        assertThatThrownBy(() -> deckService.validateDeck(requestDto))
+                .isInstanceOf(DeckValidationException.class);
     }
 }
