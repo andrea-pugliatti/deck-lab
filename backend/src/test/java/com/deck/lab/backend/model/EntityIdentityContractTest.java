@@ -1,9 +1,6 @@
 package com.deck.lab.backend.model;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,40 +36,33 @@ class EntityIdentityContractTest {
         Card transientCard1 = new Card();
         Card transientCard2 = new Card();
 
-        assertAll("Card identity contract assertions",
-                // Reflexive
-                () -> assertTrue(card1.equals(card1), "Reflexive: card1 should equal itself"),
-                // Symmetric
-                () -> assertTrue(card1.equals(card2) && card2.equals(card1),
-                        "Symmetric: cards with same ID should be equal"),
-                // Transitive
-                () -> assertTrue(card1.equals(card2) && card2.equals(card3) && card1.equals(card3),
-                        "Transitive: card1 equals card3"),
-                // Non-nullity
-                () -> assertFalse(card1.equals(null), "Non-nullity: card1 should not equal null"),
-                // Type safety
-                () -> assertFalse(card1.equals(new Object()),
-                        "Type safety: card1 should not equal generic object"),
-                // Different IDs
-                () -> assertFalse(card1.equals(cardDifferent),
-                        "Distinct IDs: cards with different IDs should not be equal"),
-                // Transient entities
-                () -> assertFalse(transientCard1.equals(transientCard2),
-                        "Transient entities: distinct transient cards should not be equal"),
-                // Hash code consistency
-                () -> assertEquals(card1.hashCode(),
-                        card2.hashCode(),
-                        "HashCode: same class instances should have matching hash codes"));
+        // Reflexive
+        assertThat(card1).isEqualTo(card1);
+        // Symmetric
+        assertThat(card1).isEqualTo(card2);
+        assertThat(card2).isEqualTo(card1);
+        // Transitive
+        assertThat(card1).isEqualTo(card3);
+        assertThat(card2).isEqualTo(card3);
+        // Non-nullity
+        assertThat(card1).isNotEqualTo(null);
+        // Type safety
+        assertThat(card1).isNotEqualTo(new Object());
+        // Different IDs
+        assertThat(card1).isNotEqualTo(cardDifferent);
+        // Transient entities
+        assertThat(transientCard1).isNotEqualTo(transientCard2);
+        // Hash code consistency
+        assertThat(card1.hashCode()).isEqualTo(card2.hashCode());
 
         // Verify Set behavior before and after ID assignment
         Set<Card> cardSet = new HashSet<>();
         Card mutableCard = new Card();
         cardSet.add(mutableCard);
-        assertTrue(cardSet.contains(mutableCard), "Set should contain transient card instance");
+        assertThat(cardSet).contains(mutableCard);
 
         mutableCard.setId(99L);
-        assertTrue(cardSet.contains(mutableCard),
-                "Set should still contain card after ID assignment");
+        assertThat(cardSet).contains(mutableCard);
     }
 
     @Test
@@ -95,24 +85,24 @@ class EntityIdentityContractTest {
         Deck transientDeck1 = new Deck();
         Deck transientDeck2 = new Deck();
 
-        assertAll("Deck identity contract assertions",
-                () -> assertTrue(deck1.equals(deck1), "Reflexive"),
-                () -> assertTrue(deck1.equals(deck2) && deck2.equals(deck1), "Symmetric"),
-                () -> assertTrue(deck1.equals(deck2) && deck2.equals(deck3) && deck1.equals(deck3),
-                        "Transitive"),
-                () -> assertFalse(deck1.equals(null), "Non-nullity"),
-                () -> assertFalse(deck1.equals(new Object()), "Type safety"),
-                () -> assertFalse(deck1.equals(deckDifferent), "Distinct IDs"),
-                () -> assertFalse(transientDeck1.equals(transientDeck2), "Transient entities"),
-                () -> assertEquals(deck1.hashCode(), deck2.hashCode(), "HashCode"));
+        assertThat(deck1).isEqualTo(deck1);
+        assertThat(deck1).isEqualTo(deck2);
+        assertThat(deck2).isEqualTo(deck1);
+        assertThat(deck1).isEqualTo(deck3);
+        assertThat(deck2).isEqualTo(deck3);
+        assertThat(deck1).isNotEqualTo(null);
+        assertThat(deck1).isNotEqualTo(new Object());
+        assertThat(deck1).isNotEqualTo(deckDifferent);
+        assertThat(transientDeck1).isNotEqualTo(transientDeck2);
+        assertThat(deck1.hashCode()).isEqualTo(deck2.hashCode());
 
         Set<Deck> deckSet = new HashSet<>();
         Deck mutableDeck = new Deck();
         deckSet.add(mutableDeck);
-        assertTrue(deckSet.contains(mutableDeck));
+        assertThat(deckSet).contains(mutableDeck);
 
         mutableDeck.setId(50L);
-        assertTrue(deckSet.contains(mutableDeck));
+        assertThat(deckSet).contains(mutableDeck);
     }
 
     @Test
@@ -135,24 +125,24 @@ class EntityIdentityContractTest {
         DeckCard transientDc1 = new DeckCard();
         DeckCard transientDc2 = new DeckCard();
 
-        assertAll("DeckCard identity contract assertions",
-                () -> assertTrue(dc1.equals(dc1), "Reflexive"),
-                () -> assertTrue(dc1.equals(dc2) && dc2.equals(dc1), "Symmetric"),
-                () -> assertTrue(dc1.equals(dc2) && dc2.equals(dc3) && dc1.equals(dc3),
-                        "Transitive"),
-                () -> assertFalse(dc1.equals(null), "Non-nullity"),
-                () -> assertFalse(dc1.equals(new Object()), "Type safety"),
-                () -> assertFalse(dc1.equals(dcDifferent), "Distinct IDs"),
-                () -> assertFalse(transientDc1.equals(transientDc2), "Transient entities"),
-                () -> assertEquals(dc1.hashCode(), dc2.hashCode(), "HashCode"));
+        assertThat(dc1).isEqualTo(dc1);
+        assertThat(dc1).isEqualTo(dc2);
+        assertThat(dc2).isEqualTo(dc1);
+        assertThat(dc1).isEqualTo(dc3);
+        assertThat(dc2).isEqualTo(dc3);
+        assertThat(dc1).isNotEqualTo(null);
+        assertThat(dc1).isNotEqualTo(new Object());
+        assertThat(dc1).isNotEqualTo(dcDifferent);
+        assertThat(transientDc1).isNotEqualTo(transientDc2);
+        assertThat(dc1.hashCode()).isEqualTo(dc2.hashCode());
 
         Set<DeckCard> deckCardSet = new HashSet<>();
         DeckCard mutableDc = new DeckCard();
         deckCardSet.add(mutableDc);
-        assertTrue(deckCardSet.contains(mutableDc));
+        assertThat(deckCardSet).contains(mutableDc);
 
         mutableDc.setId(300L);
-        assertTrue(deckCardSet.contains(mutableDc));
+        assertThat(deckCardSet).contains(mutableDc);
     }
 
     @Test
@@ -173,24 +163,24 @@ class EntityIdentityContractTest {
         User transientUser1 = new User("kaiba", "pass", "kaiba@example.com");
         User transientUser2 = new User("joey", "pass", "joey@example.com");
 
-        assertAll("User identity contract assertions",
-                () -> assertTrue(user1.equals(user1), "Reflexive"),
-                () -> assertTrue(user1.equals(user2) && user2.equals(user1), "Symmetric"),
-                () -> assertTrue(user1.equals(user2) && user2.equals(user3) && user1.equals(user3),
-                        "Transitive"),
-                () -> assertFalse(user1.equals(null), "Non-nullity"),
-                () -> assertFalse(user1.equals(new Object()), "Type safety"),
-                () -> assertFalse(user1.equals(userDifferent), "Distinct IDs"),
-                () -> assertFalse(transientUser1.equals(transientUser2), "Transient entities"),
-                () -> assertEquals(user1.hashCode(), user2.hashCode(), "HashCode"));
+        assertThat(user1).isEqualTo(user1);
+        assertThat(user1).isEqualTo(user2);
+        assertThat(user2).isEqualTo(user1);
+        assertThat(user1).isEqualTo(user3);
+        assertThat(user2).isEqualTo(user3);
+        assertThat(user1).isNotEqualTo(null);
+        assertThat(user1).isNotEqualTo(new Object());
+        assertThat(user1).isNotEqualTo(userDifferent);
+        assertThat(transientUser1).isNotEqualTo(transientUser2);
+        assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
 
         Set<User> userSet = new HashSet<>();
         User mutableUser = new User("temp", "pass", "temp@example.com");
         userSet.add(mutableUser);
-        assertTrue(userSet.contains(mutableUser));
+        assertThat(userSet).contains(mutableUser);
 
         mutableUser.setId(77L);
-        assertTrue(userSet.contains(mutableUser));
+        assertThat(userSet).contains(mutableUser);
     }
 
     @Test
@@ -213,25 +203,24 @@ class EntityIdentityContractTest {
         RefreshToken transientToken1 = new RefreshToken();
         RefreshToken transientToken2 = new RefreshToken();
 
-        assertAll("RefreshToken identity contract assertions",
-                () -> assertTrue(token1.equals(token1), "Reflexive"),
-                () -> assertTrue(token1.equals(token2) && token2.equals(token1), "Symmetric"),
-                () -> assertTrue(
-                        token1.equals(token2) && token2.equals(token3) && token1.equals(token3),
-                        "Transitive"),
-                () -> assertFalse(token1.equals(null), "Non-nullity"),
-                () -> assertFalse(token1.equals(new Object()), "Type safety"),
-                () -> assertFalse(token1.equals(tokenDifferent), "Distinct IDs"),
-                () -> assertFalse(transientToken1.equals(transientToken2), "Transient entities"),
-                () -> assertEquals(token1.hashCode(), token2.hashCode(), "HashCode"));
+        assertThat(token1).isEqualTo(token1);
+        assertThat(token1).isEqualTo(token2);
+        assertThat(token2).isEqualTo(token1);
+        assertThat(token1).isEqualTo(token3);
+        assertThat(token2).isEqualTo(token3);
+        assertThat(token1).isNotEqualTo(null);
+        assertThat(token1).isNotEqualTo(new Object());
+        assertThat(token1).isNotEqualTo(tokenDifferent);
+        assertThat(transientToken1).isNotEqualTo(transientToken2);
+        assertThat(token1.hashCode()).isEqualTo(token2.hashCode());
 
         Set<RefreshToken> tokenSet = new HashSet<>();
         RefreshToken mutableToken = new RefreshToken();
         tokenSet.add(mutableToken);
-        assertTrue(tokenSet.contains(mutableToken));
+        assertThat(tokenSet).contains(mutableToken);
 
         mutableToken.setId(555L);
-        assertTrue(tokenSet.contains(mutableToken));
+        assertThat(tokenSet).contains(mutableToken);
     }
 
     @Test
@@ -256,23 +245,23 @@ class EntityIdentityContractTest {
         FormatRules transientRule1 = new FormatRules();
         FormatRules transientRule2 = new FormatRules();
 
-        assertAll("FormatRules identity contract assertions",
-                () -> assertTrue(rule1.equals(rule1), "Reflexive"),
-                () -> assertTrue(rule1.equals(rule2) && rule2.equals(rule1), "Symmetric"),
-                () -> assertTrue(rule1.equals(rule2) && rule2.equals(rule3) && rule1.equals(rule3),
-                        "Transitive"),
-                () -> assertFalse(rule1.equals(null), "Non-nullity"),
-                () -> assertFalse(rule1.equals(new Object()), "Type safety"),
-                () -> assertFalse(rule1.equals(ruleDifferent), "Distinct IDs"),
-                () -> assertFalse(transientRule1.equals(transientRule2), "Transient entities"),
-                () -> assertEquals(rule1.hashCode(), rule2.hashCode(), "HashCode"));
+        assertThat(rule1).isEqualTo(rule1);
+        assertThat(rule1).isEqualTo(rule2);
+        assertThat(rule2).isEqualTo(rule1);
+        assertThat(rule1).isEqualTo(rule3);
+        assertThat(rule2).isEqualTo(rule3);
+        assertThat(rule1).isNotEqualTo(null);
+        assertThat(rule1).isNotEqualTo(new Object());
+        assertThat(rule1).isNotEqualTo(ruleDifferent);
+        assertThat(transientRule1).isNotEqualTo(transientRule2);
+        assertThat(rule1.hashCode()).isEqualTo(rule2.hashCode());
 
         Set<FormatRules> ruleSet = new HashSet<>();
         FormatRules mutableRule = new FormatRules();
         ruleSet.add(mutableRule);
-        assertTrue(ruleSet.contains(mutableRule));
+        assertThat(ruleSet).contains(mutableRule);
 
         mutableRule.setId(888L);
-        assertTrue(ruleSet.contains(mutableRule));
+        assertThat(ruleSet).contains(mutableRule);
     }
 }

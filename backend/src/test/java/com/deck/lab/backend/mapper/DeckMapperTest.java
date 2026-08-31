@@ -1,14 +1,12 @@
 package com.deck.lab.backend.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.deck.lab.backend.dto.request.DeckSaveRequestDto;
@@ -24,8 +22,6 @@ import com.deck.lab.backend.model.DeckSection;
 import com.deck.lab.backend.model.Format;
 import com.deck.lab.backend.model.User;
 
-import org.junit.jupiter.api.DisplayName;
-
 @DisplayName("DeckMapper Unit Tests")
 class DeckMapperTest {
 
@@ -37,7 +33,8 @@ class DeckMapperTest {
     }
 
     @Test
-    void toDto_withValidDeckAndCards_mapsAllFieldsCorrectly() {
+    @DisplayName("toDto should map valid Deck and associated DeckCards into DeckResponseDto")
+    void toDto_should_mapAllFields_when_deckAndCardsAreValid() {
         User user = new User("yugi", "password", "yugi@example.com");
         user.setId(1L);
 
@@ -78,66 +75,65 @@ class DeckMapperTest {
 
         DeckResponseDto dto = deckMapper.toDto(deck);
 
-        assertNotNull(dto);
-        assertEquals(deck.getId(), dto.getId());
-        assertEquals(deck.getName(), dto.getName());
-        assertEquals(deck.getDescription(), dto.getDescription());
-        assertEquals(deck.getFormatName(), dto.getFormatName());
-        assertEquals("yugi", dto.getCreatorUsername());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(deck.getId());
+        assertThat(dto.getName()).isEqualTo(deck.getName());
+        assertThat(dto.getDescription()).isEqualTo(deck.getDescription());
+        assertThat(dto.getFormatName()).isEqualTo(deck.getFormatName());
+        assertThat(dto.getCreatorUsername()).isEqualTo("yugi");
 
         List<DeckCardResponseDto> cardDtos = dto.getCards();
-        assertNotNull(cardDtos);
-        assertEquals(2, cardDtos.size());
+        assertThat(cardDtos).isNotNull().hasSize(2);
 
         DeckCardResponseDto cardDto1 = cardDtos.stream()
                 .filter(c -> c.getCardId().equals(100L))
                 .findFirst()
                 .orElseThrow();
-        assertEquals(500L, cardDto1.getId());
-        assertEquals("Dark Magician", cardDto1.getName());
-        assertEquals(CardType.NORMAL_MONSTER, cardDto1.getType());
-        assertEquals("The ultimate wizard in terms of attack and defense.",
-                cardDto1.getDescription());
-        assertEquals(CardRace.SPELLCASTER, cardDto1.getRace());
-        assertEquals(CardAttribute.DARK, cardDto1.getAttribute());
-        assertEquals("Dark Magician", cardDto1.getArchetype());
-        assertEquals("cards/images/100.jpg", cardDto1.getImageUrl());
-        assertEquals(DeckSection.MAIN, cardDto1.getSection());
-        assertEquals(3, cardDto1.getQuantity());
+        assertThat(cardDto1.getId()).isEqualTo(500L);
+        assertThat(cardDto1.getName()).isEqualTo("Dark Magician");
+        assertThat(cardDto1.getType()).isEqualTo(CardType.NORMAL_MONSTER);
+        assertThat(cardDto1.getDescription()).isEqualTo("The ultimate wizard in terms of attack and defense.");
+        assertThat(cardDto1.getRace()).isEqualTo(CardRace.SPELLCASTER);
+        assertThat(cardDto1.getAttribute()).isEqualTo(CardAttribute.DARK);
+        assertThat(cardDto1.getArchetype()).isEqualTo("Dark Magician");
+        assertThat(cardDto1.getImageUrl()).isEqualTo("cards/images/100.jpg");
+        assertThat(cardDto1.getSection()).isEqualTo(DeckSection.MAIN);
+        assertThat(cardDto1.getQuantity()).isEqualTo(3);
 
         DeckCardResponseDto cardDto2 = cardDtos.stream()
                 .filter(c -> c.getCardId().equals(101L))
                 .findFirst()
                 .orElseThrow();
-        assertEquals(501L, cardDto2.getId());
-        assertEquals("Blue-Eyes White Dragon", cardDto2.getName());
-        assertEquals(CardRace.DRAGON, cardDto2.getRace());
-        assertEquals(CardAttribute.LIGHT, cardDto2.getAttribute());
-        assertEquals("Blue-Eyes", cardDto2.getArchetype());
-        assertEquals("cards/images/101.jpg", cardDto2.getImageUrl());
-        assertEquals(DeckSection.SIDE, cardDto2.getSection());
-        assertEquals(1, cardDto2.getQuantity());
+        assertThat(cardDto2.getId()).isEqualTo(501L);
+        assertThat(cardDto2.getName()).isEqualTo("Blue-Eyes White Dragon");
+        assertThat(cardDto2.getRace()).isEqualTo(CardRace.DRAGON);
+        assertThat(cardDto2.getAttribute()).isEqualTo(CardAttribute.LIGHT);
+        assertThat(cardDto2.getArchetype()).isEqualTo("Blue-Eyes");
+        assertThat(cardDto2.getImageUrl()).isEqualTo("cards/images/101.jpg");
+        assertThat(cardDto2.getSection()).isEqualTo(DeckSection.SIDE);
+        assertThat(cardDto2.getQuantity()).isEqualTo(1);
     }
 
     @Test
-    void toDto_withEmptyDeckCards_returnsDtoWithEmptyList() {
+    @DisplayName("toDto should return DeckResponseDto with empty card list when deck has no cards")
+    void toDto_should_returnDtoWithEmptyList_when_deckCardsEmpty() {
         Deck deck = new Deck("Empty Deck", "No cards inside", Format.SPEED_DUEL, null);
         deck.setId(20L);
         deck.setDeckCards(new ArrayList<>());
 
         DeckResponseDto dto = deckMapper.toDto(deck);
 
-        assertNotNull(dto);
-        assertEquals(20L, dto.getId());
-        assertEquals("Empty Deck", dto.getName());
-        assertEquals("No cards inside", dto.getDescription());
-        assertEquals(Format.SPEED_DUEL, dto.getFormatName());
-        assertNotNull(dto.getCards());
-        assertTrue(dto.getCards().isEmpty());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(20L);
+        assertThat(dto.getName()).isEqualTo("Empty Deck");
+        assertThat(dto.getDescription()).isEqualTo("No cards inside");
+        assertThat(dto.getFormatName()).isEqualTo(Format.SPEED_DUEL);
+        assertThat(dto.getCards()).isNotNull().isEmpty();
     }
 
     @Test
-    void toEntity_withValidDto_mapsFieldsCorrectly() {
+    @DisplayName("toEntity should map all DeckSaveRequestDto fields into Deck entity")
+    void toEntity_should_mapFields_when_dtoIsValid() {
         DeckSaveRequestDto dto = new DeckSaveRequestDto();
         dto.setName("New Deck");
         dto.setDescription("Some description");
@@ -145,19 +141,21 @@ class DeckMapperTest {
 
         Deck deck = deckMapper.toEntity(dto);
 
-        assertNotNull(deck);
-        assertEquals("New Deck", deck.getName());
-        assertEquals("Some description", deck.getDescription());
-        assertEquals(Format.GOAT, deck.getFormatName());
+        assertThat(deck).isNotNull();
+        assertThat(deck.getName()).isEqualTo("New Deck");
+        assertThat(deck.getDescription()).isEqualTo("Some description");
+        assertThat(deck.getFormatName()).isEqualTo(Format.GOAT);
     }
 
     @Test
-    void toEntity_withNullDto_returnsNull() {
-        assertNull(deckMapper.toEntity((DeckSaveRequestDto) null));
+    @DisplayName("toEntity should return null when DTO is null")
+    void toEntity_should_returnNull_when_dtoIsNull() {
+        assertThat(deckMapper.toEntity((DeckSaveRequestDto) null)).isNull();
     }
 
     @Test
-    void updateEntityFromDto_withValidDto_updatesFieldsCorrectly() {
+    @DisplayName("updateEntityFromDto should update existing Deck fields while preserving ID")
+    void updateEntityFromDto_should_updateFields_when_dtoAndDeckProvided() {
         Deck deck = new Deck("Old Name", "Old Desc", Format.TCG, null);
         deck.setId(40L);
 
@@ -168,14 +166,15 @@ class DeckMapperTest {
 
         deckMapper.updateEntityFromDto(dto, deck);
 
-        assertEquals(40L, deck.getId()); // ID should not be changed by updateEntityFromDto
-        assertEquals("Updated Name", deck.getName());
-        assertEquals("Updated Desc", deck.getDescription());
-        assertEquals(Format.GOAT, deck.getFormatName());
+        assertThat(deck.getId()).isEqualTo(40L); // ID should not be changed by updateEntityFromDto
+        assertThat(deck.getName()).isEqualTo("Updated Name");
+        assertThat(deck.getDescription()).isEqualTo("Updated Desc");
+        assertThat(deck.getFormatName()).isEqualTo(Format.GOAT);
     }
 
     @Test
-    void toDeckCardDto_withValidDeckCard_mapsAllFieldsCorrectly() {
+    @DisplayName("toDeckCardDto should map DeckCard and underlying Card entity into DeckCardResponseDto")
+    void toDeckCardDto_should_mapAllFields_when_deckCardIsValid() {
         Deck deck = new Deck();
         deck.setId(1L);
 
@@ -194,37 +193,39 @@ class DeckMapperTest {
 
         DeckCardResponseDto dto = deckMapper.toDeckCardDto(deckCard);
 
-        assertNotNull(dto);
-        assertEquals(100L, dto.getId());
-        assertEquals(10L, dto.getCardId());
-        assertEquals("Dark Magician", dto.getName());
-        assertEquals(CardType.NORMAL_MONSTER, dto.getType());
-        assertEquals("The ultimate wizard.", dto.getDescription());
-        assertEquals(CardRace.SPELLCASTER, dto.getRace());
-        assertEquals(CardAttribute.DARK, dto.getAttribute());
-        assertEquals("Dark Magician", dto.getArchetype());
-        assertEquals("images/10.jpg", dto.getImageUrl());
-        assertEquals(DeckSection.MAIN, dto.getSection());
-        assertEquals(3, dto.getQuantity());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(100L);
+        assertThat(dto.getCardId()).isEqualTo(10L);
+        assertThat(dto.getName()).isEqualTo("Dark Magician");
+        assertThat(dto.getType()).isEqualTo(CardType.NORMAL_MONSTER);
+        assertThat(dto.getDescription()).isEqualTo("The ultimate wizard.");
+        assertThat(dto.getRace()).isEqualTo(CardRace.SPELLCASTER);
+        assertThat(dto.getAttribute()).isEqualTo(CardAttribute.DARK);
+        assertThat(dto.getArchetype()).isEqualTo("Dark Magician");
+        assertThat(dto.getImageUrl()).isEqualTo("images/10.jpg");
+        assertThat(dto.getSection()).isEqualTo(DeckSection.MAIN);
+        assertThat(dto.getQuantity()).isEqualTo(3);
     }
 
     @Test
-    void toDeckCardDto_withNullCard_mapsWithoutCardInfo() {
+    @DisplayName("toDeckCardDto should handle null card reference gracefully")
+    void toDeckCardDto_should_mapWithoutCardInfo_when_cardIsNull() {
         DeckCard deckCard = new DeckCard(null, null, DeckSection.SIDE, 1);
         deckCard.setId(200L);
 
         DeckCardResponseDto dto = deckMapper.toDeckCardDto(deckCard);
 
-        assertNotNull(dto);
-        assertEquals(200L, dto.getId());
-        assertNull(dto.getCardId());
-        assertNull(dto.getName());
-        assertEquals(DeckSection.SIDE, dto.getSection());
-        assertEquals(1, dto.getQuantity());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(200L);
+        assertThat(dto.getCardId()).isNull();
+        assertThat(dto.getName()).isNull();
+        assertThat(dto.getSection()).isEqualTo(DeckSection.SIDE);
+        assertThat(dto.getQuantity()).isEqualTo(1);
     }
 
     @Test
-    void toDeckCardDto_withNullDeckCard_returnsNull() {
-        assertNull(deckMapper.toDeckCardDto(null));
+    @DisplayName("toDeckCardDto should return null when DeckCard is null")
+    void toDeckCardDto_should_returnNull_when_deckCardIsNull() {
+        assertThat(deckMapper.toDeckCardDto(null)).isNull();
     }
 }

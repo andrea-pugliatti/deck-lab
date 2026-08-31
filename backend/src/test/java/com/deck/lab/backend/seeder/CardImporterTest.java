@@ -1,10 +1,6 @@
 package com.deck.lab.backend.seeder;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -87,7 +83,7 @@ class CardImporterTest {
     @Test
     @DisplayName("constructor should properly initialize CardImporter with injected dependencies")
     void constructor_should_initializeDependencies() {
-        assertNotNull(cardImporter);
+        assertThat(cardImporter).isNotNull();
     }
 
     @Test
@@ -118,21 +114,20 @@ class CardImporterTest {
         Card card = cardImporter.mapApiResponseToCard(apiCard);
 
         // Assert
-        assertAll("Verify mapped Card fields",
-                () -> assertNotNull(card),
-                () -> assertEquals("Dark Magician", card.getName()),
-                () -> assertEquals(CardType.NORMAL_MONSTER, card.getType()),
-                () -> assertEquals(FrameType.NORMAL, card.getFrameType()),
-                () -> assertEquals(CardRace.SPELLCASTER, card.getRace()),
-                () -> assertEquals(CardAttribute.DARK, card.getAttribute()),
-                () -> assertEquals("Dark Magician", card.getArchetype()),
-                () -> assertEquals(2500, card.getAtk()),
-                () -> assertEquals(2100, card.getDef()),
-                () -> assertEquals(7, card.getLevel()),
-                () -> assertEquals(46986414L, card.getPasscode()),
-                () -> assertEquals("cards/images/46986414.jpg", card.getImageUrl()),
-                () -> assertEquals("cards/images/cropped/46986414.jpg", card.getImageUrlCropped())
-        );
+        assertThat(card).isNotNull();
+        assertThat(card.getName()).isEqualTo("Dark Magician");
+        assertThat(card.getType()).isEqualTo(CardType.NORMAL_MONSTER);
+        assertThat(card.getFrameType()).isEqualTo(FrameType.NORMAL);
+        assertThat(card.getRace()).isEqualTo(CardRace.SPELLCASTER);
+        assertThat(card.getAttribute()).isEqualTo(CardAttribute.DARK);
+        assertThat(card.getArchetype()).isEqualTo("Dark Magician");
+        assertThat(card.getAtk()).isEqualTo(2500);
+        assertThat(card.getDef()).isEqualTo(2100);
+        assertThat(card.getLevel()).isEqualTo(7);
+        assertThat(card.getPasscode()).isEqualTo(46986414L);
+        assertThat(card.getImageUrl()).isEqualTo("cards/images/46986414.jpg");
+        assertThat(card.getImageUrlCropped()).isEqualTo("cards/images/cropped/46986414.jpg");
+        
         verify(imageDownloadExecutor, atLeastOnce()).execute(any(Runnable.class));
     }
 
@@ -155,15 +150,13 @@ class CardImporterTest {
         Card card = cardImporter.mapApiResponseToCard(linkCard);
 
         // Assert
-        assertAll("Verify link monster properties",
-                () -> assertNotNull(card),
-                () -> assertEquals("Decode Talker", card.getName()),
-                () -> assertEquals(CardType.LINK_MONSTER, card.getType()),
-                () -> assertEquals(FrameType.LINK, card.getFrameType()),
-                () -> assertEquals(3, card.getLinkVal()),
-                () -> assertEquals(2300, card.getAtk()),
-                () -> assertNull(card.getDef())
-        );
+        assertThat(card).isNotNull();
+        assertThat(card.getName()).isEqualTo("Decode Talker");
+        assertThat(card.getType()).isEqualTo(CardType.LINK_MONSTER);
+        assertThat(card.getFrameType()).isEqualTo(FrameType.LINK);
+        assertThat(card.getLinkVal()).isEqualTo(3);
+        assertThat(card.getAtk()).isEqualTo(2300);
+        assertThat(card.getDef()).isNull();
     }
 
     @Test
@@ -176,7 +169,7 @@ class CardImporterTest {
 
         Card card = cardImporter.mapApiResponseToCard(invalidCard);
 
-        assertNull(card);
+        assertThat(card).isNull();
     }
 
     @ParameterizedTest
@@ -191,7 +184,7 @@ class CardImporterTest {
 
         Card card = cardImporter.mapApiResponseToCard(invalidCard);
 
-        assertNull(card);
+        assertThat(card).isNull();
     }
 
     @Test
@@ -205,7 +198,7 @@ class CardImporterTest {
 
         Card card = cardImporter.mapApiResponseToCard(invalidCard);
 
-        assertNull(card);
+        assertThat(card).isNull();
     }
 
     @Test
@@ -260,12 +253,10 @@ class CardImporterTest {
 
         // Assert
         mockServer.verify();
-        assertAll("Verify fetched cards count and values",
-                () -> assertEquals(3, cards.size()),
-                () -> assertEquals("Card One", cards.get(0).getName()),
-                () -> assertEquals("Card Two", cards.get(1).getName()),
-                () -> assertEquals("Card Three", cards.get(2).getName())
-        );
+        assertThat(cards).hasSize(3);
+        assertThat(cards.get(0).getName()).isEqualTo("Card One");
+        assertThat(cards.get(1).getName()).isEqualTo("Card Two");
+        assertThat(cards.get(2).getName()).isEqualTo("Card Three");
     }
 
     @Test
@@ -277,7 +268,7 @@ class CardImporterTest {
         List<Card> cards = cardImporter.fetchAllCards(properties.getApiUrl(), 10, 5000, 5000);
 
         mockServer.verify();
-        assertTrue(cards.isEmpty());
+        assertThat(cards).isEmpty();
     }
 
     @Test

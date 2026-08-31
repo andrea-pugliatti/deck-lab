@@ -1,6 +1,5 @@
 package com.deck.lab.backend.seeder;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -82,11 +81,9 @@ class DatabaseSeederTest {
         databaseSeeder.run();
 
         // Assert
-        assertAll("Verify user persistence operations",
-                () -> verify(userRepository).findByUsername("admin"),
-                () -> verify(userRepository).findByUsername("yugi"),
-                () -> verify(userRepository, times(2)).save(any(User.class))
-        );
+        verify(userRepository).findByUsername("admin");
+        verify(userRepository).findByUsername("yugi");
+        verify(userRepository, times(2)).save(any(User.class));
     }
 
     @Test
@@ -100,10 +97,8 @@ class DatabaseSeederTest {
         databaseSeeder.run();
 
         // Assert
-        assertAll("Verify user repository not queried or updated",
-                () -> verify(userRepository, never()).findByUsername(anyString()),
-                () -> verify(userRepository, never()).save(any(User.class))
-        );
+        verify(userRepository, never()).findByUsername(anyString());
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

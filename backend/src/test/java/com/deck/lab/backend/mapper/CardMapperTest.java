@@ -1,8 +1,6 @@
 package com.deck.lab.backend.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +25,8 @@ class CardMapperTest {
     }
 
     @Test
-    void toDto_withValidCard_mapsAllFields() {
+    @DisplayName("toDto should map all Card entity fields into CardResponseDto")
+    void toDto_should_mapAllFields_when_cardIsValid() {
         Card card = new Card();
         card.setId(10L);
         card.setPasscode(46986414L);
@@ -48,32 +47,34 @@ class CardMapperTest {
 
         CardResponseDto dto = cardMapper.toDto(card);
 
-        assertNotNull(dto);
-        assertEquals(card.getId(), dto.getId());
-        assertEquals(card.getPasscode(), dto.getPasscode());
-        assertEquals(card.getName(), dto.getName());
-        assertEquals(card.getType(), dto.getType());
-        assertEquals(card.getDescription(), dto.getDescription());
-        assertEquals(card.getRace(), dto.getRace());
-        assertEquals(card.getAttribute(), dto.getAttribute());
-        assertEquals(card.getArchetype(), dto.getArchetype());
-        assertEquals(card.getImageUrl(), dto.getImageUrl());
-        assertEquals(card.getImageUrlCropped(), dto.getImageUrlCropped());
-        assertEquals(card.getFrameType(), dto.getFrameType());
-        assertEquals(card.getAtk(), dto.getAtk());
-        assertEquals(card.getDef(), dto.getDef());
-        assertEquals(card.getLevel(), dto.getLevel());
-        assertEquals(card.getLinkVal(), dto.getLinkVal());
-        assertEquals(card.getScale(), dto.getScale());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(card.getId());
+        assertThat(dto.getPasscode()).isEqualTo(card.getPasscode());
+        assertThat(dto.getName()).isEqualTo(card.getName());
+        assertThat(dto.getType()).isEqualTo(card.getType());
+        assertThat(dto.getDescription()).isEqualTo(card.getDescription());
+        assertThat(dto.getRace()).isEqualTo(card.getRace());
+        assertThat(dto.getAttribute()).isEqualTo(card.getAttribute());
+        assertThat(dto.getArchetype()).isEqualTo(card.getArchetype());
+        assertThat(dto.getImageUrl()).isEqualTo(card.getImageUrl());
+        assertThat(dto.getImageUrlCropped()).isEqualTo(card.getImageUrlCropped());
+        assertThat(dto.getFrameType()).isEqualTo(card.getFrameType());
+        assertThat(dto.getAtk()).isEqualTo(card.getAtk());
+        assertThat(dto.getDef()).isEqualTo(card.getDef());
+        assertThat(dto.getLevel()).isEqualTo(card.getLevel());
+        assertThat(dto.getLinkVal()).isEqualTo(card.getLinkVal());
+        assertThat(dto.getScale()).isEqualTo(card.getScale());
     }
 
     @Test
-    void toDto_withNullCard_returnsNull() {
-        assertNull(cardMapper.toDto(null));
+    @DisplayName("toDto should return null when card entity is null")
+    void toDto_should_returnNull_when_cardIsNull() {
+        assertThat(cardMapper.toDto(null)).isNull();
     }
 
     @Test
-    void toEntity_withValidDto_mapsAllFields() {
+    @DisplayName("toEntity should map all CardSaveRequestDto fields into Card entity")
+    void toEntity_should_mapAllFields_when_dtoIsValid() {
         CardSaveRequestDto dto = new CardSaveRequestDto();
         dto.setPasscode(46986414L);
         dto.setName("Dark Magician");
@@ -93,31 +94,33 @@ class CardMapperTest {
 
         Card card = cardMapper.toEntity(dto);
 
-        assertNotNull(card);
-        assertEquals(dto.getPasscode(), card.getPasscode());
-        assertEquals(dto.getName(), card.getName());
-        assertEquals(CardType.NORMAL_MONSTER, card.getType());
-        assertEquals(dto.getDescription(), card.getDescription());
-        assertEquals(CardRace.SPELLCASTER, card.getRace());
-        assertEquals(CardAttribute.DARK, card.getAttribute());
-        assertEquals(dto.getArchetype(), card.getArchetype());
-        assertEquals(dto.getImageUrl(), card.getImageUrl());
-        assertEquals(dto.getImageUrlCropped(), card.getImageUrlCropped());
-        assertEquals(FrameType.NORMAL, card.getFrameType());
-        assertEquals(dto.getAtk(), card.getAtk());
-        assertEquals(dto.getDef(), card.getDef());
-        assertEquals(dto.getLevel(), card.getLevel());
-        assertEquals(dto.getLinkVal(), card.getLinkVal());
-        assertEquals(dto.getScale(), card.getScale());
+        assertThat(card).isNotNull();
+        assertThat(card.getPasscode()).isEqualTo(dto.getPasscode());
+        assertThat(card.getName()).isEqualTo(dto.getName());
+        assertThat(card.getType()).isEqualTo(CardType.NORMAL_MONSTER);
+        assertThat(card.getDescription()).isEqualTo(dto.getDescription());
+        assertThat(card.getRace()).isEqualTo(CardRace.SPELLCASTER);
+        assertThat(card.getAttribute()).isEqualTo(CardAttribute.DARK);
+        assertThat(card.getArchetype()).isEqualTo(dto.getArchetype());
+        assertThat(card.getImageUrl()).isEqualTo(dto.getImageUrl());
+        assertThat(card.getImageUrlCropped()).isEqualTo(dto.getImageUrlCropped());
+        assertThat(card.getFrameType()).isEqualTo(FrameType.NORMAL);
+        assertThat(card.getAtk()).isEqualTo(dto.getAtk());
+        assertThat(card.getDef()).isEqualTo(dto.getDef());
+        assertThat(card.getLevel()).isEqualTo(dto.getLevel());
+        assertThat(card.getLinkVal()).isEqualTo(dto.getLinkVal());
+        assertThat(card.getScale()).isEqualTo(dto.getScale());
     }
 
     @Test
-    void toEntity_withNullDto_returnsNull() {
-        assertNull(cardMapper.toEntity(null));
+    @DisplayName("toEntity should return null when DTO is null")
+    void toEntity_should_returnNull_when_dtoIsNull() {
+        assertThat(cardMapper.toEntity(null)).isNull();
     }
 
     @Test
-    void updateEntityFromDto_updatesFieldsCorrectly() {
+    @DisplayName("updateEntityFromDto should update existing Card entity fields while preserving identity")
+    void updateEntityFromDto_should_updateFields_when_dtoAndCardProvided() {
         Card card = new Card();
         card.setId(20L);
         card.setPasscode(12345678L);
@@ -154,30 +157,30 @@ class CardMapperTest {
         cardMapper.updateEntityFromDto(dto, card);
 
         // ID should NOT be updated by updateEntityFromDto method (remains 20L)
-        assertEquals(20L, card.getId());
+        assertThat(card.getId()).isEqualTo(20L);
 
         // Other fields should be updated
-        assertEquals(dto.getPasscode(), card.getPasscode());
-        assertEquals(dto.getName(), card.getName());
-        assertEquals(CardType.EFFECT_MONSTER, card.getType());
-        assertEquals(dto.getDescription(), card.getDescription());
-        assertEquals(CardRace.DRAGON, card.getRace());
-        assertEquals(CardAttribute.FIRE, card.getAttribute());
-        assertEquals(dto.getArchetype(), card.getArchetype());
-        assertEquals(dto.getImageUrl(), card.getImageUrl());
-        assertEquals(dto.getImageUrlCropped(), card.getImageUrlCropped());
-        assertEquals(FrameType.EFFECT, card.getFrameType());
-        assertEquals(dto.getAtk(), card.getAtk());
-        assertEquals(dto.getDef(), card.getDef());
-        assertEquals(dto.getLevel(), card.getLevel());
-        assertEquals(dto.getLinkVal(), card.getLinkVal());
-        assertEquals(dto.getScale(), card.getScale());
+        assertThat(card.getPasscode()).isEqualTo(dto.getPasscode());
+        assertThat(card.getName()).isEqualTo(dto.getName());
+        assertThat(card.getType()).isEqualTo(CardType.EFFECT_MONSTER);
+        assertThat(card.getDescription()).isEqualTo(dto.getDescription());
+        assertThat(card.getRace()).isEqualTo(CardRace.DRAGON);
+        assertThat(card.getAttribute()).isEqualTo(CardAttribute.FIRE);
+        assertThat(card.getArchetype()).isEqualTo(dto.getArchetype());
+        assertThat(card.getImageUrl()).isEqualTo(dto.getImageUrl());
+        assertThat(card.getImageUrlCropped()).isEqualTo(dto.getImageUrlCropped());
+        assertThat(card.getFrameType()).isEqualTo(FrameType.EFFECT);
+        assertThat(card.getAtk()).isEqualTo(dto.getAtk());
+        assertThat(card.getDef()).isEqualTo(dto.getDef());
+        assertThat(card.getLevel()).isEqualTo(dto.getLevel());
+        assertThat(card.getLinkVal()).isEqualTo(dto.getLinkVal());
+        assertThat(card.getScale()).isEqualTo(dto.getScale());
     }
 
     @Test
-    void updateEntityFromDto_withNullParams_doesNotThrow() {
+    @DisplayName("updateEntityFromDto should handle null arguments gracefully without throwing exceptions")
+    void updateEntityFromDto_should_handleNullsGracefully() {
         Card card = new Card();
-        // Should handle null gracefully
         cardMapper.updateEntityFromDto(null, card);
         cardMapper.updateEntityFromDto(new CardSaveRequestDto(), null);
         cardMapper.updateEntityFromDto(null, null);

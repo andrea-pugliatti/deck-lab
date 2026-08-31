@@ -1,6 +1,6 @@
 package com.deck.lab.backend.seeder;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -74,7 +74,7 @@ class BanlistImporterTest {
     @Test
     @DisplayName("constructor should properly initialize BanlistImporter with injected dependencies")
     void constructor_should_initializeDependencies() {
-        assertNotNull(banlistImporter);
+        assertThat(banlistImporter).isNotNull();
     }
 
     @Test

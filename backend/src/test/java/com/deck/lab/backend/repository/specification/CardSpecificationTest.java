@@ -1,16 +1,16 @@
 package com.deck.lab.backend.repository.specification;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.deck.lab.backend.model.Card;
 import com.deck.lab.backend.model.CardAttribute;
@@ -19,8 +19,9 @@ import com.deck.lab.backend.model.CardType;
 import com.deck.lab.backend.model.FrameType;
 import com.deck.lab.backend.repository.CardRepository;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DisplayName("CardSpecification JPA Slice Integration Tests")
 class CardSpecificationTest {
 
     @Autowired
@@ -32,7 +33,6 @@ class CardSpecificationTest {
 
     @BeforeEach
     void setUp() {
-        // Save distinct test cards to avoid collisions with seeded database records
         card1 = new Card();
         card1.setName("SpecTest Blue-Eyes White Dragon");
         card1.setType(CardType.NORMAL_MONSTER);
@@ -80,97 +80,89 @@ class CardSpecificationTest {
     }
 
     @Test
-    void hasName_filtersCorrectly() {
+    @DisplayName("hasName should filter cards by matching name substring")
+    void hasName_should_filterCardsByName_when_nameProvided() {
         List<Card> results = cardRepository
                 .findAll(CardSpecification.hasName("SpecTest Blue-Eyes"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card1.getName());
 
         results = cardRepository.findAll(CardSpecification.hasName("SpecTest"));
-        // Should find all 3 test cards (plus potentially others, but at least our 3)
-        assertTrue(results.size() >= 3);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card3.getName())));
+        assertThat(results).hasSizeGreaterThanOrEqualTo(3);
+        assertThat(results).extracting(card -> card.getName()).contains(card1.getName(), card2.getName(), card3.getName());
     }
 
     @Test
-    void hasType_filtersCorrectly() {
+    @DisplayName("hasType should filter cards by matching type")
+    void hasType_should_filterCardsByType_when_typeProvided() {
         List<Card> results = cardRepository.findAll(CardSpecification.hasType("Effect Monster"));
-        // Slifer is Effect, others are Normal
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card3.getName())));
-        assertFalse(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card3.getName()).doesNotContain(card1.getName());
     }
 
     @Test
-    void hasAttribute_filtersCorrectly() {
+    @DisplayName("hasAttribute should filter cards by matching attribute")
+    void hasAttribute_should_filterCardsByAttribute_when_attributeProvided() {
         List<Card> results = cardRepository.findAll(CardSpecification.hasAttribute("DARK"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
-        assertFalse(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card2.getName()).doesNotContain(card1.getName());
     }
 
     @Test
-    void hasRace_filtersCorrectly() {
+    @DisplayName("hasRace should filter cards by matching race")
+    void hasRace_should_filterCardsByRace_when_raceProvided() {
         List<Card> results = cardRepository.findAll(CardSpecification.hasRace("Spellcaster"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
-        assertFalse(results.stream().anyMatch(c -> c.getName().equals(card3.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card2.getName()).doesNotContain(card3.getName());
     }
 
     @Test
-    void hasArchetype_filtersCorrectly() {
+    @DisplayName("hasArchetype should filter cards by matching archetype")
+    void hasArchetype_should_filterCardsByArchetype_when_archetypeProvided() {
         List<Card> results = cardRepository.findAll(CardSpecification.hasArchetype("Slifer"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card3.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card3.getName());
     }
 
     @Test
-    void combinedSpecifications_filtersCorrectly() {
-        // Query for Dragon (race) + Normal Monster (type) + SpecTest (name)
+    @DisplayName("combined specifications should filter correctly across multiple dimensions")
+    void combinedSpecifications_should_filterAcrossMultipleCriteria_when_combined() {
         Specification<Card> spec = Specification
                 .where(CardSpecification.hasName("SpecTest"))
                 .and(CardSpecification.hasRace("Dragon"))
                 .and(CardSpecification.hasType("Normal Monster"));
 
         List<Card> results = cardRepository.findAll(spec);
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card1.getName());
     }
 
     @Test
-    void caseInsensitiveFilters_matchCorrectly() {
-        // Query for "spectest blue-eyes" (lowercase) should match "SpecTest Blue-Eyes
-        // White Dragon"
+    @DisplayName("filters should match case-insensitively")
+    void caseInsensitiveFilters_should_matchCards_when_differingCasing() {
         List<Card> results = cardRepository
                 .findAll(CardSpecification.hasName("spectest blue-eyes"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card1.getName());
 
-        // Query for "normal monster" (lowercase) should match Normal Monster
         results = cardRepository.findAll(CardSpecification.hasType("normal monster"));
-        assertTrue(results.size() >= 2);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card1.getName())));
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
+        assertThat(results).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(results).extracting(card -> card.getName()).contains(card1.getName(), card2.getName());
 
-        // Query for "dark" (lowercase) should match DARK attribute
         results = cardRepository.findAll(CardSpecification.hasAttribute("dark"));
-        assertTrue(results.size() >= 1);
-        assertTrue(results.stream().anyMatch(c -> c.getName().equals(card2.getName())));
+        assertThat(results).isNotEmpty();
+        assertThat(results).extracting(card -> card.getName()).contains(card2.getName());
     }
 
     @Test
-    void nullOrBlankFilters_ignoredCorrectly() {
-        // Blanks and nulls should result in no filter constraints (i.e. returns all
-        // cards)
+    @DisplayName("null or blank filter values should be ignored by specification")
+    void nullOrBlankFilters_should_returnAllCards_when_ignored() {
         Specification<Card> spec = Specification
                 .where(CardSpecification.hasName(null))
                 .and(CardSpecification.hasType(""))
                 .and(CardSpecification.hasAttribute("   "));
 
         List<Card> results = cardRepository.findAll(spec);
-        // Should return all cards in the database, which is at least 3
-        assertTrue(results.size() >= 3);
+        assertThat(results).hasSizeGreaterThanOrEqualTo(3);
     }
 }
