@@ -1,14 +1,12 @@
 package com.deck.lab.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +24,7 @@ import com.deck.lab.backend.repository.CardRepository;
 
 @SpringBootTest
 @Transactional
+@DisplayName("CardService Integration Tests")
 class CardServiceTest {
 
     @Autowired
@@ -55,49 +54,55 @@ class CardServiceTest {
     }
 
     @Test
-    void findAllOrWithFilters_returnsMatchingCards() {
+    @DisplayName("findAllOrWithFilters should return matching cards when name query is provided")
+    void findAllOrWithFilters_should_returnMatchingCards_when_nameFilterMatches() {
         Page<Card> result = cardService.findAllOrWithFilters("ServiceTest Blue-Eyes",
                 null,
                 null,
                 null,
                 null,
                 PageRequest.of(0, 10));
-        assertNotNull(result);
-        assertTrue(result.getTotalElements() >= 1);
-        assertTrue(
-                result.getContent().stream().anyMatch(c -> c.getName().equals(testCard.getName())));
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isGreaterThanOrEqualTo(1);
+        assertThat(result.getContent())
+                .extracting(card -> card.getName())
+                .contains(testCard.getName());
     }
 
     @Test
-    void findById_whenCardExists_returnsOptionalOfCard() {
+    @DisplayName("findById should return Optional containing Card when card exists")
+    void findById_should_returnCard_when_cardExists() {
         Optional<Card> result = cardService.findById(testCard.getId());
-        assertTrue(result.isPresent());
-        assertEquals(testCard.getId(), result.get().getId());
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(testCard.getId());
     }
 
     @Test
-    void findById_whenCardDoesNotExist_returnsEmptyOptional() {
+    @DisplayName("findById should return empty Optional when card does not exist")
+    void findById_should_returnEmpty_when_cardDoesNotExist() {
         Optional<Card> result = cardService.findById(999999L);
-        assertFalse(result.isPresent());
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void getById_whenCardExists_returnsCard() {
+    @DisplayName("getById should return Card entity when card exists")
+    void getById_should_returnCard_when_cardExists() {
         Card result = cardService.getById(testCard.getId());
-        assertNotNull(result);
-        assertEquals(testCard.getId(), result.getId());
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(testCard.getId());
     }
 
     @Test
-    void getById_whenCardDoesNotExist_throwsResourceNotFoundException() {
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            cardService.getById(999999L);
-        });
-        assertEquals("Card not found with id: 999999", exception.getMessage());
+    @DisplayName("getById should throw ResourceNotFoundException with descriptive message when card does not exist")
+    void getById_should_throwResourceNotFoundException_when_cardDoesNotExist() {
+        assertThatThrownBy(() -> cardService.getById(999999L))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Card not found with id: 999999");
     }
 
     @Test
-    void save_savesCardSuccessfully() {
+    @DisplayName("save should persist new Card entity and assign generated ID")
+    void save_should_persistAndReturnCard_when_cardIsValid() {
         Card newCard = new Card();
         newCard.setName("ServiceTest Dark Magician");
         newCard.setType(CardType.NORMAL_MONSTER);
@@ -110,35 +115,39 @@ class CardServiceTest {
         newCard.setLevel(7);
 
         Card saved = cardService.save(newCard);
-        assertNotNull(saved.getId());
-        assertEquals("ServiceTest Dark Magician", saved.getName());
+        assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getName()).isEqualTo("ServiceTest Dark Magician");
 
         Optional<Card> fetched = cardRepository.findById(saved.getId());
-        assertTrue(fetched.isPresent());
+        assertThat(fetched).isPresent();
     }
 
     @Test
-    void edit_updatesCardSuccessfully() {
+    @DisplayName("edit should update properties of existing Card entity in database")
+    void edit_should_updateExistingCard_when_invoked() {
         testCard.setName("ServiceTest Blue-Eyes Updated");
         Card updated = cardService.edit(testCard);
-        assertEquals("ServiceTest Blue-Eyes Updated", updated.getName());
+        assertThat(updated.getName()).isEqualTo("ServiceTest Blue-Eyes Updated");
 
         Card fetched = cardRepository.findById(testCard.getId()).orElseThrow();
-        assertEquals("ServiceTest Blue-Eyes Updated", fetched.getName());
+        assertThat(fetched.getName()).isEqualTo("ServiceTest Blue-Eyes Updated");
     }
 
     @Test
-    void deleteById_whenCardExists_deletesCard() {
+    @DisplayName("deleteById should remove card when card exists in database")
+    void deleteById_should_removeCard_when_cardExists() {
         Long id = testCard.getId();
-        assertTrue(cardRepository.existsById(id));
+        assertThat(cardRepository.existsById(id)).isTrue();
 
         cardService.deleteById(id);
 
-        assertFalse(cardRepository.existsById(id));
+        assertThat(cardRepository.existsById(id)).isFalse();
     }
 
     @Test
-    void deleteById_whenCardDoesNotExist_throwsResourceNotFoundException() {
-        assertThrows(ResourceNotFoundException.class, () -> cardService.deleteById(999999L));
+    @DisplayName("deleteById should throw ResourceNotFoundException when card does not exist")
+    void deleteById_should_throwResourceNotFoundException_when_cardDoesNotExist() {
+        assertThatThrownBy(() -> cardService.deleteById(999999L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 }

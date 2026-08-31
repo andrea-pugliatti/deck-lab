@@ -49,6 +49,11 @@ public class CardService {
 
     private final CardRepository cardRepository;
 
+    /**
+     * Constructs a new {@link CardService} with the required card repository.
+     *
+     * @param cardRepository the repository for card database operations
+     */
     public CardService(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
     }
@@ -56,7 +61,7 @@ public class CardService {
     /**
      * Maps and retrieves a sorted list of all distinct card attributes.
      *
-     * @return sorted list of attribute name strings
+     * @return the sorted list of distinct attribute name strings
      */
     public List<String> findDistinctAttributes() {
         return Stream.of(CardAttribute.values())
@@ -68,7 +73,7 @@ public class CardService {
     /**
      * Maps and retrieves a sorted list of all distinct card races.
      *
-     * @return sorted list of race/type name strings
+     * @return the sorted list of distinct race and type name strings
      */
     public List<String> findDistinctRaces() {
         return Stream.of(CardRace.values())
@@ -81,7 +86,7 @@ public class CardService {
      * Queries and filters the database to retrieve all distinct card archetypes. Cached to avoid
      * repetitive database execution.
      *
-     * @return sorted list of unique archetype name strings
+     * @return the sorted list of unique archetype name strings
      */
     @Cacheable("archetypes")
     public List<String> findDistinctArchetypes() {
@@ -91,7 +96,7 @@ public class CardService {
     /**
      * Maps and retrieves a sorted list of all distinct card types.
      *
-     * @return sorted list of card type values
+     * @return the sorted list of distinct card type values
      */
     public List<String> findDistinctTypes() {
         return Stream.of(CardType.values()).map(cardType -> cardType.getValue()).sorted().toList();
@@ -100,12 +105,12 @@ public class CardService {
     /**
      * Finds and filters cards matching search criteria. Returns a paginated list.
      *
-     * @param name      optional name substring match
-     * @param type      optional card type exact match
-     * @param attribute optional card attribute exact match
-     * @param race      optional card race exact match
-     * @param archetype optional card archetype exact match
-     * @param pageable  pagination details
+     * @param name      the optional name substring match
+     * @param type      the optional card type exact match
+     * @param attribute the optional card attribute exact match
+     * @param race      the optional card race exact match
+     * @param archetype the optional card archetype exact match
+     * @param pageable  the pagination information
      * @return a page of matching Card entities
      */
     public Page<Card> findAllOrWithFilters(String name,
@@ -127,7 +132,7 @@ public class CardService {
      * Searches database for a card by ID.
      *
      * @param id the unique card ID
-     * @return Optional containing the Card entity if found
+     * @return the optional containing the Card entity if found
      */
     public Optional<Card> findById(Long id) {
         return cardRepository.findById(id);
@@ -137,7 +142,7 @@ public class CardService {
      * Retrieves a single Card entity by its unique ID.
      *
      * @param id the unique card ID
-     * @return Card entity
+     * @return the Card entity matching the specified ID
      * @throws ResourceNotFoundException if no card matches the ID
      */
     public Card getById(Long id) {
