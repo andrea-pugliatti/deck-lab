@@ -67,7 +67,10 @@ function onRefreshFailed(err: unknown) {
 export async function parseResponseErrors(response: Response): Promise<string[]> {
   try {
     const contentType = response.headers.get("content-type");
-    if (contentType && (contentType.includes("application/json") || contentType.includes("application/problem+json"))) {
+    if (
+      contentType &&
+      (contentType.includes("application/json") || contentType.includes("application/problem+json"))
+    ) {
       const errData = (await response.json()) as
         | {
             errors?: unknown[];
