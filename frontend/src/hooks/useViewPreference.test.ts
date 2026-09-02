@@ -57,7 +57,7 @@ describe("useViewPreference hook", () => {
   });
 
   it("should catch and warn when localStorage.getItem throws an exception", () => {
-    const getItemSpy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+    const getItemSpy = vi.spyOn(window.Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("Storage blocked");
     });
 
@@ -73,7 +73,7 @@ describe("useViewPreference hook", () => {
   });
 
   it("should catch, warn, and still update state when localStorage.setItem throws an exception", () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    const setItemSpy = vi.spyOn(window.Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("Quota exceeded");
     });
 
