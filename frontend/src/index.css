@@ -21,6 +21,7 @@
   --animate-float-center: float-center 6s ease-in-out infinite;
   --animate-float-right: float-right 5s ease-in-out infinite;
   --animate-pulse-glow: pulse-glow 6s infinite ease-out;
+  --animate-fade-in: fade-in 200ms ease-out;
 
   @keyframes float-left {
     0%,
@@ -101,6 +102,14 @@
     top: 150%;
     left: 150%;
     transition: all 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
