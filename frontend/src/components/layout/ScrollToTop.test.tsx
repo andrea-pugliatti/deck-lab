@@ -9,10 +9,11 @@ vi.mock("react-router", () => ({
 }));
 
 describe("ScrollToTop component", () => {
+  let scrollToSpy: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
-    vi.stubGlobal("window", {
-      scrollTo: vi.fn(),
-    });
+    scrollToSpy = vi.fn();
+    window.scrollTo = scrollToSpy as unknown as typeof window.scrollTo;
   });
 
   it("should trigger window.scrollTo when pathname changes", () => {

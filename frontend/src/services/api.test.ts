@@ -6,16 +6,16 @@ import { apiFetch, parseResponseError, parseResponseErrors } from "./api";
 describe("api service", () => {
   const fetchSpy = vi.spyOn(globalThis, "fetch");
 
+  let dispatchEventSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     fetchSpy.mockReset();
     setAccessToken(undefined);
-    vi.stubGlobal("window", {
-      dispatchEvent: vi.fn(),
-    });
+    dispatchEventSpy = vi.spyOn(window, "dispatchEvent").mockImplementation(() => true);
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
+    dispatchEventSpy.mockRestore();
   });
 
   describe("accessToken store", () => {
