@@ -122,7 +122,7 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div
             id="mobile-nav-menu"
-            className="bg-dark-bg/95 border-border-dim animate-in slide-in-from-top-4 absolute top-full right-0 left-0 z-50 border-b p-6 shadow-2xl backdrop-blur-lg duration-200 md:hidden"
+            className="bg-dark-bg/95 border-border-dim animate-fade-in absolute top-full right-0 left-0 z-50 border-b p-6 shadow-2xl backdrop-blur-lg md:hidden"
           >
             <nav className="mb-6">
               <ul className="m-0 flex list-none flex-col gap-2.5 p-0">

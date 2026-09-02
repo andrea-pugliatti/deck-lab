@@ -41,7 +41,7 @@ export default function NotFound(): React.JSX.Element {
             </div>
 
             <div className="border-border-dim/60 bg-dark-surface-elevated/20 group relative my-2.5 flex flex-1 items-center justify-center overflow-hidden rounded border">
-              <div className="bg-radial-to-b from-dark-surface-elevated/40 to-dark-bg/80 absolute inset-0 via-transparent opacity-60"></div>
+              <div className="from-dark-surface-elevated/40 to-dark-bg/80 absolute inset-0 bg-radial via-transparent opacity-60"></div>
               <HelpCircle className="text-cyan-accent/80 h-16 w-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:h-20 sm:w-20" />
             </div>
 

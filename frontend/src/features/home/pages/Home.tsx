@@ -71,7 +71,7 @@ export default function Home(): React.JSX.Element {
               <h1 className="font-display mx-4 text-4xl leading-tight font-black tracking-wide text-white lg:text-5xl">
                 Step Into Your{" "}
               </h1>
-              <h1 className="font-display from-cyan-accent to-gold-accent bg-300% mx-4 mb-6 bg-linear-to-r bg-clip-text text-7xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] lg:text-8xl">
+              <h1 className="font-display from-cyan-accent to-gold-accent mx-4 mb-6 bg-linear-to-r bg-size-[300%_auto] bg-clip-text text-7xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] lg:text-8xl">
                 DeckLab
               </h1>
               <p className="mx-8 mb-10 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">
@@ -92,7 +92,6 @@ export default function Home(): React.JSX.Element {
       </section>
 
       <section className="bg-dark-surface/35 border-b-border-dim/20 relative overflow-hidden border-b py-20">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.03]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="mx-auto mb-16 max-w-xl text-center">
             <h2 className="font-display mb-4 text-3xl font-bold tracking-wide text-white sm:text-4xl">
@@ -130,7 +129,7 @@ export default function Home(): React.JSX.Element {
               </p>
             </div>
 
-            <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 group-hover:bg-red-500/20 hover:border-red-500/40 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)]">
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:border-red-500/40 hover:shadow-[0_4px_30px_rgba(239,68,68,0.08)]">
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 transition-all duration-300 group-hover:bg-red-500/20">
                 <Flame className="h-6 w-6" />
               </div>

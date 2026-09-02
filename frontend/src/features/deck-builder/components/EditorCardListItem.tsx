@@ -65,7 +65,7 @@ export default function EditorCardListItem({
           <h4 className={titleClass}>{name}</h4>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {type && (
-              <Badge variant={badgeVariant} className="py-0.2 px-1.5 text-[8px] select-none">
+              <Badge variant={badgeVariant} className="px-1.5 py-0.5 text-[8px] select-none">
                 {type.replace(" Card", "").replace(" Monster", "")}
               </Badge>
             )}

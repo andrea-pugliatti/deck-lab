@@ -61,7 +61,7 @@ export default function DeckGridCard({
           <Link
             to={`/decks/${id}`}
             viewTransition
-            className="after:absolute after:inset-0 after:content-[''] focus:outline-none"
+            className="focus-visible:ring-cyan-accent rounded-xl after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:ring-2"
           >
             {name}
           </Link>

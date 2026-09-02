@@ -159,7 +159,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
             <select
               value={selectedFormat}
               onChange={(e) => setSelectedFormat(e.target.value as Format | "ALL")}
-              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full cursor-pointer rounded border px-4 py-2.75 text-sm text-slate-200 outline-none"
+              className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent focus-visible:ring-cyan-accent/20 w-full cursor-pointer rounded border px-4 py-2.5 text-sm text-slate-200 outline-none focus:outline-none focus-visible:ring-2"
             >
               {formats.map((fmt) => (
                 <option key={fmt} value={fmt}>

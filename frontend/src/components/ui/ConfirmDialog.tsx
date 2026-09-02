@@ -108,7 +108,7 @@ export default function ConfirmDialog({
       onClick={handleBackdropClick}
       className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
     >
-      <div className="bg-dark-surface border-border-dim animate-in fade-in zoom-in-95 relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl duration-200">
+      <div className="bg-dark-surface border-border-dim animate-fade-in relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl">
         {/* Glow effect based on variant */}
         <div
           className={`absolute inset-0 bg-radial ${radialAccentClass} pointer-events-none via-transparent to-transparent`}

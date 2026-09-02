@@ -89,7 +89,7 @@ export default function SimulatorCard({
       </div>
 
       {isMenuOpen && (
-        <div className="bg-dark-surface-elevated/95 border-border-dim animate-in fade-in slide-in-from-top-2 absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md duration-150">
+        <div className="bg-dark-surface-elevated/95 border-border-dim animate-fade-in absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md">
           <div className="border-border-dim/40 mb-1 flex items-center gap-1 border-b px-2 py-1 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
             <Move className="h-2.5 w-2.5" /> Move Card
           </div>
