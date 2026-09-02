@@ -56,7 +56,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                   {inspectedCard.type}
                 </Badge>
                 {inspectedCard.attribute && (
-                  <span className="border-border-dim/60 rounded border bg-slate-900 px-1.5 py-0.5 text-[9px] font-bold text-white uppercase">
+                  <span className="border-border-dim/60 text-3xs rounded border bg-slate-900 px-1.5 py-0.5 font-bold text-white uppercase">
                     {inspectedCard.attribute}
                   </span>
                 )}
@@ -67,7 +67,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
               (inspectedCard.atk !== undefined ||
                 inspectedCard.def !== undefined ||
                 inspectedCard.level !== undefined) && (
-                <div className="bg-dark-surface-elevated/40 border-border-dim/50 grid grid-cols-2 gap-2 rounded-lg border p-2 text-[10px] font-semibold text-slate-300">
+                <div className="bg-dark-surface-elevated/40 border-border-dim/50 text-2xs grid grid-cols-2 gap-2 rounded-lg border p-2 font-semibold text-slate-300">
                   {inspectedCard.atk !== undefined && (
                     <div className="flex items-center gap-1.5">
                       <Flame className="h-3.5 w-3.5 text-amber-500" />
@@ -89,7 +89,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                 </div>
               )}
 
-            <div className="bg-dark-surface-elevated/20 border-border-dim/40 max-h-40 overflow-y-auto rounded-xl border p-3 pr-1 font-sans text-[11px] leading-relaxed font-light whitespace-pre-line text-slate-400">
+            <div className="bg-dark-surface-elevated/20 border-border-dim/40 max-h-40 overflow-y-auto rounded-xl border p-3 pr-1 font-sans text-xs leading-relaxed font-light whitespace-pre-line text-slate-400">
               {inspectedCard.description || "No card details available."}
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
         <div className="flex flex-1 flex-col items-center justify-center p-6 text-center text-slate-500">
           <Eye className="mb-2 h-8 w-8 text-slate-700" />
           <p className="text-xs font-semibold tracking-wider uppercase">No Card Inspected</p>
-          <p className="mt-1 max-w-45 text-[11px] text-slate-600">
+          <p className="mt-1 max-w-45 text-xs text-slate-600">
             Hover over a card or click its detail icon to view descriptions.
           </p>
         </div>

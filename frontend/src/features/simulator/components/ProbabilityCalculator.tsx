@@ -66,7 +66,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               <Calculator className="text-cyan-accent h-4 w-4" />
               CONSISTENCY ANALYTICS
             </h3>
-            <p className="mt-0.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+            <p className="text-2xs mt-0.5 font-bold tracking-wider text-slate-500 uppercase">
               Probability calculations for starting hand
             </p>
           </div>
@@ -75,7 +75,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
             <div className="border-border-dim/50 relative flex shrink-0 items-center rounded-xl border bg-slate-950 p-1">
               <button
                 onClick={() => setHandSize(5)}
-                className={`relative z-10 cursor-pointer rounded-lg px-4 py-1.5 text-[10px] font-bold tracking-wider uppercase transition-all duration-300 ${
+                className={`text-2xs relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 ${
                   handSize === 5 ? "text-dark-bg" : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -86,7 +86,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               </button>
               <button
                 onClick={() => setHandSize(6)}
-                className={`relative z-10 cursor-pointer rounded-lg px-4 py-1.5 text-[10px] font-bold tracking-wider uppercase transition-all duration-300 ${
+                className={`text-2xs relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 ${
                   handSize === 6 ? "text-dark-bg" : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -122,7 +122,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                   <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-cyan-accent/90 text-[10px] font-semibold tracking-wide uppercase">
+                  <h4 className="text-cyan-accent/90 text-2xs font-semibold tracking-wide uppercase">
                     Probability Context
                   </h4>
                   <p className="font-sans leading-relaxed font-light text-slate-400">
@@ -139,7 +139,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
 
               <div className="overflow-x-auto">
                 <div className="min-w-137.5 space-y-2 pb-2">
-                  <div className="border-border-dim/60 grid grid-cols-12 gap-4 border-b px-4 py-2 pb-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                  <div className="border-border-dim/60 text-2xs grid grid-cols-12 gap-4 border-b px-4 py-2 pb-3 font-bold tracking-wider text-slate-500 uppercase">
                     <div className="col-span-4 pl-4">Card Name</div>
                     <div className="col-span-2 text-center">In Deck</div>
                     <div className="col-span-2 text-right">Draw 1+</div>
@@ -173,7 +173,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                               <span className="self-start">
                                 <Badge
                                   variant={badgeVariant}
-                                  className="rounded-md px-1.5 py-0.5 text-[8px] leading-none font-bold tracking-wider"
+                                  className="text-4xs rounded-md px-1.5 py-0.5 leading-none font-bold tracking-wider"
                                 >
                                   {card.type?.replace(" Monster", "").replace(" Card", "")}
                                 </Badge>

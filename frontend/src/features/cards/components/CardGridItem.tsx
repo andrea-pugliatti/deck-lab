@@ -33,7 +33,7 @@ export default function CardGridItem({
     <Link
       to={`/cards/${id}`}
       viewTransition
-      className="bg-dark-surface/40 border-border-dim/60 hover-hologram hover:border-cyan-accent/50 group flex flex-col justify-between overflow-hidden rounded-xl border text-inherit no-underline backdrop-blur-sm transition-all duration-300 hover:shadow-[0_4px_25px_rgba(95,227,217,0.08)]"
+      className="bg-dark-surface/40 border-border-dim/60 hover-hologram hover:border-cyan-accent/50 group hover:shadow-glow-cyan flex flex-col justify-between overflow-hidden rounded-xl border text-inherit no-underline backdrop-blur-sm transition-all duration-300"
     >
       <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-video items-center justify-center overflow-hidden border-b">
         {imageUrlCropped ? (
@@ -51,7 +51,7 @@ export default function CardGridItem({
           </>
         )}
         {attribute && (
-          <span className="absolute top-2 right-2 rounded border border-white/10 bg-slate-900/60 px-1.5 py-0.5 text-[9px] font-bold text-white uppercase">
+          <span className="text-3xs absolute top-2 right-2 rounded border border-white/10 bg-slate-900/60 px-1.5 py-0.5 font-bold text-white uppercase">
             {attribute}
           </span>
         )}
@@ -61,7 +61,7 @@ export default function CardGridItem({
         <div className="mb-4">
           <div className="mb-1 flex items-center justify-between gap-2">
             <span
-              className={`rounded border px-1.5 py-0.5 text-[9px] font-bold tracking-widest uppercase ${badgeColor}`}
+              className={`text-3xs rounded border px-1.5 py-0.5 font-bold tracking-widest uppercase ${badgeColor}`}
             >
               {type}
             </span>

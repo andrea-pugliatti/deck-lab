@@ -127,7 +127,7 @@ export default function DeckExplorerModal({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="bg-dark-surface-elevated flex h-full w-full items-center justify-center p-2 text-center text-[10px] text-slate-500">
+                        <div className="bg-dark-surface-elevated text-2xs flex h-full w-full items-center justify-center p-2 text-center text-slate-500">
                           {card.name}
                         </div>
                       )}
@@ -141,7 +141,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg w-full cursor-pointer rounded py-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
+                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors"
                       >
                         To Hand
                       </button>
@@ -151,7 +151,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg w-full cursor-pointer rounded py-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
+                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors"
                       >
                         To Field
                       </button>
@@ -161,7 +161,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="w-full cursor-pointer rounded bg-slate-800 py-1 text-[10px] font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700"
+                        className="text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700"
                       >
                         To GY
                       </button>

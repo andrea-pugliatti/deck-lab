@@ -126,7 +126,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
         </div>
 
         <div className="border-border-dim/60 mt-6 border-t p-4">
-          <p className="mb-2.5 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+          <p className="text-2xs mb-2.5 font-bold tracking-widest text-slate-500 uppercase">
             Feeling Lucky?
           </p>
           <Button
@@ -134,7 +134,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
             variant="primary"
             onClick={selectRandomDeck}
             disabled={filteredDecks.length === 0}
-            className="flex w-full items-center justify-center gap-2 py-3 text-xs font-bold tracking-wider uppercase shadow-md hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)]"
+            className="hover:shadow-glow-gold flex w-full items-center justify-center gap-2 py-3 text-xs font-bold tracking-wider uppercase shadow-md"
           >
             <Shuffle className="h-4 w-4" />
             <span>Random Deck</span>

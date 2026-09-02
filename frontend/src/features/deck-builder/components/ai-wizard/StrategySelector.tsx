@@ -103,7 +103,7 @@ export default function StrategySelector({
         ))}
       </div>
       {currentStrategy && (
-        <p className="bg-dark-bg/40 border-border-dim/30 mt-2 rounded-lg border px-3 py-1.5 text-[10px] text-slate-400 italic">
+        <p className="bg-dark-bg/40 border-border-dim/30 text-2xs mt-2 rounded-lg border px-3 py-1.5 text-slate-400 italic">
           {currentStrategy.description}
         </p>
       )}

@@ -44,7 +44,7 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   let variantStyles = "";
   if (variant === "primary") {
     variantStyles =
-      "bg-gold-accent hover:bg-gold-hover text-dark-bg shadow-md hover:shadow-[0_2px_30px_rgba(226,197,111,0.16)]";
+      "bg-gold-accent hover:bg-gold-hover text-dark-bg shadow-md hover:shadow-glow-gold";
   } else if (variant === "outline") {
     variantStyles =
       "border border-border-dim hover:border-cyan-accent text-slate-300 hover:text-cyan-accent bg-dark-surface-elevated";
@@ -70,7 +70,7 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   // size styles
   let sizeStyles = "";
   if (size === "sm") {
-    sizeStyles = "px-4 py-2 text-[10px]";
+    sizeStyles = "px-4 py-2 text-2xs";
   } else if (size === "md") {
     sizeStyles = "px-6 py-2.5 text-xs";
   } else if (size === "lg") {

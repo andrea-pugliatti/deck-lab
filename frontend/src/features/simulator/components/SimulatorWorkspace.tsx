@@ -63,7 +63,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
         <div className="bg-dark-surface border-border-dim flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-md md:flex-row md:items-center">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="mr-1 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+              <span className="text-2xs mr-1 font-bold tracking-wider text-slate-500 uppercase">
                 Hand Size:
               </span>
               <button
@@ -141,7 +141,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
             onMoveCard={onMoveCard}
             onViewDetails={setInspectedCard}
             emptyStateText='Hand is empty. Click "Draw 1" or "Reset & Redraw" to add cards.'
-            countBadgeClassName="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold"
+            countBadgeClassName="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2 py-0.5 text-2xs font-bold"
           />
 
           <ZonePanel
@@ -152,7 +152,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
             onMoveCard={onMoveCard}
             onViewDetails={setInspectedCard}
             emptyStateText='Field is empty. Click a card in your hand and select "To Field (Summon)".'
-            countBadgeClassName="text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20 rounded border px-2 py-0.5 text-[10px] font-bold"
+            countBadgeClassName="text-cyan-accent bg-cyan-accent/10 border-cyan-accent/20 rounded border px-2 py-0.5 text-2xs font-bold"
           />
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -165,7 +165,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               onViewDetails={setInspectedCard}
               emptyStateText="Graveyard is empty."
               gridClassName="grid grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4"
-              countBadgeClassName="rounded bg-slate-400/10 px-2 py-0.5 text-[9px] font-bold text-slate-400"
+              countBadgeClassName="rounded bg-slate-400/10 px-2 py-0.5 text-3xs font-bold text-slate-400"
             />
 
             <ZonePanel
@@ -177,7 +177,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               onViewDetails={setInspectedCard}
               emptyStateText="No cards banished."
               gridClassName="grid max-h-55 grid-cols-3 gap-2.5 pr-1 sm:grid-cols-4"
-              countBadgeClassName="rounded bg-purple-400/10 px-2 py-0.5 text-[9px] font-bold text-purple-400"
+              countBadgeClassName="rounded bg-purple-400/10 px-2 py-0.5 text-3xs font-bold text-purple-400"
             />
           </div>
         </div>

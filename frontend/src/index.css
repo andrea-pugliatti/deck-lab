@@ -26,6 +26,10 @@
   --text-5xs: 0.4375rem;
   --text-5xs--line-height: 0.625rem;
 
+  --shadow-glow-cyan-sm: 0 0 10px rgba(95, 227, 217, 0.12);
+  --shadow-glow-cyan: 0 4px 25px rgba(95, 227, 217, 0.08);
+  --shadow-glow-gold: 0 2px 30px rgba(226, 197, 111, 0.16);
+  --shadow-glow-gold-card: 0 0 12px rgba(226, 197, 111, 0.25);
   --shadow-search: 0 4px 20px rgba(0, 0, 0, 0.25);
 
   --animate-float-left: float-left 7s ease-in-out infinite;

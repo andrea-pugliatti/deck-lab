@@ -79,7 +79,7 @@ export default function Login(): React.JSX.Element {
             <Label className="text-xs">Password</Label>
             <button
               type="button"
-              className="text-cyan-accent hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-[10px] transition-all duration-200 hover:underline"
+              className="text-cyan-accent hover:text-cyan-hover text-2xs cursor-pointer border-none bg-transparent p-0 transition-all duration-200 hover:underline"
               onClick={() => alert("Password reset functionality is not available.")}
             >
               Forgot Password?

@@ -35,21 +35,21 @@ export default function EditorCardGridItem({
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <span className="text-[8px] font-bold text-slate-600 uppercase">YuGi</span>
+          <span className="text-4xs font-bold text-slate-600 uppercase">YuGi</span>
         )}
 
-        <span className="absolute right-1 bottom-1 rounded border border-white/10 bg-slate-950 px-1.5 py-0.5 font-mono text-[9px] font-bold text-white shadow-sm select-none">
+        <span className="text-3xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-950 px-1.5 py-0.5 font-mono font-bold text-white shadow-sm select-none">
           x{quantity}
         </span>
       </div>
 
       <div className="mt-1.5 flex flex-1 flex-col justify-between">
-        <h4 className="group-hover:text-cyan-accent line-clamp-1 text-[9px] font-bold text-white transition-colors">
+        <h4 className="group-hover:text-cyan-accent text-3xs line-clamp-1 font-bold text-white transition-colors">
           {name}
         </h4>
         {type && (
           <span
-            className={`mx-auto mt-0.5 rounded border px-1 text-[7px] font-semibold tracking-wider uppercase select-none ${badgeColor}`}
+            className={`text-5xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
           >
             {type.replace(" Card", "").replace(" Monster", "")}
           </span>
@@ -58,7 +58,7 @@ export default function EditorCardGridItem({
 
       {/* Hover Action Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950/85 p-2 opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
-        <h4 className="mb-1 line-clamp-1 text-[9px] font-bold text-white">{name}</h4>
+        <h4 className="text-3xs mb-1 line-clamp-1 font-bold text-white">{name}</h4>
         <div className="border-border-dim/80 flex items-center gap-1.5 rounded-lg border bg-slate-950 p-0.5">
           <button
             type="button"
@@ -68,7 +68,7 @@ export default function EditorCardGridItem({
           >
             <Minus className="h-3 w-3" />
           </button>
-          <span className="min-w-4 text-center font-mono text-[10px] font-bold text-white select-none">
+          <span className="text-2xs min-w-4 text-center font-mono font-bold text-white select-none">
             {quantity}
           </span>
           <button
@@ -87,7 +87,7 @@ export default function EditorCardGridItem({
           variant="outline-red"
           size="sm"
           onClick={() => remove(cardId, section)}
-          className="mt-1 flex h-6 w-full items-center justify-center gap-1 rounded py-0.5 text-[8px] font-bold transition-all"
+          className="text-4xs mt-1 flex h-6 w-full items-center justify-center gap-1 rounded py-0.5 font-bold transition-all"
           title="Remove Card"
         >
           <Trash2 className="h-3 w-3" />

@@ -53,14 +53,14 @@ export default function DeckListCard({
             )}
           </h3>
           <Badge variant={badgeVariant}>{formatLabel}</Badge>
-          <span className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
+          <span className="text-2xs font-semibold tracking-wider text-slate-500 uppercase">
             by {creatorUsername || "Community"}
           </span>
         </div>
         <p className="line-clamp-1 max-w-2xl text-xs text-slate-400">
           {description || "No description provided."}
         </p>
-        <div className="mt-2 flex gap-4 text-[10px] text-slate-500">
+        <div className="text-2xs mt-2 flex gap-4 text-slate-500">
           <span className="flex items-center gap-1">
             <Layers className="h-3.5 w-3.5" />
             {cardCount} Cards
@@ -68,7 +68,7 @@ export default function DeckListCard({
           {updatedAt && (
             <span className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5" />
-              Updated {formatRelativeTime(updatedAt)}
+              {formatRelativeTime(updatedAt)}
             </span>
           )}
         </div>
@@ -77,23 +77,22 @@ export default function DeckListCard({
   );
 
   const cardActions = (
-    <div className="flex items-center gap-2 self-end md:self-center">
+    <div className="shrink-0">
       {onSelect ? (
         <Button
           variant="primary"
-          size="sm"
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
             onSelect(id);
           }}
-          className="rounded-lg px-3.5 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all group-hover:shadow-[0_0_12px_rgba(226,197,111,0.25)]"
+          className="text-3xs group-hover:shadow-glow-gold-card rounded-lg px-3.5 py-1.5 font-bold tracking-wider uppercase transition-all"
         >
           Select
         </Button>
       ) : (
         showActions && (
-          <div className="relative z-10 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Link
               to={`/decks/${id}/edit`}
               viewTransition
@@ -124,7 +123,7 @@ export default function DeckListCard({
   );
 
   const containerClasses =
-    "bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 hover-hologram rounded-xl p-4 flex items-center justify-between transition-all duration-300 relative overflow-hidden hover:border-cyan-accent/50 hover:shadow-[0_4px_25px_rgba(95,227,217,0.04)] before:content-[''] before:absolute before:top-0 before:left-0 before:w-0.5 before:h-full before:bg-gold-accent before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 group no-underline text-inherit text-left w-full";
+    "deck-card-base hover-hologram p-4 flex items-center justify-between group";
 
   if (onSelect) {
     return (

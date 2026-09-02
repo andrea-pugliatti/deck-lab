@@ -30,7 +30,7 @@ export default function WizardWarnings({ warnings, onClose }: WizardWarningsProp
             <li key={idx}>{warning}</li>
           ))}
         </ul>
-        <p className="mt-1 text-[10px] text-amber-300/80">
+        <p className="text-2xs mt-1 text-amber-300/80">
           The deck has been loaded into your builder workspace, but does not satisfy format legality
           rules. You can edit it manually before saving.
         </p>

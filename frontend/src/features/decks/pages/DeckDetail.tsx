@@ -226,7 +226,7 @@ export default function DeckDetail(): React.JSX.Element {
                   ></div>
                 </div>
                 {mainCount < rules.minMainSize && (
-                  <span className="mt-1 block text-[10px] text-amber-400">
+                  <span className="text-2xs mt-1 block text-amber-400">
                     * Format limit requires at least {rules.minMainSize} cards.
                   </span>
                 )}

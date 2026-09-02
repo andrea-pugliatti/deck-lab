@@ -38,7 +38,7 @@ export default function ZonePanel({
   onViewDetails,
   emptyStateText,
   gridClassName = "grid grid-cols-3 gap-3.5 sm:grid-cols-4 md:grid-cols-5",
-  countBadgeClassName = "rounded border px-2 py-0.5 text-[10px] font-bold",
+  countBadgeClassName = "rounded border px-2 py-0.5 text-2xs font-bold",
 }: ZonePanelProps) {
   return (
     <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">

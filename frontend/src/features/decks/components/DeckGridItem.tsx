@@ -44,11 +44,11 @@ export default function DeckGridItem({
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <span className="text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+          <span className="text-2xs font-bold tracking-wider text-slate-600 uppercase">
             [ {name.substring(0, 3)} ]
           </span>
         )}
-        <span className="absolute right-1 bottom-1 rounded border border-white/10 bg-slate-900/85 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white shadow-sm">
+        <span className="text-2xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-900/85 px-1.5 py-0.5 font-mono font-bold text-white shadow-sm">
           x{quantity}
         </span>
       </div>
@@ -59,7 +59,7 @@ export default function DeckGridItem({
         </h4>
         {type && (
           <span
-            className={`self-start rounded border px-1 py-0.5 text-[8px] font-bold tracking-wider uppercase ${badgeColor}`}
+            className={`text-4xs self-start rounded border px-1 py-0.5 font-bold tracking-wider uppercase ${badgeColor}`}
           >
             {type.replace(" Monster", "").replace(" Card", "")}
           </span>

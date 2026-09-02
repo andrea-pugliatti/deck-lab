@@ -15,7 +15,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className = "", variant = "default", children, ...props }, ref) => {
     const baseStyles =
-      "text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded border select-none";
+      "text-2xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded border select-none";
 
     let variantStyles = "";
     switch (variant) {

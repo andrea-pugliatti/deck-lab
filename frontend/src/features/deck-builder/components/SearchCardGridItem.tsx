@@ -44,13 +44,13 @@ export default function SearchCardGridItem({
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <span className="text-[8px] font-bold text-slate-600 uppercase">YuGi</span>
+          <span className="text-4xs font-bold text-slate-600 uppercase">YuGi</span>
         )}
 
         {totalInDeck > 0 && (
           <Badge
             variant="gold"
-            className="absolute top-1 right-1 px-1 py-0 font-mono text-[7px] select-none"
+            className="text-5xs absolute top-1 right-1 px-1 py-0 font-mono select-none"
           >
             {totalInDeck} added
           </Badge>
@@ -58,12 +58,12 @@ export default function SearchCardGridItem({
       </div>
 
       <div className="mt-1.5 flex flex-1 flex-col justify-between">
-        <h4 className="group-hover:text-cyan-accent line-clamp-1 text-[10px] font-bold text-white transition-colors">
+        <h4 className="group-hover:text-cyan-accent text-2xs line-clamp-1 font-bold text-white transition-colors">
           {name}
         </h4>
         {type && (
           <span
-            className={`mx-auto mt-0.5 rounded border px-1 text-[7px] font-semibold tracking-wider uppercase select-none ${badgeColor}`}
+            className={`text-5xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
           >
             {type.replace(" Card", "").replace(" Monster", "")}
           </span>
@@ -72,14 +72,14 @@ export default function SearchCardGridItem({
 
       {/* Hover Action Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-slate-950/80 p-2 opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
-        <h4 className="mb-1 line-clamp-1 px-1 text-[10px] font-bold text-white">{name}</h4>
+        <h4 className="text-2xs mb-1 line-clamp-1 px-1 font-bold text-white">{name}</h4>
         <Button
           type="button"
           variant="outline-cyan"
           size="sm"
           onClick={() => addCard(card, "MAIN")}
           disabled={isExtra || totalInDeck >= 3}
-          className="h-6 w-full rounded py-0.5 text-[8px] font-bold transition-all"
+          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title={isExtra ? "Extra deck monsters cannot go in the Main Deck" : "Add to Main"}
         >
           + Main
@@ -90,7 +90,7 @@ export default function SearchCardGridItem({
           size="sm"
           onClick={() => addCard(card, "EXTRA")}
           disabled={!isExtra || totalInDeck >= 3}
-          className="h-6 w-full rounded py-0.5 text-[8px] font-bold transition-all"
+          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title={!isExtra ? "Main deck cards cannot go in the Extra Deck" : "Add to Extra"}
         >
           + Extra
@@ -101,7 +101,7 @@ export default function SearchCardGridItem({
           size="sm"
           onClick={() => addCard(card, "SIDE")}
           disabled={totalInDeck >= 3}
-          className="h-6 w-full rounded py-0.5 text-[8px] font-bold transition-all"
+          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title="Add to Side"
         >
           + Side

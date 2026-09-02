@@ -58,14 +58,14 @@ export default function EditorCardListItem({
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-[7px] font-bold text-slate-600 uppercase">YuGi</span>
+            <span className="text-5xs font-bold text-slate-600 uppercase">YuGi</span>
           )}
         </div>
         <div className="min-w-0">
           <h4 className={titleClass}>{name}</h4>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {type && (
-              <Badge variant={badgeVariant} className="px-1.5 py-0.5 text-[8px] select-none">
+              <Badge variant={badgeVariant} className="text-4xs px-1.5 py-0.5 select-none">
                 {type.replace(" Card", "").replace(" Monster", "")}
               </Badge>
             )}

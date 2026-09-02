@@ -69,7 +69,7 @@ export default function DeckFormHeader({
           <div className="flex items-center justify-between">
             <Label>Strategy / Notes (Optional)</Label>
             <span
-              className={`mb-1 text-[10px] font-semibold tracking-wider ${description.length >= 255 ? "text-red-500" : "text-slate-500"}`}
+              className={`text-2xs mb-1 font-semibold tracking-wider ${description.length >= 255 ? "text-red-500" : "text-slate-500"}`}
             >
               {description.length} / 255
             </span>

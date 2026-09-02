@@ -50,7 +50,7 @@ export default function DeckGridCard({
     <div className="mb-4">
       <div className="mb-3 flex items-center justify-between">
         <Badge variant={badgeVariant}>{formatLabel}</Badge>
-        <span className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
+        <span className="text-2xs font-semibold tracking-wider text-slate-500 uppercase">
           by {creatorUsername || "Community"}
         </span>
       </div>
@@ -99,7 +99,7 @@ export default function DeckGridCard({
             e.preventDefault();
             onSelect(id);
           }}
-          className="rounded-lg px-3.5 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all group-hover:shadow-[0_0_12px_rgba(226,197,111,0.25)]"
+          className="text-3xs group-hover:shadow-glow-gold-card rounded-lg px-3.5 py-1.5 font-bold tracking-wider uppercase transition-all"
         >
           Select
         </Button>
@@ -136,7 +136,7 @@ export default function DeckGridCard({
   );
 
   const containerClasses =
-    "bg-dark-surface/40 backdrop-blur-sm border border-border-dim/60 hover-hologram rounded-xl p-5 flex flex-col justify-between min-h-56 transition-all duration-300 relative overflow-hidden hover:border-cyan-accent/50 hover:shadow-[0_4px_25px_rgba(95,227,217,0.08)] before:content-[''] before:absolute before:top-0 before:left-0 before:w-0.5 before:h-full before:bg-gold-accent before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100 group no-underline text-inherit text-left w-full";
+    "deck-card-base hover-hologram p-5 flex flex-col justify-between min-h-56 group";
 
   if (onSelect) {
     return (

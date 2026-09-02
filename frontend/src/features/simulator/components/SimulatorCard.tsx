@@ -77,20 +77,20 @@ export default function SimulatorCard({
           />
         ) : (
           <div className="bg-dark-surface-elevated/40 flex h-full w-full flex-col justify-between p-3 text-center">
-            <span className="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">
+            <span className="text-3xs block font-bold tracking-wider text-slate-500 uppercase">
               {card.type?.replace(" Card", "")}
             </span>
-            <span className="font-display line-clamp-3 text-[10px] font-bold text-white uppercase">
+            <span className="font-display text-2xs line-clamp-3 font-bold text-white uppercase">
               {card.name}
             </span>
-            <span className="block text-[8px] text-slate-600">[ No Art ]</span>
+            <span className="text-4xs block text-slate-600">[ No Art ]</span>
           </div>
         )}
       </div>
 
       {isMenuOpen && (
         <div className="bg-dark-surface-elevated/95 border-border-dim animate-fade-in absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md">
-          <div className="border-border-dim/40 mb-1 flex items-center gap-1 border-b px-2 py-1 text-[9px] font-bold tracking-wider text-slate-500 uppercase">
+          <div className="border-border-dim/40 text-3xs mb-1 flex items-center gap-1 border-b px-2 py-1 font-bold tracking-wider text-slate-500 uppercase">
             <Move className="h-2.5 w-2.5" /> Move Card
           </div>
 

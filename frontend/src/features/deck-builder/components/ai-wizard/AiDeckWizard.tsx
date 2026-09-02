@@ -226,7 +226,7 @@ export default function AiDeckWizard({
                   </Label>
                   <div className="group relative">
                     <HelpCircle className="h-3.5 w-3.5 cursor-help text-slate-400" />
-                    <div className="bg-dark-surface-elevated border-border-dim absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center text-[10px] leading-normal text-slate-300 shadow-lg group-hover:block">
+                    <div className="bg-dark-surface-elevated border-border-dim text-2xs absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center leading-normal text-slate-300 shadow-lg group-hover:block">
                       Specify specific cards to include, budget options, or combo focuses.
                     </div>
                   </div>

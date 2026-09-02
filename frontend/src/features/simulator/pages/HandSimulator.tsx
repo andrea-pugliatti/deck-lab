@@ -99,7 +99,7 @@ export default function HandSimulator(): React.JSX.Element {
             <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
             <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
               <div className="flex items-center gap-3">
-                <span className="text-gold-accent bg-gold-accent/10 border-gold-accent/20 rounded border px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                <span className="text-gold-accent bg-gold-accent/10 border-gold-accent/20 text-2xs rounded border px-2.5 py-0.5 font-bold tracking-wider uppercase">
                   {deck.formatName}
                 </span>
                 <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
