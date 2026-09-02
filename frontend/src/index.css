@@ -128,6 +128,46 @@
   }
 }
 
+@utility deck-card-base {
+  background-color: color-mix(in srgb, var(--color-dark-surface) 40%, transparent);
+  backdrop-filter: blur(4px);
+  border-width: 1px;
+  border-color: color-mix(in srgb, var(--color-border-dim) 60%, transparent);
+  border-radius: var(--radius-xl, 0.75rem);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  position: relative;
+  overflow: hidden;
+  text-decoration-line: none;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-cyan-accent) 50%, transparent);
+    box-shadow: var(--shadow-glow-cyan);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.125rem;
+    height: 100%;
+    background-color: var(--color-gold-accent);
+    opacity: 0;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
 @layer base {
   html,
   body {
