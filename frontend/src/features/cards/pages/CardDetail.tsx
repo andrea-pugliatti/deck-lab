@@ -109,20 +109,14 @@ export default function CardDetail(): React.JSX.Element {
         <div className="bg-dark-surface border-border-dim grid grid-cols-1 gap-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm md:grid-cols-12 md:p-10">
           {/* Card Artwork */}
           <div
-            className="flex flex-col items-center md:col-span-5"
+            className="flex flex-col items-center perspective-[1000px] md:col-span-5"
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            style={{
-              perspective: "1000px",
-            }}
           >
             <div
               ref={cardArtworkRef}
-              className="bg-dark-surface-elevated border-border-dim group relative aspect-244/356 w-full max-w-sm overflow-hidden rounded-xl border shadow-2xl transition-transform duration-300 ease-out"
-              style={{
-                transformStyle: "preserve-3d",
-              }}
+              className="bg-dark-surface-elevated border-border-dim group relative aspect-244/356 w-full max-w-sm overflow-hidden rounded-xl border shadow-2xl transition-transform duration-300 ease-out transform-3d"
             >
               {card.imageUrl ? (
                 <img
@@ -198,9 +192,7 @@ export default function CardDetail(): React.JSX.Element {
                       <Flame className="h-5 w-5 fill-current" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-semibold text-slate-500 uppercase">
-                        Attack
-                      </div>
+                      <div className="text-2xs font-semibold text-slate-500 uppercase">Attack</div>
                       <div className="text-lg font-bold text-white">
                         {card.atk === -1 ? "?" : card.atk}
                       </div>
@@ -212,7 +204,7 @@ export default function CardDetail(): React.JSX.Element {
                         <Shield className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="text-[10px] font-semibold text-slate-500 uppercase">
+                        <div className="text-2xs font-semibold text-slate-500 uppercase">
                           Defense
                         </div>
                         <div className="text-lg font-bold text-white">

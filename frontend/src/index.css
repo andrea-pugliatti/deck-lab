@@ -17,6 +17,15 @@
   --color-border-dim: #323a49;
   --color-border-glow: #4299e1;
 
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+  --text-3xs: 0.5625rem;
+  --text-3xs--line-height: 0.75rem;
+  --text-4xs: 0.5rem;
+  --text-4xs--line-height: 0.75rem;
+  --text-5xs: 0.4375rem;
+  --text-5xs--line-height: 0.625rem;
+
   --animate-float-left: float-left 7s ease-in-out infinite;
   --animate-float-center: float-center 6s ease-in-out infinite;
   --animate-float-right: float-right 5s ease-in-out infinite;
@@ -117,7 +126,7 @@
   html,
   body {
     background-color: var(--color-dark-bg);
-    color: #ffffff;
+    color: var(--color-white, #ffffff);
     font-family: var(--font-sans);
     min-height: 100vh;
     overflow-x: hidden;

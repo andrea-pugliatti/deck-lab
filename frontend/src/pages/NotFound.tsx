@@ -18,18 +18,13 @@ export default function NotFound(): React.JSX.Element {
       <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[100px]"></div>
 
       <div className="relative z-10 flex flex-col items-center gap-8">
-        <div className="perspective-1000">
-          <div
-            className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(226,197,111,0.15)] sm:h-105 sm:w-70 sm:p-4"
-            style={{
-              transformStyle: "preserve-3d",
-            }}
-          >
+        <div className="perspective-[1000px]">
+          <div className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] transition-all duration-300 transform-3d hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(226,197,111,0.15)] sm:h-105 sm:w-70 sm:p-4">
             <div className="flex items-center justify-between">
               <span className="font-display truncate text-xs font-black tracking-wide text-white uppercase sm:text-sm">
                 404: Lost in Lab
               </span>
-              <Badge variant="trap" className="shrink-0 px-1.5 py-0.5 text-[8px] sm:text-[9px]">
+              <Badge variant="trap" className="text-4xs sm:text-3xs shrink-0 px-1.5 py-0.5">
                 ERROR
               </Badge>
             </div>
@@ -46,16 +41,16 @@ export default function NotFound(): React.JSX.Element {
             </div>
 
             <div className="bg-dark-surface/80 border-border-dim/40 mb-2 rounded border p-2">
-              <span className="text-gold-accent mb-0.5 block text-[8px] leading-none font-bold tracking-wide uppercase sm:text-[9px]">
+              <span className="text-gold-accent text-4xs sm:text-3xs mb-0.5 block leading-none font-bold tracking-wide uppercase">
                 [Portal / Glitch]
               </span>
-              <p className="line-clamp-4 text-[7.5px] leading-normal font-light text-slate-300 sm:text-[8.5px]">
+              <p className="text-5xs sm:text-4xs line-clamp-4 leading-normal font-light text-slate-300">
                 This page has been banished to the Shadow Realm. Neither player can activate the
                 effect of this URL. If you entered this path manually, check your spelling.
               </p>
             </div>
 
-            <div className="bg-dark-surface-elevated/40 border-border-dim/40 flex items-center justify-between rounded border px-2 py-1 text-[8.5px] font-bold text-slate-300 sm:text-[9.5px]">
+            <div className="bg-dark-surface-elevated/40 border-border-dim/40 text-4xs sm:text-3xs flex items-center justify-between rounded border px-2 py-1 font-bold text-slate-300">
               <span className="flex items-center gap-0.5">
                 ATK: <span className="font-mono text-white">404</span>
               </span>
