@@ -143,8 +143,6 @@ jobs:
 
       - name: Run frontend tests
         working-directory: frontend
-        env:
-          NODE_OPTIONS: --localstorage-file=/tmp/node-localstorage.json
         run: pnpm test:run
 
       - name: Build frontend application

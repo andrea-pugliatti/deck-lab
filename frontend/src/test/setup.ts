@@ -7,17 +7,70 @@ afterEach(() => {
   cleanup();
 });
 
+class InMemoryStorage implements Storage {
+  private store = new Map<string, string>();
+
+  getItem(key: string): string | null {
+    return this.store.get(String(key)) ?? null;
+  }
+
+  setItem(key: string, value: string): void {
+    this.store.set(String(key), String(value));
+  }
+
+  removeItem(key: string): void {
+    this.store.delete(String(key));
+  }
+
+  clear(): void {
+    this.store.clear();
+  }
+
+  key(index: number): string | null {
+    return Array.from(this.store.keys())[index] ?? null;
+  }
+
+  get length(): number {
+    return this.store.size;
+  }
+}
+
+const localStorageInstance = new InMemoryStorage();
+const sessionStorageInstance = new InMemoryStorage();
+
 // Ensure Storage, localStorage, and sessionStorage are available and properly isolated from Node's built-in Web Storage
+Object.defineProperty(globalThis, "Storage", {
+  value: InMemoryStorage,
+  writable: true,
+  configurable: true,
+});
+Object.defineProperty(globalThis, "localStorage", {
+  value: localStorageInstance,
+  writable: true,
+  configurable: true,
+});
+Object.defineProperty(globalThis, "sessionStorage", {
+  value: sessionStorageInstance,
+  writable: true,
+  configurable: true,
+});
+
 if (typeof window !== "undefined") {
-  if (window.Storage) {
-    vi.stubGlobal("Storage", window.Storage);
-  }
-  if (window.localStorage) {
-    vi.stubGlobal("localStorage", window.localStorage);
-  }
-  if (window.sessionStorage) {
-    vi.stubGlobal("sessionStorage", window.sessionStorage);
-  }
+  Object.defineProperty(window, "Storage", {
+    value: InMemoryStorage,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window, "localStorage", {
+    value: localStorageInstance,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window, "sessionStorage", {
+    value: sessionStorageInstance,
+    writable: true,
+    configurable: true,
+  });
 }
 
 // Mock window.matchMedia if it doesn't exist

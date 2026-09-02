@@ -60,14 +60,6 @@ describe("useViewPreference hook", () => {
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("Storage blocked");
     });
-    const windowGetItemSpy =
-      typeof window !== "undefined" &&
-      window.Storage &&
-      window.Storage.prototype !== Storage.prototype
-        ? vi.spyOn(window.Storage.prototype, "getItem").mockImplementation(() => {
-            throw new Error("Storage blocked");
-          })
-        : null;
 
     const { result } = renderHook(() => useViewPreference(testKey, "grid"));
 
@@ -78,21 +70,12 @@ describe("useViewPreference hook", () => {
     );
 
     getItemSpy.mockRestore();
-    windowGetItemSpy?.mockRestore();
   });
 
   it("should catch, warn, and still update state when localStorage.setItem throws an exception", () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("Quota exceeded");
     });
-    const windowSetItemSpy =
-      typeof window !== "undefined" &&
-      window.Storage &&
-      window.Storage.prototype !== Storage.prototype
-        ? vi.spyOn(window.Storage.prototype, "setItem").mockImplementation(() => {
-            throw new Error("Quota exceeded");
-          })
-        : null;
 
     const { result } = renderHook(() => useViewPreference(testKey, "grid"));
 
@@ -108,6 +91,5 @@ describe("useViewPreference hook", () => {
     );
 
     setItemSpy.mockRestore();
-    windowSetItemSpy?.mockRestore();
   });
 });
