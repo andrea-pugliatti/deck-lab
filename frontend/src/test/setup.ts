@@ -7,33 +7,16 @@ afterEach(() => {
   cleanup();
 });
 
-// Ensure localStorage and sessionStorage are available and properly isolated from Node's built-in Web Storage
+// Ensure Storage, localStorage, and sessionStorage are available and properly isolated from Node's built-in Web Storage
 if (typeof window !== "undefined") {
-  try {
+  if (window.Storage) {
+    vi.stubGlobal("Storage", window.Storage);
+  }
+  if (window.localStorage) {
     vi.stubGlobal("localStorage", window.localStorage);
+  }
+  if (window.sessionStorage) {
     vi.stubGlobal("sessionStorage", window.sessionStorage);
-  } catch {
-    const createStorageMock = () => {
-      let store: Record<string, string> = {};
-      return {
-        getItem: vi.fn((key: string) => store[key] ?? null),
-        setItem: vi.fn((key: string, value: string) => {
-          store[key] = String(value);
-        }),
-        removeItem: vi.fn((key: string) => {
-          delete store[key];
-        }),
-        clear: vi.fn(() => {
-          store = {};
-        }),
-        key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
-        get length() {
-          return Object.keys(store).length;
-        },
-      };
-    };
-    vi.stubGlobal("localStorage", createStorageMock());
-    vi.stubGlobal("sessionStorage", createStorageMock());
   }
 }
 
