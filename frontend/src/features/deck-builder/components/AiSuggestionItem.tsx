@@ -2,7 +2,6 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 import Badge from "../../../components/ui/Badge";
-import Button from "../../../components/ui/Button";
 import { API_BASE_URL } from "../../../config/env";
 import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
 import type { DeckCardItem, Format, Suggestion } from "../../../types";
@@ -54,7 +53,7 @@ export default function AiSuggestionItem({
         />
       ) : (
         <div className="border-border-dim/40 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
-          <span className="text-[10px] font-bold text-slate-600 select-none">:)</span>
+          <span className="text-2xs font-bold text-slate-600 select-none">:)</span>
         </div>
       )}
 
@@ -69,23 +68,22 @@ export default function AiSuggestionItem({
             {card.section}
           </Badge>
         </div>
-        <p className="mt-1 text-[10px] leading-normal text-slate-400">{card.synergyReason}</p>
+        <p className="text-2xs mt-1 leading-normal text-slate-400">{card.synergyReason}</p>
       </div>
 
-      <Button
+      <button
         type="button"
-        variant="outline"
         onClick={() => onAdd(card)}
         disabled={isMaxCopies}
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg p-0! ${
+        className={`focus-visible:ring-cyan-accent flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 ${
           isMaxCopies
             ? "border-border-dim bg-dark-surface-elevated cursor-not-allowed text-slate-500 opacity-40"
-            : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent bg-cyan-950/10 hover:bg-cyan-950/30"
-        } `}
+            : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent cursor-pointer bg-cyan-950/10 hover:bg-cyan-950/30"
+        }`}
         title={isMaxCopies ? "Max copies added" : `Add to ${card.section} Deck`}
       >
         <Plus className="h-4 w-4" />
-      </Button>
+      </button>
     </div>
   );
 }

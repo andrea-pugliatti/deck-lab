@@ -19,7 +19,7 @@ export default function ErrorAlert({
   retryText = "Retry",
 }: ErrorAlertProps) {
   return (
-    <div className="mx-auto max-w-xl rounded-lg border border-red-500/20 bg-red-950/10 p-6 py-12 text-center">
+    <div className="mx-auto max-w-xl rounded-lg border border-red-500/20 bg-red-950/10 px-6 py-12 text-center">
       <p className="mb-2 font-semibold text-red-400">{title}</p>
       <p className="mb-4 text-xs text-slate-500">{message}</p>
       {onRetry && (

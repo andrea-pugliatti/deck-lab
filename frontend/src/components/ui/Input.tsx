@@ -38,7 +38,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         disabled={disabled}
-        className={`bg-dark-surface-elevated border-border-dim focus:border-cyan-accent focus-visible:ring-cyan-accent/20 w-full rounded border px-3 py-2 text-sm text-white outline-none focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`bg-dark-surface-elevated border-border-dim focus:border-cyan-accent focus-visible:ring-cyan-accent/20 w-full rounded border px-3 py-2 text-sm text-white outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
         {...props}
       />
     );
