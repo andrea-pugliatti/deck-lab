@@ -19,7 +19,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     if (icon) {
       return (
         <div
-          className={`group bg-dark-surface-elevated border-border-dim hover:border-border-glow focus-within:border-cyan-accent focus-within:ring-2 focus-within:ring-cyan-accent/20 relative flex w-full items-center rounded border px-3 py-2 transition-all duration-300 ${className}`}
+          className={`group bg-dark-surface-elevated border-border-dim hover:border-border-glow focus-within:border-cyan-accent focus-within:ring-cyan-accent/20 relative flex w-full items-center rounded border px-3 py-2 transition-all duration-300 focus-within:ring-2 ${className}`}
         >
           <div className="group-focus-within:text-cyan-accent mr-2 shrink-0 text-slate-500">
             {icon}
@@ -38,7 +38,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         disabled={disabled}
-        className={`bg-dark-surface-elevated border-border-dim focus:border-cyan-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-accent/20 w-full rounded border px-3 py-2 text-sm text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`bg-dark-surface-elevated border-border-dim focus:border-cyan-accent focus-visible:ring-cyan-accent/20 w-full rounded border px-3 py-2 text-sm text-white outline-none focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
         {...props}
       />
     );

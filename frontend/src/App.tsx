@@ -1,10 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 
 import ErrorBoundary from "./components/feedback/ErrorBoundary";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import { AuthLayout, AuthProvider, ProtectedRoute } from "./features/auth";
+import { queryClient } from "./services/queryClient";
 
 const CardDetail = lazy(() => import("./features/cards/pages/CardDetail"));
 const Cards = lazy(() => import("./features/cards/pages/Cards"));
@@ -16,17 +17,6 @@ const Home = lazy(() => import("./features/home/pages/Home"));
 const Login = lazy(() => import("./features/auth/pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Register = lazy(() => import("./features/auth/pages/Register"));
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 3 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-});
 
 function App() {
   return (
