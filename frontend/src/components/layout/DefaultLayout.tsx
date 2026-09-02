@@ -19,7 +19,7 @@ export default function DefaultLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <Suspense fallback={<LoadingSpinner size="lg" className="min-h-[50vh]" />}>
+        <Suspense fallback={<LoadingSpinner size="lg" className="min-h-96" />}>
           <Outlet />
         </Suspense>
       </main>

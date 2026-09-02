@@ -107,7 +107,7 @@ export default function SearchBar() {
     <div className="relative z-10 mx-auto w-full max-w-2xl" ref={dropdownRef}>
       <form
         onSubmit={handleSubmit}
-        className="group bg-dark-surface/60 border-border-dim/80 hover:border-cyan-accent/50 focus-within:border-cyan-accent focus-within:ring-cyan-accent/10 focus-within:bg-dark-surface-elevated relative flex items-center rounded-xl border px-5 shadow-[0_4px_20px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 focus-within:ring-4"
+        className="group bg-dark-surface/60 border-border-dim/80 hover:border-cyan-accent/50 focus-within:border-cyan-accent focus-within:ring-cyan-accent/10 focus-within:bg-dark-surface-elevated shadow-search relative flex items-center rounded-xl border px-5 backdrop-blur-md transition-all duration-300 focus-within:ring-4"
       >
         <Search className="group-focus-within:text-cyan-accent mr-3 h-5 w-5 shrink-0 text-slate-400 transition-colors duration-200" />
         <input
@@ -116,7 +116,7 @@ export default function SearchBar() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
-          className="h-13 w-full border-none bg-transparent font-sans text-base text-white placeholder-slate-500 outline-none"
+          className="h-14 w-full border-none bg-transparent font-sans text-base text-white placeholder-slate-500 outline-none"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
           aria-expanded={isOpen && query.trim().length >= 2}
@@ -151,7 +151,7 @@ export default function SearchBar() {
                   type="button"
                 >
                   <span className="font-semibold">{card.name}</span>
-                  <span className="bg-dark-surface-elevated border-border-dim rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                  <span className="bg-dark-surface-elevated border-border-dim text-2xs rounded border px-2 py-0.5 font-bold tracking-wider text-slate-500 uppercase">
                     {card.type.replace(" Card", "").replace(" Monster", "")}
                   </span>
                 </button>
@@ -165,7 +165,7 @@ export default function SearchBar() {
       )}
 
       <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-        <span className="mr-1 text-[10px] font-semibold tracking-widest text-slate-500 uppercase">
+        <span className="text-2xs mr-1 font-semibold tracking-widest text-slate-500 uppercase">
           Trending:
         </span>
         {staticSuggestions.map((item) => (

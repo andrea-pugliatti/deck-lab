@@ -26,6 +26,8 @@
   --text-5xs: 0.4375rem;
   --text-5xs--line-height: 0.625rem;
 
+  --shadow-search: 0 4px 20px rgba(0, 0, 0, 0.25);
+
   --animate-float-left: float-left 7s ease-in-out infinite;
   --animate-float-center: float-center 6s ease-in-out infinite;
   --animate-float-right: float-right 5s ease-in-out infinite;

@@ -13,7 +13,7 @@ import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
  */
 export default function AuthLayout() {
   return (
-    <div className="bg-dark-bg flex min-h-screen flex-col items-center justify-center px-6 py-12">
+    <div className="bg-dark-bg flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-12">
       <div className="flex w-full max-w-md flex-col items-center">
         {/* Brand Header */}
         <Link to="/" className="mb-8 flex items-center gap-2 text-white no-underline">
@@ -24,7 +24,7 @@ export default function AuthLayout() {
         </Link>
 
         {/* Credentials Form Box */}
-        <div className="bg-dark-surface border-border-dim w-full rounded-lg border p-8 shadow-xl">
+        <div className="bg-dark-surface border-border-dim w-full rounded-lg border p-6 shadow-xl sm:p-8">
           <Suspense fallback={<LoadingSpinner size="md" className="py-8" />}>
             <Outlet />
           </Suspense>
