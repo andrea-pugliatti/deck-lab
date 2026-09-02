@@ -7,10 +7,34 @@ afterEach(() => {
   cleanup();
 });
 
-// Override Node 24/26's experimental global localStorage with jsdom's window.localStorage
+// Ensure localStorage and sessionStorage are available and properly isolated from Node's built-in Web Storage
 if (typeof window !== "undefined") {
-  vi.stubGlobal("localStorage", window.localStorage);
-  vi.stubGlobal("sessionStorage", window.sessionStorage);
+  try {
+    vi.stubGlobal("localStorage", window.localStorage);
+    vi.stubGlobal("sessionStorage", window.sessionStorage);
+  } catch {
+    const createStorageMock = () => {
+      let store: Record<string, string> = {};
+      return {
+        getItem: vi.fn((key: string) => store[key] ?? null),
+        setItem: vi.fn((key: string, value: string) => {
+          store[key] = String(value);
+        }),
+        removeItem: vi.fn((key: string) => {
+          delete store[key];
+        }),
+        clear: vi.fn(() => {
+          store = {};
+        }),
+        key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
+        get length() {
+          return Object.keys(store).length;
+        },
+      };
+    };
+    vi.stubGlobal("localStorage", createStorageMock());
+    vi.stubGlobal("sessionStorage", createStorageMock());
+  }
 }
 
 // Mock window.matchMedia if it doesn't exist
