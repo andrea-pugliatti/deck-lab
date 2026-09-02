@@ -38,7 +38,7 @@ export interface ButtonStyleProps {
 export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonStyleProps = {}) => {
   // base styles
   const baseStyles =
-    "flex items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none";
+    "flex items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-accent focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg focus-visible:outline-none";
 
   // variant styles
   let variantStyles = "";
@@ -76,7 +76,7 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   } else if (size === "lg") {
     sizeStyles = "px-8 py-3 text-sm";
   } else if (size === "icon") {
-    sizeStyles = "p-2 h-9 w-9 min-w-0 flex items-center justify-center";
+    sizeStyles = "p-2 h-9 w-9 min-w-0";
   }
 
   return `${baseStyles} ${variantStyles} ${sizeStyles}`;

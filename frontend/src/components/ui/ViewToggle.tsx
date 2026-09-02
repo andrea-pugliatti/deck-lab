@@ -30,7 +30,7 @@ export default function ViewToggle({
     >
       <button
         onClick={() => onViewModeChange("grid")}
-        className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 outline-none select-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ${
+        className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-accent focus-visible:outline-none ${
           viewMode === "grid"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 border shadow-[0_0_10px_rgba(95,227,217,0.12)]"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"
@@ -43,7 +43,7 @@ export default function ViewToggle({
       </button>
       <button
         onClick={() => onViewModeChange("list")}
-        className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 outline-none select-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ${
+        className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-accent focus-visible:outline-none ${
           viewMode === "list"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 border shadow-[0_0_10px_rgba(95,227,217,0.12)]"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"
