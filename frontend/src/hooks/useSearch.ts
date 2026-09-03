@@ -4,7 +4,7 @@
  * Supports debouncing, local vs. controlled state, and optionally syncing with URL search parameters.
  */
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 
@@ -229,6 +229,7 @@ export function useSearch<TData, TFilters>(
       return res.json() as Promise<TData>;
     },
     enabled: !!fetchUrl,
+    placeholderData: keepPreviousData,
   });
 
   return {

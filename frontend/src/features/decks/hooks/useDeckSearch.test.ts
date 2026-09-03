@@ -11,6 +11,7 @@ vi.mock("react-router", () => ({
 
 vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
+  keepPreviousData: () => undefined,
 }));
 
 vi.mock("../../../hooks/useDebounce", () => ({
