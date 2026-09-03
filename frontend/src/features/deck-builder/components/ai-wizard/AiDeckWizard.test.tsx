@@ -4,11 +4,16 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { generateAiDeck } from "../../../../features/decks";
 import type { Format } from "../../../../types";
+import { useGenerateAiDeck } from "../../hooks/useGenerateAiDeck";
 import AiDeckWizard from "./AiDeckWizard";
 
 // Mock services
 vi.mock("../../../../features/decks", () => ({
   generateAiDeck: vi.fn(),
+}));
+
+vi.mock("../../hooks/useGenerateAiDeck", () => ({
+  useGenerateAiDeck: vi.fn(),
 }));
 
 describe("AiDeckWizard component", () => {
@@ -46,6 +51,23 @@ describe("AiDeckWizard component", () => {
       }
       return { data: null, isLoading: false } as unknown as ReturnType<typeof useQuery>;
     });
+
+    // Mock useGenerateAiDeck — mutate delegates to the mocked generateAiDeck
+    // and invokes onSuccess/onError callbacks so the component behaves as in prod.
+    vi.mocked(useGenerateAiDeck).mockReturnValue({
+      mutate: vi.fn((payload, callbacks) => {
+        const result = generateAiDeck(payload);
+        Promise.resolve(result).then(
+          (data) => callbacks?.onSuccess?.(data),
+          (err) => callbacks?.onError?.(err),
+        );
+      }),
+      isPending: false,
+      error: null,
+      isError: false,
+      mutateAsync: vi.fn(),
+      reset: vi.fn(),
+    } as unknown as ReturnType<typeof useGenerateAiDeck>);
   });
 
   it("should not show dialog if isOpen is false", () => {

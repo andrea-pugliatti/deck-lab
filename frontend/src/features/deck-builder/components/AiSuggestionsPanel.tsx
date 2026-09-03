@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Button from "../../../components/ui/Button";
-import { fetchAiSuggestions } from "../../../features/decks";
 import type {
   Card,
   CardAttribute,
@@ -13,6 +12,7 @@ import type {
   Format,
   Suggestion,
 } from "../../../types";
+import { useAiSuggestions } from "../hooks/useAiSuggestions";
 import AiSuggestionItem from "./AiSuggestionItem";
 
 /**
@@ -41,17 +41,25 @@ export default function AiSuggestionsPanel({
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState<string>();
 
-  const fetchSuggestions = async () => {
+  const { mutate: fetchSuggestions } = useAiSuggestions();
+
+  const handleFetchSuggestions = () => {
     setLoading(true);
     setError(undefined);
 
-    try {
-      const data = await fetchAiSuggestions(formatName, deckCards);
-      setSuggestions(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not retrieve recommendations.");
-    }
-    setLoading(false);
+    fetchSuggestions(
+      { formatName, deckCards },
+      {
+        onSuccess: (data) => {
+          setSuggestions(data || []);
+          setLoading(false);
+        },
+        onError: (err) => {
+          setError(err instanceof Error ? err.message : "Could not retrieve recommendations.");
+          setLoading(false);
+        },
+      },
+    );
   };
 
   const addSuggestedCard = (suggested: Suggestion) => {
@@ -94,7 +102,7 @@ export default function AiSuggestionsPanel({
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchSuggestions}
+            onClick={handleFetchSuggestions}
             isLoading={loading}
             disabled={loading}
             className="border-cyan-accent/20 hover:border-cyan-accent text-cyan-accent flex items-center gap-1.5 bg-cyan-950/10 px-3 py-1.5"

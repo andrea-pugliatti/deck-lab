@@ -3,10 +3,15 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { fetchAiSuggestions } from "../../../features/decks";
 import type { CardType, DeckCardItem, Format, Suggestion } from "../../../types";
+import { useAiSuggestions } from "../hooks/useAiSuggestions";
 import AiSuggestionsPanel from "./AiSuggestionsPanel";
 
 vi.mock("../../../features/decks", () => ({
   fetchAiSuggestions: vi.fn(),
+}));
+
+vi.mock("../hooks/useAiSuggestions", () => ({
+  useAiSuggestions: vi.fn(),
 }));
 
 describe("AiSuggestionsPanel component", () => {
@@ -25,6 +30,23 @@ describe("AiSuggestionsPanel component", () => {
   beforeEach(() => {
     mockAddCard.mockReset();
     vi.mocked(fetchAiSuggestions).mockReset();
+
+    // Mock useAiSuggestions — mutate delegates to the mocked fetchAiSuggestions
+    // and invokes onSuccess/onError callbacks so the component behaves as in prod.
+    vi.mocked(useAiSuggestions).mockReturnValue({
+      mutate: vi.fn((variables, callbacks) => {
+        const result = fetchAiSuggestions(variables.formatName, variables.deckCards);
+        Promise.resolve(result).then(
+          (data) => callbacks?.onSuccess?.(data),
+          (err) => callbacks?.onError?.(err),
+        );
+      }),
+      isPending: false,
+      error: null,
+      isError: false,
+      mutateAsync: vi.fn(),
+      reset: vi.fn(),
+    } as unknown as ReturnType<typeof useAiSuggestions>);
   });
 
   it("should render initial idle state", () => {
