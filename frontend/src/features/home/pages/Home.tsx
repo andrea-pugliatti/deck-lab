@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Compass, Flame, Layers, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router";
 
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import SearchBar from "../../../components/navigation/SearchBar";
 import { getCards, getCardsEndpoint } from "../../../features/cards";
 import CardGridItem from "../../../features/cards/components/CardGridItem";
@@ -103,7 +104,7 @@ export default function Home(): React.JSX.Element {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-cyan-accent/40 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_4px_30px_rgba(95,227,217,0.06)]">
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-cyan-accent/40 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-cyan cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300">
               <div className="bg-cyan-accent/10 text-cyan-accent group-hover:bg-cyan-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
                 <Compass className="h-6 w-6" />
               </div>
@@ -116,7 +117,7 @@ export default function Home(): React.JSX.Element {
               </p>
             </div>
 
-            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-gold-accent/40 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:shadow-[0_4px_30px_rgba(226,197,111,0.06)]">
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:border-gold-accent/40 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-gold cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300">
               <div className="bg-gold-accent/10 text-gold-accent group-hover:bg-gold-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
                 <Layers className="h-6 w-6" />
               </div>
@@ -129,7 +130,7 @@ export default function Home(): React.JSX.Element {
               </p>
             </div>
 
-            <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:border-red-500/40 hover:shadow-[0_4px_30px_rgba(239,68,68,0.08)]">
+            <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-red cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:border-red-500/40">
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 transition-all duration-300 group-hover:bg-red-500/20">
                 <Flame className="h-6 w-6" />
               </div>
@@ -187,10 +188,7 @@ export default function Home(): React.JSX.Element {
               ))}
             </div>
           ) : decksError ? (
-            <div className="rounded-lg border border-red-500/20 bg-red-950/10 p-6 py-12 text-center">
-              <p className="mb-2 font-semibold text-red-400">Failed to load trending decks</p>
-              <p className="mb-4 text-xs text-slate-500">{decksError.message}</p>
-            </div>
+            <ErrorAlert title="Failed to load trending decks" message={decksError.message} />
           ) : decks.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {decks.map((deck) => {
@@ -256,10 +254,7 @@ export default function Home(): React.JSX.Element {
               ))}
             </div>
           ) : cardsError ? (
-            <div className="rounded-lg border border-red-500/20 bg-red-950/10 p-6 py-12 text-center">
-              <p className="mb-2 font-semibold text-red-400">Failed to load spotlight cards</p>
-              <p className="mb-4 text-xs text-slate-500">{cardsError.message}</p>
-            </div>
+            <ErrorAlert title="Failed to load spotlight cards" message={cardsError.message} />
           ) : spotlightCards.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {spotlightCards.map((card) => (

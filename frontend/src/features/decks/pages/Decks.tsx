@@ -9,6 +9,7 @@ import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import PageHeader from "../../../components/navigation/PageHeader";
 import Pagination from "../../../components/navigation/Pagination";
 import ShowingPageIndicator from "../../../components/navigation/ShowingPageIndicator";
+import { getButtonClasses } from "../../../components/ui/Button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import Input from "../../../components/ui/Input";
 import ViewToggle from "../../../components/ui/ViewToggle";
@@ -122,7 +123,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             icon={<Search className="h-4 w-4" />}
-            className="bg-dark-surface w-full px-4 py-2 md:max-w-xs"
+            containerClassName="bg-dark-surface w-full md:max-w-xs"
           />
 
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
@@ -130,7 +131,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             <Link
               to="/decks/create"
               viewTransition
-              className="bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-glow-gold flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 md:self-auto"
+              className={`${getButtonClasses({ variant: "primary", size: "sm" })} shrink-0 self-end no-underline md:self-auto`}
             >
               <Plus className="h-4 w-4" />
               <span>Construct New Deck</span>
@@ -224,7 +225,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
           <Link
             to="/decks/create"
             viewTransition
-            className="bg-gold-accent hover:bg-gold-hover text-dark-bg hover:shadow-glow-gold flex shrink-0 items-center gap-2 self-end rounded-xl px-4 py-2.5 text-xs font-bold no-underline shadow-md transition-all duration-200 md:self-auto"
+            className={`${getButtonClasses({ variant: "primary", size: "sm" })} shrink-0 self-end no-underline md:self-auto`}
           >
             <Plus className="h-4 w-4" />
             <span>Construct New Deck</span>
