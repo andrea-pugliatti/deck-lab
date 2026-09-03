@@ -35,6 +35,7 @@ export interface UseSearchOptions<TFilters> {
     parse: (params: URLSearchParams) => TFilters;
     serialize: (params: URLSearchParams, filters: TFilters) => void;
   };
+  queryKey?: readonly unknown[];
 }
 
 /**
@@ -61,6 +62,7 @@ export function useSearch<TData, TFilters>(
     debounceTime = 300,
     syncUrl = false,
     urlConfig,
+    queryKey,
   } = options;
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -203,13 +205,18 @@ export function useSearch<TData, TFilters>(
 
   // Execute fetch
   const fetchUrl = endpointBuilder(debouncedQuery, activePage, activeFilters);
+
+  const resolvedQueryKey = queryKey
+    ? ([...queryKey, { query: debouncedQuery, page: activePage, filters: activeFilters }] as const)
+    : [fetchUrl];
+
   const {
     data,
     isLoading: loading,
     error,
     refetch,
   } = useQuery<TData>({
-    queryKey: [fetchUrl],
+    queryKey: resolvedQueryKey,
     queryFn: async ({ signal }) => {
       if (!fetchUrl) return undefined as unknown as TData;
       const res = await apiFetch(fetchUrl, { signal });

@@ -16,6 +16,7 @@ import { deleteDeck, exportYdk, getDeck } from "../../../features/decks";
 import DeckGridItem from "../../../features/decks/components/DeckGridItem";
 import DeckListItem from "../../../features/decks/components/DeckListItem";
 import { useViewPreference } from "../../../hooks/useViewPreference";
+import { deckKeys } from "../../../services/queryKeys";
 import type { Deck } from "../../../types";
 import { formatRelativeTime } from "../../../utils/date";
 
@@ -43,7 +44,7 @@ export default function DeckDetail(): React.JSX.Element {
     error,
     refetch,
   } = useQuery<Deck>({
-    queryKey: ["deck", id],
+    queryKey: deckKeys.detail(id),
     queryFn: ({ signal }) => getDeck(id!, signal),
     enabled: !!id,
   });

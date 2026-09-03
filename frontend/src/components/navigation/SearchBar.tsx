@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router";
 import { getSuggestions } from "../../features/cards";
 import { getCardSuggestionsEndpoint } from "../../features/cards";
 import { useDebounce } from "../../hooks/useDebounce";
+import { cardKeys } from "../../services/queryKeys";
 import type { CardType } from "../../types";
 
 /**
@@ -37,7 +38,7 @@ export default function SearchBar() {
       : undefined;
 
   const { data, isLoading: loading } = useQuery<{ content: SuggestionCard[] }>({
-    queryKey: ["suggestions", fetchUrl],
+    queryKey: cardKeys.suggestions(debouncedQuery.trim()),
     queryFn: ({ signal }) => getSuggestions(fetchUrl!, signal),
     enabled: !!fetchUrl,
   });

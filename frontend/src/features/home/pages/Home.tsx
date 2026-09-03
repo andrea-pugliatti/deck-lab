@@ -9,6 +9,7 @@ import CardGridItem from "../../../features/cards/components/CardGridItem";
 import { getDecks, getDecksQueryEndpoint } from "../../../features/decks";
 import DeckGridCard from "../../../features/decks/components/DeckGridCard";
 import HeroCardShowcase from "../../../features/home/components/HeroCardShowcase";
+import { deckKeys, cardKeys } from "../../../services/queryKeys";
 import type { Card, Deck, Page } from "../../../types";
 
 /**
@@ -35,7 +36,7 @@ export default function Home(): React.JSX.Element {
     isLoading: decksLoading,
     error: decksError,
   } = useQuery<Page<Deck>>({
-    queryKey: ["decks", decksUrl],
+    queryKey: deckKeys.list({ size: "6" }),
     queryFn: ({ signal }) => getDecks(decksUrl, signal),
   });
 
@@ -44,13 +45,13 @@ export default function Home(): React.JSX.Element {
     isLoading: cardsLoading,
     error: cardsError,
   } = useQuery<Page<Card>>({
-    queryKey: ["cards", spotlightUrl],
+    queryKey: cardKeys.list({ spotlight: true }),
     queryFn: ({ signal }) => getCards(spotlightUrl, signal),
   });
 
   const { data: heroShowcaseCardsData, isLoading: heroShowcaseCardsLoading } = useQuery<Page<Card>>(
     {
-      queryKey: ["cards", heroShowcaseUrl],
+      queryKey: cardKeys.list({ hero: true }),
       queryFn: ({ signal }) => getCards(heroShowcaseUrl, signal),
     },
   );

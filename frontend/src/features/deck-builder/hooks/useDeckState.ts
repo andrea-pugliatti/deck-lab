@@ -4,6 +4,7 @@ import { useEffect, useReducer } from "react";
 import { deckReducer, initialState } from "../../../features/deck-builder/reducers/deckReducer";
 import { getDeck } from "../../../features/decks";
 import { saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
+import { deckKeys } from "../../../services/queryKeys";
 import type { Card, CardSection, Deck, DeckCardItem, Format, DeckPayload } from "../../../types";
 
 /**
@@ -79,7 +80,7 @@ export function useDeckState(
 
   // Fetch Deck for Edit Mode
   const { data: deckData } = useQuery<Deck>({
-    queryKey: ["deck", id],
+    queryKey: deckKeys.detail(id),
     queryFn: ({ signal }) => getDeck(id!, signal),
     enabled: isEditMode && !!id,
   });
@@ -158,8 +159,8 @@ export function useDeckState(
       return saveDeckService(payload, id);
     },
     onSuccess: (savedDeck) => {
-      void queryClient.invalidateQueries({ queryKey: ["deck", id] });
-      void queryClient.invalidateQueries({ queryKey: ["decks"] });
+      void queryClient.invalidateQueries({ queryKey: deckKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: deckKeys.all });
       dispatch({ type: "SET_SAVE_RESULT" });
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);

@@ -9,6 +9,7 @@ import Button from "../../../components/ui/Button";
 import { getDeck } from "../../../features/decks";
 import DeckSelector from "../../../features/simulator/components/DeckSelector";
 import SimulatorWorkspace from "../../../features/simulator/components/SimulatorWorkspace";
+import { deckKeys } from "../../../services/queryKeys";
 import type { Deck } from "../../../types";
 import { formatRelativeTime } from "../../../utils/date";
 
@@ -30,7 +31,7 @@ export default function HandSimulator(): React.JSX.Element {
     isLoading: loading,
     error,
   } = useQuery<Deck>({
-    queryKey: ["deck", deckId],
+    queryKey: deckKeys.detail(deckId),
     queryFn: ({ signal }) => getDeck(deckId!, signal),
     enabled: !!deckId,
   });

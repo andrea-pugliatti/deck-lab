@@ -1,5 +1,6 @@
 import { getDecksQueryEndpoint } from "../../../features/decks";
 import { useSearch } from "../../../hooks/useSearch";
+import { deckKeys } from "../../../services/queryKeys";
 import type { Deck, Format, Page } from "../../../types";
 
 /**
@@ -147,6 +148,7 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
           // Note: username is not synchronized to URL
         },
       },
+      queryKey: deckKeys.lists(),
     },
   );
 

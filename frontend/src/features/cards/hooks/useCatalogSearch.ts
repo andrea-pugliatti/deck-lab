@@ -1,5 +1,6 @@
 import { getCardsEndpoint } from "../../../features/cards";
 import { useSearch } from "../../../hooks/useSearch";
+import { cardKeys } from "../../../services/queryKeys";
 import {
   isCardAttribute,
   isCardRace,
@@ -154,6 +155,7 @@ export function useCatalogSearch(options: UseCatalogSearchOptions = {}): UseCata
           else params.delete("archetype");
         },
       },
+      queryKey: cardKeys.lists(),
     },
   );
 

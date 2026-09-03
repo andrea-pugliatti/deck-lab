@@ -117,9 +117,17 @@ vi.mock("@tanstack/react-query", () => ({
   }),
   useQueryClient: vi.fn().mockReturnValue({
     invalidateQueries: vi.fn(),
+    removeQueries: vi.fn(),
+    clear: vi.fn(),
+    setQueryData: vi.fn(),
   }),
   QueryClient: class {
     clear = vi.fn();
+    invalidateQueries = vi.fn();
+    removeQueries = vi.fn();
   },
   QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
+  keepPreviousData: () => undefined,
+  QueryErrorResetBoundary: ({ children }: { children: React.ReactNode }) => children,
+  useQueryErrorResetBoundary: () => ({ reset: vi.fn() }),
 }));
