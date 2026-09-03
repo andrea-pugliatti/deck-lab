@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -32,12 +33,22 @@ function ConsumerComponent() {
 }
 
 describe("AuthContext", () => {
+  let clearMock: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
     vi.mocked(apiLogin).mockReset();
     vi.mocked(apiLogout).mockReset();
     vi.mocked(apiRefreshToken).mockReset();
     vi.mocked(apiRegister).mockReset();
     localStorage.clear();
+
+    clearMock = vi.fn();
+    vi.mocked(useQueryClient).mockReturnValue({
+      clear: clearMock,
+      invalidateQueries: vi.fn(),
+      removeQueries: vi.fn(),
+      setQueryData: vi.fn(),
+    } as unknown as ReturnType<typeof useQueryClient>);
   });
 
   it("should attempt auto login via refresh token on mount", async () => {
@@ -59,6 +70,7 @@ describe("AuthContext", () => {
 
     expect(screen.getByTestId("username")).toHaveTextContent("cacheduser");
     expect(apiRefreshToken).toHaveBeenCalled();
+    expect(clearMock).not.toHaveBeenCalled();
   });
 
   it("should login user and set authentication state", async () => {
@@ -78,6 +90,8 @@ describe("AuthContext", () => {
     await waitFor(() => {
       expect(screen.getByTestId("auth-state")).toHaveTextContent("guest");
     });
+
+    expect(clearMock).toHaveBeenCalled();
 
     await act(async () => {
       screen.getByText("Login").click();
@@ -104,12 +118,15 @@ describe("AuthContext", () => {
       expect(screen.getByTestId("auth-state")).toHaveTextContent("authenticated");
     });
 
+    expect(clearMock).not.toHaveBeenCalled();
+
     await act(async () => {
       screen.getByText("Logout").click();
     });
 
     expect(screen.getByTestId("auth-state")).toHaveTextContent("guest");
     expect(localStorage.getItem("username")).toBeNull();
+    expect(clearMock).toHaveBeenCalled();
   });
 
   it("should throw error if useAuth is used outside AuthProvider", () => {
