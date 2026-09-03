@@ -7,8 +7,9 @@ import Label from "../../../../components/ui/Label";
 import Select from "../../../../components/ui/Select";
 import Textarea from "../../../../components/ui/Textarea";
 import { getMetadata } from "../../../../features/cards";
-import { generateAiDeck, getFormats } from "../../../../features/decks";
-import { metaKeys, formatKeys } from "../../../../services/queryKeys";
+import { generateAiDeck } from "../../../../features/decks";
+import { useFormats } from "../../../../features/decks/hooks/useFormats";
+import { metaKeys } from "../../../../services/queryKeys";
 import type { DeckCardItem, Format, Strategy } from "../../../../types";
 import ArchetypeAutocomplete from "./ArchetypeAutocomplete";
 import StrategySelector from "./StrategySelector";
@@ -57,14 +58,8 @@ export default function AiDeckWizard({
     queryKey: metaKeys.archetypes(),
     queryFn: ({ signal }) => getMetadata("archetypes", signal),
   });
-  const { data: formatsData } = useQuery<Format[]>({
-    queryKey: formatKeys.all,
-    queryFn: async ({ signal }) => {
-      const res = await getFormats(signal);
-      return res as Format[];
-    },
-  });
-  const formats: Format[] = formatsData || ["TCG", "OCG", "Goat", "Edison"];
+  const { formats: formatsData } = useFormats();
+  const formats: Format[] = (formatsData || ["TCG", "OCG", "Goat", "Edison"]) as Format[];
 
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [prevCurrentFormat, setPrevCurrentFormat] = useState(currentFormat);

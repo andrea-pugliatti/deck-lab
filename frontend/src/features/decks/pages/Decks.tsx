@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Layers, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -14,14 +13,13 @@ import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import Input from "../../../components/ui/Input";
 import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
-import { getFormats } from "../../../features/decks";
 import DeckGridCard from "../../../features/decks/components/DeckGridCard";
 import DeckListCard from "../../../features/decks/components/DeckListCard";
 import FormatSelector from "../../../features/decks/components/FormatSelector";
 import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
 import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
+import { useFormats } from "../../../features/decks/hooks/useFormats";
 import { useViewPreference } from "../../../hooks/useViewPreference";
-import { formatKeys } from "../../../services/queryKeys";
 
 /**
  * Properties for the Decks page component.
@@ -50,10 +48,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
   const tab = initialTab;
   const [viewMode, setViewMode] = useViewPreference("decks-view-mode", "grid");
 
-  const { data: formatsData } = useQuery<string[]>({
-    queryKey: formatKeys.all,
-    queryFn: ({ signal }) => getFormats(signal),
-  });
+  const { formats: formatsData } = useFormats();
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];

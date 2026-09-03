@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Globe, Search, Shuffle, User } from "lucide-react";
 import { useState } from "react";
 
@@ -11,10 +10,9 @@ import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
-import { getFormats } from "../../../features/decks";
 import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
+import { useFormats } from "../../../features/decks/hooks/useFormats";
 import { useViewPreference } from "../../../hooks/useViewPreference";
-import { formatKeys } from "../../../services/queryKeys";
 import type { Format } from "../../../types";
 import DeckGridCard from "../../decks/components/DeckGridCard";
 import DeckListCard from "../../decks/components/DeckListCard";
@@ -49,10 +47,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
     setActiveTab(isAuthenticated ? "my-decks" : "community");
   }
 
-  const { data: formatsData } = useQuery<string[]>({
-    queryKey: formatKeys.all,
-    queryFn: ({ signal }) => getFormats(signal),
-  });
+  const { formats: formatsData } = useFormats();
   const formats = formatsData
     ? ["ALL", ...formatsData]
     : ["ALL", "TCG", "OCG", "Goat", "Speed Duel"];

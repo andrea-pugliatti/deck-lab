@@ -1,11 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
-import { getFormats } from "../../../features/decks";
-import { formatKeys } from "../../../services/queryKeys";
+import { useFormats } from "../../../features/decks/hooks/useFormats";
 import type { Card, CardFiltersState } from "../../../types";
 
 /**
@@ -46,10 +44,7 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
   const searchState = useCatalogSearch({ defaultPageSize: 9 });
 
   // Fetch metadata
-  const { data: formatsData } = useQuery<string[]>({
-    queryKey: formatKeys.all,
-    queryFn: ({ signal }) => getFormats(signal),
-  });
+  const { formats: formatsData } = useFormats();
   const formats = formatsData || DEFAULT_FORMATS;
 
   const { types, attributes, races, archetypes } = useCardMetadata();
