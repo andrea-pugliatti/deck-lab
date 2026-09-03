@@ -108,7 +108,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
           return (
             <div
               key={index}
-              className={`bg-dark-bg hover:shadow-glow-cyan-lg absolute flex h-67.5 w-45 flex-col justify-between rounded-xl border p-2.5 shadow-2xl transition-all duration-300 ease-out transform-3d backface-hidden hover:scale-105 sm:h-80 sm:w-55 sm:p-3 ${CARDS_OFFSETS[index]} border-slate-500/20 text-slate-300`}
+              className={`bg-dark-bg hover:shadow-glow-cyan-lg absolute flex h-67.5 w-45 flex-col justify-between rounded-xl border p-2.5 shadow-2xl transition-all duration-300 ease-out backface-hidden transform-3d hover:scale-105 sm:h-80 sm:w-55 sm:p-3 ${CARDS_OFFSETS[index]} border-slate-500/20 text-slate-300`}
             >
               <>
                 <div className="mb-1 flex items-center justify-between">
