@@ -9,6 +9,7 @@ import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
 import { getCard } from "../../../features/cards";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { cardKeys } from "../../../services/queryKeys";
 import type { Card } from "../../../types";
 
 /**
@@ -61,7 +62,7 @@ export default function CardDetail(): React.JSX.Element {
     error,
     refetch,
   } = useQuery<Card>({
-    queryKey: ["card", id],
+    queryKey: cardKeys.detail(id),
     queryFn: ({ signal }) => getCard(id!, signal),
     enabled: !!id,
   });

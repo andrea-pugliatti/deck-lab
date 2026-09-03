@@ -8,6 +8,7 @@ import Select from "../../../../components/ui/Select";
 import Textarea from "../../../../components/ui/Textarea";
 import { getMetadata } from "../../../../features/cards";
 import { generateAiDeck, getFormats } from "../../../../features/decks";
+import { metaKeys, formatKeys } from "../../../../services/queryKeys";
 import type { DeckCardItem, Format, Strategy } from "../../../../types";
 import ArchetypeAutocomplete from "./ArchetypeAutocomplete";
 import StrategySelector from "./StrategySelector";
@@ -53,11 +54,11 @@ export default function AiDeckWizard({
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const { data: archetypesData } = useQuery<string[]>({
-    queryKey: ["metadata", "archetypes"],
+    queryKey: metaKeys.archetypes(),
     queryFn: ({ signal }) => getMetadata("archetypes", signal),
   });
   const { data: formatsData } = useQuery<Format[]>({
-    queryKey: ["formats"],
+    queryKey: formatKeys.all,
     queryFn: async ({ signal }) => {
       const res = await getFormats(signal);
       return res as Format[];

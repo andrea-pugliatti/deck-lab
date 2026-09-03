@@ -5,6 +5,7 @@ import { createContext, useContext } from "react";
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import { getFormats } from "../../../features/decks";
+import { formatKeys } from "../../../services/queryKeys";
 import type { Card, CardFiltersState } from "../../../types";
 
 /**
@@ -46,7 +47,7 @@ export function CatalogSearchProvider({ children }: { children: ReactNode }) {
 
   // Fetch metadata
   const { data: formatsData } = useQuery<string[]>({
-    queryKey: ["formats"],
+    queryKey: formatKeys.all,
     queryFn: ({ signal }) => getFormats(signal),
   });
   const formats = formatsData || DEFAULT_FORMATS;

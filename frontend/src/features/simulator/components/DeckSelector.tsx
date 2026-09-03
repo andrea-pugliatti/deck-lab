@@ -14,6 +14,7 @@ import { useAuth } from "../../../features/auth";
 import { getFormats } from "../../../features/decks";
 import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
 import { useViewPreference } from "../../../hooks/useViewPreference";
+import { formatKeys } from "../../../services/queryKeys";
 import type { Format } from "../../../types";
 import DeckGridCard from "../../decks/components/DeckGridCard";
 import DeckListCard from "../../decks/components/DeckListCard";
@@ -49,7 +50,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
   }
 
   const { data: formatsData } = useQuery<string[]>({
-    queryKey: ["formats"],
+    queryKey: formatKeys.all,
     queryFn: ({ signal }) => getFormats(signal),
   });
   const formats = formatsData

@@ -12,9 +12,10 @@ import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
-import { deleteDeck, exportYdk, getDeck } from "../../../features/decks";
+import { exportYdk, getDeck } from "../../../features/decks";
 import DeckGridItem from "../../../features/decks/components/DeckGridItem";
 import DeckListItem from "../../../features/decks/components/DeckListItem";
+import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
 import { useViewPreference } from "../../../hooks/useViewPreference";
 import { deckKeys } from "../../../services/queryKeys";
 import type { Deck } from "../../../types";
@@ -33,10 +34,9 @@ export default function DeckDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const [deleteError, setDeleteError] = useState<string>();
-  const [isDeleting, setIsDeleting] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [viewMode, setViewMode] = useViewPreference("deck-detail-view-mode", "grid");
+  const { mutate: deleteDeckMutate, isPending: isDeleting, error: deleteError } = useDeleteDeck();
 
   const {
     data: deck,
@@ -50,24 +50,19 @@ export default function DeckDetail(): React.JSX.Element {
   });
 
   /**
-   * Performs the deletion of the deck by calling the deleteDeck service.
-   * Redirects the user to the "My Decks" catalog upon successful deletion.
+   * Performs the deletion of the deck by calling the {@link useDeleteDeck}
+   * mutation.  Cache invalidation and detail-query removal are handled
+   * automatically by the hook; this handler only closes the confirmation
+   * modal and navigates the user back to the deck catalog on success.
    */
-  const handleDeleteModal = async () => {
+  const handleDeleteModal = () => {
     if (!id) return;
     setConfirmModalOpen(false);
-    setIsDeleting(true);
-    setDeleteError(undefined);
-
-    try {
-      await deleteDeck(id);
-      void navigate("/my-decks");
-    } catch (err) {
-      setDeleteError(
-        err instanceof Error ? err.message : "An error occurred while deleting the deck.",
-      );
-      setIsDeleting(false);
-    }
+    deleteDeckMutate(id, {
+      onSuccess: () => {
+        void navigate("/my-decks");
+      },
+    });
   };
 
   if (loading) {
@@ -169,7 +164,9 @@ export default function DeckDetail(): React.JSX.Element {
 
       {deleteError && (
         <div className="mb-6 rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
-          {deleteError}
+          {deleteError instanceof Error
+            ? deleteError.message
+            : "An error occurred while deleting the deck."}
         </div>
       )}
 

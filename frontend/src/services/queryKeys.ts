@@ -33,3 +33,11 @@ export const suggestionKeys = {
   all: ["suggestions"] as const,
   suggestion: (query: string) => [...suggestionKeys.all, query] as const,
 };
+
+export const metaKeys = {
+  all: ["metadata"] as const,
+  types: () => [...metaKeys.all, "types"] as const,
+  attributes: () => [...metaKeys.all, "attributes"] as const,
+  races: () => [...metaKeys.all, "races"] as const,
+  archetypes: () => [...metaKeys.all, "archetypes"] as const,
+};

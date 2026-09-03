@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getMetadata } from "../../../features/cards";
+import { metaKeys } from "../../../services/queryKeys";
 
 type MetadataKey = "types" | "attributes" | "races" | "archetypes";
 
@@ -20,25 +21,25 @@ const DEFAULTS: Record<MetadataKey, string[]> = {
  */
 export function useCardMetadata() {
   const { data: types = DEFAULTS.types } = useQuery<string[]>({
-    queryKey: ["metadata", "types"],
+    queryKey: metaKeys.types(),
     queryFn: ({ signal }) => getMetadata("types", signal),
     staleTime: Infinity,
   });
 
   const { data: attributes = DEFAULTS.attributes } = useQuery<string[]>({
-    queryKey: ["metadata", "attributes"],
+    queryKey: metaKeys.attributes(),
     queryFn: ({ signal }) => getMetadata("attributes", signal),
     staleTime: Infinity,
   });
 
   const { data: races = DEFAULTS.races } = useQuery<string[]>({
-    queryKey: ["metadata", "races"],
+    queryKey: metaKeys.races(),
     queryFn: ({ signal }) => getMetadata("races", signal),
     staleTime: Infinity,
   });
 
   const { data: archetypes = DEFAULTS.archetypes } = useQuery<string[]>({
-    queryKey: ["metadata", "archetypes"],
+    queryKey: metaKeys.archetypes(),
     queryFn: ({ signal }) => getMetadata("archetypes", signal),
     staleTime: Infinity,
   });

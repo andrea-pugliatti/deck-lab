@@ -14,12 +14,14 @@ import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import Input from "../../../components/ui/Input";
 import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
-import { deleteDeck, getFormats } from "../../../features/decks";
+import { getFormats } from "../../../features/decks";
 import DeckGridCard from "../../../features/decks/components/DeckGridCard";
 import DeckListCard from "../../../features/decks/components/DeckListCard";
 import FormatSelector from "../../../features/decks/components/FormatSelector";
 import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
+import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
 import { useViewPreference } from "../../../hooks/useViewPreference";
+import { formatKeys } from "../../../services/queryKeys";
 
 /**
  * Properties for the Decks page component.
@@ -49,7 +51,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
   const [viewMode, setViewMode] = useViewPreference("decks-view-mode", "grid");
 
   const { data: formatsData } = useQuery<string[]>({
-    queryKey: ["formats"],
+    queryKey: formatKeys.all,
     queryFn: ({ signal }) => getFormats(signal),
   });
   const formats = formatsData
@@ -76,27 +78,25 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
   });
 
   const [deckToDelete, setDeckToDelete] = useState<{ id: number; name: string }>();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string>();
+  const {
+    mutate: deleteDeckMutate,
+    reset,
+    isPending: isDeleting,
+    error: deleteError,
+  } = useDeleteDeck();
 
   /**
    * Event handler for confirming and executing deletion of a selected deck.
-   * Clears state and triggers a refresh of the deck listing after successful API request.
+   * The {@link useDeleteDeck} mutation handles cache invalidation; this handler
+   * closes the confirmation modal and clears the selected deck on success.
    */
-  const handleDeleteModal = async () => {
+  const handleDeleteModal = () => {
     if (!deckToDelete) return;
-    setIsDeleting(true);
-    setDeleteError(undefined);
-    try {
-      await deleteDeck(deckToDelete.id);
-      await refetch();
-      setDeckToDelete(undefined);
-    } catch (err) {
-      console.error(err);
-      setDeleteError(err instanceof Error ? err.message : "Failed to delete the deck.");
-      setDeckToDelete(undefined);
-    }
-    setIsDeleting(false);
+    deleteDeckMutate(deckToDelete.id, {
+      onSuccess: () => {
+        setDeckToDelete(undefined);
+      },
+    });
   };
 
   return (
@@ -142,9 +142,11 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
 
       {deleteError && (
         <div className="mb-6 flex items-center justify-between rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
-          <span>{deleteError}</span>
+          <span>
+            {deleteError instanceof Error ? deleteError.message : "Failed to delete the deck."}
+          </span>
           <button
-            onClick={() => setDeleteError(undefined)}
+            onClick={() => reset()}
             className="cursor-pointer text-xs text-slate-400 hover:text-white"
           >
             Close
