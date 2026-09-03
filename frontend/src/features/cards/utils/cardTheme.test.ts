@@ -29,7 +29,7 @@ describe("card utility", () => {
       const defaultTheme = {
         type: "default",
         borderColor: "border-slate-500/20",
-        glowColor: "hover:shadow-[0_0_15px_rgba(148,163,184,0.3)] hover:border-slate-500/40",
+        glowColor: "hover:shadow-glow-slate hover:border-slate-500/40",
         barColor: "bg-slate-500/40",
         badgeVariant: "default",
         gridBadgeColor: "text-slate-400 bg-slate-400/10",

@@ -19,7 +19,7 @@ export default function NotFound(): React.JSX.Element {
 
       <div className="relative z-10 flex flex-col items-center gap-8">
         <div className="perspective-[1000px]">
-          <div className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] transition-all duration-300 transform-3d hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(226,197,111,0.15)] sm:h-105 sm:w-70 sm:p-4">
+          <div className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 shadow-modal hover:shadow-glow-gold-lg relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 transition-all duration-300 transform-3d hover:scale-[1.03] sm:h-105 sm:w-70 sm:p-4">
             <div className="flex items-center justify-between">
               <span className="font-display truncate text-xs font-black tracking-wide text-white uppercase sm:text-sm">
                 404: Lost in Lab

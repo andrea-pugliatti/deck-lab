@@ -33,7 +33,7 @@ export default function CardGridItem({
     <Link
       to={`/cards/${id}`}
       viewTransition
-      className="bg-dark-surface/40 border-border-dim/60 hover-hologram hover:border-cyan-accent/50 group hover:shadow-glow-cyan flex flex-col justify-between overflow-hidden rounded-xl border text-inherit no-underline backdrop-blur-sm transition-all duration-300"
+      className="deck-card-base hover-hologram group flex flex-col justify-between"
     >
       <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-video items-center justify-center overflow-hidden border-b">
         {imageUrlCropped ? (

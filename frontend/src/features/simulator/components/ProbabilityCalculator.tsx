@@ -55,7 +55,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[85vh] w-full max-w-3xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
+      className="max-h-[85vh] w-full max-w-3xl overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">
         <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
@@ -75,23 +75,23 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
             <div className="border-border-dim/50 relative flex shrink-0 items-center rounded-xl border bg-slate-950 p-1">
               <button
                 onClick={() => setHandSize(5)}
-                className={`text-2xs relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 ${
+                className={`text-2xs focus-visible:ring-cyan-accent relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none focus-visible:ring-1 ${
                   handSize === 5 ? "text-dark-bg" : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 {handSize === 5 && (
-                  <div className="bg-cyan-accent absolute inset-0 -z-10 rounded-lg shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all duration-300"></div>
+                  <div className="bg-cyan-accent shadow-glow-cyan-sm absolute inset-0 -z-10 rounded-lg transition-all duration-300"></div>
                 )}
                 5 Cards (Go First)
               </button>
               <button
                 onClick={() => setHandSize(6)}
-                className={`text-2xs relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 ${
+                className={`text-2xs focus-visible:ring-cyan-accent relative z-10 cursor-pointer rounded-lg px-4 py-1.5 font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none focus-visible:ring-1 ${
                   handSize === 6 ? "text-dark-bg" : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 {handSize === 6 && (
-                  <div className="bg-cyan-accent absolute inset-0 -z-10 rounded-lg shadow-[0_0_12px_rgba(6,182,212,0.4)] transition-all duration-300"></div>
+                  <div className="bg-cyan-accent shadow-glow-cyan-sm absolute inset-0 -z-10 rounded-lg transition-all duration-300"></div>
                 )}
                 6 Cards (Go Second)
               </button>
@@ -101,7 +101,8 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               onClick={() => {
                 dialogRef.current?.close();
               }}
-              className="bg-dark-surface-elevated cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+              aria-label="Close dialog"
+              className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2"
               type="button"
             >
               <X className="h-5 w-5" />
