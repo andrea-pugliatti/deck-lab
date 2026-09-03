@@ -28,8 +28,16 @@
 
   --shadow-glow-cyan-sm: 0 0 10px rgba(95, 227, 217, 0.12);
   --shadow-glow-cyan: 0 4px 25px rgba(95, 227, 217, 0.08);
+  --shadow-glow-cyan-lg: 0 0 30px rgba(95, 227, 217, 0.2);
   --shadow-glow-gold: 0 2px 30px rgba(226, 197, 111, 0.16);
+  --shadow-glow-gold-lg: 0 0 40px rgba(226, 197, 111, 0.2);
   --shadow-glow-gold-card: 0 0 12px rgba(226, 197, 111, 0.25);
+  --shadow-glow-spell: 0 0 15px rgba(16, 185, 129, 0.3);
+  --shadow-glow-trap: 0 0 15px rgba(244, 63, 94, 0.3);
+  --shadow-glow-monster: 0 0 15px rgba(245, 158, 11, 0.35);
+  --shadow-glow-slate: 0 0 15px rgba(148, 163, 184, 0.3);
+  --shadow-glow-red: 0 4px 30px rgba(239, 68, 68, 0.08);
+  --shadow-modal: 0 15px 40px rgba(0, 0, 0, 0.6);
   --shadow-search: 0 4px 20px rgba(0, 0, 0, 0.25);
 
   --animate-float-left: float-left 7s ease-in-out infinite;
@@ -37,6 +45,33 @@
   --animate-float-right: float-right 5s ease-in-out infinite;
   --animate-pulse-glow: pulse-glow 6s infinite ease-out;
   --animate-fade-in: fade-in 200ms ease-out;
+  --animate-fade-out: fade-out 120ms ease-out;
+  --animate-slide-in: slide-in 240ms ease-out;
+  --animate-slide-out: slide-out 120ms ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes slide-out {
+    to {
+      transform: translateY(-8px);
+    }
+  }
 
   @keyframes float-left {
     0%,
@@ -49,6 +84,7 @@
       rotate: -14.5deg;
     }
   }
+
   @keyframes float-center {
     0%,
     100% {
@@ -60,6 +96,7 @@
       rotate: 2deg;
     }
   }
+
   @keyframes float-right {
     0%,
     100% {
@@ -71,6 +108,7 @@
       rotate: 9.5deg;
     }
   }
+
   @keyframes pulse-glow {
     0%,
     100% {
@@ -204,29 +242,16 @@
   body:has(dialog[open]) {
     overflow: hidden;
   }
-}
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes slide-in {
-  from {
-    transform: translateY(8px);
-  }
-}
-
-@keyframes slide-out {
-  to {
-    transform: translateY(-8px);
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 

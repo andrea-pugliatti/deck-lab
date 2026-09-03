@@ -136,7 +136,7 @@ export default function CardDetail(): React.JSX.Element {
           </div>
 
           {/* Card Details */}
-          <div className="flex flex-col justify-between space-y-6 md:col-span-7">
+          <div className="flex flex-col justify-between gap-6 md:col-span-7">
             <div>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <Badge variant={badgeVariant} className="rounded-full px-3 py-1 text-xs">

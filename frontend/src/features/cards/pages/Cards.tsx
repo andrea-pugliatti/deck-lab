@@ -67,7 +67,7 @@ export default function Cards(): React.JSX.Element {
         </aside>
 
         <div className="space-y-6 lg:col-span-3">
-          <div className="flex flex-row items-end gap-4">
+          <div className="flex items-end gap-4">
             <div className="flex-1">
               <Input
                 type="text"
@@ -75,7 +75,7 @@ export default function Cards(): React.JSX.Element {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 icon={<Search className="h-5 w-5" />}
-                className="bg-dark-surface w-full px-4 py-2.5"
+                containerClassName="bg-dark-surface w-full"
               />
             </div>
             <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />

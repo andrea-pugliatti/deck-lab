@@ -75,20 +75,14 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
 
   return (
     <div
-      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default items-center justify-center select-none sm:h-120"
+      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default items-center justify-center select-none perspective-[1000px] sm:h-120"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        perspective: "1000px",
-      }}
     >
       <div
         ref={showcaseRef}
-        className="relative flex h-full w-full items-center justify-center transition-transform duration-300 ease-out"
-        style={{
-          transformStyle: "preserve-3d",
-        }}
+        className="relative flex h-full w-full items-center justify-center transition-transform duration-300 ease-out transform-3d"
       >
         {cards.map((card, index) => {
           if (!loading && (!cards || cards.length <= index)) {
@@ -114,11 +108,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
           return (
             <div
               key={index}
-              className={`bg-dark-bg absolute flex h-67.5 w-45 flex-col justify-between rounded-xl border p-2.5 shadow-2xl transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_30px_rgba(0,227,217,0.15)] sm:h-80 sm:w-55 sm:p-3 ${CARDS_OFFSETS[index]} border-slate-500/20 text-slate-300`}
-              style={{
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
+              className={`bg-dark-bg hover:shadow-glow-cyan-lg absolute flex h-67.5 w-45 flex-col justify-between rounded-xl border p-2.5 shadow-2xl transition-all duration-300 ease-out transform-3d backface-hidden hover:scale-105 sm:h-80 sm:w-55 sm:p-3 ${CARDS_OFFSETS[index]} border-slate-500/20 text-slate-300`}
             >
               <>
                 <div className="mb-1 flex items-center justify-between">
@@ -170,7 +160,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                     [{card?.type}]
                   </span>
                   <p
-                    className="text-5xs sm:text-5xs line-clamp-3 leading-normal font-light text-slate-400"
+                    className="text-5xs line-clamp-3 leading-normal font-light text-slate-400"
                     title={card?.description}
                   >
                     {card?.description}

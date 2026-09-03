@@ -30,7 +30,7 @@ export default function ViewToggle({
     >
       <button
         onClick={() => onViewModeChange("grid")}
-        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:outline-none ${
+        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 ${
           viewMode === "grid"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 shadow-glow-cyan-sm border"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"
@@ -43,7 +43,7 @@ export default function ViewToggle({
       </button>
       <button
         onClick={() => onViewModeChange("list")}
-        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:outline-none ${
+        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 ${
           viewMode === "list"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 shadow-glow-cyan-sm border"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"

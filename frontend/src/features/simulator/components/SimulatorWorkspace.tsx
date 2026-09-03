@@ -47,7 +47,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-      <aside className="flex flex-col space-y-4 lg:col-span-3">
+      <aside className="flex flex-col gap-4 lg:col-span-3">
         <CardInspector inspectedCard={activeInspectedCard} />
         <Button
           variant="outline-cyan"
