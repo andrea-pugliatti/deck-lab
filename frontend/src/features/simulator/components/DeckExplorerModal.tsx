@@ -68,7 +68,7 @@ export default function DeckExplorerModal({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
+      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">
         <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
@@ -88,7 +88,8 @@ export default function DeckExplorerModal({
               setDeckSearchQuery("");
               dialogRef.current?.close();
             }}
-            className="bg-dark-surface-elevated cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+            aria-label="Close dialog"
+            className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2"
             type="button"
           >
             <X className="h-5 w-5" />
@@ -102,7 +103,7 @@ export default function DeckExplorerModal({
             value={deckSearchQuery}
             onChange={(e) => setDeckSearchQuery(e.target.value)}
             icon={<Search className="h-4 w-4 text-slate-500" />}
-            className="w-full bg-slate-950"
+            containerClassName="w-full bg-slate-950"
           />
         </div>
 
@@ -141,7 +142,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors"
+                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus:outline-none focus-visible:ring-1"
                       >
                         To Hand
                       </button>
@@ -151,7 +152,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors"
+                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg focus-visible:ring-gold-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus:outline-none focus-visible:ring-1"
                       >
                         To Field
                       </button>
@@ -161,7 +162,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700"
+                        className="focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700 focus:outline-none focus-visible:ring-1"
                       >
                         To GY
                       </button>

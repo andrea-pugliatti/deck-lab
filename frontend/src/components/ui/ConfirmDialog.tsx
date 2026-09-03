@@ -106,7 +106,7 @@ export default function ConfirmDialog({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus:outline-none"
+      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
     >
       <div className="bg-dark-surface border-border-dim animate-fade-in relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl">
         {/* Glow effect based on variant */}
@@ -128,7 +128,8 @@ export default function ConfirmDialog({
           </div>
           <button
             type="button"
-            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white"
+            aria-label="Close dialog"
+            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50"
             disabled={isLoading}
             onClick={() => dialogRef.current?.close()}
           >

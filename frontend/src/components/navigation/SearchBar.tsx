@@ -143,7 +143,7 @@ export default function SearchBar() {
                   onClick={() => handleSuggestionClick(card.name)}
                   role="option"
                   aria-selected={focusedIndex === idx}
-                  className={`flex w-full cursor-pointer items-center justify-between border-none px-4 py-2.5 text-left text-sm transition-all duration-150 outline-none ${
+                  className={`focus-visible:ring-cyan-accent flex w-full cursor-pointer items-center justify-between border-none px-4 py-2.5 text-left text-sm transition-all duration-150 outline-none focus-visible:ring-1 ${
                     focusedIndex === idx
                       ? "bg-cyan-accent/15 text-cyan-accent"
                       : "hover:bg-cyan-accent/10 hover:text-cyan-accent text-slate-300"
@@ -172,7 +172,7 @@ export default function SearchBar() {
           <Link
             key={item}
             to={`/cards?q=${encodeURIComponent(item)}`}
-            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:shadow-cyan-950/20"
+            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 focus-visible:ring-cyan-accent cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:shadow-cyan-950/20 focus:outline-none focus-visible:ring-2"
           >
             {item}
           </Link>
