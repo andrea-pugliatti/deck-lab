@@ -29,11 +29,6 @@ export const formatKeys = {
   all: ["formats"] as const,
 };
 
-export const suggestionKeys = {
-  all: ["suggestions"] as const,
-  suggestion: (query: string) => [...suggestionKeys.all, query] as const,
-};
-
 export const metaKeys = {
   all: ["metadata"] as const,
   types: () => [...metaKeys.all, "types"] as const,

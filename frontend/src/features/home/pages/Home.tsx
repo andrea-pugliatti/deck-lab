@@ -12,11 +12,8 @@ import HeroCardShowcase from "../../../features/home/components/HeroCardShowcase
 import { deckKeys, cardKeys } from "../../../services/queryKeys";
 import type { Card, Deck, Page } from "../../../types";
 
-/**
- * URLSearchParams configurations used to fetch spotlight/showcase items on the home landing page.
- */
-const spotlightParams = new URLSearchParams({ size: "6" });
-const heroShowcaseParams = new URLSearchParams({ q: "", type: "Effect Monster", size: "3" });
+const spotlightParams = { size: "6" };
+const heroShowcaseParams = { type: "Effect Monster", size: "3" };
 
 /**
  * Home Landing Page Component.
@@ -28,7 +25,7 @@ const heroShowcaseParams = new URLSearchParams({ q: "", type: "Effect Monster", 
  */
 export default function Home(): React.JSX.Element {
   const decksUrl = getDecksQueryEndpoint(new URLSearchParams({ size: "6" }));
-  const spotlightUrl = getCardsEndpoint(spotlightParams);
+  const spotlightUrl = getCardsEndpoint(new URLSearchParams(spotlightParams));
   const heroShowcaseUrl = getCardsEndpoint(new URLSearchParams(heroShowcaseParams));
 
   const {
@@ -45,13 +42,13 @@ export default function Home(): React.JSX.Element {
     isLoading: cardsLoading,
     error: cardsError,
   } = useQuery<Page<Card>>({
-    queryKey: cardKeys.list({ spotlight: true }),
+    queryKey: cardKeys.list(spotlightParams),
     queryFn: ({ signal }) => getCards(spotlightUrl, signal),
   });
 
   const { data: heroShowcaseCardsData, isLoading: heroShowcaseCardsLoading } = useQuery<Page<Card>>(
     {
-      queryKey: cardKeys.list({ hero: true }),
+      queryKey: cardKeys.list(heroShowcaseParams),
       queryFn: ({ signal }) => getCards(heroShowcaseUrl, signal),
     },
   );

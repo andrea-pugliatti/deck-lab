@@ -67,10 +67,10 @@ describe("Home page component", () => {
     queryClient.setQueryData(deckKeys.list({ size: "6" }), {
       content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
     });
-    queryClient.setQueryData(cardKeys.list({ spotlight: true }), {
+    queryClient.setQueryData(cardKeys.list({ size: "6" }), {
       content: [],
     });
-    queryClient.setQueryData(cardKeys.list({ hero: true }), {
+    queryClient.setQueryData(cardKeys.list({ type: "Effect Monster", size: "3" }), {
       content: [],
     });
 
