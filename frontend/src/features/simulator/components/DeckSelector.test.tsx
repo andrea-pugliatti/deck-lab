@@ -11,9 +11,13 @@ vi.mock("../../../features/auth", () => ({
   useAuth: vi.fn(),
 }));
 
-vi.mock("@tanstack/react-query", () => ({
-  useQuery: vi.fn(),
-}));
+vi.mock("@tanstack/react-query", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-query")>();
+  return {
+    ...actual,
+    useQuery: vi.fn(),
+  };
+});
 
 vi.mock("../../../features/decks/hooks/useDeckSearch", () => ({
   useDeckSearch: vi.fn(),

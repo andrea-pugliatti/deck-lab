@@ -2,9 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useReducer, useState } from "react";
 
 import { deckReducer, initialState } from "../../../features/deck-builder/reducers/deckReducer";
-import { getDeck } from "../../../features/decks";
 import { saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
 import { deckKeys } from "../../../services/queryKeys";
+import { deckQueries } from "../../../services/queryOptions";
 import type { Card, CardSection, Deck, DeckCardItem, Format, DeckPayload } from "../../../types";
 
 /**
@@ -80,11 +80,7 @@ export function useDeckState(
   const queryClient = useQueryClient();
 
   // Fetch Deck for Edit Mode
-  const { data: deckData } = useQuery<Deck>({
-    queryKey: deckKeys.detail(id),
-    queryFn: ({ signal }) => getDeck(id!, signal),
-    enabled: isEditMode && !!id,
-  });
+  const { data: deckData } = useQuery(deckQueries.detail(id));
 
   useEffect(() => {
     if (deckData) {

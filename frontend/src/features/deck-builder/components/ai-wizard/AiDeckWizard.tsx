@@ -6,9 +6,8 @@ import Button from "../../../../components/ui/Button";
 import Label from "../../../../components/ui/Label";
 import Select from "../../../../components/ui/Select";
 import Textarea from "../../../../components/ui/Textarea";
-import { getMetadata } from "../../../../features/cards";
 import { useFormats } from "../../../../features/decks/hooks/useFormats";
-import { metaKeys } from "../../../../services/queryKeys";
+import { metaQueries } from "../../../../services/queryOptions";
 import type { DeckCardItem, Format, Strategy } from "../../../../types";
 import { useGenerateAiDeck } from "../../hooks/useGenerateAiDeck";
 import ArchetypeAutocomplete from "./ArchetypeAutocomplete";
@@ -54,10 +53,7 @@ export default function AiDeckWizard({
   const { mutate: generateDeck, isPending: loading, reset: resetMutation } = useGenerateAiDeck();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const { data: archetypesData } = useQuery<string[]>({
-    queryKey: metaKeys.archetypes(),
-    queryFn: ({ signal }) => getMetadata("archetypes", signal),
-  });
+  const { data: archetypesData } = useQuery(metaQueries.archetypes());
   const { formats: formatsData } = useFormats();
   const formats: Format[] = (formatsData || ["TCG", "OCG", "Goat", "Edison"]) as Format[];
 

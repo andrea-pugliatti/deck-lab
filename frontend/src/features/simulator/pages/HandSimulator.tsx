@@ -6,11 +6,9 @@ import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import PageHeader from "../../../components/navigation/PageHeader";
 import Button from "../../../components/ui/Button";
-import { getDeck } from "../../../features/decks";
 import DeckSelector from "../../../features/simulator/components/DeckSelector";
 import SimulatorWorkspace from "../../../features/simulator/components/SimulatorWorkspace";
-import { deckKeys } from "../../../services/queryKeys";
-import type { Deck } from "../../../types";
+import { deckQueries } from "../../../services/queryOptions";
 import { formatRelativeTime } from "../../../utils/date";
 
 /**
@@ -30,11 +28,7 @@ export default function HandSimulator(): React.JSX.Element {
     data: deck,
     isLoading: loading,
     error,
-  } = useQuery<Deck>({
-    queryKey: deckKeys.detail(deckId),
-    queryFn: ({ signal }) => getDeck(deckId!, signal),
-    enabled: !!deckId,
-  });
+  } = useQuery(deckQueries.detail(deckId));
 
   const handleSelectDeck = (id: number) => {
     setSearchParams(

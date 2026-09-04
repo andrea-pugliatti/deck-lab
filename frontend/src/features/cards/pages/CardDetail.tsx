@@ -7,10 +7,8 @@ import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCard } from "../../../features/cards";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
-import { cardKeys } from "../../../services/queryKeys";
-import type { Card } from "../../../types";
+import { cardQueries } from "../../../services/queryOptions";
 
 /**
  * CardDetail Page Component.
@@ -61,11 +59,7 @@ export default function CardDetail(): React.JSX.Element {
     isLoading: loading,
     error,
     refetch,
-  } = useQuery<Card>({
-    queryKey: cardKeys.detail(id),
-    queryFn: ({ signal }) => getCard(id!, signal),
-    enabled: !!id,
-  });
+  } = useQuery(cardQueries.detail(id));
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;

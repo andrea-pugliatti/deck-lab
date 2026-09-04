@@ -12,13 +12,12 @@ import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
-import { exportYdk, getDeck } from "../../../features/decks";
+import { exportYdk } from "../../../features/decks";
 import DeckGridItem from "../../../features/decks/components/DeckGridItem";
 import DeckListItem from "../../../features/decks/components/DeckListItem";
 import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
 import { useViewPreference } from "../../../hooks/useViewPreference";
-import { deckKeys } from "../../../services/queryKeys";
-import type { Deck } from "../../../types";
+import { deckQueries } from "../../../services/queryOptions";
 import { formatRelativeTime } from "../../../utils/date";
 
 /**
@@ -43,11 +42,7 @@ export default function DeckDetail(): React.JSX.Element {
     isLoading: loading,
     error,
     refetch,
-  } = useQuery<Deck>({
-    queryKey: deckKeys.detail(id),
-    queryFn: ({ signal }) => getDeck(id!, signal),
-    enabled: !!id,
-  });
+  } = useQuery(deckQueries.detail(id));
 
   /**
    * Performs the deletion of the deck by calling the {@link useDeleteDeck}

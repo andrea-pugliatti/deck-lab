@@ -3,20 +3,8 @@ import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-import { getSuggestions } from "../../features/cards";
-import { getCardSuggestionsEndpoint } from "../../features/cards";
 import { useDebounce } from "../../hooks/useDebounce";
-import { cardKeys } from "../../services/queryKeys";
-import type { CardType } from "../../types";
-
-/**
- * Representation of a card suggestion result returned in the search suggestions dropdown.
- */
-interface SuggestionCard {
-  id: number;
-  name: string;
-  type: CardType;
-}
+import { cardQueries } from "../../services/queryOptions";
 
 /**
  * A search bar component with autocomplete suggestions for searching the card database.
@@ -31,17 +19,7 @@ export default function SearchBar() {
   const navigate = useNavigate();
 
   const debouncedQuery = useDebounce(query, 300);
-
-  const fetchUrl =
-    debouncedQuery.trim().length >= 2
-      ? getCardSuggestionsEndpoint(debouncedQuery.trim())
-      : undefined;
-
-  const { data, isLoading: loading } = useQuery<{ content: SuggestionCard[] }>({
-    queryKey: cardKeys.suggestions(debouncedQuery.trim()),
-    queryFn: ({ signal }) => getSuggestions(fetchUrl!, signal),
-    enabled: !!fetchUrl,
-  });
+  const { data, isLoading: loading } = useQuery(cardQueries.suggestions(debouncedQuery));
   const cardSuggestions = data?.content || [];
 
   const staticSuggestions = [

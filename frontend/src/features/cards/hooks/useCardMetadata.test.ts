@@ -1,16 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import { renderHook } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { getMetadata } from "../../../features/cards";
+import { createQueryClientWrapper, createTestQueryClient } from "../../../test/setup";
 import { useCardMetadata } from "./useCardMetadata";
 
-vi.mock("@tanstack/react-query", () => ({
-  useQuery: vi.fn(),
+vi.mock("../../../features/cards", () => ({
+  getMetadata: vi.fn(),
 }));
 
 describe("useCardMetadata hook", () => {
+  let queryClient = createTestQueryClient();
+
   beforeEach(() => {
-    vi.mocked(useQuery).mockReset();
+    queryClient = createTestQueryClient();
+    vi.mocked(getMetadata).mockReset();
   });
 
   it("should return defaults initially and then update states with fetched data", async () => {
@@ -19,34 +23,27 @@ describe("useCardMetadata hook", () => {
     const mockRaces = ["Spellcaster", "Dragon"];
     const mockArchetypes = ["Blue-Eyes", "Red-Eyes"];
 
-    let isFetched = false;
-    vi.mocked(useQuery).mockImplementation((options?: { queryKey?: readonly unknown[] }) => {
-      const key = options?.queryKey?.[1];
-      if (!isFetched) {
-        return { data: undefined } as unknown as ReturnType<typeof useQuery>;
-      }
-      if (key === "types") return { data: mockTypes } as unknown as ReturnType<typeof useQuery>;
-      if (key === "attributes")
-        return { data: mockAttributes } as unknown as ReturnType<typeof useQuery>;
-      if (key === "races") return { data: mockRaces } as unknown as ReturnType<typeof useQuery>;
-      if (key === "archetypes")
-        return { data: mockArchetypes } as unknown as ReturnType<typeof useQuery>;
-      return { data: undefined } as unknown as ReturnType<typeof useQuery>;
+    vi.mocked(getMetadata).mockImplementation(async (type) => {
+      if (type === "types") return mockTypes;
+      if (type === "attributes") return mockAttributes;
+      if (type === "races") return mockRaces;
+      if (type === "archetypes") return mockArchetypes;
+      return [];
     });
 
-    const { result, rerender } = renderHook(() => useCardMetadata());
+    const { result } = renderHook(() => useCardMetadata(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
-    // Defaults check
     expect(result.current.types).toContain("Monster");
     expect(result.current.attributes).toContain("LIGHT");
     expect(result.current.races).toEqual([]);
     expect(result.current.archetypes).toEqual([]);
 
-    // Update fetched state and rerender to simulate async load completion
-    isFetched = true;
-    rerender();
+    await waitFor(() => {
+      expect(result.current.races).toEqual(mockRaces);
+    });
 
-    expect(result.current.races).toEqual(mockRaces);
     expect(result.current.types).toEqual(mockTypes);
     expect(result.current.attributes).toEqual(mockAttributes);
     expect(result.current.archetypes).toEqual(mockArchetypes);
