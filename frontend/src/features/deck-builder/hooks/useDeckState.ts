@@ -161,8 +161,13 @@ export function useDeckState(
       return saveDeckService(payload, id);
     },
     onSuccess: (savedDeck) => {
-      void queryClient.invalidateQueries({ queryKey: deckKeys.detail(id) });
-      void queryClient.invalidateQueries({ queryKey: deckKeys.all });
+      const savedId = String(savedDeck.id);
+      queryClient.setQueryData(deckKeys.detail(savedId), savedDeck);
+      void queryClient.invalidateQueries({ queryKey: deckKeys.detail(savedId) });
+      if (id && id !== savedId) {
+        void queryClient.invalidateQueries({ queryKey: deckKeys.detail(id) });
+      }
+      void queryClient.invalidateQueries({ queryKey: deckKeys.lists() });
       setSubmitError(undefined);
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);

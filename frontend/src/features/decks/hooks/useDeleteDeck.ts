@@ -15,7 +15,7 @@ export function useDeleteDeck() {
     mutationFn: (id: string | number) => deleteDeck(id),
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: deckKeys.detail(id) });
-      void queryClient.invalidateQueries({ queryKey: deckKeys.all });
+      void queryClient.invalidateQueries({ queryKey: deckKeys.lists() });
     },
   });
 }

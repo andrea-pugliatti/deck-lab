@@ -1,20 +1,10 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getDeck, saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
+import { deckKeys } from "../../../services/queryKeys";
+import { createQueryClientWrapper, createTestQueryClient } from "../../../test/setup";
 import { useDeckState } from "./useDeckState";
-
-vi.mock("@tanstack/react-query", () => ({
-  useQuery: vi.fn().mockReturnValue({}),
-  useMutation: vi.fn().mockReturnValue({
-    mutate: vi.fn(),
-    mutateAsync: vi.fn(),
-  }),
-  useQueryClient: vi.fn().mockReturnValue({
-    invalidateQueries: vi.fn(),
-  }),
-}));
 
 vi.mock("../../../features/decks", () => ({
   getDeck: vi.fn(),
@@ -23,34 +13,19 @@ vi.mock("../../../features/decks", () => ({
 }));
 
 describe("useDeckState hook", () => {
+  let queryClient = createTestQueryClient();
+
   beforeEach(() => {
+    queryClient = createTestQueryClient();
     vi.mocked(getDeck).mockReset();
     vi.mocked(saveDeckService).mockReset();
     vi.mocked(validateDeck).mockReset();
-    vi.mocked(useQuery).mockReturnValue({} as unknown as ReturnType<typeof useQuery>);
-    vi.mocked(useMutation).mockReset();
-    vi.mocked(useMutation).mockImplementation(
-      (options: Parameters<typeof useMutation>[0]) =>
-        ({
-          mutate: vi.fn(async (payload) => {
-            try {
-              const res = await (
-                options?.mutationFn as ((variables: unknown) => Promise<unknown>) | undefined
-              )?.(payload);
-              (options?.onSuccess as ((res: unknown) => void) | undefined)?.(res);
-            } catch (err) {
-              (options?.onError as ((err: unknown) => void) | undefined)?.(err);
-            }
-          }),
-          mutateAsync: vi.fn(),
-          isPending: false,
-          error: null,
-        }) as unknown as ReturnType<typeof useMutation>,
-    );
   });
 
   it("should initialize in draft (creation) mode by default", () => {
-    const { result } = renderHook(() => useDeckState());
+    const { result } = renderHook(() => useDeckState(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     expect(result.current.isEditMode).toBe(false);
     expect(result.current.name).toBe("");
@@ -65,23 +40,23 @@ describe("useDeckState hook", () => {
       id: 12,
       name: "Existing Deck",
       description: "Old desc",
-      formatName: "Goat",
+      formatName: "Goat" as const,
       deckCards: [
         {
           cardId: 2,
           name: "Card X",
           quantity: 3,
           section: "MAIN" as const,
-          type: "spell",
+          type: "Spell Card" as const,
           imageUrl: "",
         },
       ],
     };
-    vi.mocked(useQuery).mockReturnValue({
-      data: mockDeck,
-    } as unknown as ReturnType<typeof useQuery>);
+    vi.mocked(getDeck).mockResolvedValueOnce(mockDeck);
 
-    const { result } = renderHook(() => useDeckState("12"));
+    const { result } = renderHook(() => useDeckState("12"), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     expect(result.current.isEditMode).toBe(true);
 
@@ -97,7 +72,9 @@ describe("useDeckState hook", () => {
   it("should trigger validation and set validation success", async () => {
     vi.mocked(validateDeck).mockResolvedValueOnce({ ok: true });
 
-    const { result } = renderHook(() => useDeckState());
+    const { result } = renderHook(() => useDeckState(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     let valOk = false;
     await act(async () => {
@@ -115,7 +92,9 @@ describe("useDeckState hook", () => {
       errors: ["Exceeds max copies", "Invalid section size"],
     });
 
-    const { result } = renderHook(() => useDeckState());
+    const { result } = renderHook(() => useDeckState(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     let valOk = true;
     await act(async () => {
@@ -128,7 +107,9 @@ describe("useDeckState hook", () => {
   });
 
   it("should fail saveDeck if deck name is empty", async () => {
-    const { result } = renderHook(() => useDeckState());
+    const { result } = renderHook(() => useDeckState(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     act(() => {
       result.current.saveDeck();
@@ -139,7 +120,9 @@ describe("useDeckState hook", () => {
   });
 
   it("should clamp description to 255 characters", () => {
-    const { result } = renderHook(() => useDeckState());
+    const { result } = renderHook(() => useDeckState(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     act(() => {
       result.current.setDescription("a".repeat(300));
@@ -153,14 +136,14 @@ describe("useDeckState hook", () => {
       id: 12,
       name: "Existing Deck",
       description: "a".repeat(300),
-      formatName: "TCG",
+      formatName: "TCG" as const,
       deckCards: [],
     };
-    vi.mocked(useQuery).mockReturnValue({
-      data: mockDeck,
-    } as unknown as ReturnType<typeof useQuery>);
+    vi.mocked(getDeck).mockResolvedValueOnce(mockDeck);
 
-    const { result } = renderHook(() => useDeckState("12"));
+    const { result } = renderHook(() => useDeckState("12"), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.name).toBe("Existing Deck");
@@ -174,17 +157,21 @@ describe("useDeckState hook", () => {
     expect(saveDeckService).not.toHaveBeenCalled();
   });
 
-  it("should validate and save deck successfully", async () => {
+  it("should validate and save deck successfully with targeted cache invalidation and seeding", async () => {
     const onSaveSuccessMock = vi.fn();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
+
     vi.mocked(validateDeck).mockResolvedValueOnce({ ok: true });
     vi.mocked(saveDeckService).mockResolvedValueOnce({
       id: 10,
       name: "Super Deck",
     } as unknown as Awaited<ReturnType<typeof saveDeckService>>);
 
-    const { result } = renderHook(() => useDeckState(undefined, onSaveSuccessMock));
+    const { result } = renderHook(() => useDeckState(undefined, onSaveSuccessMock), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
 
-    // Name must be set
     act(() => {
       result.current.setName("Super Deck");
     });
@@ -193,8 +180,16 @@ describe("useDeckState hook", () => {
       result.current.saveDeck();
     });
 
+    await waitFor(() => {
+      expect(onSaveSuccessMock).toHaveBeenCalledWith({ id: 10, name: "Super Deck" });
+    });
+
     expect(result.current.submitError).toBeUndefined();
     expect(saveDeckService).toHaveBeenCalled();
-    expect(onSaveSuccessMock).toHaveBeenCalledWith({ id: 10, name: "Super Deck" });
+    expect(setQueryDataSpy).toHaveBeenCalledWith(deckKeys.detail("10"), { id: 10, name: "Super Deck" });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: deckKeys.detail("10") });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: deckKeys.lists() });
+    expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: deckKeys.all });
+    expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: deckKeys.detail(undefined) });
   });
 });
