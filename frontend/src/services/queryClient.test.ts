@@ -1,9 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
-
-// Unmock @tanstack/react-query to test actual QueryClient configuration
-vi.unmock("@tanstack/react-query");
-
 import { QueryClient } from "@tanstack/react-query";
+import { describe, expect, it } from "vitest";
 
 import { queryClient } from "./queryClient";
 

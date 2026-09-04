@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { cardKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
 import CardDetail from "./CardDetail";
 
 vi.mock("react-router", async (importOriginal) => {
@@ -19,27 +19,25 @@ describe("CardDetail page component", () => {
   });
 
   it("should render card detail page correctly and provide link back to catalog", () => {
-    vi.mocked(useQuery).mockReturnValue({
-      data: {
-        id: 100,
-        name: "Summoned Skull",
-        type: "Normal Monster",
-        desc: "A fiend with dark powers.",
-        description: "A fiend with dark powers.",
-        attribute: "DARK",
-        level: 6,
-        atk: 2500,
-        def: 1200,
-        imageUrl: "",
-      },
-      isLoading: false,
-      error: undefined,
-    } as unknown as ReturnType<typeof useQuery>);
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(cardKeys.detail("100"), {
+      id: 100,
+      name: "Summoned Skull",
+      type: "Normal Monster",
+      desc: "A fiend with dark powers.",
+      description: "A fiend with dark powers.",
+      attribute: "DARK",
+      level: 6,
+      atk: 2500,
+      def: 1200,
+      imageUrl: "",
+    });
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <CardDetail />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByText("Summoned Skull")).toBeInTheDocument();

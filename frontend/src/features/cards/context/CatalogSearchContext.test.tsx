@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
+import { formatKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, render, renderWithClient, screen } from "../../../test/setup";
 import { CatalogSearchProvider, useCatalogSearchContext } from "./CatalogSearchContext";
 
 vi.mock("../../../features/cards/hooks/useCatalogSearch", () => ({
@@ -48,14 +48,14 @@ describe("CatalogSearchContext", () => {
       archetypes: [],
     });
 
-    vi.mocked(useQuery).mockReturnValue({
-      data: ["TCG", "Goat"],
-    } as unknown as ReturnType<typeof useQuery>);
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(formatKeys.all, ["TCG", "Goat"]);
 
-    render(
+    renderWithClient(
       <CatalogSearchProvider>
         <ContextConsumer />
       </CatalogSearchProvider>,
+      queryClient,
     );
 
     expect(screen.getByTestId("formats")).toHaveTextContent("TCG,Goat");

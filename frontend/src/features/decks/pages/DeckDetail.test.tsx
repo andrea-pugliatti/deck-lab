@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../../../features/auth";
+import { deckKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
 import DeckDetail from "./DeckDetail";
 
 vi.mock("../../../features/auth", () => ({
@@ -33,30 +33,29 @@ describe("DeckDetail page component", () => {
   });
 
   it("should render mock deck and compute counts", () => {
-    vi.mocked(useQuery).mockReturnValue({
-      data: {
-        id: 1,
-        name: "Yugi Ultimate Deck",
-        creatorUsername: "yugi",
-        formatName: "TCG",
-        deckCards: [
-          {
-            cardId: 10,
-            name: "Dark Magician",
-            quantity: 3,
-            section: "MAIN",
-            type: "Normal Monster",
-          },
-          { cardId: 11, name: "Monster Reborn", quantity: 1, section: "MAIN", type: "Spell Card" },
-        ],
-      },
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(deckKeys.detail("1"), {
+      id: 1,
+      name: "Yugi Ultimate Deck",
+      creatorUsername: "yugi",
+      formatName: "TCG",
+      deckCards: [
+        {
+          cardId: 10,
+          name: "Dark Magician",
+          quantity: 3,
+          section: "MAIN",
+          type: "Normal Monster",
+        },
+        { cardId: 11, name: "Monster Reborn", quantity: 1, section: "MAIN", type: "Spell Card" },
+      ],
+    });
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <DeckDetail />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByText("Yugi Ultimate Deck")).toBeInTheDocument();

@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { generateAiDeck } from "../../../../features/decks";
+import { formatKeys, metaKeys } from "../../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient } from "../../../../test/setup";
 import type { Format } from "../../../../types";
 import { useGenerateAiDeck } from "../../hooks/useGenerateAiDeck";
 import AiDeckWizard from "./AiDeckWizard";
 
-// Mock services
 vi.mock("../../../../features/decks", () => ({
   generateAiDeck: vi.fn(),
 }));
@@ -17,6 +17,8 @@ vi.mock("../../hooks/useGenerateAiDeck", () => ({
 }));
 
 describe("AiDeckWizard component", () => {
+  let queryClient = createTestQueryClient();
+
   beforeAll(() => {
     // Mock HTMLDialogElement APIs that JSDOM doesn't support completely
     HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
@@ -34,23 +36,9 @@ describe("AiDeckWizard component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // Default mock implementation for useQuery
-    vi.mocked(useQuery).mockImplementation((options?: { queryKey?: readonly unknown[] }) => {
-      const queryKey = options?.queryKey || [];
-      if (queryKey.includes("archetypes")) {
-        return { data: ["Blue-Eyes", "Dark Magician"], isLoading: false } as unknown as ReturnType<
-          typeof useQuery
-        >;
-      }
-      if (queryKey.includes("formats")) {
-        return {
-          data: ["TCG", "OCG", "Goat", "Edison"],
-          isLoading: false,
-        } as unknown as ReturnType<typeof useQuery>;
-      }
-      return { data: null, isLoading: false } as unknown as ReturnType<typeof useQuery>;
-    });
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(metaKeys.archetypes(), ["Blue-Eyes", "Dark Magician"]);
+    queryClient.setQueryData(formatKeys.all, ["TCG", "OCG", "Goat", "Edison"]);
 
     // Mock useGenerateAiDeck — mutate delegates to the mocked generateAiDeck
     // and invokes onSuccess/onError callbacks so the component behaves as in prod.
@@ -71,13 +59,14 @@ describe("AiDeckWizard component", () => {
   });
 
   it("should not show dialog if isOpen is false", () => {
-    const { container } = render(
+    const { container } = renderWithClient(
       <AiDeckWizard
         isOpen={false}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const dialog = container.querySelector("dialog");
@@ -86,13 +75,14 @@ describe("AiDeckWizard component", () => {
   });
 
   it("should open dialog and load format rules if isOpen is true", () => {
-    const { container } = render(
+    const { container } = renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="Goat"
       />,
+      queryClient,
     );
 
     const dialog = container.querySelector("dialog");
@@ -103,13 +93,14 @@ describe("AiDeckWizard component", () => {
   });
 
   it("should require archetype and show validation error if archetype is empty", async () => {
-    const { container } = render(
+    const { container } = renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const form = container.querySelector("form");
@@ -136,32 +127,28 @@ describe("AiDeckWizard component", () => {
 
     vi.mocked(generateAiDeck).mockResolvedValue(mockDeckResult);
 
-    render(
+    renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
-    // Enter archetype
     const input = screen.getByLabelText("Archetype / Core Theme");
     fireEvent.change(input, { target: { value: "Blue-Eyes" } });
 
-    // Select format
     const formatSelect = screen.getByLabelText("Format rules");
     fireEvent.change(formatSelect, { target: { value: "TCG" } });
 
-    // Select Strategy
     const strategyBtn = screen.getByRole("button", { name: "Combo / Synchro Spam" });
     fireEvent.click(strategyBtn);
 
-    // Select Custom Prompt
     const customPromptInput = screen.getByLabelText(/Custom Rules/);
     fireEvent.change(customPromptInput, { target: { value: "Include Blue-Eyes Alternative" } });
 
-    // Submit form
     const generateBtn = screen.getByRole("button", { name: /Generate Deck/i });
     fireEvent.click(generateBtn);
 
@@ -188,13 +175,14 @@ describe("AiDeckWizard component", () => {
 
     vi.mocked(generateAiDeck).mockResolvedValue(mockDeckResult);
 
-    render(
+    renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const input = screen.getByLabelText("Archetype / Core Theme");
@@ -216,13 +204,14 @@ describe("AiDeckWizard component", () => {
   it("should display API errors when generation fails", async () => {
     vi.mocked(generateAiDeck).mockRejectedValue(new Error("API generation failed."));
 
-    render(
+    renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const input = screen.getByLabelText("Archetype / Core Theme");
@@ -236,13 +225,14 @@ describe("AiDeckWizard component", () => {
   });
 
   it("should call onClose when clicking cancel or close buttons", () => {
-    render(
+    renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const cancelBtn = screen.getByRole("button", { name: /Cancel/i });
@@ -251,19 +241,19 @@ describe("AiDeckWizard component", () => {
   });
 
   it("should call onClose when dialog backdrop is clicked", () => {
-    const { container } = render(
+    const { container } = renderWithClient(
       <AiDeckWizard
         isOpen={true}
         onClose={mockOnClose}
         onDeckGenerated={mockOnDeckGenerated}
         currentFormat="TCG"
       />,
+      queryClient,
     );
 
     const dialog = container.querySelector("dialog");
     expect(dialog).toBeInTheDocument();
 
-    // Simulate click directly on dialog backdrop
     fireEvent.click(dialog!);
     expect(mockOnClose).toHaveBeenCalled();
   });

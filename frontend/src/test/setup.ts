@@ -1,8 +1,10 @@
 import "@testing-library/jest-dom";
-import { cleanup } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { cleanup, render, type RenderOptions } from "@testing-library/react";
+import type React from "react";
+import { createElement } from "react";
 import { afterEach, vi } from "vitest";
 
-// Automatically cleanup after each test
 afterEach(() => {
   cleanup();
 });
@@ -35,103 +37,83 @@ class InMemoryStorage implements Storage {
   }
 }
 
-const localStorageInstance = new InMemoryStorage();
-const sessionStorageInstance = new InMemoryStorage();
-
-// Ensure Storage, localStorage, and sessionStorage are available and properly isolated from Node's built-in Web Storage
-Object.defineProperty(globalThis, "Storage", {
-  value: InMemoryStorage,
-  writable: true,
-  configurable: true,
-});
-Object.defineProperty(globalThis, "localStorage", {
-  value: localStorageInstance,
-  writable: true,
-  configurable: true,
-});
-Object.defineProperty(globalThis, "sessionStorage", {
-  value: sessionStorageInstance,
-  writable: true,
-  configurable: true,
-});
+const storageProperties = {
+  Storage: { value: InMemoryStorage, writable: true, configurable: true },
+  localStorage: { value: new InMemoryStorage(), writable: true, configurable: true },
+  sessionStorage: { value: new InMemoryStorage(), writable: true, configurable: true },
+};
+Object.defineProperties(globalThis, storageProperties);
+if (typeof window !== "undefined") {
+  Object.defineProperties(window, storageProperties);
+}
 
 if (typeof window !== "undefined") {
-  Object.defineProperty(window, "Storage", {
-    value: InMemoryStorage,
-    writable: true,
-    configurable: true,
-  });
-  Object.defineProperty(window, "localStorage", {
-    value: localStorageInstance,
-    writable: true,
-    configurable: true,
-  });
-  Object.defineProperty(window, "sessionStorage", {
-    value: sessionStorageInstance,
-    writable: true,
-    configurable: true,
-  });
-}
-
-// Mock window.matchMedia if it doesn't exist
-if (typeof window !== "undefined" && !window.matchMedia) {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-}
-
-// Mock ResizeObserver
-if (typeof window !== "undefined" && !window.ResizeObserver) {
-  class ResizeObserver {
-    observe = vi.fn();
-    unobserve = vi.fn();
-    disconnect = vi.fn();
+  if (!window.matchMedia) {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
   }
-  Object.defineProperty(window, "ResizeObserver", {
-    writable: true,
-    value: ResizeObserver,
-  });
+
+  if (!window.ResizeObserver) {
+    Object.defineProperty(window, "ResizeObserver", {
+      writable: true,
+      value: class {
+        observe = vi.fn();
+        unobserve = vi.fn();
+        disconnect = vi.fn();
+      },
+    });
+  }
 }
 
-// Mock global fetch if not present in env (jsdom has fetch, but good to ensure spyable)
 if (typeof globalThis.fetch === "undefined") {
   globalThis.fetch = vi.fn();
 }
 
-// Mock @tanstack/react-query globally
-vi.mock("@tanstack/react-query", () => ({
-  useQuery: vi.fn().mockReturnValue({}),
-  useMutation: vi.fn().mockReturnValue({
-    mutate: vi.fn(),
-    mutateAsync: vi.fn(),
-    isPending: false,
-    isLoading: false,
-  }),
-  useQueryClient: vi.fn().mockReturnValue({
-    invalidateQueries: vi.fn(),
-    removeQueries: vi.fn(),
-    clear: vi.fn(),
-    setQueryData: vi.fn(),
-  }),
-  QueryClient: class {
-    clear = vi.fn();
-    invalidateQueries = vi.fn();
-    removeQueries = vi.fn();
-  },
-  QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
-  keepPreviousData: () => undefined,
-  QueryErrorResetBoundary: ({
-    children,
-  }: {
-    children: (props: { reset: () => void }) => React.ReactNode;
-  }) => children({ reset: vi.fn() }),
-  useQueryErrorResetBoundary: () => ({ reset: vi.fn() }),
-}));
+export function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: Infinity,
+      },
+      mutations: {
+        retry: false,
+      },
+    },
+  });
+}
+
+export function createQueryClientWrapper(client: QueryClient = createTestQueryClient()) {
+  return function QueryClientWrapper({ children }: { children: React.ReactNode }) {
+    return createElement(QueryClientProvider, { client }, children);
+  };
+}
+
+export function renderWithClient(
+  ui: React.ReactElement,
+  client: QueryClient = createTestQueryClient(),
+  options?: Omit<RenderOptions, "wrapper">,
+) {
+  const { rerender, ...result } = render(ui, {
+    wrapper: createQueryClientWrapper(client),
+    ...options,
+  });
+
+  return {
+    ...result,
+    client,
+    rerender: (rerenderUi: React.ReactElement) =>
+      rerender(createElement(QueryClientProvider, { client }, rerenderUi)),
+  };
+}
+
+export * from "@testing-library/react";

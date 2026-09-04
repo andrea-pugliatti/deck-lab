@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../../../features/auth";
 import { deleteDeck } from "../../../features/decks";
 import { useDeckSearch } from "../../../features/decks/hooks/useDeckSearch";
+import { formatKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
 import Decks from "./Decks";
 
 vi.mock("../../../features/decks/hooks/useDeckSearch", () => ({
@@ -29,10 +30,13 @@ vi.mock("../hooks/useFetch", () => ({
 
 describe("Decks page component", () => {
   const mockRefetch = vi.fn();
+  let queryClient = createTestQueryClient();
 
   beforeEach(() => {
     mockRefetch.mockReset();
     vi.mocked(deleteDeck).mockReset();
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(formatKeys.all, ["TCG", "Goat"]);
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
       user: { username: "yugi" },
@@ -54,10 +58,11 @@ describe("Decks page component", () => {
   });
 
   it("should render page headers, search filter input, and public decks", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <Decks initialTab="all" />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByText("Public Decks")).toBeInTheDocument();
@@ -65,10 +70,11 @@ describe("Decks page component", () => {
   });
 
   it("should render user blueprints headers when initialTab is user", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <Decks initialTab="user" />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByText("My Deck Blueprints")).toBeInTheDocument();

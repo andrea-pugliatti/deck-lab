@@ -1,5 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -8,6 +7,13 @@ import {
   refreshToken as apiRefreshToken,
   register as apiRegister,
 } from "../../../features/auth";
+import {
+  createTestQueryClient,
+  render,
+  renderWithClient,
+  screen,
+  waitFor,
+} from "../../../test/setup";
 import { AuthProvider, useAuth } from "./AuthContext";
 
 vi.mock("../api/auth", () => ({
@@ -33,7 +39,8 @@ function ConsumerComponent() {
 }
 
 describe("AuthContext", () => {
-  let clearMock: ReturnType<typeof vi.fn>;
+  let queryClient = createTestQueryClient();
+  let clearSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     vi.mocked(apiLogin).mockReset();
@@ -42,26 +49,21 @@ describe("AuthContext", () => {
     vi.mocked(apiRegister).mockReset();
     localStorage.clear();
 
-    clearMock = vi.fn();
-    vi.mocked(useQueryClient).mockReturnValue({
-      clear: clearMock,
-      invalidateQueries: vi.fn(),
-      removeQueries: vi.fn(),
-      setQueryData: vi.fn(),
-    } as unknown as ReturnType<typeof useQueryClient>);
+    queryClient = createTestQueryClient();
+    clearSpy = vi.spyOn(queryClient, "clear");
   });
 
   it("should attempt auto login via refresh token on mount", async () => {
     vi.mocked(apiRefreshToken).mockResolvedValueOnce({ accessToken: "token-abc" });
     localStorage.setItem("username", "cacheduser");
 
-    render(
+    renderWithClient(
       <AuthProvider>
         <ConsumerComponent />
       </AuthProvider>,
+      queryClient,
     );
 
-    // Initial state is loading
     expect(screen.getByText("Loading...")).toBeInTheDocument();
 
     await waitFor(() => {
@@ -70,28 +72,28 @@ describe("AuthContext", () => {
 
     expect(screen.getByTestId("username")).toHaveTextContent("cacheduser");
     expect(apiRefreshToken).toHaveBeenCalled();
-    expect(clearMock).not.toHaveBeenCalled();
+    expect(clearSpy).not.toHaveBeenCalled();
   });
 
   it("should login user and set authentication state", async () => {
-    // Fail auto-login on mount
     vi.mocked(apiRefreshToken).mockRejectedValueOnce(new Error("No refresh token"));
     vi.mocked(apiLogin).mockResolvedValueOnce({
       accessToken: "logged-in-token",
       username: "superman",
     });
 
-    render(
+    renderWithClient(
       <AuthProvider>
         <ConsumerComponent />
       </AuthProvider>,
+      queryClient,
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("auth-state")).toHaveTextContent("guest");
     });
 
-    expect(clearMock).toHaveBeenCalled();
+    expect(clearSpy).toHaveBeenCalled();
 
     await act(async () => {
       screen.getByText("Login").click();
@@ -103,22 +105,22 @@ describe("AuthContext", () => {
   });
 
   it("should logout user and clear local storage", async () => {
-    // Auto-login succeeds on mount
     vi.mocked(apiRefreshToken).mockResolvedValueOnce({ accessToken: "token-abc" });
     vi.mocked(apiLogout).mockResolvedValueOnce();
     localStorage.setItem("username", "cacheduser");
 
-    render(
+    renderWithClient(
       <AuthProvider>
         <ConsumerComponent />
       </AuthProvider>,
+      queryClient,
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("auth-state")).toHaveTextContent("authenticated");
     });
 
-    expect(clearMock).not.toHaveBeenCalled();
+    expect(clearSpy).not.toHaveBeenCalled();
 
     await act(async () => {
       screen.getByText("Logout").click();
@@ -126,11 +128,10 @@ describe("AuthContext", () => {
 
     expect(screen.getByTestId("auth-state")).toHaveTextContent("guest");
     expect(localStorage.getItem("username")).toBeNull();
-    expect(clearMock).toHaveBeenCalled();
+    expect(clearSpy).toHaveBeenCalled();
   });
 
   it("should throw error if useAuth is used outside AuthProvider", () => {
-    // Disable console.error to avoid test output noise
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => render(<ConsumerComponent />)).toThrow(
       "useAuth must be used within an AuthProvider",

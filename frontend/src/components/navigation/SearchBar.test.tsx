@@ -1,13 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { cardKeys } from "../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../test/setup";
 import SearchBar from "./SearchBar";
 
 vi.mock("../../hooks/useDebounce", () => ({
   useDebounce: vi.fn((q) => q),
 }));
+
+vi.mock("../../features/cards", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../features/cards")>();
+  return {
+    ...actual,
+    getSuggestions: vi.fn().mockResolvedValue({
+      content: [
+        { id: 1, name: "Blue-Eyes White Dragon", type: "Normal Monster" },
+        { id: 2, name: "Blue-Eyes Alternative", type: "Effect Monster" },
+      ],
+    }),
+  };
+});
 
 vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
@@ -19,26 +33,26 @@ vi.mock("react-router", async (importOriginal) => {
 
 describe("SearchBar component", () => {
   const navigateMock = vi.fn();
+  let queryClient = createTestQueryClient();
 
   beforeEach(() => {
     navigateMock.mockReset();
     vi.mocked(useNavigate).mockReturnValue(navigateMock);
-    vi.mocked(useQuery).mockReturnValue({
-      data: {
-        content: [
-          { id: 1, name: "Blue-Eyes White Dragon", type: "Normal Monster" },
-          { id: 2, name: "Blue-Eyes Alternative", type: "Effect Monster" },
-        ],
-      },
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(cardKeys.suggestions("Blue"), {
+      content: [
+        { id: 1, name: "Blue-Eyes White Dragon", type: "Normal Monster" },
+        { id: 2, name: "Blue-Eyes Alternative", type: "Effect Monster" },
+      ],
+    });
   });
 
   it("should render input field and static trending links", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <SearchBar />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByPlaceholderText(/search card names/i)).toBeInTheDocument();
@@ -46,10 +60,11 @@ describe("SearchBar component", () => {
   });
 
   it("should trigger navigation on form submit", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <SearchBar />
       </MemoryRouter>,
+      queryClient,
     );
 
     const input = screen.getByPlaceholderText(/search card names/i);
@@ -60,10 +75,11 @@ describe("SearchBar component", () => {
   });
 
   it("should open suggestions dropdown on focus/input", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <SearchBar />
       </MemoryRouter>,
+      queryClient,
     );
 
     const input = screen.getByPlaceholderText(/search card names/i);
@@ -75,10 +91,11 @@ describe("SearchBar component", () => {
   });
 
   it("should select suggestion on click", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <SearchBar />
       </MemoryRouter>,
+      queryClient,
     );
 
     const input = screen.getByPlaceholderText(/search card names/i);
@@ -91,21 +108,18 @@ describe("SearchBar component", () => {
   });
 
   it("should support keyboard navigation in suggestions dropdown", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <SearchBar />
       </MemoryRouter>,
+      queryClient,
     );
 
     const input = screen.getByPlaceholderText(/search card names/i);
     fireEvent.change(input, { target: { value: "Blue" } });
 
-    // Arrow down highlights first item
     fireEvent.keyDown(input, { key: "ArrowDown" });
-    // Arrow down highlights second item
     fireEvent.keyDown(input, { key: "ArrowDown" });
-
-    // Enter selects second item
     fireEvent.keyDown(input, { key: "Enter" });
     expect(navigateMock).toHaveBeenCalledWith("/cards?q=Blue-Eyes%20Alternative");
   });

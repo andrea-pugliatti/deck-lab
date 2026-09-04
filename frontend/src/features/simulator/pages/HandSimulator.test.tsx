@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { MemoryRouter, useSearchParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { deckKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
 import HandSimulator from "./HandSimulator";
 
 vi.mock("react-router", async (importOriginal) => {
@@ -27,37 +28,31 @@ vi.mock("../../../features/simulator/components/SimulatorWorkspace", () => ({
 
 describe("HandSimulator page component", () => {
   const setSearchParamsMock = vi.fn();
+  let queryClient = createTestQueryClient();
 
   beforeEach(() => {
     setSearchParamsMock.mockReset();
     vi.mocked(useSearchParams).mockReturnValue([new URLSearchParams(), setSearchParamsMock]);
+    queryClient = createTestQueryClient();
   });
 
   it("should render DeckSelector when no deckId query parameter exists", () => {
-    vi.mocked(useQuery).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
-
-    render(
+    renderWithClient(
       <MemoryRouter>
         <HandSimulator />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByTestId("deck-selector")).toBeInTheDocument();
   });
 
   it("should update searchParams when a deck is selected from DeckSelector", () => {
-    vi.mocked(useQuery).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
-
-    render(
+    renderWithClient(
       <MemoryRouter>
         <HandSimulator />
       </MemoryRouter>,
+      queryClient,
     );
 
     const selectorBtn = screen.getByTestId("deck-selector");
@@ -74,21 +69,19 @@ describe("HandSimulator page component", () => {
     const params = new URLSearchParams({ deckId: "44" });
     vi.mocked(useSearchParams).mockReturnValue([params, setSearchParamsMock]);
 
-    vi.mocked(useQuery).mockReturnValue({
-      data: {
-        id: 44,
-        name: "Test Deck",
-        creatorUsername: "admin",
-        deckCards: [],
-        updatedAt: "",
-      },
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
+    queryClient.setQueryData(deckKeys.detail("44"), {
+      id: 44,
+      name: "Test Deck",
+      creatorUsername: "admin",
+      deckCards: [],
+      updatedAt: "",
+    });
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <HandSimulator />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByTestId("simulator-workspace")).toBeInTheDocument();
@@ -102,21 +95,19 @@ describe("HandSimulator page component", () => {
     const params = new URLSearchParams({ deckId: "44" });
     vi.mocked(useSearchParams).mockReturnValue([params, setSearchParamsMock]);
 
-    vi.mocked(useQuery).mockReturnValue({
-      data: {
-        id: 44,
-        name: "Test Deck",
-        creatorUsername: "admin",
-        deckCards: [],
-        updatedAt: "",
-      },
-      isLoading: false,
-    } as unknown as ReturnType<typeof useQuery>);
+    queryClient.setQueryData(deckKeys.detail("44"), {
+      id: 44,
+      name: "Test Deck",
+      creatorUsername: "admin",
+      deckCards: [],
+      updatedAt: "",
+    });
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <HandSimulator />
       </MemoryRouter>,
+      queryClient,
     );
 
     const changeDeckBtn = screen.getByRole("button", { name: /Select Another Deck/i });

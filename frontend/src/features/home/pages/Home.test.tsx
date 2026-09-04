@@ -1,9 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
+import { cardKeys, deckKeys } from "../../../services/queryKeys";
+import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
 import Home from "./Home";
+
+vi.mock("../../../features/cards", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../../features/cards")>();
+  return {
+    ...actual,
+    getCards: vi.fn().mockImplementation(() => new Promise(() => {})),
+  };
+});
+
+vi.mock("../../../features/decks", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../../features/decks")>();
+  return {
+    ...actual,
+    getDecks: vi.fn().mockImplementation(() => new Promise(() => {})),
+  };
+});
 
 vi.mock("../../../components/navigation/SearchBar", () => ({
   default: () => <div data-testid="searchbar">SearchBar</div>,
@@ -30,21 +46,14 @@ vi.mock("../../../features/cards/components/CardListItem", () => ({
 }));
 
 describe("Home page component", () => {
-  beforeEach(() => {
-    vi.mocked(useQuery).mockReset();
-  });
-
   it("should render hero headings, searchbar, and showcase", () => {
-    vi.mocked(useQuery).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      error: undefined,
-    } as unknown as ReturnType<typeof useQuery>);
+    const queryClient = createTestQueryClient();
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <Home />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByText("Step Into Your")).toBeInTheDocument();
@@ -54,24 +63,22 @@ describe("Home page component", () => {
   });
 
   it("should render trending decks when successfully fetched", () => {
-    // Mock return values:
-    // Call 1: Decks fetch
-    // Call 2: Cards spotlight fetch
-    // Call 3: Hero cards showcase fetch
-    vi.mocked(useQuery).mockImplementation(() => {
-      // Return value can be based on queryKey if needed, but since it returns mock values:
-      return {
-        data: {
-          content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
-        },
-        isLoading: false,
-      } as unknown as ReturnType<typeof useQuery>;
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(deckKeys.list({ size: "6" }), {
+      content: [{ id: 1, name: "Spellcaster Power", deckCards: [], updatedAt: "" }],
+    });
+    queryClient.setQueryData(cardKeys.list({ spotlight: true }), {
+      content: [],
+    });
+    queryClient.setQueryData(cardKeys.list({ hero: true }), {
+      content: [],
     });
 
-    render(
+    renderWithClient(
       <MemoryRouter>
         <Home />
       </MemoryRouter>,
+      queryClient,
     );
 
     expect(screen.getByTestId("deck-grid-card")).toHaveTextContent("Spellcaster Power");

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 
+import { renderWithClient } from "../../../test/setup";
 import DeckBuilder from "./DeckBuilder";
 
 vi.mock("../../../services/api", () => ({
@@ -27,13 +28,12 @@ vi.mock("../../../features/deck-builder/components/DeckSectionList", () => ({
 
 describe("DeckBuilder page component", () => {
   it("should render page layout and builder blocks", () => {
-    render(
+    renderWithClient(
       <MemoryRouter>
         <DeckBuilder />
       </MemoryRouter>,
     );
 
-    // Confirm core component grids/elements are present
     expect(screen.getByTestId("builder-filters")).toBeInTheDocument();
     expect(screen.getByTestId("card-list")).toBeInTheDocument();
     expect(screen.getAllByTestId("sections")[0]).toBeInTheDocument();
