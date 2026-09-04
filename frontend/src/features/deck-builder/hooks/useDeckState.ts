@@ -212,7 +212,7 @@ export function useDeckState(
     saveDeckMutation.mutate(payload);
   };
 
-  const isLoading = isEditMode && isDeckLoading && initialLoadedIdRef.current !== id;
+  const isLoading = isEditMode && isDeckLoading;
   const error = isEditMode ? (deckError as Error | null) : null;
 
   return {

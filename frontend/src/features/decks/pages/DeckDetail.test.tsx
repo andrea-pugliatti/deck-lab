@@ -1,14 +1,29 @@
+import { act, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useParams } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAuth } from "../../../features/auth";
 import { deckKeys } from "../../../services/queryKeys";
 import { createTestQueryClient, renderWithClient, screen } from "../../../test/setup";
+import { deleteDeck, getDeck } from "../api/deck";
 import DeckDetail from "./DeckDetail";
 
-vi.mock("../../../features/auth", () => ({
-  useAuth: vi.fn(),
-}));
+vi.mock("../api/deck", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../api/deck")>();
+  return {
+    ...actual,
+    deleteDeck: vi.fn(),
+    getDeck: vi.fn(),
+  };
+});
+
+vi.mock("../../../features/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../../features/auth")>();
+  return {
+    ...actual,
+    useAuth: vi.fn(),
+  };
+});
 
 vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
@@ -24,12 +39,40 @@ describe("DeckDetail page component", () => {
 
   beforeEach(() => {
     navigateMock.mockReset();
+    vi.mocked(deleteDeck).mockReset();
+    vi.mocked(getDeck).mockReset();
+    vi.mocked(getDeck).mockResolvedValue({
+      id: 1,
+      name: "Yugi Ultimate Deck",
+      description: "My deck description",
+      creatorUsername: "yugi",
+      formatName: "TCG",
+      deckCards: [
+        {
+          cardId: 10,
+          name: "Dark Magician",
+          quantity: 3,
+          section: "MAIN",
+          type: "Normal Monster",
+        },
+        { cardId: 11, name: "Monster Reborn", quantity: 1, section: "MAIN", type: "Spell Card" },
+      ],
+    });
     vi.mocked(useNavigate).mockReturnValue(navigateMock);
     vi.mocked(useParams).mockReturnValue({ id: "1" });
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
       user: { username: "yugi" },
     } as unknown as ReturnType<typeof useAuth>);
+
+    HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
+      this.open = true;
+      this.dispatchEvent(new Event("show"));
+    });
+    HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+      this.open = false;
+      this.dispatchEvent(new Event("close"));
+    });
   });
 
   it("should render mock deck and compute counts", () => {
@@ -68,5 +111,85 @@ describe("DeckDetail page component", () => {
     const backLink = screen.getByRole("link", { name: /Back to Decks/i });
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/decks");
+  });
+
+  it("should keep confirmation modal open with loading state and navigate on success", async () => {
+    let resolveDelete!: () => void;
+    vi.mocked(deleteDeck).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveDelete = resolve;
+      }),
+    );
+
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(deckKeys.detail("1"), {
+      id: 1,
+      name: "Yugi Ultimate Deck",
+      creatorUsername: "yugi",
+      formatName: "TCG",
+      deckCards: [],
+    });
+
+    renderWithClient(
+      <MemoryRouter>
+        <DeckDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    const deleteButton = screen.getByRole("button", { name: /Delete Deck/i });
+    fireEvent.click(deleteButton);
+
+    expect(screen.getByText("Delete Deck Blueprint")).toBeInTheDocument();
+
+    const confirmButtons = screen.getAllByRole("button", { name: /Delete Deck/i });
+    const modalConfirmButton = confirmButtons[confirmButtons.length - 1];
+    fireEvent.click(modalConfirmButton!);
+
+    expect(screen.getByText("Delete Deck Blueprint")).toBeInTheDocument();
+
+    await act(async () => {
+      resolveDelete();
+    });
+
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith("/my-decks");
+    });
+  });
+
+  it("should display error message inside modal if deletion fails", async () => {
+    vi.mocked(deleteDeck).mockRejectedValueOnce(new Error("Unable to delete deck"));
+
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(deckKeys.detail("1"), {
+      id: 1,
+      name: "Yugi Ultimate Deck",
+      creatorUsername: "yugi",
+      formatName: "TCG",
+      deckCards: [],
+    });
+
+    renderWithClient(
+      <MemoryRouter>
+        <DeckDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    const deleteButton = screen.getByRole("button", { name: /Delete Deck/i });
+    fireEvent.click(deleteButton);
+
+    expect(screen.getByText("Delete Deck Blueprint")).toBeInTheDocument();
+
+    const confirmButtons = screen.getAllByRole("button", { name: /Delete Deck/i });
+    const modalConfirmButton = confirmButtons[confirmButtons.length - 1];
+    fireEvent.click(modalConfirmButton!);
+
+    await waitFor(() => {
+      expect(deleteDeck).toHaveBeenCalledWith("1");
+      expect(screen.getByText("Unable to delete deck")).toBeInTheDocument();
+    });
+    expect(screen.getByText("Delete Deck Blueprint")).toBeInTheDocument();
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 });

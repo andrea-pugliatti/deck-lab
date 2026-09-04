@@ -35,21 +35,25 @@ export default function DeckDetail(): React.JSX.Element {
   const { user, isAuthenticated } = useAuth();
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [viewMode, setViewMode] = useViewPreference("deck-detail-view-mode", "grid");
-  const { mutate: deleteDeckMutate, isPending: isDeleting, error: deleteError } = useDeleteDeck();
+  const {
+    mutate: deleteDeckMutate,
+    isPending: isDeleting,
+    error: deleteError,
+    reset: resetDelete,
+  } = useDeleteDeck();
 
   const { data: deck, isLoading: loading, error, refetch } = useQuery(deckQueries.detail(id));
 
   /**
    * Performs the deletion of the deck by calling the {@link useDeleteDeck}
-   * mutation.  Cache invalidation and detail-query removal are handled
-   * automatically by the hook; this handler only closes the confirmation
-   * modal and navigates the user back to the deck catalog on success.
+   * mutation. The confirmation dialog remains open with a loading state
+   * during execution. On success, it closes the modal and navigates to /my-decks.
    */
   const handleDeleteModal = () => {
     if (!id) return;
-    setConfirmModalOpen(false);
     deleteDeckMutate(id, {
       onSuccess: () => {
+        setConfirmModalOpen(false);
         void navigate("/my-decks");
       },
     });
@@ -152,7 +156,7 @@ export default function DeckDetail(): React.JSX.Element {
         </div>
       </div>
 
-      {deleteError && (
+      {deleteError && !confirmModalOpen && (
         <div className="mb-6 rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400">
           {deleteError instanceof Error
             ? deleteError.message
@@ -473,14 +477,26 @@ export default function DeckDetail(): React.JSX.Element {
       </div>
       <ConfirmDialog
         isOpen={confirmModalOpen}
-        onClose={() => setConfirmModalOpen(false)}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          resetDelete();
+        }}
         onConfirm={handleDeleteModal}
         title="Delete Deck Blueprint"
         description={
           <>
-            Are you sure you want to delete{" "}
-            <span className="font-semibold text-white">"{deck?.name || "this deck"}"</span>? This
-            action cannot be undone and will permanently remove the blueprint.
+            <p>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-white">"{deck?.name || "this deck"}"</span>? This
+              action cannot be undone and will permanently remove the blueprint.
+            </p>
+            {deleteError && (
+              <div className="mt-3 rounded-lg border border-red-500/30 bg-red-950/20 p-3 text-xs text-red-400">
+                {deleteError instanceof Error
+                  ? deleteError.message
+                  : "An error occurred while deleting the deck."}
+              </div>
+            )}
           </>
         }
         confirmText="Delete Deck"

@@ -65,4 +65,80 @@ describe("useDeleteDeck hook", () => {
 
     expect(result.current.error?.message).toBe("Network deletion failure");
   });
+
+  it("should optimistically remove deck from cached lists and detail on mutate", async () => {
+    let resolveDelete!: () => void;
+    vi.mocked(deleteDeck).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveDelete = resolve;
+      }),
+    );
+
+    const listQueryKey = deckKeys.list({ size: "10" });
+    const initialPage = {
+      content: [
+        { id: 42, name: "Deck To Delete" },
+        { id: 43, name: "Deck To Keep" },
+      ],
+      page: { size: 10, totalElements: 2, totalPages: 1, number: 0 },
+    };
+    queryClient.setQueryData(listQueryKey, initialPage);
+    queryClient.setQueryData(deckKeys.detail(42), { id: 42, name: "Deck To Delete" });
+
+    const { result } = renderHook(() => useDeleteDeck(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
+
+    act(() => {
+      result.current.mutate(42);
+    });
+
+    await waitFor(() => {
+      const optimisticList = queryClient.getQueryData<typeof initialPage>(listQueryKey);
+      expect(optimisticList?.content).toHaveLength(1);
+      expect(optimisticList?.content?.[0]?.id).toBe(43);
+      expect(optimisticList?.page.totalElements).toBe(1);
+    });
+
+    act(() => {
+      resolveDelete();
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+      expect(queryClient.getQueryData(deckKeys.detail(42))).toBeUndefined();
+    });
+  });
+
+  it("should roll back cached lists when deletion fails", async () => {
+    vi.mocked(deleteDeck).mockRejectedValueOnce(new Error("Server error"));
+
+    const listQueryKey = deckKeys.list({ size: "10" });
+    const initialPage = {
+      content: [
+        { id: 42, name: "Deck To Delete" },
+        { id: 43, name: "Deck To Keep" },
+      ],
+      page: { size: 10, totalElements: 2, totalPages: 1, number: 0 },
+    };
+
+    queryClient.setQueryData(listQueryKey, initialPage);
+
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useDeleteDeck(), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
+
+    act(() => {
+      result.current.mutate(42);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+    });
+
+    expect(queryClient.getQueryData(listQueryKey)).toEqual(initialPage);
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: deckKeys.lists() });
+  });
 });
