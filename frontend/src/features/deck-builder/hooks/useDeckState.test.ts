@@ -43,6 +43,8 @@ describe("useDeckState hook", () => {
             }
           }),
           mutateAsync: vi.fn(),
+          isPending: false,
+          error: null,
         }) as unknown as ReturnType<typeof useMutation>,
     );
   });

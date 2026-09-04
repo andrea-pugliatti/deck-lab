@@ -161,14 +161,14 @@ export function useDeckState(
     onSuccess: (savedDeck) => {
       void queryClient.invalidateQueries({ queryKey: deckKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: deckKeys.all });
-      dispatch({ type: "SET_SAVE_RESULT" });
+      dispatch({ type: "SET_SUBMIT_ERROR", error: undefined });
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);
       }
     },
     onError: (err) => {
       dispatch({
-        type: "SET_SAVE_RESULT",
+        type: "SET_SUBMIT_ERROR",
         error: err instanceof Error ? err.message : "An error occurred while saving the deck.",
       });
     },
@@ -188,12 +188,13 @@ export function useDeckState(
       return;
     }
 
-    dispatch({ type: "START_SAVE" });
+    dispatch({ type: "SET_SUBMIT_ERROR", error: undefined });
 
     const isValid = await validateDeckPayload();
     if (!isValid) {
       dispatch({
-        type: "SET_SAVE_RESULT",
+        type: "SET_SUBMIT_ERROR",
+        error: undefined,
       });
       return;
     }
@@ -220,7 +221,7 @@ export function useDeckState(
     setDeckCards,
     validationErrors: state.validationErrors,
     validationSuccess: state.validationSuccess,
-    isSaving: state.isSaving,
+    isSaving: saveDeckMutation.isPending,
     isValidating: state.isValidating,
     submitError: state.submitError,
     addCard,

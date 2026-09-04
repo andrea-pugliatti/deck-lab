@@ -213,17 +213,6 @@ describe("deckReducer", () => {
     expect(state.validationErrors).toEqual([]);
   });
 
-  it("should handle START_SAVE", () => {
-    const state = deckReducer(initialState, { type: "START_SAVE" });
-    expect(state.isSaving).toBe(true);
-  });
-
-  it("should handle SET_SAVE_RESULT", () => {
-    const state = deckReducer(initialState, { type: "SET_SAVE_RESULT", error: "Save failed" });
-    expect(state.isSaving).toBe(false);
-    expect(state.submitError).toBe("Save failed");
-  });
-
   it("should handle SET_SUBMIT_ERROR", () => {
     const state = deckReducer(initialState, { type: "SET_SUBMIT_ERROR", error: "Submit failed" });
     expect(state.submitError).toBe("Submit failed");

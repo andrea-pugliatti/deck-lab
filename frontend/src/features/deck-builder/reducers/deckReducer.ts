@@ -175,7 +175,6 @@ export interface DeckState {
   deckCards: DeckCardItem[];
   validationErrors: string[];
   validationSuccess: boolean;
-  isSaving: boolean;
   isValidating: boolean;
   submitError?: string;
 }
@@ -200,8 +199,6 @@ export type DeckAction =
   | { type: "REMOVE_CARD"; cardId: number; section: CardSection }
   | { type: "START_VALIDATION" }
   | { type: "SET_VALIDATION_RESULT"; ok: boolean; errors: string[] }
-  | { type: "START_SAVE" }
-  | { type: "SET_SAVE_RESULT"; error?: string }
   | { type: "SET_SUBMIT_ERROR"; error?: string };
 
 /**
@@ -214,7 +211,6 @@ export const initialState: DeckState = {
   deckCards: [],
   validationErrors: [],
   validationSuccess: false,
-  isSaving: false,
   isValidating: false,
   submitError: undefined,
 };
@@ -369,20 +365,6 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
         isValidating: false,
         validationSuccess: action.ok,
         validationErrors: action.errors,
-      };
-
-    case "START_SAVE":
-      return {
-        ...state,
-        isSaving: true,
-        submitError: undefined,
-      };
-
-    case "SET_SAVE_RESULT":
-      return {
-        ...state,
-        isSaving: false,
-        submitError: action.error,
       };
 
     case "SET_SUBMIT_ERROR":
