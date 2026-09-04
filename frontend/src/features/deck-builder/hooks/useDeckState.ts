@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import { deckReducer, initialState } from "../../../features/deck-builder/reducers/deckReducer";
 import { getDeck } from "../../../features/decks";
@@ -75,6 +75,7 @@ export function useDeckState(
   const isEditMode = !!id;
 
   const [state, dispatch] = useReducer(deckReducer, initialState);
+  const [submitError, setSubmitError] = useState<string>();
 
   const queryClient = useQueryClient();
 
@@ -134,6 +135,7 @@ export function useDeckState(
 
   const validateDeckPayload = async (): Promise<boolean> => {
     dispatch({ type: "START_VALIDATION" });
+    setSubmitError(undefined);
 
     const payload = buildDeckPayload(
       state.name,
@@ -161,41 +163,33 @@ export function useDeckState(
     onSuccess: (savedDeck) => {
       void queryClient.invalidateQueries({ queryKey: deckKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: deckKeys.all });
-      dispatch({ type: "SET_SUBMIT_ERROR", error: undefined });
+      setSubmitError(undefined);
       if (onSaveSuccess) {
         onSaveSuccess(savedDeck);
       }
     },
     onError: (err) => {
-      dispatch({
-        type: "SET_SUBMIT_ERROR",
-        error: err instanceof Error ? err.message : "An error occurred while saving the deck.",
-      });
+      setSubmitError(
+        err instanceof Error ? err.message : "An error occurred while saving the deck.",
+      );
     },
   });
 
   const saveDeck = async () => {
     if (!state.name.trim()) {
-      dispatch({ type: "SET_SUBMIT_ERROR", error: "Deck name is required." });
+      setSubmitError("Deck name is required.");
       return;
     }
 
     if (state.description.length > 255) {
-      dispatch({
-        type: "SET_SUBMIT_ERROR",
-        error: "Strategy/notes must be 255 characters or less.",
-      });
+      setSubmitError("Strategy/notes must be 255 characters or less.");
       return;
     }
 
-    dispatch({ type: "SET_SUBMIT_ERROR", error: undefined });
+    setSubmitError(undefined);
 
     const isValid = await validateDeckPayload();
     if (!isValid) {
-      dispatch({
-        type: "SET_SUBMIT_ERROR",
-        error: undefined,
-      });
       return;
     }
 
@@ -223,7 +217,7 @@ export function useDeckState(
     validationSuccess: state.validationSuccess,
     isSaving: saveDeckMutation.isPending,
     isValidating: state.isValidating,
-    submitError: state.submitError,
+    submitError,
     addCard,
     updateQuantity,
     removeCard,

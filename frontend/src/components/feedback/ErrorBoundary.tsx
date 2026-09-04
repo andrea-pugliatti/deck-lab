@@ -5,6 +5,7 @@ import ErrorAlert from "./ErrorAlert";
 interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
+  onReset?: () => void;
 }
 
 interface ErrorBoundaryState {
@@ -30,8 +31,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   private handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
-    window.location.reload();
+    if (this.props.onReset) {
+      this.props.onReset();
+      this.setState({ hasError: false, error: undefined });
+    } else {
+      this.setState({ hasError: false, error: undefined });
+      window.location.reload();
+    }
   };
 
   public override render() {

@@ -176,7 +176,6 @@ export interface DeckState {
   validationErrors: string[];
   validationSuccess: boolean;
   isValidating: boolean;
-  submitError?: string;
 }
 
 /**
@@ -198,8 +197,7 @@ export type DeckAction =
   | { type: "UPDATE_QUANTITY"; cardId: number; section: CardSection; delta: number }
   | { type: "REMOVE_CARD"; cardId: number; section: CardSection }
   | { type: "START_VALIDATION" }
-  | { type: "SET_VALIDATION_RESULT"; ok: boolean; errors: string[] }
-  | { type: "SET_SUBMIT_ERROR"; error?: string };
+  | { type: "SET_VALIDATION_RESULT"; ok: boolean; errors: string[] };
 
 /**
  * Initial empty state configuration for the deck editor.
@@ -212,7 +210,6 @@ export const initialState: DeckState = {
   validationErrors: [],
   validationSuccess: false,
   isValidating: false,
-  submitError: undefined,
 };
 
 /**
@@ -356,7 +353,6 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
         isValidating: true,
         validationErrors: [],
         validationSuccess: false,
-        submitError: undefined,
       };
 
     case "SET_VALIDATION_RESULT":
@@ -365,12 +361,6 @@ export function deckReducer(state: DeckState, action: DeckAction): DeckState {
         isValidating: false,
         validationSuccess: action.ok,
         validationErrors: action.errors,
-      };
-
-    case "SET_SUBMIT_ERROR":
-      return {
-        ...state,
-        submitError: action.error,
       };
 
     default: {

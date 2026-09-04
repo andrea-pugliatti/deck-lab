@@ -213,11 +213,6 @@ describe("deckReducer", () => {
     expect(state.validationErrors).toEqual([]);
   });
 
-  it("should handle SET_SUBMIT_ERROR", () => {
-    const state = deckReducer(initialState, { type: "SET_SUBMIT_ERROR", error: "Submit failed" });
-    expect(state.submitError).toBe("Submit failed");
-  });
-
   describe("getFormatRules", () => {
     it("should return correct rules for TCG and OCG", () => {
       expect(getFormatRules("TCG")).toEqual(DEFAULT_RULES);

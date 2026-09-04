@@ -128,6 +128,10 @@ vi.mock("@tanstack/react-query", () => ({
   },
   QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
   keepPreviousData: () => undefined,
-  QueryErrorResetBoundary: ({ children }: { children: React.ReactNode }) => children,
+  QueryErrorResetBoundary: ({
+    children,
+  }: {
+    children: (props: { reset: () => void }) => React.ReactNode;
+  }) => children({ reset: vi.fn() }),
   useQueryErrorResetBoundary: () => ({ reset: vi.fn() }),
 }));
