@@ -136,7 +136,7 @@ export default function DeckGridCard({
   );
 
   const containerClasses =
-    "deck-card-base hover-hologram p-5 flex flex-col justify-between min-h-56 group";
+    "deck-card-base hover-side-gold hover-hologram p-5 flex flex-col justify-between min-h-56 group";
 
   if (onSelect) {
     return (

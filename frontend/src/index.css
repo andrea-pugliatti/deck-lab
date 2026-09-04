@@ -186,7 +186,9 @@
     border-color: color-mix(in srgb, var(--color-cyan-accent) 50%, transparent);
     box-shadow: var(--shadow-glow-cyan);
   }
+}
 
+@utility hover-side-gold {
   &::before {
     content: "";
     position: absolute;

@@ -123,7 +123,7 @@ export default function DeckListCard({
   );
 
   const containerClasses =
-    "deck-card-base hover-hologram p-4 flex items-center justify-between group";
+    "deck-card-base hover-side-gold hover-hologram p-4 flex items-center justify-between group";
 
   if (onSelect) {
     return (
