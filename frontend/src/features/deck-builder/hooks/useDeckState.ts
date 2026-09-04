@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 import { deckReducer, initialState } from "../../../features/deck-builder/reducers/deckReducer";
 import { saveDeck as saveDeckService, validateDeck } from "../../../features/decks";
@@ -39,6 +39,8 @@ const buildDeckPayload = (
  */
 export interface UseDeckStateReturn {
   isEditMode: boolean;
+  isLoading: boolean;
+  error: Error | null;
   name: string;
   setName: (name: string) => void;
   description: string;
@@ -73,17 +75,22 @@ export function useDeckState(
   onSaveSuccess?: (savedDeck: Deck) => void,
 ): UseDeckStateReturn {
   const isEditMode = !!id;
+  const initialLoadedIdRef = useRef<string | null>(null);
 
   const [state, dispatch] = useReducer(deckReducer, initialState);
   const [submitError, setSubmitError] = useState<string>();
 
   const queryClient = useQueryClient();
 
-  // Fetch Deck for Edit Mode
-  const { data: deckData } = useQuery(deckQueries.detail(id));
+  const {
+    data: deckData,
+    isLoading: isDeckLoading,
+    error: deckError,
+  } = useQuery(deckQueries.detail(id));
 
   useEffect(() => {
-    if (deckData) {
+    if (deckData && initialLoadedIdRef.current !== id) {
+      initialLoadedIdRef.current = id ?? null;
       dispatch({
         type: "LOAD_DECK",
         name: deckData.name,
@@ -99,7 +106,7 @@ export function useDeckState(
         })),
       });
     }
-  }, [deckData]);
+  }, [deckData, id]);
 
   const setName = (name: string) => {
     dispatch({ type: "SET_NAME", name });
@@ -158,6 +165,7 @@ export function useDeckState(
     },
     onSuccess: (savedDeck) => {
       const savedId = String(savedDeck.id);
+      initialLoadedIdRef.current = savedId;
       queryClient.setQueryData(deckKeys.detail(savedId), savedDeck);
       void queryClient.invalidateQueries({ queryKey: deckKeys.detail(savedId) });
       if (id && id !== savedId) {
@@ -204,8 +212,13 @@ export function useDeckState(
     saveDeckMutation.mutate(payload);
   };
 
+  const isLoading = isEditMode && isDeckLoading && initialLoadedIdRef.current !== id;
+  const error = isEditMode ? (deckError as Error | null) : null;
+
   return {
     isEditMode,
+    isLoading,
+    error,
     name: state.name,
     setName,
     description: state.description,

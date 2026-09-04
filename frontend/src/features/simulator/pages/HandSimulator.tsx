@@ -24,11 +24,7 @@ export default function HandSimulator(): React.JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const deckId = searchParams.get("deckId");
 
-  const {
-    data: deck,
-    isLoading: loading,
-    error,
-  } = useQuery(deckQueries.detail(deckId));
+  const { data: deck, isLoading: loading, error } = useQuery(deckQueries.detail(deckId));
 
   const handleSelectDeck = (id: number) => {
     setSearchParams(

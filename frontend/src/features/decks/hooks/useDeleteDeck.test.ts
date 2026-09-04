@@ -1,9 +1,9 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { deleteDeck } from "../api/deck";
 import { deckKeys } from "../../../services/queryKeys";
 import { createQueryClientWrapper, createTestQueryClient } from "../../../test/setup";
+import { deleteDeck } from "../api/deck";
 import { useDeleteDeck } from "./useDeleteDeck";
 
 vi.mock("../api/deck", () => ({

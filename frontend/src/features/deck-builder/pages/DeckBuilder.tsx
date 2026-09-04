@@ -2,6 +2,8 @@ import { ArrowLeft, RotateCcw, Sparkles, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
+import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Pagination from "../../../components/navigation/Pagination";
 import Button from "../../../components/ui/Button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
@@ -47,6 +49,8 @@ function DeckBuilderContent(): React.JSX.Element {
 
   const {
     isEditMode,
+    isLoading,
+    error,
     deckCards,
     isValidating,
     isSaving,
@@ -152,6 +156,29 @@ function DeckBuilderContent(): React.JSX.Element {
       fileInputRef.current.value = "";
     }
   };
+
+  if (isEditMode && isLoading) {
+    return <LoadingSpinner size="lg" className="min-h-[60vh]" />;
+  }
+
+  if (isEditMode && error) {
+    return (
+      <div className="mx-auto max-w-3xl px-6 py-12">
+        <Link
+          to="/my-decks"
+          viewTransition
+          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Decks</span>
+        </Link>
+        <ErrorAlert
+          title="Failed to load deck for editing"
+          message={error.message || "Deck not found"}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">

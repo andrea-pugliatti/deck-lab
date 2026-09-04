@@ -186,10 +186,88 @@ describe("useDeckState hook", () => {
 
     expect(result.current.submitError).toBeUndefined();
     expect(saveDeckService).toHaveBeenCalled();
-    expect(setQueryDataSpy).toHaveBeenCalledWith(deckKeys.detail("10"), { id: 10, name: "Super Deck" });
+    expect(setQueryDataSpy).toHaveBeenCalledWith(deckKeys.detail("10"), {
+      id: 10,
+      name: "Super Deck",
+    });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: deckKeys.detail("10") });
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: deckKeys.lists() });
     expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: deckKeys.all });
     expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: deckKeys.detail(undefined) });
+  });
+
+  it("should expose isLoading true while fetching deck in edit mode", async () => {
+    let resolveDeck!: (value: unknown) => void;
+    const deckPromise = new Promise((resolve) => {
+      resolveDeck = resolve;
+    });
+    vi.mocked(getDeck).mockReturnValueOnce(deckPromise as never);
+
+    const { result } = renderHook(() => useDeckState("12"), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
+
+    expect(result.current.isEditMode).toBe(true);
+    expect(result.current.isLoading).toBe(true);
+
+    act(() => {
+      resolveDeck({
+        id: 12,
+        name: "Loaded Deck",
+        description: "Desc",
+        formatName: "TCG",
+        deckCards: [],
+      });
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.name).toBe("Loaded Deck");
+    });
+  });
+
+  it("should expose error when loading deck fails in edit mode", async () => {
+    vi.mocked(getDeck).mockRejectedValueOnce(new Error("Network failure"));
+
+    const { result } = renderHook(() => useDeckState("12"), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
+
+    await waitFor(() => {
+      expect(result.current.error).toBeTruthy();
+      expect(result.current.error?.message).toBe("Network failure");
+    });
+  });
+
+  it("should not overwrite user edits when query refetches in background", async () => {
+    const mockDeck = {
+      id: 12,
+      name: "Original Deck",
+      description: "Original desc",
+      formatName: "Goat" as const,
+      deckCards: [],
+    };
+    vi.mocked(getDeck).mockResolvedValue(mockDeck);
+
+    const { result } = renderHook(() => useDeckState("12"), {
+      wrapper: createQueryClientWrapper(queryClient),
+    });
+
+    await waitFor(() => {
+      expect(result.current.name).toBe("Original Deck");
+    });
+
+    act(() => {
+      result.current.setName("User Modified Deck");
+      result.current.setDescription("User modified notes");
+    });
+
+    expect(result.current.name).toBe("User Modified Deck");
+    expect(result.current.description).toBe("User modified notes");
+
+    await queryClient.refetchQueries({ queryKey: deckKeys.detail("12") });
+
+    expect(result.current.name).toBe("User Modified Deck");
+    expect(result.current.description).toBe("User modified notes");
   });
 });

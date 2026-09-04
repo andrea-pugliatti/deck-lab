@@ -54,12 +54,7 @@ export default function CardDetail(): React.JSX.Element {
     }
   };
 
-  const {
-    data: card,
-    isLoading: loading,
-    error,
-    refetch,
-  } = useQuery(cardQueries.detail(id));
+  const { data: card, isLoading: loading, error, refetch } = useQuery(cardQueries.detail(id));
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;

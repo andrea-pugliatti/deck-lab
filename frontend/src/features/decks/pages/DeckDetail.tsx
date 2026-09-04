@@ -37,12 +37,7 @@ export default function DeckDetail(): React.JSX.Element {
   const [viewMode, setViewMode] = useViewPreference("deck-detail-view-mode", "grid");
   const { mutate: deleteDeckMutate, isPending: isDeleting, error: deleteError } = useDeleteDeck();
 
-  const {
-    data: deck,
-    isLoading: loading,
-    error,
-    refetch,
-  } = useQuery(deckQueries.detail(id));
+  const { data: deck, isLoading: loading, error, refetch } = useQuery(deckQueries.detail(id));
 
   /**
    * Performs the deletion of the deck by calling the {@link useDeleteDeck}

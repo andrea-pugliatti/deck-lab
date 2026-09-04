@@ -73,8 +73,7 @@ export const cardQueries = {
   suggestions: (query: string) =>
     queryOptions({
       queryKey: cardKeys.suggestions(query.trim()),
-      queryFn: ({ signal }) =>
-        getSuggestions(getCardSuggestionsEndpoint(query.trim()), signal),
+      queryFn: ({ signal }) => getSuggestions(getCardSuggestionsEndpoint(query.trim()), signal),
       enabled: query.trim().length >= 2,
       staleTime: 60 * 1000,
     }),

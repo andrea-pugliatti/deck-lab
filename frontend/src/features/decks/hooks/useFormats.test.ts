@@ -1,9 +1,9 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getFormats } from "../api/deck";
 import { formatKeys } from "../../../services/queryKeys";
 import { createQueryClientWrapper, createTestQueryClient } from "../../../test/setup";
+import { getFormats } from "../api/deck";
 import { useFormats } from "./useFormats";
 
 vi.mock("../api/deck", () => ({
