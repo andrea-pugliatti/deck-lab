@@ -1,7 +1,9 @@
-import { AlertTriangle, HelpCircle, X } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import { AlertTriangle, HelpCircle } from "lucide-react";
+import React from "react";
 
 import Button from "./Button";
+import Modal from "./Modal";
+import ModalCloseButton from "./ModalCloseButton";
 
 /**
  * Props for the {@link ConfirmDialog} component.
@@ -20,7 +22,7 @@ export interface ConfirmDialogProps {
 
 /**
  * A modal dialog component for requesting user confirmation.
- * Built using the HTML `<dialog>` element, fully keyboard accessible,
+ * Built using the shared `<Modal>` component, fully keyboard accessible,
  * supports backdrop blur, theme styling (info, danger, warning), and loading states.
  */
 export default function ConfirmDialog({
@@ -34,37 +36,6 @@ export default function ConfirmDialog({
   variant = "primary",
   isLoading = false,
 }: ConfirmDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    if (isOpen) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-    } else {
-      if (dialog.open) {
-        dialog.close();
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const handleClose = () => {
-      onClose();
-    };
-
-    dialog.addEventListener("close", handleClose);
-    return () => {
-      dialog.removeEventListener("close", handleClose);
-    };
-  }, [onClose]);
-
   // Determine button variants and icons based on dialog variant
   let confirmButtonVariant:
     | "primary"
@@ -96,70 +67,56 @@ export default function ConfirmDialog({
     radialAccentClass = "from-cyan-accent/5";
   }
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === dialogRef.current) {
-      dialogRef.current?.close();
-    }
-  };
-
   return (
-    <dialog
-      ref={dialogRef}
-      onClick={handleBackdropClick}
-      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+      containerClassName="animate-fade-in p-6"
+      ariaLabel={title}
     >
-      <div className="bg-dark-surface border-border-dim animate-fade-in relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl">
-        {/* Glow effect based on variant */}
+      {/* Glow effect based on variant */}
+      <div
+        className={`absolute inset-0 bg-radial ${radialAccentClass} pointer-events-none via-transparent to-transparent`}
+      ></div>
+
+      <div className="relative z-10 mb-6 flex items-start gap-4">
         <div
-          className={`absolute inset-0 bg-radial ${radialAccentClass} pointer-events-none via-transparent to-transparent`}
-        ></div>
-
-        <div className="relative z-10 mb-6 flex items-start gap-4">
-          <div
-            className={`bg-dark-surface-elevated border-border-dim/60 rounded-xl border p-3 ${iconColorClass} shrink-0`}
-          >
-            <Icon className="size-6" aria-hidden="true" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-display mb-1.5 text-lg leading-tight font-bold text-slate-100">
-              {title}
-            </h3>
-            <div className="text-sm leading-relaxed font-light text-slate-400">{description}</div>
-          </div>
-          <button
-            type="button"
-            aria-label="Close dialog"
-            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-            disabled={isLoading}
-            onClick={() => dialogRef.current?.close()}
-          >
-            <X className="size-4" aria-hidden="true" />
-          </button>
+          className={`bg-dark-surface-elevated border-border-dim/60 rounded-xl border p-3 ${iconColorClass} shrink-0`}
+        >
+          <Icon className="size-6" aria-hidden="true" />
         </div>
-
-        <div className="relative z-10 flex justify-end gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => dialogRef.current?.close()}
-            disabled={isLoading}
-            size="md"
-            className="flex-1 sm:flex-initial"
-          >
-            {cancelText}
-          </Button>
-          <Button
-            type="button"
-            variant={confirmButtonVariant}
-            onClick={onConfirm}
-            isLoading={isLoading}
-            size="md"
-            className="flex-1 sm:flex-initial"
-          >
-            {confirmText}
-          </Button>
+        <div className="min-w-0 flex-1">
+          <h3 className="font-display mb-1.5 text-lg leading-tight font-bold text-slate-100">
+            {title}
+          </h3>
+          <div className="text-sm leading-relaxed font-light text-slate-400">{description}</div>
         </div>
+        <ModalCloseButton disabled={isLoading} onClick={onClose} iconSize="sm" />
       </div>
-    </dialog>
+
+      <div className="relative z-10 flex justify-end gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={isLoading}
+          size="md"
+          className="flex-1 sm:flex-initial"
+        >
+          {cancelText}
+        </Button>
+        <Button
+          type="button"
+          variant={confirmButtonVariant}
+          onClick={onConfirm}
+          isLoading={isLoading}
+          size="md"
+          className="flex-1 sm:flex-initial"
+        >
+          {confirmText}
+        </Button>
+      </div>
+    </Modal>
   );
 }

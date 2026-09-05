@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, HelpCircle, Sparkles, Wand2, X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { AlertTriangle, HelpCircle, Sparkles, Wand2 } from "lucide-react";
+import React, { useState } from "react";
 
 import Button from "../../../../components/ui/Button";
 import Label from "../../../../components/ui/Label";
+import Modal from "../../../../components/ui/Modal";
+import ModalCloseButton from "../../../../components/ui/ModalCloseButton";
 import Select from "../../../../components/ui/Select";
 import Textarea from "../../../../components/ui/Textarea";
 import { useFormats } from "../../../../features/decks/hooks/useFormats";
@@ -51,7 +53,6 @@ export default function AiDeckWizard({
   const [error, setError] = useState<string>();
   const [warnings, setWarnings] = useState<string[]>([]);
   const { mutate: generateDeck, isPending: loading, reset: resetMutation } = useGenerateAiDeck();
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const { data: archetypesData } = useQuery(metaQueries.archetypes());
   const { formats: formatsData } = useFormats();
@@ -74,36 +75,7 @@ export default function AiDeckWizard({
     }
   }
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    if (isOpen) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-    } else {
-      if (dialog.open) {
-        dialog.close();
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const handleClose = () => {
-      onClose();
-    };
-
-    dialog.addEventListener("close", handleClose);
-    return () => {
-      dialog.removeEventListener("close", handleClose);
-    };
-  }, [onClose]);
-
-  const handleGenerate = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleGenerate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!archetype.trim()) {
       setError("Please specify an archetype first.");
@@ -132,7 +104,7 @@ export default function AiDeckWizard({
           if (result.validationWarnings && result.validationWarnings.length > 0) {
             setWarnings(result.validationWarnings);
           } else {
-            dialogRef.current?.close();
+            onClose();
           }
         },
         onError: (err) => {
@@ -144,116 +116,102 @@ export default function AiDeckWizard({
     );
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === dialogRef.current) {
-      dialogRef.current?.close();
-    }
-  };
-
   return (
-    <dialog
-      ref={dialogRef}
-      onClick={handleBackdropClick}
-      className="max-h-[90vh] w-full max-w-lg overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="lg"
+      containerClassName="p-6 overflow-y-auto"
+      ariaLabel="AI Deck Generator Wizard"
     >
-      <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
-        <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="text-gold-accent size-5" aria-hidden="true" />
-            <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
-          </div>
-          <button
-            type="button"
-            aria-label="Close dialog"
-            className="focus-visible:ring-cyan-accent cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-            disabled={loading}
-            onClick={() => dialogRef.current?.close()}
-          >
-            <X className="size-5" aria-hidden="true" />
-          </button>
+      <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="text-gold-accent size-5" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
         </div>
+        <ModalCloseButton disabled={loading} onClick={onClose} />
+      </div>
 
-        {error && (
-          <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
-            <AlertTriangle className="size-4 shrink-0 text-red-500" />
-            <span>{error}</span>
-          </div>
-        )}
+      {error && (
+        <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
+          <AlertTriangle className="size-4 shrink-0 text-red-500" />
+          <span>{error}</span>
+        </div>
+      )}
 
-        {warnings.length > 0 && <WizardWarnings warnings={warnings} onClose={onClose} />}
+      {warnings.length > 0 && <WizardWarnings warnings={warnings} onClose={onClose} />}
 
-        {loading ? (
-          <WizardLoading />
-        ) : (
-          !warnings.length && (
-            <form onSubmit={handleGenerate} className="flex-1 space-y-4">
-              <ArchetypeAutocomplete
-                value={archetype}
-                onChange={setArchetype}
+      {loading ? (
+        <WizardLoading />
+      ) : (
+        !warnings.length && (
+          <form onSubmit={handleGenerate} className="flex-1 space-y-4">
+            <ArchetypeAutocomplete
+              value={archetype}
+              onChange={setArchetype}
+              disabled={loading}
+              archetypes={archetypesData || []}
+            />
+
+            <div>
+              <Label htmlFor="format">Format rules</Label>
+              <Select
+                id="format"
+                value={formatName}
+                onChange={(e) => setFormatName(e.target.value as Format)}
                 disabled={loading}
-                archetypes={archetypesData || []}
-              />
+                className="mt-1"
+              >
+                {formats.map((f) => (
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="format">Format rules</Label>
-                <Select
-                  id="format"
-                  value={formatName}
-                  onChange={(e) => setFormatName(e.target.value as Format)}
-                  disabled={loading}
-                  className="mt-1"
-                >
-                  {formats.map((f) => (
-                    <option key={f} value={f}>
-                      {f}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+            <StrategySelector value={strategy} onChange={setStrategy} disabled={loading} />
 
-              <StrategySelector value={strategy} onChange={setStrategy} disabled={loading} />
-
-              <div>
-                <div className="mb-1 flex items-center gap-1.5">
-                  <Label htmlFor="customPrompt" className="mb-0">
-                    Custom Rules / Instructions (Optional)
-                  </Label>
-                  <div className="group relative">
-                    <HelpCircle className="size-3.5 cursor-help text-slate-400" />
-                    <div className="bg-dark-surface-elevated border-border-dim text-2xs absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center leading-normal text-slate-300 shadow-lg group-hover:block">
-                      Specify specific cards to include, budget options, or combo focuses.
-                    </div>
+            <div>
+              <div className="mb-1 flex items-center gap-1.5">
+                <Label htmlFor="customPrompt" className="mb-0">
+                  Custom Rules / Instructions (Optional)
+                </Label>
+                <div className="group relative">
+                  <HelpCircle className="size-3.5 cursor-help text-slate-400" />
+                  <div className="bg-dark-surface-elevated border-border-dim text-2xs absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center leading-normal text-slate-300 shadow-lg group-hover:block">
+                    Specify specific cards to include, budget options, or combo focuses.
                   </div>
                 </div>
-                <Textarea
-                  id="customPrompt"
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="e.g. Include Gorz, don't use traps, focus on milling..."
-                  disabled={loading}
-                  className="h-20 resize-none"
-                />
               </div>
+              <Textarea
+                id="customPrompt"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="e.g. Include Gorz, don't use traps, focus on milling..."
+                disabled={loading}
+                className="h-20 resize-none"
+              />
+            </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => dialogRef.current?.close()}
-                  disabled={loading}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" isLoading={loading} className="flex-1">
-                  <Wand2 className="size-4" />
-                  Generate Deck
-                </Button>
-              </div>
-            </form>
-          )
-        )}
-      </div>
-    </dialog>
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={loading}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" isLoading={loading} className="flex-1">
+                <Wand2 className="size-4" />
+                Generate Deck
+              </Button>
+            </div>
+          </form>
+        )
+      )}
+    </Modal>
   );
 }

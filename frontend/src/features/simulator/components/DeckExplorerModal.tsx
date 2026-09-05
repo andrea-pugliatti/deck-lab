@@ -1,7 +1,9 @@
-import { Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
+import { useState } from "react";
 
 import Input from "../../../components/ui/Input";
+import Modal from "../../../components/ui/Modal";
+import ModalCloseButton from "../../../components/ui/ModalCloseButton";
 import { API_BASE_URL } from "../../../config/env";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import type { SimulatorCardInstance } from "../../../types";
@@ -32,23 +34,11 @@ export default function DeckExplorerModal({
   handleActionFromExplorer,
 }: DeckExplorerModalProps) {
   const [deckSearchQuery, setDeckSearchQuery] = useState("");
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-      const handleClose = () => {
-        setShowDeckExplorer(false);
-      };
-      dialog.addEventListener("close", handleClose);
-      return () => {
-        dialog.removeEventListener("close", handleClose);
-      };
-    }
-  }, [setShowDeckExplorer]);
+  const handleClose = () => {
+    setDeckSearchQuery("");
+    setShowDeckExplorer(false);
+  };
 
   const filteredDeckExplorerCards = !deckSearchQuery.trim()
     ? deck
@@ -58,126 +48,107 @@ export default function DeckExplorerModal({
           c.type?.toLowerCase().includes(deckSearchQuery.toLowerCase()),
       );
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === dialogRef.current) {
-      dialogRef.current?.close();
-    }
-  };
-
   return (
-    <dialog
-      ref={dialogRef}
-      onClick={handleBackdropClick}
-      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
+    <Modal
+      isOpen={true}
+      onClose={handleClose}
+      size="4xl"
+      containerClassName="max-h-[80vh]"
+      ariaLabel="Search Deck"
     >
-      <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">
-        <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
+      <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
 
-        <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
-          <div>
-            <h3 className="font-display flex items-center gap-2 text-lg font-bold text-white">
-              <Search className="text-cyan-accent size-5" aria-hidden="true" />
-              SEARCH DECK ({deck.length} CARDS REMAINING)
-            </h3>
-            <p className="mt-0.5 text-xs leading-none text-slate-500">
-              Simulate searching your deck. Choose a card to move into a game zone.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setDeckSearchQuery("");
-              dialogRef.current?.close();
-            }}
-            aria-label="Close dialog"
-            className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:outline-hidden"
-            type="button"
-          >
-            <X className="size-5" aria-hidden="true" />
-          </button>
+      <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
+        <div>
+          <h3 className="font-display flex items-center gap-2 text-lg font-bold text-white">
+            <Search className="text-cyan-accent size-5" aria-hidden="true" />
+            SEARCH DECK ({deck.length} CARDS REMAINING)
+          </h3>
+          <p className="mt-0.5 text-xs leading-none text-slate-500">
+            Simulate searching your deck. Choose a card to move into a game zone.
+          </p>
         </div>
-
-        <div className="border-border-dim/30 border-b p-4">
-          <Input
-            type="text"
-            placeholder="Search remaining deck cards..."
-            value={deckSearchQuery}
-            onChange={(e) => setDeckSearchQuery(e.target.value)}
-            icon={<Search className="size-4 text-slate-500" />}
-            containerClassName="w-full bg-slate-950"
-          />
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6">
-          {filteredDeckExplorerCards.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
-              {filteredDeckExplorerCards.map((card) => {
-                const { borderColor: borderC } = getCardTheme(card.type);
-
-                return (
-                  <div
-                    key={card.uniqId}
-                    className="bg-dark-surface-elevated/20 border-border-dim/40 hover:border-cyan-accent/30 group/searchcard flex flex-col gap-2 rounded-xl border p-2 transition-all duration-200"
-                  >
-                    <div
-                      className={`aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950 ${borderC}`}
-                    >
-                      {card.imageUrl ? (
-                        <img
-                          src={`${API_BASE_URL}/api/${card.imageUrl}`}
-                          alt={card.name}
-                          className="size-full object-cover"
-                        />
-                      ) : (
-                        <div className="bg-dark-surface-elevated text-2xs flex size-full items-center justify-center p-2 text-center text-slate-500">
-                          {card.name}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Search Card Actions */}
-                    <div className="space-y-1">
-                      <button
-                        onClick={() => {
-                          handleActionFromExplorer(card, "hand");
-                          setDeckSearchQuery("");
-                          dialogRef.current?.close();
-                        }}
-                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
-                      >
-                        To Hand
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleActionFromExplorer(card, "field");
-                          setDeckSearchQuery("");
-                          dialogRef.current?.close();
-                        }}
-                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg focus-visible:ring-gold-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
-                      >
-                        To Field
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleActionFromExplorer(card, "graveyard");
-                          setDeckSearchQuery("");
-                          dialogRef.current?.close();
-                        }}
-                        className="focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700 focus-visible:ring-1 focus-visible:outline-hidden"
-                      >
-                        To GY
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="py-16 text-center text-xs text-slate-400">
-              No matching cards remaining in the deck.
-            </div>
-          )}
-        </div>
+        <ModalCloseButton onClick={handleClose} />
       </div>
-    </dialog>
+
+      <div className="border-border-dim/30 border-b p-4">
+        <Input
+          type="text"
+          placeholder="Search remaining deck cards..."
+          value={deckSearchQuery}
+          onChange={(e) => setDeckSearchQuery(e.target.value)}
+          icon={<Search className="size-4 text-slate-500" />}
+          containerClassName="w-full bg-slate-950"
+        />
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-6">
+        {filteredDeckExplorerCards.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
+            {filteredDeckExplorerCards.map((card) => {
+              const { borderColor: borderC } = getCardTheme(card.type);
+
+              return (
+                <div
+                  key={card.uniqId}
+                  className="bg-dark-surface-elevated/20 border-border-dim/40 hover:border-cyan-accent/30 group/searchcard flex flex-col gap-2 rounded-xl border p-2 transition-all duration-200"
+                >
+                  <div
+                    className={`aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950 ${borderC}`}
+                  >
+                    {card.imageUrl ? (
+                      <img
+                        src={`${API_BASE_URL}/api/${card.imageUrl}`}
+                        alt={card.name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-dark-surface-elevated text-2xs flex size-full items-center justify-center p-2 text-center text-slate-500">
+                        {card.name}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Search Card Actions */}
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => {
+                        handleActionFromExplorer(card, "hand");
+                        handleClose();
+                      }}
+                      className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
+                    >
+                      To Hand
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleActionFromExplorer(card, "field");
+                        handleClose();
+                      }}
+                      className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg focus-visible:ring-gold-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
+                    >
+                      To Field
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleActionFromExplorer(card, "graveyard");
+                        handleClose();
+                      }}
+                      className="focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700 focus-visible:ring-1 focus-visible:outline-hidden"
+                    >
+                      To GY
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="py-16 text-center text-xs text-slate-400">
+            No matching cards remaining in the deck.
+          </div>
+        )}
+      </div>
+    </Modal>
   );
 }
