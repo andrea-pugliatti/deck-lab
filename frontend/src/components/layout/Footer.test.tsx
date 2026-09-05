@@ -21,8 +21,16 @@ describe("Footer component", () => {
       "/simulator",
     );
     expect(screen.getByText(/unofficial fan-made simulator/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Privacy Policy" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Terms of Service" })).toBeInTheDocument();
+    const privacyBtn = screen.getByRole("button", { name: "Privacy Policy" });
+    const termsBtn = screen.getByRole("button", { name: "Terms of Service" });
+    expect(privacyBtn).toBeInTheDocument();
+    expect(privacyBtn).toHaveClass("focus-visible:outline-hidden");
+    expect(privacyBtn).toHaveClass("focus-visible:ring-2");
+    expect(privacyBtn).toHaveClass("focus-visible:ring-cyan-accent");
+    expect(termsBtn).toBeInTheDocument();
+    expect(termsBtn).toHaveClass("focus-visible:outline-hidden");
+    expect(termsBtn).toHaveClass("focus-visible:ring-2");
+    expect(termsBtn).toHaveClass("focus-visible:ring-cyan-accent");
   });
 
   it("should render current year in copy notice", () => {

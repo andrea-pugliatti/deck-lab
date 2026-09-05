@@ -61,7 +61,7 @@ export default function DeckGridCard({
           <Link
             to={`/decks/${id}`}
             viewTransition
-            className="focus-visible:ring-cyan-accent rounded-xl after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:ring-2"
+            className="focus-visible:ring-cyan-accent rounded-xl after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:outline-hidden"
           >
             {name}
           </Link>
@@ -150,7 +150,7 @@ export default function DeckGridCard({
             onSelect(id);
           }
         }}
-        className={`${containerClasses} focus-visible:ring-cyan-accent cursor-pointer focus:outline-none focus-visible:ring-2`}
+        className={`${containerClasses} focus-visible:ring-cyan-accent cursor-pointer focus-visible:ring-2 focus-visible:outline-hidden`}
       >
         {cardBody}
         {cardFooter}

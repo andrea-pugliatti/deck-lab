@@ -26,7 +26,7 @@ export default function Footer() {
           <Link
             to="/"
             viewTransition
-            className="mb-4 flex items-center gap-2 text-white no-underline"
+            className="focus-visible:ring-cyan-accent mb-4 flex items-center gap-2 rounded text-white no-underline focus-visible:ring-2 focus-visible:outline-hidden"
           >
             <img src="/logo.webp" className="h-20 w-20 rounded-full" alt="DeckLab Logo" />
             <span className="font-display text-gold-accent text-4xl font-bold tracking-wide">
@@ -48,7 +48,7 @@ export default function Footer() {
               <li key={link.to}>
                 <Link
                   to={link.to}
-                  className="hover:text-cyan-hover transition-colors duration-200"
+                  className="hover:text-cyan-hover focus-visible:ring-cyan-accent rounded transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
                   viewTransition
                 >
                   {link.label}
@@ -75,14 +75,14 @@ export default function Footer() {
           <button
             type="button"
             onClick={() => alert("Privacy policy is coming soon.")}
-            className="hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-slate-500 transition-colors duration-200"
+            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-500 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
           >
             Privacy Policy
           </button>
           <button
             type="button"
             onClick={() => alert("Terms of service are coming soon.")}
-            className="hover:text-cyan-hover cursor-pointer border-none bg-transparent p-0 text-slate-500 transition-colors duration-200"
+            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-500 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
           >
             Terms of Service
           </button>

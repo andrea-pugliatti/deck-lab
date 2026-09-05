@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           disabled={disabled}
-          className={`w-full border-none bg-transparent text-sm text-white placeholder-slate-600 outline-none disabled:cursor-not-allowed disabled:opacity-50 ${containerClassName ? className : ""}`}
+          className={`w-full border-none bg-transparent text-sm text-white placeholder-slate-600 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ${containerClassName ? className : ""}`}
           {...props}
         />
       </div>

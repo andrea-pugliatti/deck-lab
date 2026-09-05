@@ -68,7 +68,7 @@ export default function DeckExplorerModal({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
+      className="max-h-[85vh] w-full max-w-4xl overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl border shadow-2xl">
         <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
@@ -76,7 +76,7 @@ export default function DeckExplorerModal({
         <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
           <div>
             <h3 className="font-display flex items-center gap-2 text-lg font-bold text-white">
-              <Search className="text-cyan-accent h-5 w-5" />
+              <Search className="text-cyan-accent h-5 w-5" aria-hidden="true" />
               SEARCH DECK ({deck.length} CARDS REMAINING)
             </h3>
             <p className="mt-0.5 text-xs leading-none text-slate-500">
@@ -89,10 +89,10 @@ export default function DeckExplorerModal({
               dialogRef.current?.close();
             }}
             aria-label="Close dialog"
-            className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus:outline-none focus-visible:ring-2"
+            className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:outline-hidden"
             type="button"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -142,7 +142,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus:outline-none focus-visible:ring-1"
+                        className="bg-cyan-accent/10 text-cyan-accent hover:bg-cyan-accent hover:text-dark-bg focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
                       >
                         To Hand
                       </button>
@@ -152,7 +152,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg focus-visible:ring-gold-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus:outline-none focus-visible:ring-1"
+                        className="bg-gold-accent/10 text-gold-accent hover:bg-gold-accent hover:text-dark-bg focus-visible:ring-gold-accent text-2xs w-full cursor-pointer rounded py-1 font-bold tracking-wider uppercase transition-colors focus-visible:ring-1 focus-visible:outline-hidden"
                       >
                         To Field
                       </button>
@@ -162,7 +162,7 @@ export default function DeckExplorerModal({
                           setDeckSearchQuery("");
                           dialogRef.current?.close();
                         }}
-                        className="focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700 focus:outline-none focus-visible:ring-1"
+                        className="focus-visible:ring-cyan-accent text-2xs w-full cursor-pointer rounded bg-slate-800 py-1 font-bold tracking-wider text-slate-300 uppercase transition-colors hover:bg-slate-700 focus-visible:ring-1 focus-visible:outline-hidden"
                       >
                         To GY
                       </button>

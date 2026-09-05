@@ -92,7 +92,7 @@ export default function StrategySelector({
             onClick={() => onChange(strat.value)}
             disabled={disabled}
             title={strat.description}
-            className={`focus-visible:ring-cyan-accent cursor-pointer rounded-xl border px-3 py-2 text-center text-xs font-semibold transition-all select-none focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`focus-visible:ring-cyan-accent cursor-pointer rounded-xl border px-3 py-2 text-center text-xs font-semibold transition-all select-none focus-visible:ring-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 ${
               value === strat.value
                 ? "border-cyan-accent text-cyan-accent shadow-cyan-accent/10 bg-cyan-950/40 shadow-md"
                 : "border-border-dim bg-dark-surface-elevated text-slate-400 hover:border-slate-500 hover:text-slate-200"

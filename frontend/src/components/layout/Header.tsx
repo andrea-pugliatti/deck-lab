@@ -109,13 +109,17 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="bg-dark-surface-elevated/40 border-border-dim/40 cursor-pointer rounded-lg border p-2 text-slate-400 transition-colors hover:text-white md:hidden"
+          className="bg-dark-surface-elevated/40 border-border-dim/40 focus-visible:ring-cyan-accent cursor-pointer rounded-lg border p-2 text-slate-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-hidden md:hidden"
           type="button"
           aria-label="Toggle Navigation Menu"
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-nav-menu"
         >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isMobileMenuOpen ? (
+            <X className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          )}
         </button>
 
         {/* Mobile Menu */}

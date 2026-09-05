@@ -106,7 +106,7 @@ export default function ConfirmDialog({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
+      className="max-h-[90vh] w-full max-w-md overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
     >
       <div className="bg-dark-surface border-border-dim animate-fade-in relative flex flex-col overflow-hidden rounded-2xl border p-6 shadow-2xl">
         {/* Glow effect based on variant */}
@@ -118,7 +118,7 @@ export default function ConfirmDialog({
           <div
             className={`bg-dark-surface-elevated border-border-dim/60 rounded-xl border p-3 ${iconColorClass} shrink-0`}
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-6 w-6" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-display mb-1.5 text-lg leading-tight font-bold text-slate-100">
@@ -129,11 +129,11 @@ export default function ConfirmDialog({
           <button
             type="button"
             aria-label="Close dialog"
-            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50"
+            className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
             disabled={isLoading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
 

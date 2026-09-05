@@ -44,6 +44,9 @@ describe("Pagination component", () => {
 
       const nextLink = screen.getByRole("link", { name: "Next page" });
       expect(nextLink).toHaveAttribute("href", "/?page=1");
+      expect(nextLink).toHaveClass("focus-visible:outline-hidden");
+      expect(nextLink).toHaveClass("focus-visible:ring-2");
+      expect(nextLink).toHaveClass("focus-visible:ring-cyan-accent");
     });
 
     it("should render both links when on a middle page and preserve existing search params", () => {

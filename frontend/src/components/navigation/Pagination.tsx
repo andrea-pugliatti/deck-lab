@@ -45,7 +45,7 @@ export default function Pagination({
   const textClass = isCompact ? "order-1 mr-auto" : "order-2 text-sm text-slate-400 font-semibold";
 
   const baseControlClass =
-    "inline-flex items-center justify-center border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 cursor-pointer disabled:cursor-not-allowed no-underline transition-colors duration-150";
+    "inline-flex items-center justify-center border border-border-dim rounded bg-dark-surface-elevated text-slate-400 hover:text-cyan-accent disabled:opacity-30 disabled:hover:text-slate-400 cursor-pointer disabled:cursor-not-allowed no-underline transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-cyan-accent";
 
   const prevClass = `${baseControlClass} ${
     isCompact

@@ -78,6 +78,9 @@ describe("Header component", () => {
     );
 
     const toggleBtn = screen.getByLabelText("Toggle Navigation Menu");
+    expect(toggleBtn).toHaveClass("focus-visible:outline-hidden");
+    expect(toggleBtn).toHaveClass("focus-visible:ring-2");
+    expect(toggleBtn).toHaveClass("focus-visible:ring-cyan-accent");
     expect(container.querySelector("#mobile-nav-menu")).not.toBeInTheDocument();
 
     // Open menu

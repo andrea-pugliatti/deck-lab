@@ -154,22 +154,22 @@ export default function AiDeckWizard({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="max-h-[90vh] w-full max-w-lg overflow-visible border-none bg-transparent p-4 text-white outline-none backdrop:bg-black/75 backdrop:backdrop-blur-sm"
+      className="max-h-[90vh] w-full max-w-lg overflow-visible border-none bg-transparent p-4 text-white backdrop:bg-black/75 backdrop:backdrop-blur-sm focus-visible:outline-hidden"
     >
       <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
         <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-gold-accent h-5 w-5" />
+            <Sparkles className="text-gold-accent h-5 w-5" aria-hidden="true" />
             <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
           </div>
           <button
             type="button"
             aria-label="Close dialog"
-            className="focus-visible:ring-cyan-accent cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50"
+            className="focus-visible:ring-cyan-accent cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
             disabled={loading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 

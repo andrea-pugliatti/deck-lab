@@ -75,14 +75,14 @@ export default function AiSuggestionItem({
         type="button"
         onClick={() => onAdd(card)}
         disabled={isMaxCopies}
-        className={`focus-visible:ring-cyan-accent flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 ${
+        className={`focus-visible:ring-cyan-accent flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
           isMaxCopies
             ? "border-border-dim bg-dark-surface-elevated cursor-not-allowed text-slate-500 opacity-40"
             : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent cursor-pointer bg-cyan-950/10 hover:bg-cyan-950/30"
         }`}
         title={isMaxCopies ? "Max copies added" : `Add to ${card.section} Deck`}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-4 w-4" aria-hidden="true" />
       </button>
     </div>
   );

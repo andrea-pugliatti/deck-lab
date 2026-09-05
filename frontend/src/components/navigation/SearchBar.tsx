@@ -88,14 +88,17 @@ export default function SearchBar() {
         onSubmit={handleSubmit}
         className="group bg-dark-surface/60 border-border-dim/80 hover:border-cyan-accent/50 focus-within:border-cyan-accent focus-within:ring-cyan-accent/10 focus-within:bg-dark-surface-elevated shadow-search relative flex items-center rounded-xl border px-5 backdrop-blur-md transition-all duration-300 focus-within:ring-4"
       >
-        <Search className="group-focus-within:text-cyan-accent mr-3 h-5 w-5 shrink-0 text-slate-400 transition-colors duration-200" />
+        <Search
+          className="group-focus-within:text-cyan-accent mr-3 h-5 w-5 shrink-0 text-slate-400 transition-colors duration-200"
+          aria-hidden="true"
+        />
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
-          className="h-14 w-full border-none bg-transparent font-sans text-base text-white placeholder-slate-500 outline-none"
+          className="focus-visible:ring-cyan-accent h-14 w-full rounded-lg border-none bg-transparent font-sans text-base text-white placeholder-slate-500 transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
           aria-expanded={isOpen && query.trim().length >= 2}
@@ -122,7 +125,7 @@ export default function SearchBar() {
                   onClick={() => handleSuggestionClick(card.name)}
                   role="option"
                   aria-selected={focusedIndex === idx}
-                  className={`focus-visible:ring-cyan-accent flex w-full cursor-pointer items-center justify-between border-none px-4 py-2.5 text-left text-sm transition-all duration-150 outline-none focus-visible:ring-1 ${
+                  className={`focus-visible:ring-cyan-accent flex w-full cursor-pointer items-center justify-between border-none px-4 py-2.5 text-left text-sm transition-all duration-150 focus-visible:ring-1 focus-visible:outline-hidden ${
                     focusedIndex === idx
                       ? "bg-cyan-accent/15 text-cyan-accent"
                       : "hover:bg-cyan-accent/10 hover:text-cyan-accent text-slate-300"
@@ -151,7 +154,7 @@ export default function SearchBar() {
           <Link
             key={item}
             to={`/cards?q=${encodeURIComponent(item)}`}
-            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 focus-visible:ring-cyan-accent cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:shadow-cyan-950/20 focus:outline-none focus-visible:ring-2"
+            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 focus-visible:ring-cyan-accent cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:shadow-cyan-950/20 focus-visible:ring-2 focus-visible:outline-hidden"
           >
             {item}
           </Link>

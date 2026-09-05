@@ -80,7 +80,7 @@ export default function SimulatorCard({
             setIsMenuOpen(false);
           }
         }}
-        className={`focus-visible:ring-cyan-accent relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 focus:outline-none focus-visible:ring-2 ${borderColor} ${glowColor}`}
+        className={`focus-visible:ring-cyan-accent relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 focus-visible:ring-2 focus-visible:outline-hidden ${borderColor} ${glowColor}`}
       >
         {card.imageUrl ? (
           <img
@@ -105,14 +105,14 @@ export default function SimulatorCard({
       {isMenuOpen && (
         <div className="bg-dark-surface-elevated/95 border-border-dim animate-fade-in absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md">
           <div className="border-border-dim/40 text-3xs mb-1 flex items-center gap-1 border-b px-2 py-1 font-bold tracking-wider text-slate-500 uppercase">
-            <Move className="h-2.5 w-2.5" /> Move Card
+            <Move className="h-2.5 w-2.5" aria-hidden="true" /> Move Card
           </div>
 
           <div className="max-h-45 space-y-0.5 overflow-y-auto">
             {currentZone !== "hand" && (
               <button
                 onClick={() => handleAction("hand")}
-                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
               >
                 To Hand
               </button>
@@ -121,7 +121,7 @@ export default function SimulatorCard({
             {currentZone !== "field" && (
               <button
                 onClick={() => handleAction("field")}
-                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
               >
                 To Field (Summon)
               </button>
@@ -130,7 +130,7 @@ export default function SimulatorCard({
             {currentZone !== "graveyard" && (
               <button
                 onClick={() => handleAction("graveyard")}
-                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
               >
                 To Graveyard (GY)
               </button>
@@ -139,7 +139,7 @@ export default function SimulatorCard({
             {currentZone !== "banished" && (
               <button
                 onClick={() => handleAction("banished")}
-                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
               >
                 To Banished (Banish)
               </button>
@@ -149,13 +149,13 @@ export default function SimulatorCard({
               <>
                 <button
                   onClick={() => handleAction("deck-top")}
-                  className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                  className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
                 >
                   To Deck Top
                 </button>
                 <button
                   onClick={() => handleAction("deck-bottom")}
-                  className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus:outline-none focus-visible:ring-1"
+                  className="hover:bg-cyan-accent/15 focus-visible:ring-cyan-accent w-full cursor-pointer rounded-lg px-2 py-1.5 text-left text-xs font-semibold text-slate-300 transition-all hover:text-white focus-visible:ring-1 focus-visible:outline-hidden"
                 >
                   To Deck Bottom
                 </button>
