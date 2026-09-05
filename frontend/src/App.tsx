@@ -38,6 +38,10 @@ function App() {
 
                       <Route path="decks">
                         <Route index element={<Decks />} />
+                        <Route element={<ProtectedRoute />}>
+                          <Route path="create" element={<DeckBuilder />} />
+                          <Route path=":id/edit" element={<DeckBuilder />} />
+                        </Route>
                         <Route path=":id" element={<DeckDetail />} />
                       </Route>
 
@@ -45,10 +49,6 @@ function App() {
 
                       <Route element={<ProtectedRoute />}>
                         <Route path="my-decks" element={<Decks initialTab="user" />} />
-                        <Route path="decks">
-                          <Route path="create" element={<DeckBuilder />} />
-                          <Route path=":id/edit" element={<DeckBuilder />} />
-                        </Route>
                       </Route>
 
                       <Route path="*" element={<NotFound />} />
