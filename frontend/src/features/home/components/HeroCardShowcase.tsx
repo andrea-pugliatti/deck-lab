@@ -75,7 +75,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
 
   return (
     <div
-      className="relative mx-auto flex h-100 w-full max-w-105 cursor-default items-center justify-center select-none perspective-[1000px] sm:h-120"
+      className="perspective-card relative mx-auto flex h-100 w-full max-w-105 cursor-default items-center justify-center select-none sm:h-120"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -153,7 +153,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                     >
                       <div className="absolute inset-0 opacity-30"></div>
                       <FallbackIcon
-                        className={`size-10 sm:size-12 ${fallbackIconColor} drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform duration-500 group-hover:scale-110`}
+                        className={`size-10 sm:size-12 ${fallbackIconColor} drop-shadow-glow-white transition-transform duration-500 group-hover:scale-110`}
                       />
                     </div>
                   )}

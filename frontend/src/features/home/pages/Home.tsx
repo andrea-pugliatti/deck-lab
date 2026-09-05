@@ -45,8 +45,8 @@ export default function Home(): React.JSX.Element {
     <div className="relative">
       {/* Hero Section */}
       <section className="bg-dark-bg border-b-border-dim/20 relative border-b py-12 sm:py-20 lg:py-24">
-        <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-[8%] left-[70%] size-150 -translate-x-1/2 rounded-full opacity-75 blur-[130px]"></div>
-        <div className="bg-gold-accent/10 pointer-events-none absolute top-[18%] left-[15%] size-100 rounded-full opacity-50 blur-[110px]"></div>
+        <div className="bg-cyan-accent/5 animate-pulse-glow blur-ambient-lg pointer-events-none absolute top-[8%] left-[70%] size-150 -translate-x-1/2 rounded-full opacity-75"></div>
+        <div className="bg-gold-accent/10 blur-ambient pointer-events-none absolute top-[18%] left-[15%] size-100 rounded-full opacity-50"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
@@ -54,7 +54,7 @@ export default function Home(): React.JSX.Element {
               <h1 className="font-display mx-4 text-4xl leading-tight font-black tracking-wide text-white lg:text-5xl">
                 Step Into Your{" "}
               </h1>
-              <h1 className="font-display from-cyan-accent to-gold-accent mx-4 mb-6 bg-linear-to-r bg-size-[300%_auto] bg-clip-text text-7xl leading-tight font-black tracking-wide text-transparent drop-shadow-[0_0_15px_rgba(95,227,217,0.15)] lg:text-8xl">
+              <h1 className="font-display from-cyan-accent to-gold-accent drop-shadow-glow-cyan-sm mx-4 mb-6 bg-linear-to-r bg-size-[300%_auto] bg-clip-text text-7xl leading-tight font-black tracking-wide text-transparent lg:text-8xl">
                 DeckLab
               </h1>
               <p className="mx-8 mb-10 max-w-xl text-base leading-relaxed font-light text-slate-400 sm:text-lg">

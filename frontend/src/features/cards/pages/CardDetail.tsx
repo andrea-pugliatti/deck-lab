@@ -120,7 +120,7 @@ export default function CardDetail(): React.JSX.Element {
         <div className="bg-dark-surface border-border-dim grid grid-cols-1 gap-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm md:grid-cols-12 md:p-10">
           {/* Card Artwork */}
           <div
-            className="flex flex-col items-center perspective-[1000px] md:col-span-5"
+            className="perspective-card flex flex-col items-center md:col-span-5"
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}

@@ -15,11 +15,11 @@ import { getButtonClasses } from "../components/ui/Button";
 export default function NotFound(): React.JSX.Element {
   return (
     <div className="relative flex min-h-[75vh] flex-col items-center justify-center px-6 py-12 select-none">
-      <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[100px]"></div>
+      <div className="bg-cyan-accent/5 animate-pulse-glow blur-ambient-sm pointer-events-none absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60"></div>
 
       <div className="relative z-10 flex flex-col items-center gap-8">
-        <div className="perspective-[1000px]">
-          <div className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 shadow-modal hover:shadow-glow-gold-lg relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 transition-all duration-300 transform-3d hover:scale-[1.03] sm:h-105 sm:w-70 sm:p-4">
+        <div className="perspective-card">
+          <div className="hover-hologram bg-dark-bg border-border-dim/60 animate-float-center hover:border-gold-accent/40 shadow-modal hover:shadow-glow-gold-lg hover:scale-hover relative flex h-96 w-64 flex-col justify-between rounded-xl border p-3.5 transition-all duration-300 transform-3d sm:h-105 sm:w-70 sm:p-4">
             <div className="flex items-center justify-between">
               <span className="font-display truncate text-xs font-black tracking-wide text-white uppercase sm:text-sm">
                 404: Lost in Lab
@@ -42,7 +42,7 @@ export default function NotFound(): React.JSX.Element {
             <div className="border-border-dim/60 bg-dark-surface-elevated/20 group relative my-2.5 flex flex-1 items-center justify-center overflow-hidden rounded border">
               <div className="from-dark-surface-elevated/40 to-dark-bg/80 absolute inset-0 bg-radial via-transparent opacity-60"></div>
               <HelpCircle
-                className="text-cyan-accent/80 size-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:size-20"
+                className="text-cyan-accent/80 drop-shadow-glow-cyan size-16 sm:size-20"
                 aria-hidden="true"
               />
             </div>
