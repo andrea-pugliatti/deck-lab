@@ -117,7 +117,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             placeholder="Search decks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="h-4 w-4" />}
+            icon={<Search className="size-4" />}
             containerClassName="bg-dark-surface w-full md:max-w-xs"
           />
 
@@ -128,7 +128,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
               viewTransition
               className={`${getButtonClasses({ variant: "primary", size: "sm" })} shrink-0 self-end no-underline md:self-auto`}
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               <span>Construct New Deck</span>
             </Link>
           )}
@@ -224,7 +224,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             viewTransition
             className={`${getButtonClasses({ variant: "primary", size: "sm" })} shrink-0 self-end no-underline md:self-auto`}
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="size-4" />
             <span>Construct New Deck</span>
           </Link>
         </EmptyState>

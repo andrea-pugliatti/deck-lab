@@ -60,7 +60,7 @@ export default function DeckBuilderFilters({
         placeholder="Search catalog by name..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        icon={<Search className="h-4 w-4" />}
+        icon={<Search className="size-4" />}
         className="py-1.5 text-xs placeholder-slate-500"
       />
 

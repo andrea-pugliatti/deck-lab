@@ -62,7 +62,7 @@ export default function DeckSectionList({
     <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
       <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
         <span className="font-display flex items-center gap-2 text-sm font-bold text-white">
-          <span className={`h-2.5 w-2.5 rounded-full ${colorClass}`}></span>
+          <span className={`size-2.5 rounded-full ${colorClass}`}></span>
           {title}
         </span>
         <Badge variant={badgeVariant} className="text-xs font-semibold normal-case">

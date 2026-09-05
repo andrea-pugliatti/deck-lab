@@ -45,8 +45,8 @@ export default function Home(): React.JSX.Element {
     <div className="relative">
       {/* Hero Section */}
       <section className="bg-dark-bg border-b-border-dim/20 relative border-b py-12 sm:py-20 lg:py-24">
-        <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-[8%] left-[70%] h-150 w-150 -translate-x-1/2 rounded-full opacity-75 blur-[130px]"></div>
-        <div className="bg-gold-accent/10 pointer-events-none absolute top-[18%] left-[15%] h-100 w-100 rounded-full opacity-50 blur-[110px]"></div>
+        <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-[8%] left-[70%] size-150 -translate-x-1/2 rounded-full opacity-75 blur-[130px]"></div>
+        <div className="bg-gold-accent/10 pointer-events-none absolute top-[18%] left-[15%] size-100 rounded-full opacity-50 blur-[110px]"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
@@ -87,8 +87,8 @@ export default function Home(): React.JSX.Element {
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="bg-dark-surface/40 border-border-dim/60 hover:border-cyan-accent/40 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-cyan cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300">
-              <div className="bg-cyan-accent/10 text-cyan-accent group-hover:bg-cyan-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
-                <Compass className="h-6 w-6" />
+              <div className="bg-cyan-accent/10 text-cyan-accent group-hover:bg-cyan-accent/20 mb-6 flex size-12 items-center justify-center rounded-xl transition-all duration-300">
+                <Compass className="size-6" />
               </div>
               <h3 className="group-hover:text-cyan-accent mb-3 text-xl font-bold text-white transition-colors">
                 Search Everything
@@ -100,8 +100,8 @@ export default function Home(): React.JSX.Element {
             </div>
 
             <div className="bg-dark-surface/40 border-border-dim/60 hover:border-gold-accent/40 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-gold cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300">
-              <div className="bg-gold-accent/10 text-gold-accent group-hover:bg-gold-accent/20 mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300">
-                <Layers className="h-6 w-6" />
+              <div className="bg-gold-accent/10 text-gold-accent group-hover:bg-gold-accent/20 mb-6 flex size-12 items-center justify-center rounded-xl transition-all duration-300">
+                <Layers className="size-6" />
               </div>
               <h3 className="group-hover:text-gold-accent mb-3 text-xl font-bold text-white transition-colors">
                 Flexible Formats
@@ -113,8 +113,8 @@ export default function Home(): React.JSX.Element {
             </div>
 
             <div className="bg-dark-surface/40 border-border-dim/60 hover:bg-dark-surface-elevated/40 group hover:shadow-glow-red cursor-default rounded-2xl border p-8 backdrop-blur-sm transition-all duration-300 hover:border-red-500/40">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 transition-all duration-300 group-hover:bg-red-500/20">
-                <Flame className="h-6 w-6" />
+              <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-red-500/10 text-red-500 transition-all duration-300 group-hover:bg-red-500/20">
+                <Flame className="size-6" />
               </div>
               <h3 className="mb-3 text-xl font-bold text-white transition-colors group-hover:text-red-500">
                 Spotlight & Trends
@@ -135,7 +135,7 @@ export default function Home(): React.JSX.Element {
             <div className="flex items-center gap-3">
               <div className="bg-gold-accent h-6 w-1 rounded-full"></div>
               <h2 className="font-display flex items-center gap-2 text-lg font-bold tracking-wider text-white lg:text-2xl">
-                <Trophy className="text-gold-accent h-5 w-5" /> Trending Decks
+                <Trophy className="text-gold-accent size-5" /> Trending Decks
               </h2>
             </div>
             <Link
@@ -207,7 +207,7 @@ export default function Home(): React.JSX.Element {
             <div className="flex items-center gap-3">
               <div className="bg-cyan-accent h-6 w-1 rounded-full"></div>
               <h2 className="font-display flex items-center gap-2 text-lg font-bold tracking-wider text-white lg:text-2xl">
-                <Sparkles className="text-cyan-accent h-5 w-5" /> Card Spotlight
+                <Sparkles className="text-cyan-accent size-5" /> Card Spotlight
               </h2>
             </div>
             <Link

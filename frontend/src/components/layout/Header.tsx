@@ -57,7 +57,7 @@ export default function Header() {
     <header className="bg-dark-bg/85 border-b-border-dim sticky top-0 z-50 w-full border-b backdrop-blur-md">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" viewTransition className="flex items-center gap-2 text-white no-underline">
-          <img src="/logo.webp" className="h-12 w-12 rounded-full" alt="DeckLab Logo" />
+          <img src="/logo.webp" className="size-12 rounded-full" alt="DeckLab Logo" />
           <span className="font-display text-gold-accent text-2xl font-bold tracking-wide">
             DeckLab
           </span>
@@ -116,9 +116,9 @@ export default function Header() {
           aria-controls="mobile-nav-menu"
         >
           {isMobileMenuOpen ? (
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="size-5" aria-hidden="true" />
           ) : (
-            <Menu className="h-5 w-5" aria-hidden="true" />
+            <Menu className="size-5" aria-hidden="true" />
           )}
         </button>
 

@@ -87,7 +87,7 @@ export default function DeckDetail(): React.JSX.Element {
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft
-            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            className="size-4 transition-transform group-hover:-translate-x-1"
             aria-hidden="true"
           />
           <span>Back to Decks</span>
@@ -135,7 +135,7 @@ export default function DeckDetail(): React.JSX.Element {
           className="group inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft
-            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            className="size-4 transition-transform group-hover:-translate-x-1"
             aria-hidden="true"
           />
           <span>Back to Decks</span>
@@ -147,7 +147,7 @@ export default function DeckDetail(): React.JSX.Element {
             viewTransition
             className="bg-dark-surface-elevated hover:bg-dark-surface border-border-dim hover:border-cyan-accent hover:text-cyan-accent flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold text-slate-300 shadow-md"
           >
-            <Sparkles className="text-cyan-accent h-3.5 w-3.5" />
+            <Sparkles className="text-cyan-accent size-3.5" />
             Test Hand
           </Link>
 
@@ -158,7 +158,7 @@ export default function DeckDetail(): React.JSX.Element {
                 viewTransition
                 className="bg-dark-surface-elevated hover:bg-dark-surface border-border-dim hover:border-cyan-accent hover:text-cyan-accent flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold text-slate-300 shadow-md"
               >
-                <Edit className="h-3.5 w-3.5" />
+                <Edit className="size-3.5" />
                 Edit Deck
               </Link>
               <button
@@ -169,7 +169,7 @@ export default function DeckDetail(): React.JSX.Element {
                 className="flex cursor-pointer items-center gap-2 rounded-lg border border-red-500/30 bg-red-950/20 px-4 py-2 text-xs font-semibold text-red-400 shadow-md hover:border-red-500/60 hover:bg-red-950/40 disabled:opacity-50"
                 type="button"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="size-3.5" />
                 {isDeleting ? "Deleting..." : "Delete Deck"}
               </button>
             </>
@@ -196,11 +196,11 @@ export default function DeckDetail(): React.JSX.Element {
           </div>
           <div className="flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+              <Calendar className="size-3.5" aria-hidden="true" />
               Updated {formatRelativeTime(deck.updatedAt)}
             </span>
             <span className="flex items-center gap-1">
-              <Layers className="text-cyan-accent h-3.5 w-3.5" aria-hidden="true" />
+              <Layers className="text-cyan-accent size-3.5" aria-hidden="true" />
               {totalCount} Cards Total
             </span>
           </div>
@@ -218,7 +218,7 @@ export default function DeckDetail(): React.JSX.Element {
         <aside className="space-y-6 lg:col-span-4">
           <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
             <h2 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-base font-bold text-white">
-              <Eye className="text-cyan-accent h-4 w-4" />
+              <Eye className="text-cyan-accent size-4" />
               Deck Analytics
             </h2>
 
@@ -286,9 +286,7 @@ export default function DeckDetail(): React.JSX.Element {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span
-                          className={`h-2.5 w-2.5 rounded-full ${monsterTheme.barColor}`}
-                        ></span>
+                        <span className={`size-2.5 rounded-full ${monsterTheme.barColor}`}></span>
                         Monsters
                       </span>
                       <span className="font-semibold text-white">{mainMonstersCount}</span>
@@ -304,7 +302,7 @@ export default function DeckDetail(): React.JSX.Element {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className={`h-2.5 w-2.5 rounded-full ${spellTheme.barColor}`}></span>
+                        <span className={`size-2.5 rounded-full ${spellTheme.barColor}`}></span>
                         Spells
                       </span>
                       <span className="font-semibold text-white">{mainSpellsCount}</span>
@@ -320,7 +318,7 @@ export default function DeckDetail(): React.JSX.Element {
                   <div>
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className={`h-2.5 w-2.5 rounded-full ${trapTheme.barColor}`}></span>
+                        <span className={`size-2.5 rounded-full ${trapTheme.barColor}`}></span>
                         Traps
                       </span>
                       <span className="font-semibold text-white">{mainTrapsCount}</span>
@@ -350,7 +348,7 @@ export default function DeckDetail(): React.JSX.Element {
               }}
               type="button"
             >
-              <Download className="text-gold-accent h-3.5 w-3.5" />
+              <Download className="text-gold-accent size-3.5" />
               <span>Export .ydk</span>
             </Button>
 
@@ -360,7 +358,7 @@ export default function DeckDetail(): React.JSX.Element {
           <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
             <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
               <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
-                <span className={`bg-cyan-accent h-2.5 w-2.5 rounded-full`}></span>
+                <span className={`bg-cyan-accent size-2.5 rounded-full`}></span>
                 Main Deck
               </h2>
               <Badge variant="cyan" className="rounded px-2 py-0.5 text-xs font-semibold">
@@ -406,7 +404,7 @@ export default function DeckDetail(): React.JSX.Element {
           <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
             <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
               <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
-                <span className={`bg-gold-accent h-2.5 w-2.5 rounded-full`}></span>
+                <span className={`bg-gold-accent size-2.5 rounded-full`}></span>
                 Extra Deck
               </h2>
               <Badge variant="gold" className="rounded px-2 py-0.5 text-xs font-semibold">
@@ -452,7 +450,7 @@ export default function DeckDetail(): React.JSX.Element {
           <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md md:p-6">
             <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-3">
               <h2 className="font-display flex items-center gap-2 text-base font-bold text-white">
-                <span className={`h-2.5 w-2.5 rounded-full bg-purple-400`}></span>
+                <span className={`size-2.5 rounded-full bg-purple-400`}></span>
                 Side Deck
               </h2>
               <Badge variant="purple" className="rounded px-2 py-0.5 text-xs font-semibold">

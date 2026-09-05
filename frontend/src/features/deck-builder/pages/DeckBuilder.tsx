@@ -172,7 +172,10 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
           viewTransition
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft
+            className="size-4 transition-transform group-hover:-translate-x-1"
+            aria-hidden="true"
+          />
           <span>Back to Decks</span>
         </Link>
         <ErrorAlert
@@ -193,7 +196,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
             className="group mb-2 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
           >
             <ArrowLeft
-              className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+              className="size-4 transition-transform group-hover:-translate-x-1"
               aria-hidden="true"
             />
             <span>{isEditMode ? "Back to Deck" : "Back to Decks"}</span>
@@ -217,7 +220,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
             isLoading={isImporting}
             type="button"
           >
-            <Upload className="text-gold-accent h-3.5 w-3.5" />
+            <Upload className="text-gold-accent size-3.5" />
             <span>Import .ydk</span>
           </Button>
 
@@ -227,7 +230,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
             className="border-cyan-accent/30 text-cyan-accent hover:border-cyan-accent flex items-center gap-2 rounded-xl bg-cyan-950/20 px-4 py-2 text-xs font-semibold"
             type="button"
           >
-            <Sparkles className="text-cyan-accent h-4 w-4" />
+            <Sparkles className="text-cyan-accent size-4" />
             <span>AI Deck Wizard</span>
           </Button>
         </div>
@@ -237,7 +240,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
         <div className="bg-dark-surface border-border-dim flex h-[82vh] flex-col rounded-2xl border p-5 lg:col-span-5">
           <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
             <h2 className="font-display flex items-center gap-2 text-sm font-bold text-white">
-              <Sparkles className="text-cyan-accent h-4 w-4" />
+              <Sparkles className="text-cyan-accent size-4" />
               Card Database Library
             </h2>
           </div>
@@ -344,7 +347,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
                 onClick={() => setResetConfirmOpen(true)}
                 className="flex items-center gap-1.5 px-4 py-2.5 font-semibold"
               >
-                <RotateCcw className="h-3.5 w-3.5" />
+                <RotateCcw className="size-3.5" />
                 Reset
               </Button>
 

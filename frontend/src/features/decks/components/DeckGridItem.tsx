@@ -41,7 +41,7 @@ export default function DeckGridItem({
           <img
             src={`${API_BASE_URL}/api/${imageUrl}`}
             alt={name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         ) : (
           <span className="text-2xs font-bold tracking-wider text-slate-400 uppercase">

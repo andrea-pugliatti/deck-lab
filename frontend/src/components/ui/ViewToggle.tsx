@@ -30,7 +30,7 @@ export default function ViewToggle({
     >
       <button
         onClick={() => onViewModeChange("grid")}
-        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
+        className={`focus-visible:ring-cyan-accent flex size-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
           viewMode === "grid"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 shadow-glow-cyan-sm border"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"
@@ -39,11 +39,11 @@ export default function ViewToggle({
         aria-label="Grid View"
         type="button"
       >
-        <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+        <LayoutGrid className="size-4" aria-hidden="true" />
       </button>
       <button
         onClick={() => onViewModeChange("list")}
-        className={`focus-visible:ring-cyan-accent flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
+        className={`focus-visible:ring-cyan-accent flex size-8 cursor-pointer items-center justify-center rounded-md transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
           viewMode === "list"
             ? "bg-cyan-accent/15 text-cyan-accent border-cyan-accent/20 shadow-glow-cyan-sm border"
             : "hover:bg-dark-surface-elevated/40 border border-transparent text-slate-400 hover:text-white"
@@ -52,7 +52,7 @@ export default function ViewToggle({
         aria-label="List View"
         type="button"
       >
-        <List className="h-4 w-4" aria-hidden="true" />
+        <List className="size-4" aria-hidden="true" />
       </button>
     </div>
   );

@@ -29,7 +29,7 @@ export default function DeckValidationErrors({
     <div className="animate-fade-in">
       {validationSuccess && (
         <div className="flex items-start gap-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4 text-xs text-emerald-400 shadow-md">
-          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+          <CheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-400" />
           <div>
             <span className="mb-0.5 block font-bold">Deck is Valid!</span>
             Your deck list complies with all format limits and rules.
@@ -40,7 +40,7 @@ export default function DeckValidationErrors({
       {(validationErrors.length > 0 || submitError) && (
         <div className="space-y-2 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-xs text-red-400 shadow-md">
           <div className="flex items-start gap-2.5">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-400" />
             <div>
               <span className="mb-0.5 block font-bold">Deck Validation Failed</span>
               Please fix the following problems:

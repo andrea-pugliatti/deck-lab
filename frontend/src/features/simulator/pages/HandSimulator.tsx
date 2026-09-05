@@ -59,7 +59,7 @@ export default function HandSimulator(): React.JSX.Element {
               className={`${getButtonClasses({ variant: "ghost" })} group px-2.5 py-1 font-normal text-slate-400 no-underline`}
             >
               <ArrowLeft
-                className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+                className="size-4 transition-transform group-hover:-translate-x-1"
                 aria-hidden="true"
               />
               <span>Select Another Deck</span>
@@ -87,11 +87,11 @@ export default function HandSimulator(): React.JSX.Element {
               </div>
               <div className="flex items-center gap-4 text-xs text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Calendar className="size-3.5" aria-hidden="true" />
                   Updated {formatRelativeTime(deck.updatedAt)}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Layers className="text-cyan-accent h-3.5 w-3.5" aria-hidden="true" />
+                  <Layers className="text-cyan-accent size-3.5" aria-hidden="true" />
                   {totalCount} Cards Total
                 </span>
               </div>

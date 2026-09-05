@@ -15,7 +15,7 @@ import { getButtonClasses } from "../components/ui/Button";
 export default function NotFound(): React.JSX.Element {
   return (
     <div className="relative flex min-h-[75vh] flex-col items-center justify-center px-6 py-12 select-none">
-      <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[100px]"></div>
+      <div className="bg-cyan-accent/5 animate-pulse-glow pointer-events-none absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[100px]"></div>
 
       <div className="relative z-10 flex flex-col items-center gap-8">
         <div className="perspective-[1000px]">
@@ -33,7 +33,7 @@ export default function NotFound(): React.JSX.Element {
               {[...Array(4)].map((_, i) => (
                 <Star
                   key={i}
-                  className="fill-gold-accent text-gold-accent h-3 w-3"
+                  className="fill-gold-accent text-gold-accent size-3"
                   aria-hidden="true"
                 />
               ))}
@@ -42,7 +42,7 @@ export default function NotFound(): React.JSX.Element {
             <div className="border-border-dim/60 bg-dark-surface-elevated/20 group relative my-2.5 flex flex-1 items-center justify-center overflow-hidden rounded border">
               <div className="from-dark-surface-elevated/40 to-dark-bg/80 absolute inset-0 bg-radial via-transparent opacity-60"></div>
               <HelpCircle
-                className="text-cyan-accent/80 h-16 w-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:h-20 sm:w-20"
+                className="text-cyan-accent/80 size-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:size-20"
                 aria-hidden="true"
               />
             </div>
@@ -74,7 +74,7 @@ export default function NotFound(): React.JSX.Element {
             viewTransition
             className={`${getButtonClasses({ variant: "primary", size: "lg" })} w-full no-underline shadow-lg`}
           >
-            <Compass className="h-4 w-4" aria-hidden="true" />
+            <Compass className="size-4" aria-hidden="true" />
             <span>Return Home</span>
           </Link>
         </div>

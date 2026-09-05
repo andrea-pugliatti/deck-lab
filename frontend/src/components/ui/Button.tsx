@@ -76,7 +76,7 @@ export const getButtonClasses = ({ variant = "primary", size = "md" }: ButtonSty
   } else if (size === "lg") {
     sizeStyles = "px-8 py-3 text-sm";
   } else if (size === "icon") {
-    sizeStyles = "p-2 h-9 w-9 min-w-0";
+    sizeStyles = "p-2 size-9 min-w-0";
   }
 
   return `${baseStyles} ${variantStyles} ${sizeStyles}`;
@@ -102,7 +102,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           <span className="flex items-center gap-2">
-            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+            <span className="size-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
             Loading...
           </span>
         ) : (

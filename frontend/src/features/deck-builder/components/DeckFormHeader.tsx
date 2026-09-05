@@ -38,7 +38,7 @@ export default function DeckFormHeader({
   return (
     <div className="bg-dark-surface border-border-dim space-y-4 rounded-2xl border p-5 shadow-md">
       <h2 className="font-display border-border-dim/60 flex items-center gap-2 border-b pb-2 text-sm font-bold text-white">
-        <Layers className="text-gold-accent h-4 w-4" />
+        <Layers className="text-gold-accent size-4" />
         Deck Blueprint Settings
       </h2>
 

@@ -63,7 +63,7 @@ export default function SearchCardListItem({
             <img
               src={`${API_BASE_URL}/api/${imageUrl}`}
               alt={name}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
             />
           ) : (
             <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>

@@ -55,7 +55,7 @@ export default function Login(): React.JSX.Element {
 
       {error && (
         <div className="mb-4 flex items-center gap-2 rounded border border-red-500/50 bg-red-900/30 p-3 text-xs text-red-200">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
+          <AlertTriangle className="size-4 shrink-0 text-red-400" />
           <span>{error}</span>
         </div>
       )}
@@ -70,7 +70,7 @@ export default function Login(): React.JSX.Element {
             disabled={submitting}
             value={usernameOrEmail}
             onChange={(e) => setUsernameOrEmail(e.target.value)}
-            icon={<Mail className="h-4 w-4" />}
+            icon={<Mail className="size-4" />}
           />
         </div>
 
@@ -92,7 +92,7 @@ export default function Login(): React.JSX.Element {
             disabled={submitting}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            icon={<Lock className="h-4 w-4" />}
+            icon={<Lock className="size-4" />}
           />
         </div>
 

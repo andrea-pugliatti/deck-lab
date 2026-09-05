@@ -63,7 +63,7 @@ export default function Register(): React.JSX.Element {
 
       {error && (
         <div className="mb-4 flex items-center gap-2 rounded border border-red-500/50 bg-red-900/30 p-3 text-xs text-red-200">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
+          <AlertTriangle className="size-4 shrink-0 text-red-400" />
           <span>{error}</span>
         </div>
       )}
@@ -78,7 +78,7 @@ export default function Register(): React.JSX.Element {
             disabled={submitting}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            icon={<User className="h-4 w-4" />}
+            icon={<User className="size-4" />}
           />
         </div>
 
@@ -91,7 +91,7 @@ export default function Register(): React.JSX.Element {
             disabled={submitting}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            icon={<Mail className="h-4 w-4" />}
+            icon={<Mail className="size-4" />}
           />
         </div>
 
@@ -104,7 +104,7 @@ export default function Register(): React.JSX.Element {
             disabled={submitting}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            icon={<Lock className="h-4 w-4" />}
+            icon={<Lock className="size-4" />}
           />
         </div>
 
@@ -117,7 +117,7 @@ export default function Register(): React.JSX.Element {
             disabled={submitting}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            icon={<Lock className="h-4 w-4" />}
+            icon={<Lock className="size-4" />}
           />
         </div>
 

@@ -10,7 +10,7 @@ describe("WizardLoading component", () => {
     expect(screen.getByText("AI is crafting your deck...")).toBeInTheDocument();
     expect(screen.getByText("Please wait while DeckLab builds your blueprint")).toBeInTheDocument();
 
-    // Check that LoadingSpinner is rendered with size lg (w-12 h-12 based on LoadingSpinner.test.tsx)
+    // Check that LoadingSpinner is rendered with size lg (size-12 based on LoadingSpinner.test.tsx)
     const spinner = container.querySelector(".animate-spin");
     expect(spinner).toBeInTheDocument();
   });

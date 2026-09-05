@@ -159,7 +159,7 @@ export default function AiDeckWizard({
       <div className="bg-dark-surface border-border-dim relative flex max-h-[85vh] flex-col overflow-y-auto rounded-2xl border p-6 shadow-2xl">
         <div className="border-border-dim mb-4 flex items-center justify-between border-b pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-gold-accent h-5 w-5" aria-hidden="true" />
+            <Sparkles className="text-gold-accent size-5" aria-hidden="true" />
             <h2 className="text-lg font-bold text-slate-100">AI Deck Generator Wizard</h2>
           </div>
           <button
@@ -169,13 +169,13 @@ export default function AiDeckWizard({
             disabled={loading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="size-5" aria-hidden="true" />
           </button>
         </div>
 
         {error && (
           <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-500" />
+            <AlertTriangle className="size-4 shrink-0 text-red-500" />
             <span>{error}</span>
           </div>
         )}
@@ -219,7 +219,7 @@ export default function AiDeckWizard({
                     Custom Rules / Instructions (Optional)
                   </Label>
                   <div className="group relative">
-                    <HelpCircle className="h-3.5 w-3.5 cursor-help text-slate-400" />
+                    <HelpCircle className="size-3.5 cursor-help text-slate-400" />
                     <div className="bg-dark-surface-elevated border-border-dim text-2xs absolute bottom-full left-1/2 mb-1 hidden w-48 -translate-x-1/2 rounded border px-2 py-1 text-center leading-normal text-slate-300 shadow-lg group-hover:block">
                       Specify specific cards to include, budget options, or combo focuses.
                     </div>
@@ -246,7 +246,7 @@ export default function AiDeckWizard({
                   Cancel
                 </Button>
                 <Button type="submit" isLoading={loading} className="flex-1">
-                  <Wand2 className="h-4 w-4" />
+                  <Wand2 className="size-4" />
                   Generate Deck
                 </Button>
               </div>

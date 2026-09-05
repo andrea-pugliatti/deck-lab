@@ -63,7 +63,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
         <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
           <div>
             <h3 className="font-display flex items-center gap-2 text-base font-bold text-white">
-              <Calculator className="text-cyan-accent h-4 w-4" aria-hidden="true" />
+              <Calculator className="text-cyan-accent size-4" aria-hidden="true" />
               CONSISTENCY ANALYTICS
             </h3>
             <p className="text-2xs mt-0.5 font-bold tracking-wider text-slate-400 uppercase">
@@ -105,7 +105,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:outline-hidden"
               type="button"
             >
-              <X className="h-5 w-5" aria-hidden="true" />
+              <X className="size-5" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -118,9 +118,9 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
           ) : (
             <>
               <div className="relative flex items-start gap-4 rounded-2xl border border-cyan-500/10 bg-linear-to-r from-cyan-950/15 to-purple-950/5 p-4 text-xs">
-                <div className="pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-full bg-cyan-500/5 blur-2xl"></div>
+                <div className="pointer-events-none absolute top-0 right-0 size-24 rounded-full bg-cyan-500/5 blur-2xl"></div>
                 <div className="text-cyan-accent shrink-0 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5">
-                  <TrendingUp className="h-4 w-4" aria-hidden="true" />
+                  <TrendingUp className="size-4" aria-hidden="true" />
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="text-cyan-accent/90 text-2xs font-semibold tracking-wide uppercase">

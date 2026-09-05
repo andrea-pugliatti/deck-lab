@@ -76,7 +76,7 @@ export default function DeckExplorerModal({
         <div className="border-border-dim/60 bg-dark-surface-elevated/40 flex items-center justify-between border-b p-5">
           <div>
             <h3 className="font-display flex items-center gap-2 text-lg font-bold text-white">
-              <Search className="text-cyan-accent h-5 w-5" aria-hidden="true" />
+              <Search className="text-cyan-accent size-5" aria-hidden="true" />
               SEARCH DECK ({deck.length} CARDS REMAINING)
             </h3>
             <p className="mt-0.5 text-xs leading-none text-slate-500">
@@ -92,7 +92,7 @@ export default function DeckExplorerModal({
             className="bg-dark-surface-elevated focus-visible:ring-cyan-accent cursor-pointer rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:outline-hidden"
             type="button"
           >
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="size-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -102,7 +102,7 @@ export default function DeckExplorerModal({
             placeholder="Search remaining deck cards..."
             value={deckSearchQuery}
             onChange={(e) => setDeckSearchQuery(e.target.value)}
-            icon={<Search className="h-4 w-4 text-slate-500" />}
+            icon={<Search className="size-4 text-slate-500" />}
             containerClassName="w-full bg-slate-950"
           />
         </div>
@@ -125,10 +125,10 @@ export default function DeckExplorerModal({
                         <img
                           src={`${API_BASE_URL}/api/${card.imageUrl}`}
                           alt={card.name}
-                          className="h-full w-full object-cover"
+                          className="size-full object-cover"
                         />
                       ) : (
-                        <div className="bg-dark-surface-elevated text-2xs flex h-full w-full items-center justify-center p-2 text-center text-slate-500">
+                        <div className="bg-dark-surface-elevated text-2xs flex size-full items-center justify-center p-2 text-center text-slate-500">
                           {card.name}
                         </div>
                       )}

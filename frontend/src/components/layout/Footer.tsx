@@ -28,7 +28,7 @@ export default function Footer() {
             viewTransition
             className="focus-visible:ring-cyan-accent mb-4 flex items-center gap-2 rounded text-white no-underline focus-visible:ring-2 focus-visible:outline-hidden"
           >
-            <img src="/logo.webp" className="h-20 w-20 rounded-full" alt="DeckLab Logo" />
+            <img src="/logo.webp" className="size-20 rounded-full" alt="DeckLab Logo" />
             <span className="font-display text-gold-accent text-4xl font-bold tracking-wide">
               DeckLab
             </span>

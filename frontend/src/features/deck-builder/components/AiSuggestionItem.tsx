@@ -48,11 +48,11 @@ export default function AiSuggestionItem({
               : `${API_BASE_URL}/api/${card.imageUrl}`
           }
           alt={card.name}
-          className="border-border-dim h-10 w-10 shrink-0 rounded-lg border object-cover shadow-inner"
+          className="border-border-dim size-10 shrink-0 rounded-lg border object-cover shadow-inner"
           onError={() => setImgError(true)}
         />
       ) : (
-        <div className="border-border-dim/40 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
+        <div className="border-border-dim/40 flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
           <span className="text-2xs font-bold text-slate-400 select-none">:)</span>
         </div>
       )}
@@ -75,14 +75,14 @@ export default function AiSuggestionItem({
         type="button"
         onClick={() => onAdd(card)}
         disabled={isMaxCopies}
-        className={`focus-visible:ring-cyan-accent flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
+        className={`focus-visible:ring-cyan-accent flex size-7 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 select-none focus-visible:ring-2 focus-visible:outline-hidden ${
           isMaxCopies
             ? "border-border-dim bg-dark-surface-elevated cursor-not-allowed text-slate-500 opacity-40"
             : "border-cyan-accent/30 hover:border-cyan-accent text-cyan-accent cursor-pointer bg-cyan-950/10 hover:bg-cyan-950/30"
         }`}
         title={isMaxCopies ? "Max copies added" : `Add to ${card.section} Deck`}
       >
-        <Plus className="h-4 w-4" aria-hidden="true" />
+        <Plus className="size-4" aria-hidden="true" />
       </button>
     </div>
   );

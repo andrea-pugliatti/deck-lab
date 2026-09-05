@@ -58,8 +58,8 @@ describe("SearchBar component", () => {
     const searchInput = screen.getByPlaceholderText(/search card names/i);
     expect(searchInput).toBeInTheDocument();
     expect(searchInput).toHaveClass("focus-visible:outline-hidden");
-    expect(searchInput).toHaveClass("focus-visible:ring-2");
-    expect(searchInput).toHaveClass("focus-visible:ring-cyan-accent");
+    expect(searchInput).not.toHaveClass("focus-visible:ring-2");
+    expect(searchInput.closest("form")).toHaveClass("focus-within:border-cyan-accent");
     expect(screen.getByText("Snake-Eye")).toBeInTheDocument();
   });
 

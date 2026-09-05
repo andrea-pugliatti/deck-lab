@@ -86,11 +86,11 @@ export default function SimulatorCard({
           <img
             src={`${API_BASE_URL}/api/${card.imageUrl}`}
             alt={card.name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
             loading="lazy"
           />
         ) : (
-          <div className="bg-dark-surface-elevated/40 flex h-full w-full flex-col justify-between p-3 text-center">
+          <div className="bg-dark-surface-elevated/40 flex size-full flex-col justify-between p-3 text-center">
             <span className="text-2xs block font-bold tracking-wider text-slate-400 uppercase">
               {card.type?.replace(" Card", "")}
             </span>
@@ -105,7 +105,7 @@ export default function SimulatorCard({
       {isMenuOpen && (
         <div className="bg-dark-surface-elevated/95 border-border-dim animate-fade-in absolute left-1/2 z-50 mt-1.5 w-40 -translate-x-1/2 transform rounded-xl border p-1.5 shadow-2xl backdrop-blur-md">
           <div className="border-border-dim/40 text-2xs mb-1 flex items-center gap-1 border-b px-2 py-1 font-bold tracking-wider text-slate-400 uppercase">
-            <Move className="h-2.5 w-2.5" aria-hidden="true" /> Move Card
+            <Move className="size-2.5" aria-hidden="true" /> Move Card
           </div>
 
           <div className="max-h-45 space-y-0.5 overflow-y-auto">

@@ -84,7 +84,7 @@ export default function CardDetail(): React.JSX.Element {
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft
-            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            className="size-4 transition-transform group-hover:-translate-x-1"
             aria-hidden="true"
           />
           <span>Back to Catalog</span>
@@ -111,7 +111,7 @@ export default function CardDetail(): React.JSX.Element {
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
           <ArrowLeft
-            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            className="size-4 transition-transform group-hover:-translate-x-1"
             aria-hidden="true"
           />
           <span>Back to Catalog</span>
@@ -133,10 +133,10 @@ export default function CardDetail(): React.JSX.Element {
                 <img
                   src={`${API_BASE_URL}/api/${card.imageUrl}`}
                   alt={card.name}
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center text-slate-400">
+                <div className="flex size-full flex-col items-center justify-center p-6 text-center text-slate-400">
                   <span className="font-display mb-2 text-lg font-bold tracking-widest uppercase">
                     [ No Artwork ]
                   </span>
@@ -168,7 +168,7 @@ export default function CardDetail(): React.JSX.Element {
                       variant="gold"
                       className="flex items-center gap-1 rounded-md px-2.5 py-1"
                     >
-                      <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                      <Star className="size-3.5 fill-current" aria-hidden="true" />
                       <span className="text-xs font-bold">Level {card.level}</span>
                     </Badge>
                   )}
@@ -200,7 +200,7 @@ export default function CardDetail(): React.JSX.Element {
                 <div className="mb-6 grid max-w-sm grid-cols-2 gap-4">
                   <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
                     <div className="rounded-lg bg-amber-500/10 p-2 text-amber-500">
-                      <Flame className="h-5 w-5 fill-current" aria-hidden="true" />
+                      <Flame className="size-5 fill-current" aria-hidden="true" />
                     </div>
                     <div>
                       <div className="text-2xs font-semibold text-slate-400 uppercase">Attack</div>
@@ -212,7 +212,7 @@ export default function CardDetail(): React.JSX.Element {
                   {!card.linkVal && (
                     <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
                       <div className="rounded-lg bg-blue-500/10 p-2 text-blue-500">
-                        <Shield className="h-5 w-5" aria-hidden="true" />
+                        <Shield className="size-5" aria-hidden="true" />
                       </div>
                       <div>
                         <div className="text-2xs font-semibold text-slate-400 uppercase">

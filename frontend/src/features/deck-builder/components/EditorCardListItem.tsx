@@ -55,7 +55,7 @@ export default function EditorCardListItem({
             <img
               src={`${API_BASE_URL}/api/${imageUrl}`}
               alt={name}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
             />
           ) : (
             <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
@@ -78,10 +78,10 @@ export default function EditorCardListItem({
           <button
             type="button"
             onClick={() => updateQty(cardId, section, -1)}
-            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex h-6 w-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex size-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
             title="Decrease Quantity"
           >
-            <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+            <Minus className="size-3.5" aria-hidden="true" />
           </button>
           <span className="min-w-6 px-2 text-center font-mono text-xs font-bold text-white select-none">
             {quantity}
@@ -90,10 +90,10 @@ export default function EditorCardListItem({
             type="button"
             onClick={() => updateQty(cardId, section, 1)}
             disabled={quantity >= 3}
-            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex h-6 w-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex size-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
             title="Increase Quantity"
           >
-            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            <Plus className="size-3.5" aria-hidden="true" />
           </button>
         </div>
 
@@ -105,7 +105,7 @@ export default function EditorCardListItem({
           className="min-w-0 rounded-lg p-1.5 transition-all"
           title="Remove Card"
         >
-          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+          <Trash2 className="size-3.5" aria-hidden="true" />
         </Button>
       </div>
     </div>

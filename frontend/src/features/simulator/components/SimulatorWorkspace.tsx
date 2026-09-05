@@ -54,7 +54,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
           onClick={() => setShowProbabilityModal(true)}
           className="w-full py-3 text-xs"
         >
-          <Calculator className="h-4 w-4" />
+          <Calculator className="size-4" />
           <span>Consistency Calculator</span>
         </Button>
       </aside>
@@ -68,7 +68,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               </span>
               <button
                 onClick={() => setHandSizeConfig(5)}
-                className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
+                className={`flex size-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
                   handSizeConfig === 5
                     ? "bg-cyan-accent border-cyan-accent text-dark-bg"
                     : "border-border-dim text-slate-400 hover:text-white"
@@ -78,7 +78,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               </button>
               <button
                 onClick={() => setHandSizeConfig(6)}
-                className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
+                className={`flex size-7 cursor-pointer items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all ${
                   handSizeConfig === 6
                     ? "bg-cyan-accent border-cyan-accent text-dark-bg"
                     : "border-border-dim text-slate-400 hover:text-white"
@@ -96,7 +96,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               onClick={() => onReset(handSizeConfig)}
               className="flex items-center gap-1.5"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="size-3.5" />
               Reset & Redraw
             </Button>
             <Button
@@ -106,7 +106,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               disabled={remainingDeck.length === 0}
               className="flex items-center gap-1.5"
             >
-              <Layers className="text-cyan-accent h-3.5 w-3.5" />
+              <Layers className="text-cyan-accent size-3.5" />
               Draw 1
             </Button>
             <Button
@@ -115,7 +115,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               onClick={onShuffle}
               className="flex items-center gap-1.5"
             >
-              <Shuffle className="h-3.5 w-3.5 text-purple-400" />
+              <Shuffle className="size-3.5 text-purple-400" />
               Shuffle
             </Button>
             <Button
@@ -126,7 +126,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
               }}
               className="flex items-center gap-1.5 font-bold"
             >
-              <Search className="text-dark-bg h-3.5 w-3.5" />
+              <Search className="text-dark-bg size-3.5" />
               Search Deck
             </Button>
           </div>
@@ -135,7 +135,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
         <div className="space-y-6">
           <ZonePanel
             title="HAND ZONE"
-            icon={<Hand className="text-gold-accent h-4 w-4" />}
+            icon={<Hand className="text-gold-accent size-4" />}
             cards={hand}
             currentZone="hand"
             onMoveCard={onMoveCard}
@@ -146,7 +146,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
 
           <ZonePanel
             title="FIELD"
-            icon={<Layers className="text-cyan-accent h-4 w-4" />}
+            icon={<Layers className="text-cyan-accent size-4" />}
             cards={field}
             currentZone="field"
             onMoveCard={onMoveCard}
@@ -158,7 +158,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <ZonePanel
               title="GRAVEYARD"
-              icon={<Layers className="h-4 w-4 text-slate-400" />}
+              icon={<Layers className="size-4 text-slate-400" />}
               cards={graveyard}
               currentZone="graveyard"
               onMoveCard={onMoveCard}
@@ -170,7 +170,7 @@ export default function SimulatorWorkspace({ deck }: SimulatorWorkspaceProps) {
 
             <ZonePanel
               title="BANISHED ZONE"
-              icon={<Layers className="h-4 w-4 text-purple-400" />}
+              icon={<Layers className="size-4 text-purple-400" />}
               cards={banished}
               currentZone="banished"
               onMoveCard={onMoveCard}

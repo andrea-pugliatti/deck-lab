@@ -82,7 +82,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
     >
       <div
         ref={showcaseRef}
-        className="relative flex h-full w-full items-center justify-center transition-transform duration-300 ease-out transform-3d"
+        className="relative flex size-full items-center justify-center transition-transform duration-300 ease-out transform-3d"
       >
         {cards.map((card, index) => {
           if (!loading && (!cards || cards.length <= index)) {
@@ -134,7 +134,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                     [...Array(Math.min(card?.level, 12))].map((_, i) => (
                       <Star
                         key={i}
-                        className="fill-gold-accent text-gold-accent h-2.5 w-2.5"
+                        className="fill-gold-accent text-gold-accent size-2.5"
                         aria-hidden="true"
                       />
                     ))}
@@ -144,16 +144,16 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                   {croppedUrl ? (
                     <img
                       src={`${API_BASE_URL}/api/${croppedUrl}`}
-                      className="h-full w-full object-cover"
+                      className="size-full object-cover"
                       alt={card?.name}
                     />
                   ) : (
                     <div
-                      className={`h-full w-full bg-linear-to-br ${artGradient} relative flex items-center justify-center`}
+                      className={`size-full bg-linear-to-br ${artGradient} relative flex items-center justify-center`}
                     >
                       <div className="absolute inset-0 opacity-30"></div>
                       <FallbackIcon
-                        className={`h-10 w-10 sm:h-12 sm:w-12 ${fallbackIconColor} drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform duration-500 group-hover:scale-110`}
+                        className={`size-10 sm:size-12 ${fallbackIconColor} drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-transform duration-500 group-hover:scale-110`}
                       />
                     </div>
                   )}

@@ -17,7 +17,7 @@ export default function AuthLayout() {
       <div className="flex w-full max-w-md flex-col items-center">
         {/* Brand Header */}
         <Link to="/" className="mb-8 flex items-center gap-2 text-white no-underline">
-          <img src="/logo.webp" className="h-20 w-20 rounded-full" alt="DeckLab Logo" />
+          <img src="/logo.webp" className="size-20 rounded-full" alt="DeckLab Logo" />
           <span className="font-display text-gold-accent text-4xl font-bold tracking-widest">
             DECKLAB
           </span>

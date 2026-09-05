@@ -39,7 +39,7 @@ export default function CardListItem({
             <img
               src={`${API_BASE_URL}/api/${imageUrlCropped}`}
               alt={name}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
             />
           ) : (
             <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
@@ -60,7 +60,7 @@ export default function CardListItem({
             )}
             {isMonster && level && (
               <div className="text-gold-accent flex items-center gap-0.5">
-                <Star className="h-3 w-3 fill-current" aria-hidden="true" />
+                <Star className="size-3 fill-current" aria-hidden="true" />
                 <span className="text-2xs font-bold">{level}</span>
               </div>
             )}
@@ -79,11 +79,11 @@ export default function CardListItem({
       {isMonster && (atk !== undefined || def !== undefined) && (
         <div className="bg-dark-surface-elevated/40 border-border-dim/50 text-2xs flex shrink-0 items-center gap-3 rounded border px-3 py-1.5 font-semibold text-slate-300">
           <div className="flex items-center gap-1">
-            <Flame className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
+            <Flame className="size-3.5 text-amber-500" aria-hidden="true" />
             <span>ATK: {atk === -1 ? "?" : atk}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Shield className="h-3.5 w-3.5 text-blue-400" aria-hidden="true" />
+            <Shield className="size-3.5 text-blue-400" aria-hidden="true" />
             <span>DEF: {def === -1 ? "?" : def}</span>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function DeckListCard({
   const cardBody = (
     <div className="flex min-w-0 items-start gap-4">
       <div className="bg-dark-surface-elevated text-gold-accent border-border-dim/60 group-hover:border-cyan-accent/30 group-hover:text-cyan-accent shrink-0 rounded-lg border p-3 transition-colors duration-200">
-        <Layers className="h-6 w-6" />
+        <Layers className="size-6" />
       </div>
       <div className="min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center gap-2">
@@ -62,12 +62,12 @@ export default function DeckListCard({
         </p>
         <div className="text-2xs mt-2 flex gap-4 text-slate-500">
           <span className="flex items-center gap-1">
-            <Layers className="h-3.5 w-3.5" />
+            <Layers className="size-3.5" />
             {cardCount} Cards
           </span>
           {updatedAt && (
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="size-3.5" />
               {formatRelativeTime(updatedAt)}
             </span>
           )}
@@ -102,7 +102,7 @@ export default function DeckListCard({
               }}
               title="Edit Deck"
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="size-4" />
             </Link>
             <Button
               variant="outline-red"
@@ -114,7 +114,7 @@ export default function DeckListCard({
               }}
               title="Delete Deck"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
         )

@@ -76,7 +76,7 @@ export default function CardFilters({
   return (
     <div className="bg-dark-surface border-border-dim space-y-5 rounded-lg border p-5">
       <div className="border-border-dim/50 flex items-center gap-2 border-b pb-3 text-white">
-        <SlidersHorizontal className="text-cyan-accent h-4 w-4" />
+        <SlidersHorizontal className="text-cyan-accent size-4" aria-hidden="true" />
         <h2 className="text-sm font-bold tracking-wider uppercase">Catalog Filters</h2>
       </div>
 

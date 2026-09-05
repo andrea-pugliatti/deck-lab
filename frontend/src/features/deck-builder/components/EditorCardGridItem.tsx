@@ -32,7 +32,7 @@ export default function EditorCardGridItem({
           <img
             src={`${API_BASE_URL}/api/${imageUrl}`}
             alt={name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         ) : (
           <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
@@ -63,10 +63,10 @@ export default function EditorCardGridItem({
           <button
             type="button"
             onClick={() => updateQty(cardId, section, -1)}
-            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex h-6 w-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex size-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
             title="Decrease Quantity"
           >
-            <Minus className="h-3 w-3" aria-hidden="true" />
+            <Minus className="size-3" aria-hidden="true" />
           </button>
           <span className="text-2xs min-w-4 text-center font-mono font-bold text-white select-none">
             {quantity}
@@ -75,10 +75,10 @@ export default function EditorCardGridItem({
             type="button"
             onClick={() => updateQty(cardId, section, 1)}
             disabled={quantity >= 3}
-            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex h-6 w-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
+            className="hover:bg-dark-surface-elevated/80 hover:text-cyan-accent flex size-6 cursor-pointer items-center justify-center rounded text-slate-400 transition-colors disabled:cursor-not-allowed disabled:opacity-20"
             title="Increase Quantity"
           >
-            <Plus className="h-3 w-3" aria-hidden="true" />
+            <Plus className="size-3" aria-hidden="true" />
           </button>
         </div>
 
@@ -90,7 +90,7 @@ export default function EditorCardGridItem({
           className="text-2xs mt-1 flex h-6 w-full items-center justify-center gap-1 rounded py-0.5 font-bold transition-all"
           title="Remove Card"
         >
-          <Trash2 className="h-3 w-3" aria-hidden="true" />
+          <Trash2 className="size-3" aria-hidden="true" />
           <span>Remove</span>
         </Button>
       </div>

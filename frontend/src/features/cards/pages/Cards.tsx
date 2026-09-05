@@ -74,7 +74,7 @@ export default function Cards(): React.JSX.Element {
                 placeholder="Search cards..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                icon={<Search className="h-5 w-5" />}
+                icon={<Search className="size-5" />}
                 containerClassName="bg-dark-surface w-full"
               />
             </div>

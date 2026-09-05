@@ -81,7 +81,7 @@ export default function AiSuggestionsPanel({
     <div className="bg-dark-surface border-border-dim rounded-2xl border p-5 shadow-md">
       <div className="border-border-dim/60 mb-4 flex items-center justify-between border-b pb-2">
         <h3 className="font-display flex items-center gap-2 text-sm font-bold text-white">
-          <Sparkles className="text-cyan-accent h-4 w-4" />
+          <Sparkles className="text-cyan-accent size-4" />
           <span>AI Card Suggestions</span>
         </h3>
         <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export default function AiSuggestionsPanel({
               }}
               className="flex items-center gap-1.5 px-3 py-1.5"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="size-3.5" />
               <span>Reset</span>
             </Button>
           )}
@@ -107,7 +107,7 @@ export default function AiSuggestionsPanel({
             disabled={loading}
             className="border-cyan-accent/20 hover:border-cyan-accent text-cyan-accent flex items-center gap-1.5 bg-cyan-950/10 px-3 py-1.5"
           >
-            <Wand2 className="h-3.5 w-3.5" />
+            <Wand2 className="size-3.5" />
             <span>Analyze Synergy</span>
           </Button>
         </div>
@@ -115,7 +115,7 @@ export default function AiSuggestionsPanel({
 
       {error && (
         <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-800/60 bg-red-950/40 p-3 text-xs text-red-200">
-          <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
+          <AlertCircle className="size-4 shrink-0 text-red-500" />
           <span>{error}</span>
         </div>
       )}

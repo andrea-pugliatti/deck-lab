@@ -11,11 +11,11 @@ export interface LoadingSpinnerProps {
  * Uses a cyan accent border-spin animation, centered within its container.
  */
 export default function LoadingSpinner({ size = "md", className = "" }: LoadingSpinnerProps) {
-  let spinnerSize = "w-10 h-10 border-4";
+  let spinnerSize = "size-10 border-4";
   if (size === "sm") {
-    spinnerSize = "w-6 h-6 border-2";
+    spinnerSize = "size-6 border-2";
   } else if (size === "lg") {
-    spinnerSize = "w-12 h-12 border-4";
+    spinnerSize = "size-12 border-4";
   }
 
   return (

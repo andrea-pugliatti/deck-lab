@@ -40,7 +40,7 @@ export default function CardGridItem({
           <img
             src={`${API_BASE_URL}/api/${imageUrlCropped}`}
             alt={name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         ) : (
           <>
@@ -67,7 +67,7 @@ export default function CardGridItem({
             </span>
             {isMonster && level && (
               <div className="text-gold-accent flex items-center gap-0.5">
-                <Star className="h-3.5 w-3.5 fill-current" />
+                <Star className="size-3.5 fill-current" aria-hidden="true" />
                 <span className="text-xs font-bold">{level}</span>
               </div>
             )}
@@ -81,11 +81,11 @@ export default function CardGridItem({
         {isMonster && (atk !== undefined || def !== undefined) && (
           <div className="bg-dark-surface-elevated/40 border-border-dim/50 mt-auto flex items-center justify-between rounded border px-2.5 py-1.5 text-xs font-semibold text-slate-300">
             <div className="flex items-center gap-1">
-              <Flame className="h-3.5 w-3.5 text-amber-500" />
+              <Flame className="size-3.5 text-amber-500" aria-hidden="true" />
               <span>ATK: {atk === -1 ? "?" : atk}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Shield className="h-3.5 w-3.5 text-blue-400" />
+              <Shield className="size-3.5 text-blue-400" aria-hidden="true" />
               <span>DEF: {def === -1 ? "?" : def}</span>
             </div>
           </div>

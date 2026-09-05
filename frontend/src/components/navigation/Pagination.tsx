@@ -59,7 +59,7 @@ export default function Pagination({
       : "order-3 p-2 hover:border-cyan-accent disabled:hover:border-border-dim"
   }`;
 
-  const iconSize = isCompact ? "h-4 w-4" : "h-5 w-5";
+  const iconSize = isCompact ? "size-4" : "size-5";
 
   // Determine URL generator when in Link mode
   const defaultGetPageUrl = (targetPage: number) => {

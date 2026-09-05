@@ -104,7 +104,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
                   : "hover:bg-dark-surface-elevated/30 border-l-transparent text-slate-400 hover:text-slate-200"
               }`}
             >
-              <User className="h-4 w-4" />
+              <User className="size-4" />
               <span>My Decks</span>
             </button>
           )}
@@ -116,7 +116,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
                 : "hover:bg-dark-surface-elevated/30 border-l-transparent text-slate-400 hover:text-slate-200"
             }`}
           >
-            <Globe className="h-4 w-4" />
+            <Globe className="size-4" />
             <span>Community Decks</span>
           </button>
         </div>
@@ -132,7 +132,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
             disabled={filteredDecks.length === 0}
             className="hover:shadow-glow-gold flex w-full items-center justify-center gap-2 py-3 text-xs font-bold tracking-wider uppercase shadow-md"
           >
-            <Shuffle className="h-4 w-4" />
+            <Shuffle className="size-4" />
             <span>Random Deck</span>
           </Button>
         </div>
@@ -147,7 +147,7 @@ export default function DeckSelector({ onSelect }: DeckSelectorProps) {
               placeholder="Search decks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              icon={<Search className="h-4 w-4 text-slate-500" />}
+              icon={<Search className="size-4 text-slate-500" />}
               className="bg-dark-surface-elevated border-border-dim focus:border-cyan-accent w-full px-4 py-2.5"
             />
           </div>

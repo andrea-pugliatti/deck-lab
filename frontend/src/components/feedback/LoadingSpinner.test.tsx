@@ -12,9 +12,9 @@ describe("LoadingSpinner component", () => {
 
   it("should support size settings", () => {
     const { container: containerSm } = render(<LoadingSpinner size="sm" />);
-    expect(containerSm.querySelector(".w-6.h-6")).toBeInTheDocument();
+    expect(containerSm.querySelector(".size-6")).toBeInTheDocument();
 
     const { container: containerLg } = render(<LoadingSpinner size="lg" />);
-    expect(containerLg.querySelector(".w-12.h-12")).toBeInTheDocument();
+    expect(containerLg.querySelector(".size-12")).toBeInTheDocument();
   });
 });

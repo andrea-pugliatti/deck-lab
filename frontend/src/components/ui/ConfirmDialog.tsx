@@ -118,7 +118,7 @@ export default function ConfirmDialog({
           <div
             className={`bg-dark-surface-elevated border-border-dim/60 rounded-xl border p-3 ${iconColorClass} shrink-0`}
           >
-            <Icon className="h-6 w-6" aria-hidden="true" />
+            <Icon className="size-6" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-display mb-1.5 text-lg leading-tight font-bold text-slate-100">
@@ -133,7 +133,7 @@ export default function ConfirmDialog({
             disabled={isLoading}
             onClick={() => dialogRef.current?.close()}
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="size-4" aria-hidden="true" />
           </button>
         </div>
 

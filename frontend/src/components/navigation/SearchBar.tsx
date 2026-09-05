@@ -89,7 +89,7 @@ export default function SearchBar() {
         className="group bg-dark-surface/60 border-border-dim/80 hover:border-cyan-accent/50 focus-within:border-cyan-accent focus-within:ring-cyan-accent/10 focus-within:bg-dark-surface-elevated shadow-search relative flex items-center rounded-xl border px-5 backdrop-blur-md transition-all duration-300 focus-within:ring-4"
       >
         <Search
-          className="group-focus-within:text-cyan-accent mr-3 h-5 w-5 shrink-0 text-slate-400 transition-colors duration-200"
+          className="group-focus-within:text-cyan-accent mr-3 size-5 shrink-0 text-slate-400 transition-colors duration-200"
           aria-hidden="true"
         />
         <input
@@ -98,7 +98,7 @@ export default function SearchBar() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
-          className="focus-visible:ring-cyan-accent h-14 w-full rounded-lg border-none bg-transparent font-sans text-base text-white placeholder-slate-400 transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden"
+          className="h-14 min-w-0 flex-1 border-none bg-transparent font-sans text-base text-white placeholder-slate-400 focus-visible:outline-hidden"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
           aria-expanded={isOpen && query.trim().length >= 2}
@@ -107,7 +107,7 @@ export default function SearchBar() {
           aria-controls="search-suggestions-list"
         />
         {loading && (
-          <div className="border-cyan-accent/20 border-t-cyan-accent ml-2 h-4 w-4 animate-spin rounded-full border-2"></div>
+          <div className="border-cyan-accent/20 border-t-cyan-accent ml-2 size-4 animate-spin rounded-full border-2"></div>
         )}
       </form>
 

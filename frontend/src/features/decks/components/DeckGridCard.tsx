@@ -79,12 +79,12 @@ export default function DeckGridCard({
     <div className="border-border-dim/60 mt-auto flex items-center justify-between gap-4 border-t pt-4">
       <div className="flex gap-4 text-xs text-slate-400">
         <span className="flex items-center gap-1.5 font-medium">
-          <Layers className="text-cyan-accent h-3.5 w-3.5" />
+          <Layers className="text-cyan-accent size-3.5" />
           {cardCount} Cards
         </span>
         {updatedAt && (
           <span className="flex items-center gap-1.5 text-slate-500">
-            <Calendar className="h-3.5 w-3.5" />
+            <Calendar className="size-3.5" />
             {formatRelativeTime(updatedAt)}
           </span>
         )}
@@ -115,7 +115,7 @@ export default function DeckGridCard({
               }}
               title="Edit Deck"
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="size-4" />
             </Link>
             <Button
               variant="outline-red"
@@ -127,7 +127,7 @@ export default function DeckGridCard({
               }}
               title="Delete Deck"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
         )
