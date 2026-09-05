@@ -81,17 +81,17 @@ export default function HandSimulator(): React.JSX.Element {
                 <span className="text-gold-accent bg-gold-accent/10 border-gold-accent/20 text-2xs rounded border px-2.5 py-0.5 font-bold tracking-wider uppercase">
                   {deck.formatName}
                 </span>
-                <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
                   by {deck.creatorUsername || "Community"}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-slate-500">
+              <div className="flex items-center gap-4 text-xs text-slate-400">
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5" />
+                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
                   Updated {formatRelativeTime(deck.updatedAt)}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Layers className="text-cyan-accent h-3.5 w-3.5" />
+                  <Layers className="text-cyan-accent h-3.5 w-3.5" aria-hidden="true" />
                   {totalCount} Cards Total
                 </span>
               </div>

@@ -26,7 +26,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
       <div className="from-cyan-accent/5 pointer-events-none absolute inset-0 bg-radial via-transparent to-transparent"></div>
 
       <h3 className="font-display border-border-dim/60 mb-4 flex items-center gap-2 border-b pb-2 text-sm font-bold tracking-wider text-white uppercase">
-        <Eye className="text-cyan-accent h-4 w-4" />
+        <Eye className="text-cyan-accent h-4 w-4" aria-hidden="true" />
         Card Inspector
       </h3>
 
@@ -41,7 +41,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs text-slate-600">
+                <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
                   [ No Art ]
                 </div>
               )}
@@ -56,7 +56,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                   {inspectedCard.type}
                 </Badge>
                 {inspectedCard.attribute && (
-                  <span className="border-border-dim/60 text-3xs rounded border bg-slate-900 px-1.5 py-0.5 font-bold text-white uppercase">
+                  <span className="border-border-dim/60 text-2xs rounded border bg-slate-900 px-1.5 py-0.5 font-bold text-white uppercase">
                     {inspectedCard.attribute}
                   </span>
                 )}
@@ -70,19 +70,19 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                 <div className="bg-dark-surface-elevated/40 border-border-dim/50 text-2xs grid grid-cols-2 gap-2 rounded-lg border p-2 font-semibold text-slate-300">
                   {inspectedCard.atk !== undefined && (
                     <div className="flex items-center gap-1.5">
-                      <Flame className="h-3.5 w-3.5 text-amber-500" />
+                      <Flame className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
                       <span>ATK: {inspectedCard.atk === -1 ? "?" : inspectedCard.atk}</span>
                     </div>
                   )}
                   {inspectedCard.def !== undefined && (
                     <div className="flex items-center gap-1.5">
-                      <Shield className="h-3.5 w-3.5 text-blue-400" />
+                      <Shield className="h-3.5 w-3.5 text-blue-400" aria-hidden="true" />
                       <span>DEF: {inspectedCard.def === -1 ? "?" : inspectedCard.def}</span>
                     </div>
                   )}
                   {inspectedCard.level !== undefined && (
                     <div className="text-gold-accent border-border-dim/20 col-span-2 mt-1 flex items-center gap-1 border-t pt-1">
-                      <Star className="h-3 w-3 fill-current" />
+                      <Star className="h-3 w-3 fill-current" aria-hidden="true" />
                       <span>Level {inspectedCard.level}</span>
                     </div>
                   )}
@@ -95,10 +95,10 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
           </div>
         </div>
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center p-6 text-center text-slate-500">
-          <Eye className="mb-2 h-8 w-8 text-slate-700" />
+        <div className="flex flex-1 flex-col items-center justify-center p-6 text-center text-slate-400">
+          <Eye className="mb-2 h-8 w-8 text-slate-500" aria-hidden="true" />
           <p className="text-xs font-semibold tracking-wider uppercase">No Card Inspected</p>
-          <p className="mt-1 max-w-45 text-xs text-slate-600">
+          <p className="mt-1 max-w-45 text-xs text-slate-400">
             Hover over a card or click its detail icon to view descriptions.
           </p>
         </div>

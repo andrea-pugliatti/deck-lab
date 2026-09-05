@@ -21,7 +21,7 @@ export default function ShowingPageIndicator({
   className,
 }: ShowingPageIndicatorProps) {
   return (
-    <div className={`flex items-center justify-between text-xs text-slate-500 ${className}`}>
+    <div className={`flex items-center justify-between text-xs text-slate-400 ${className}`}>
       <span>
         Showing{" "}
         {totalElements > 0

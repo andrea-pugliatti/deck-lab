@@ -44,13 +44,13 @@ export default function SearchCardGridItem({
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="text-4xs font-bold text-slate-600 uppercase">YuGi</span>
+          <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
         )}
 
         {totalInDeck > 0 && (
           <Badge
             variant="gold"
-            className="text-5xs absolute top-1 right-1 px-1 py-0 font-mono select-none"
+            className="text-2xs absolute top-1 right-1 px-1 py-0 font-mono select-none"
           >
             {totalInDeck} added
           </Badge>
@@ -63,7 +63,7 @@ export default function SearchCardGridItem({
         </h4>
         {type && (
           <span
-            className={`text-5xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
+            className={`text-2xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
           >
             {type.replace(" Card", "").replace(" Monster", "")}
           </span>
@@ -79,7 +79,7 @@ export default function SearchCardGridItem({
           size="sm"
           onClick={() => addCard(card, "MAIN")}
           disabled={isExtra || totalInDeck >= 3}
-          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
+          className="text-2xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title={isExtra ? "Extra deck monsters cannot go in the Main Deck" : "Add to Main"}
         >
           + Main
@@ -90,7 +90,7 @@ export default function SearchCardGridItem({
           size="sm"
           onClick={() => addCard(card, "EXTRA")}
           disabled={!isExtra || totalInDeck >= 3}
-          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
+          className="text-2xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title={!isExtra ? "Main deck cards cannot go in the Extra Deck" : "Add to Extra"}
         >
           + Extra
@@ -101,7 +101,7 @@ export default function SearchCardGridItem({
           size="sm"
           onClick={() => addCard(card, "SIDE")}
           disabled={totalInDeck >= 3}
-          className="text-4xs h-6 w-full rounded py-0.5 font-bold transition-all"
+          className="text-2xs h-6 w-full rounded py-0.5 font-bold transition-all"
           title="Add to Side"
         >
           + Side

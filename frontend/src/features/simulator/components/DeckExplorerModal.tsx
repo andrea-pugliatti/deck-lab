@@ -172,7 +172,7 @@ export default function DeckExplorerModal({
               })}
             </div>
           ) : (
-            <div className="py-16 text-center text-xs text-slate-600">
+            <div className="py-16 text-center text-xs text-slate-400">
               No matching cards remaining in the deck.
             </div>
           )}

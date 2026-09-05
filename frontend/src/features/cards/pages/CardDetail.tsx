@@ -136,11 +136,11 @@ export default function CardDetail(): React.JSX.Element {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center text-slate-600">
+                <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center text-slate-400">
                   <span className="font-display mb-2 text-lg font-bold tracking-widest uppercase">
                     [ No Artwork ]
                   </span>
-                  <span className="text-xs text-slate-500">{card.archetype || card.race}</span>
+                  <span className="text-xs text-slate-400">{card.archetype || card.race}</span>
                 </div>
               )}
             </div>
@@ -168,7 +168,7 @@ export default function CardDetail(): React.JSX.Element {
                       variant="gold"
                       className="flex items-center gap-1 rounded-md px-2.5 py-1"
                     >
-                      <Star className="h-3.5 w-3.5 fill-current" />
+                      <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                       <span className="text-xs font-bold">Level {card.level}</span>
                     </Badge>
                   )}
@@ -200,10 +200,10 @@ export default function CardDetail(): React.JSX.Element {
                 <div className="mb-6 grid max-w-sm grid-cols-2 gap-4">
                   <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
                     <div className="rounded-lg bg-amber-500/10 p-2 text-amber-500">
-                      <Flame className="h-5 w-5 fill-current" />
+                      <Flame className="h-5 w-5 fill-current" aria-hidden="true" />
                     </div>
                     <div>
-                      <div className="text-2xs font-semibold text-slate-500 uppercase">Attack</div>
+                      <div className="text-2xs font-semibold text-slate-400 uppercase">Attack</div>
                       <div className="text-lg font-bold text-white">
                         {card.atk === -1 ? "?" : card.atk}
                       </div>
@@ -212,10 +212,10 @@ export default function CardDetail(): React.JSX.Element {
                   {!card.linkVal && (
                     <div className="bg-dark-surface-elevated border-border-dim flex items-center gap-3 rounded-xl border p-4">
                       <div className="rounded-lg bg-blue-500/10 p-2 text-blue-500">
-                        <Shield className="h-5 w-5" />
+                        <Shield className="h-5 w-5" aria-hidden="true" />
                       </div>
                       <div>
-                        <div className="text-2xs font-semibold text-slate-500 uppercase">
+                        <div className="text-2xs font-semibold text-slate-400 uppercase">
                           Defense
                         </div>
                         <div className="text-lg font-bold text-white">
@@ -232,7 +232,7 @@ export default function CardDetail(): React.JSX.Element {
                 <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
                   {card.race && (
                     <div>
-                      <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
+                      <span className="mb-0.5 block text-xs font-medium text-slate-400 uppercase">
                         Race / Class
                       </span>
                       <span className="font-semibold text-slate-200">{card.race}</span>
@@ -240,14 +240,14 @@ export default function CardDetail(): React.JSX.Element {
                   )}
                   {card.archetype && (
                     <div>
-                      <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
+                      <span className="mb-0.5 block text-xs font-medium text-slate-400 uppercase">
                         Archetype
                       </span>
                       <span className="font-semibold text-slate-200">{card.archetype}</span>
                     </div>
                   )}
                   <div>
-                    <span className="mb-0.5 block text-xs font-medium text-slate-500 uppercase">
+                    <span className="mb-0.5 block text-xs font-medium text-slate-400 uppercase">
                       Card ID
                     </span>
                     <span className="font-mono text-xs text-slate-400">{card.id}</span>

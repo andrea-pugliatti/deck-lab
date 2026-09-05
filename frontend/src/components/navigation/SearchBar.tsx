@@ -98,7 +98,7 @@ export default function SearchBar() {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
-          className="focus-visible:ring-cyan-accent h-14 w-full rounded-lg border-none bg-transparent font-sans text-base text-white placeholder-slate-500 transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden"
+          className="focus-visible:ring-cyan-accent h-14 w-full rounded-lg border-none bg-transparent font-sans text-base text-white placeholder-slate-400 transition-all duration-150 focus-visible:ring-2 focus-visible:outline-hidden"
           placeholder="Search card names, archetypes, or card text..."
           aria-label="Search card database"
           aria-expanded={isOpen && query.trim().length >= 2}
@@ -133,13 +133,13 @@ export default function SearchBar() {
                   type="button"
                 >
                   <span className="font-semibold">{card.name}</span>
-                  <span className="bg-dark-surface-elevated border-border-dim text-2xs rounded border px-2 py-0.5 font-bold tracking-wider text-slate-500 uppercase">
+                  <span className="bg-dark-surface-elevated border-border-dim text-2xs rounded border px-2 py-0.5 font-bold tracking-wider text-slate-400 uppercase">
                     {card.type.replace(" Card", "").replace(" Monster", "")}
                   </span>
                 </button>
               ))
             : !loading && (
-                <div className="px-4 py-3 text-center text-sm text-slate-500">
+                <div className="px-4 py-3 text-center text-sm text-slate-400">
                   No matching cards found
                 </div>
               )}
@@ -147,7 +147,7 @@ export default function SearchBar() {
       )}
 
       <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-        <span className="text-2xs mr-1 font-semibold tracking-widest text-slate-500 uppercase">
+        <span className="text-2xs mr-1 font-semibold tracking-widest text-slate-400 uppercase">
           Trending:
         </span>
         {staticSuggestions.map((item) => (

@@ -37,7 +37,7 @@ export default function DeckListItem({
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-4xs font-bold text-slate-600 uppercase">
+            <span className="text-2xs font-bold text-slate-400 uppercase">
               {name.substring(0, 3)}
             </span>
           )}
@@ -50,7 +50,7 @@ export default function DeckListItem({
           {type && (
             <Badge
               variant={badgeVariant}
-              className="text-4xs px-1 py-0 tracking-wider uppercase select-none"
+              className="text-2xs px-1 py-0 tracking-wider uppercase select-none"
             >
               {type.replace(" Monster", "").replace(" Card", "")}
             </Badge>

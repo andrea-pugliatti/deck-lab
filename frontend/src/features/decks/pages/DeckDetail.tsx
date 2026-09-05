@@ -190,17 +190,17 @@ export default function DeckDetail(): React.JSX.Element {
         <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
             <Badge variant="gold">{deck.formatName}</Badge>
-            <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+            <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
               by {deck.creatorUsername || "Community"}
             </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-slate-500">
+          <div className="flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
               Updated {formatRelativeTime(deck.updatedAt)}
             </span>
             <span className="flex items-center gap-1">
-              <Layers className="text-cyan-accent h-3.5 w-3.5" />
+              <Layers className="text-cyan-accent h-3.5 w-3.5" aria-hidden="true" />
               {totalCount} Cards Total
             </span>
           </div>
@@ -397,7 +397,7 @@ export default function DeckDetail(): React.JSX.Element {
                 </div>
               )
             ) : (
-              <div className="py-8 text-center text-sm text-slate-500">
+              <div className="py-8 text-center text-sm text-slate-400">
                 No cards added to the Main Deck.
               </div>
             )}
@@ -443,7 +443,7 @@ export default function DeckDetail(): React.JSX.Element {
                 </div>
               )
             ) : (
-              <div className="py-8 text-center text-sm text-slate-500">
+              <div className="py-8 text-center text-sm text-slate-400">
                 No cards added to the Extra Deck.
               </div>
             )}
@@ -489,7 +489,7 @@ export default function DeckDetail(): React.JSX.Element {
                 </div>
               )
             ) : (
-              <div className="py-8 text-center text-sm text-slate-500">
+              <div className="py-8 text-center text-sm text-slate-400">
                 No cards added to the Side Deck.
               </div>
             )}

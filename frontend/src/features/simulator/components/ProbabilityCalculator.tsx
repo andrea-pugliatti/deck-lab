@@ -66,7 +66,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               <Calculator className="text-cyan-accent h-4 w-4" aria-hidden="true" />
               CONSISTENCY ANALYTICS
             </h3>
-            <p className="text-2xs mt-0.5 font-bold tracking-wider text-slate-500 uppercase">
+            <p className="text-2xs mt-0.5 font-bold tracking-wider text-slate-400 uppercase">
               Probability calculations for starting hand
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
 
         <div className="flex-1 space-y-4 overflow-y-hidden p-6">
           {totalMainCount < handSize ? (
-            <div className="py-8 text-center text-xs text-slate-500">
+            <div className="py-8 text-center text-xs text-slate-400">
               Please add at least {handSize} cards to the Main Deck to compute statistics.
             </div>
           ) : (
@@ -120,7 +120,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
               <div className="relative flex items-start gap-4 rounded-2xl border border-cyan-500/10 bg-linear-to-r from-cyan-950/15 to-purple-950/5 p-4 text-xs">
                 <div className="pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-full bg-cyan-500/5 blur-2xl"></div>
                 <div className="text-cyan-accent shrink-0 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5">
-                  <TrendingUp className="h-4 w-4" />
+                  <TrendingUp className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="text-cyan-accent/90 text-2xs font-semibold tracking-wide uppercase">
@@ -140,7 +140,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
 
               <div className="overflow-x-auto">
                 <div className="min-w-137.5 space-y-2 pb-2">
-                  <div className="border-border-dim/60 text-2xs grid grid-cols-12 gap-4 border-b px-4 py-2 pb-3 font-bold tracking-wider text-slate-500 uppercase">
+                  <div className="border-border-dim/60 text-2xs grid grid-cols-12 gap-4 border-b px-4 py-2 pb-3 font-bold tracking-wider text-slate-400 uppercase">
                     <div className="col-span-4 pl-4">Card Name</div>
                     <div className="col-span-2 text-center">In Deck</div>
                     <div className="col-span-2 text-right">Draw 1+</div>
@@ -174,7 +174,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                               <span className="self-start">
                                 <Badge
                                   variant={badgeVariant}
-                                  className="text-4xs rounded-md px-1.5 py-0.5 leading-none font-bold tracking-wider"
+                                  className="text-2xs rounded-md px-1.5 py-0.5 leading-none font-bold tracking-wider"
                                 >
                                   {card.type?.replace(" Monster", "").replace(" Card", "")}
                                 </Badge>
@@ -194,7 +194,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                               {copies >= 2 ? (
                                 `${(prob2 * 100).toFixed(1)}%`
                               ) : (
-                                <span className="text-slate-600">-</span>
+                                <span className="text-slate-400">-</span>
                               )}
                             </div>
 
@@ -202,7 +202,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                               {copies >= 3 ? (
                                 `${(prob3 * 100).toFixed(1)}%`
                               ) : (
-                                <span className="text-slate-600">-</span>
+                                <span className="text-slate-400">-</span>
                               )}
                             </div>
                           </div>

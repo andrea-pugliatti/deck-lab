@@ -24,33 +24,40 @@ export default function NotFound(): React.JSX.Element {
               <span className="font-display truncate text-xs font-black tracking-wide text-white uppercase sm:text-sm">
                 404: Lost in Lab
               </span>
-              <Badge variant="trap" className="text-4xs sm:text-3xs shrink-0 px-1.5 py-0.5">
+              <Badge variant="trap" className="text-2xs shrink-0 px-1.5 py-0.5">
                 ERROR
               </Badge>
             </div>
 
             <div className="mt-1 flex min-h-3 gap-0.5">
               {[...Array(4)].map((_, i) => (
-                <Star key={i} className="fill-gold-accent text-gold-accent h-3 w-3" />
+                <Star
+                  key={i}
+                  className="fill-gold-accent text-gold-accent h-3 w-3"
+                  aria-hidden="true"
+                />
               ))}
             </div>
 
             <div className="border-border-dim/60 bg-dark-surface-elevated/20 group relative my-2.5 flex flex-1 items-center justify-center overflow-hidden rounded border">
               <div className="from-dark-surface-elevated/40 to-dark-bg/80 absolute inset-0 bg-radial via-transparent opacity-60"></div>
-              <HelpCircle className="text-cyan-accent/80 h-16 w-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:h-20 sm:w-20" />
+              <HelpCircle
+                className="text-cyan-accent/80 h-16 w-16 drop-shadow-[0_0_15px_rgba(95,227,217,0.4)] sm:h-20 sm:w-20"
+                aria-hidden="true"
+              />
             </div>
 
             <div className="bg-dark-surface/80 border-border-dim/40 mb-2 rounded border p-2">
-              <span className="text-gold-accent text-4xs sm:text-3xs mb-0.5 block leading-none font-bold tracking-wide uppercase">
+              <span className="text-gold-accent text-2xs mb-0.5 block leading-none font-bold tracking-wide uppercase">
                 [Portal / Glitch]
               </span>
-              <p className="text-5xs sm:text-4xs line-clamp-4 leading-normal font-light text-slate-300">
+              <p className="text-2xs line-clamp-4 leading-normal font-light text-slate-300">
                 This page has been banished to the Shadow Realm. Neither player can activate the
                 effect of this URL. If you entered this path manually, check your spelling.
               </p>
             </div>
 
-            <div className="bg-dark-surface-elevated/40 border-border-dim/40 text-4xs sm:text-3xs flex items-center justify-between rounded border px-2 py-1 font-bold text-slate-300">
+            <div className="bg-dark-surface-elevated/40 border-border-dim/40 text-2xs flex items-center justify-between rounded border px-2 py-1 font-bold text-slate-300">
               <span className="flex items-center gap-0.5">
                 ATK: <span className="font-mono text-white">404</span>
               </span>
@@ -67,7 +74,7 @@ export default function NotFound(): React.JSX.Element {
             viewTransition
             className={`${getButtonClasses({ variant: "primary", size: "lg" })} w-full no-underline shadow-lg`}
           >
-            <Compass className="h-4 w-4" />
+            <Compass className="h-4 w-4" aria-hidden="true" />
             <span>Return Home</span>
           </Link>
         </div>

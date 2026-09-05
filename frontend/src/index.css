@@ -21,10 +21,6 @@
   --text-2xs--line-height: 0.875rem;
   --text-3xs: 0.5625rem;
   --text-3xs--line-height: 0.75rem;
-  --text-4xs: 0.5rem;
-  --text-4xs--line-height: 0.75rem;
-  --text-5xs: 0.4375rem;
-  --text-5xs--line-height: 0.625rem;
 
   --shadow-glow-cyan-sm: 0 0 10px rgba(95, 227, 217, 0.12);
   --shadow-glow-cyan: 0 4px 25px rgba(95, 227, 217, 0.08);

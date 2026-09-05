@@ -53,7 +53,7 @@ export default function AiSuggestionItem({
         />
       ) : (
         <div className="border-border-dim/40 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
-          <span className="text-2xs font-bold text-slate-600 select-none">:)</span>
+          <span className="text-2xs font-bold text-slate-400 select-none">:)</span>
         </div>
       )}
 

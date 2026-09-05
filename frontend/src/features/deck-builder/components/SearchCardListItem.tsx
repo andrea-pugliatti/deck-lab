@@ -66,19 +66,19 @@ export default function SearchCardListItem({
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-4xs font-bold text-slate-600 uppercase">YuGi</span>
+            <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
           )}
         </div>
         <div className="min-w-0">
           <h4 className={titleClass}>{name}</h4>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {type && (
-              <Badge variant={badgeVariant} className="text-4xs px-1.5 py-0.5 select-none">
+              <Badge variant={badgeVariant} className="text-2xs px-1.5 py-0.5 select-none">
                 {type.replace(" Card", "").replace(" Monster", "")}
               </Badge>
             )}
             {totalInDeck > 0 && (
-              <Badge variant="gold" className="text-4xs px-1.5 py-0.5 font-mono">
+              <Badge variant="gold" className="text-2xs px-1.5 py-0.5 font-mono">
                 {totalInDeck} added
               </Badge>
             )}
@@ -93,7 +93,7 @@ export default function SearchCardListItem({
           size="sm"
           onClick={() => addCard(card, "MAIN")}
           disabled={isExtra || totalInDeck >= 3}
-          className="text-3xs rounded px-2 py-1 font-bold transition-all"
+          className="text-2xs rounded px-2 py-1 font-bold transition-all"
           title={isExtra ? "Extra deck monsters cannot go in the Main Deck" : "Add to Main"}
         >
           + Main
@@ -104,7 +104,7 @@ export default function SearchCardListItem({
           size="sm"
           onClick={() => addCard(card, "EXTRA")}
           disabled={!isExtra || totalInDeck >= 3}
-          className="text-3xs rounded px-2 py-1 font-bold transition-all"
+          className="text-2xs rounded px-2 py-1 font-bold transition-all"
           title={!isExtra ? "Main deck cards cannot go in the Extra Deck" : "Add to Extra"}
         >
           + Extra
@@ -115,7 +115,7 @@ export default function SearchCardListItem({
           size="sm"
           onClick={() => addCard(card, "SIDE")}
           disabled={totalInDeck >= 3}
-          className="text-3xs rounded px-2 py-1 font-bold transition-all"
+          className="text-2xs rounded px-2 py-1 font-bold transition-all"
           title="Add to Side"
         >
           + Side

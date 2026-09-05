@@ -113,14 +113,14 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
               <>
                 <div className="mb-1 flex items-center justify-between">
                   <span
-                    className="font-display text-4xs sm:text-2xs max-w-25 truncate font-bold tracking-wide text-white sm:max-w-32.5"
+                    className="font-display text-2xs max-w-25 truncate font-bold tracking-wide text-white sm:max-w-32.5 sm:text-xs"
                     title={card?.name}
                   >
                     {card?.name}
                   </span>
                   {card?.attribute && (
                     <span
-                      className={`text-5xs sm:text-4xs shrink-0 scale-90 rounded border px-1 py-0.5 font-extrabold uppercase sm:px-1.5 ${getAttributeStyles(card?.attribute)}`}
+                      className={`text-2xs shrink-0 scale-90 rounded border px-1 py-0.5 font-extrabold uppercase sm:px-1.5 ${getAttributeStyles(card?.attribute)}`}
                     >
                       {card?.attribute}
                     </span>
@@ -132,7 +132,11 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                     card?.level !== undefined &&
                     card?.level > 0 &&
                     [...Array(Math.min(card?.level, 12))].map((_, i) => (
-                      <Star key={i} className="fill-gold-accent text-gold-accent h-2.5 w-2.5" />
+                      <Star
+                        key={i}
+                        className="fill-gold-accent text-gold-accent h-2.5 w-2.5"
+                        aria-hidden="true"
+                      />
                     ))}
                 </div>
 
@@ -156,18 +160,18 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                 </div>
 
                 <div className="bg-dark-surface/80 border-border-dim/40 mb-1 rounded border p-1 sm:mb-1.5 sm:p-1.5">
-                  <span className="text-gold-accent text-5xs sm:text-4xs mb-0.5 block leading-none font-bold tracking-wide uppercase">
+                  <span className="text-gold-accent text-2xs mb-0.5 block leading-none font-bold tracking-wide uppercase">
                     [{card?.type}]
                   </span>
                   <p
-                    className="text-5xs line-clamp-3 leading-normal font-light text-slate-400"
+                    className="text-2xs line-clamp-3 leading-normal font-light text-slate-400"
                     title={card?.description}
                   >
                     {card?.description}
                   </p>
                 </div>
 
-                <div className="bg-dark-surface-elevated/40 border-border-dim/40 text-5xs sm:text-4xs flex items-center justify-between rounded border px-1.5 py-0.5 font-bold text-slate-300 sm:px-2 sm:py-1">
+                <div className="bg-dark-surface-elevated/40 border-border-dim/40 text-2xs flex items-center justify-between rounded border px-1.5 py-0.5 font-bold text-slate-300 sm:px-2 sm:py-1">
                   {isMonster ? (
                     <>
                       <span className="flex items-center gap-0.5">
@@ -184,7 +188,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                       </span>
                     </>
                   ) : (
-                    <span className="text-cyan-accent text-5xs sm:text-4xs w-full text-center tracking-wider uppercase">
+                    <span className="text-cyan-accent text-2xs w-full text-center tracking-wider uppercase">
                       {isSpell ? "Spell Card" : "Trap Card"}
                     </span>
                   )}

@@ -20,7 +20,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-dark-surface/30 border-border-dim mt-16 border-t py-12 text-slate-500">
+    <footer className="bg-dark-surface/30 border-border-dim mt-16 border-t py-12 text-slate-400">
       <div className="mx-auto mb-8 grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <Link
@@ -62,7 +62,7 @@ export default function Footer() {
           <h4 className="mb-4 text-xs font-semibold tracking-wider text-white uppercase">
             Legal & Info
           </h4>
-          <p className="text-xs leading-relaxed text-slate-500">
+          <p className="text-xs leading-relaxed text-slate-400">
             This project is an unofficial fan-made simulator. All card art, descriptions, and
             related assets are property of Konami Digital Entertainment and/or Shueisha.
           </p>
@@ -75,14 +75,14 @@ export default function Footer() {
           <button
             type="button"
             onClick={() => alert("Privacy policy is coming soon.")}
-            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-500 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
+            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-400 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
           >
             Privacy Policy
           </button>
           <button
             type="button"
             onClick={() => alert("Terms of service are coming soon.")}
-            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-500 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
+            className="hover:text-cyan-hover focus-visible:ring-cyan-accent cursor-pointer rounded border-none bg-transparent p-0 text-slate-400 transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-hidden"
           >
             Terms of Service
           </button>
