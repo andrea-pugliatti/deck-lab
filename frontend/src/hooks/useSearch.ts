@@ -4,8 +4,8 @@
  * Supports debouncing, local vs. controlled state, and optionally syncing with URL search parameters.
  */
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 
 import { apiFetch, parseResponseError } from "../services/api";
@@ -229,6 +229,47 @@ export function useSearch<TData, TFilters>(
     placeholderData: keepPreviousData,
   });
 
+  let queryClient: ReturnType<typeof useQueryClient> | null = null;
+  try {
+    queryClient = useQueryClient();
+  } catch {
+    queryClient = null;
+  }
+
+  const prefetchNextPage = useCallback(() => {
+    if (!queryClient) return;
+
+    const typedData = data as { page?: { totalPages?: number }; totalPages?: number } | undefined;
+    const totalPages = typedData?.page?.totalPages ?? typedData?.totalPages;
+
+    if (totalPages !== undefined && activePage >= totalPages - 1) {
+      return;
+    }
+
+    const nextPage = activePage + 1;
+    const nextFetchUrl = endpointBuilder(debouncedQuery, nextPage, activeFilters);
+    if (!nextFetchUrl) return;
+
+    const nextQueryKey = queryKey
+      ? ([...queryKey, { query: debouncedQuery, page: nextPage, filters: activeFilters }] as const)
+      : [nextFetchUrl];
+
+    void queryClient.prefetchQuery({
+      queryKey: nextQueryKey,
+      queryFn: async ({ signal }) => {
+        const res = await apiFetch(nextFetchUrl, { signal });
+        if (!res.ok) {
+          throw await parseResponseError(res);
+        }
+        if (res.status === 204) {
+          return undefined as unknown as TData;
+        }
+        return res.json() as Promise<TData>;
+      },
+      staleTime: 60 * 1000,
+    });
+  }, [queryClient, data, activePage, endpointBuilder, debouncedQuery, activeFilters, queryKey]);
+
   return {
     page: activePage,
     setPage,
@@ -241,5 +282,6 @@ export function useSearch<TData, TFilters>(
     loading,
     error,
     refetch,
+    prefetchNextPage,
   };
 }

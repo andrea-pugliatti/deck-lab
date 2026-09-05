@@ -24,6 +24,7 @@ interface CatalogSearchContextType {
   libraryCards: Card[];
   libraryLoading: boolean;
   totalSearchPages: number;
+  prefetchNextPage: () => void;
 }
 
 /**

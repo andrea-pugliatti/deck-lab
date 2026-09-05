@@ -171,5 +171,45 @@ describe("Pagination component", () => {
       fireEvent.click(prevBtn);
       expect(handlePageChange).toHaveBeenCalledWith(3);
     });
+
+    it("should trigger onPrefetchNext on mount when next page is available and on hover/focus", () => {
+      const handlePrefetchNext = vi.fn();
+      render(
+        <MemoryRouter>
+          <Pagination
+            page={0}
+            totalPages={5}
+            onPageChange={vi.fn()}
+            onPrefetchNext={handlePrefetchNext}
+          />
+        </MemoryRouter>,
+      );
+
+      // Triggered by useEffect on mount when page < totalPages - 1
+      expect(handlePrefetchNext).toHaveBeenCalledTimes(1);
+
+      const nextBtn = screen.getByRole("button", { name: "Next page" });
+      fireEvent.mouseEnter(nextBtn);
+      expect(handlePrefetchNext).toHaveBeenCalledTimes(2);
+
+      fireEvent.focus(nextBtn);
+      expect(handlePrefetchNext).toHaveBeenCalledTimes(3);
+    });
+
+    it("should not trigger onPrefetchNext on mount when on last page", () => {
+      const handlePrefetchNext = vi.fn();
+      render(
+        <MemoryRouter>
+          <Pagination
+            page={4}
+            totalPages={5}
+            onPageChange={vi.fn()}
+            onPrefetchNext={handlePrefetchNext}
+          />
+        </MemoryRouter>,
+      );
+
+      expect(handlePrefetchNext).not.toHaveBeenCalled();
+    });
   });
 });

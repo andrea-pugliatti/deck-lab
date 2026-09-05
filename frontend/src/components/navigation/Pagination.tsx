@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 
 /**
@@ -10,6 +11,7 @@ export interface PaginationProps {
   onPageChange?: (page: number) => void;
   getPageUrl?: (page: number) => string;
   variant?: "default" | "compact";
+  onPrefetchNext?: () => void;
 }
 
 /**
@@ -28,9 +30,16 @@ export default function Pagination({
   onPageChange,
   getPageUrl,
   variant = "default",
+  onPrefetchNext,
 }: PaginationProps) {
   const [searchParams] = useSearchParams();
   const isCompact = variant === "compact";
+
+  useEffect(() => {
+    if (page < totalPages - 1 && onPrefetchNext) {
+      onPrefetchNext();
+    }
+  }, [page, totalPages, onPrefetchNext]);
 
   if (totalPages <= 0) {
     return null;
@@ -124,6 +133,8 @@ export default function Pagination({
       return (
         <button
           onClick={() => onPageChange?.(Math.min(totalPages - 1, page + 1))}
+          onMouseEnter={onPrefetchNext}
+          onFocus={onPrefetchNext}
           disabled={isNextDisabled}
           className={nextClass}
           type="button"
@@ -150,6 +161,8 @@ export default function Pagination({
       <Link
         to={resolvePageUrl(page + 1)}
         viewTransition
+        onMouseEnter={onPrefetchNext}
+        onFocus={onPrefetchNext}
         className={nextClass}
         aria-label="Next page"
         onClick={() => onPageChange?.(page + 1)}

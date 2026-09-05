@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
+import { usePrefetchCard } from "../../../hooks/usePrefetch";
 import type { Card } from "../../../types";
 
 /**
@@ -29,11 +30,14 @@ export default function CardGridItem({
 }: Card) {
   const cardKind = getCardKind(type);
   const isMonster = cardKind === "monster";
+  const handlePrefetch = usePrefetchCard(id);
 
   return (
     <Link
       to={`/cards/${id}`}
       viewTransition
+      onMouseEnter={handlePrefetch}
+      onFocus={handlePrefetch}
       className="deck-card-base hover-hologram group flex flex-col justify-between"
     >
       <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-video items-center justify-center overflow-hidden border-b">

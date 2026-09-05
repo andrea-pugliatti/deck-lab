@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import Badge from "../../../components/ui/Badge";
 import Button, { getButtonClasses } from "../../../components/ui/Button";
+import { usePrefetchDeck } from "../../../hooks/usePrefetch";
 import type { Format } from "../../../types";
 import { formatRelativeTime } from "../../../utils/date";
 
@@ -45,6 +46,7 @@ export default function DeckGridCard({
 }: DeckGridCardProps) {
   const formatLabel = formatName || "Unknown";
   const badgeVariant = formatLabel.toLowerCase().includes("tcg") ? "cyan" : "gold";
+  const handlePrefetch = usePrefetchDeck(id);
 
   const cardBody = (
     <div className="mb-4">
@@ -61,6 +63,8 @@ export default function DeckGridCard({
           <Link
             to={`/decks/${id}`}
             viewTransition
+            onMouseEnter={handlePrefetch}
+            onFocus={handlePrefetch}
             className="focus-visible:ring-cyan-accent rounded-xl after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:outline-hidden"
           >
             {name}
@@ -168,7 +172,13 @@ export default function DeckGridCard({
   }
 
   return (
-    <Link to={`/decks/${id}`} viewTransition className={`${containerClasses} cursor-pointer`}>
+    <Link
+      to={`/decks/${id}`}
+      viewTransition
+      onMouseEnter={handlePrefetch}
+      onFocus={handlePrefetch}
+      className={`${containerClasses} cursor-pointer`}
+    >
       {cardBody}
       {cardFooter}
     </Link>

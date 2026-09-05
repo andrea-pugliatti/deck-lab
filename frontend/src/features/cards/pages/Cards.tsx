@@ -43,6 +43,7 @@ export default function Cards(): React.JSX.Element {
     totalElements,
     error,
     refetch,
+    prefetchNextPage,
   } = useCatalogSearch({ defaultPageSize: PAGE_SIZE, syncUrl: true });
 
   const { types, attributes, races, archetypes } = useCardMetadata();
@@ -114,7 +115,7 @@ export default function Cards(): React.JSX.Element {
                 </div>
               )}
 
-              <Pagination page={page} totalPages={totalPages} />
+              <Pagination page={page} totalPages={totalPages} onPrefetchNext={prefetchNextPage} />
             </>
           ) : (
             <EmptyState

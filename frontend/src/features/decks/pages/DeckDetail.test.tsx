@@ -215,4 +215,34 @@ describe("DeckDetail page component", () => {
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/decks");
   });
+
+  it("should render deck details immediately from list cache via placeholderData", () => {
+    vi.mocked(useParams).mockReturnValue({ id: "88" });
+    const queryClient = createTestQueryClient();
+
+    queryClient.setQueryData(deckKeys.lists(), {
+      content: [
+        {
+          id: 88,
+          name: "Instant Cache Deck",
+          description: "Cached deck strategy description",
+          formatName: "TCG",
+          creatorUsername: "seto_kaiba",
+          deckCards: [],
+        },
+      ],
+      page: { totalPages: 1, totalElements: 1, size: 10, number: 0 },
+    });
+
+    renderWithClient(
+      <MemoryRouter>
+        <DeckDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    expect(screen.getByText("Instant Cache Deck")).toBeInTheDocument();
+    expect(screen.getByText("Cached deck strategy description")).toBeInTheDocument();
+    expect(screen.getByText("by seto_kaiba")).toBeInTheDocument();
+  });
 });

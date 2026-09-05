@@ -72,4 +72,37 @@ describe("CardDetail page component", () => {
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/cards");
   });
+
+  it("should render card details immediately from list cache via placeholderData", () => {
+    vi.mocked(useParams).mockReturnValue({ id: "200" });
+    const queryClient = createTestQueryClient();
+
+    queryClient.setQueryData(cardKeys.lists(), {
+      content: [
+        {
+          id: 200,
+          name: "Celtic Guardian",
+          type: "Normal Monster",
+          description: "An elf who learned to wield a sword.",
+          attribute: "EARTH",
+          level: 4,
+          atk: 1400,
+          def: 1200,
+          imageUrl: "",
+        },
+      ],
+      page: { totalPages: 1, totalElements: 1, size: 10, number: 0 },
+    });
+
+    renderWithClient(
+      <MemoryRouter>
+        <CardDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    expect(screen.getByText("Celtic Guardian")).toBeInTheDocument();
+    expect(screen.getByText("EARTH")).toBeInTheDocument();
+    expect(screen.getByText("1400")).toBeInTheDocument();
+  });
 });

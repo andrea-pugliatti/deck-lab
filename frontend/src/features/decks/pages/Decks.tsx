@@ -65,6 +65,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
     totalPages,
     totalElements,
     refetch,
+    prefetchNextPage,
   } = useDeckSearch({
     pageSize: PAGE_SIZE,
     username: tab === "user" ? user?.username || "" : "",
@@ -211,7 +212,7 @@ export default function Decks({ initialTab = "all" }: DecksProps): React.JSX.Ele
             </div>
           )}
 
-          <Pagination page={page} totalPages={totalPages} />
+          <Pagination page={page} totalPages={totalPages} onPrefetchNext={prefetchNextPage} />
         </>
       ) : tab === "user" ? (
         <EmptyState

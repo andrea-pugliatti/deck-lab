@@ -51,6 +51,7 @@ export interface UseCatalogSearchReturn {
   totalElements: number;
   error: Error | null;
   refetch: () => void;
+  prefetchNextPage: () => void;
 }
 
 /**
@@ -94,6 +95,7 @@ export function useCatalogSearch(options: UseCatalogSearchOptions = {}): UseCata
     loading: libraryLoading,
     error,
     refetch,
+    prefetchNextPage,
   } = useSearch<Page<Card>, CardFiltersState>(
     (query, p, f) => {
       const queryParams = new URLSearchParams();
@@ -177,5 +179,6 @@ export function useCatalogSearch(options: UseCatalogSearchOptions = {}): UseCata
     totalElements,
     error,
     refetch,
+    prefetchNextPage,
   };
 }

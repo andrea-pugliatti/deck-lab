@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
+import { createTestQueryClient, renderWithClient } from "../../../test/setup";
 import type { Card, CardAttribute, CardRace, CardType } from "../../../types";
 import CardGridItem from "./CardGridItem";
 
@@ -150,5 +151,24 @@ describe("CardGridItem component", () => {
 
     expect(screen.getByText("ATK: ?")).toBeInTheDocument();
     expect(screen.getByText("DEF: ?")).toBeInTheDocument();
+  });
+
+  it("prefetches card details on mouseEnter and focus", () => {
+    const queryClient = createTestQueryClient();
+    const prefetchSpy = vi.spyOn(queryClient, "prefetchQuery");
+
+    renderWithClient(
+      <MemoryRouter>
+        <CardGridItem {...monsterCard} />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    const link = screen.getByRole("link");
+    fireEvent.mouseEnter(link);
+    expect(prefetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.focus(link);
+    expect(prefetchSpy).toHaveBeenCalledTimes(2);
   });
 });

@@ -16,8 +16,12 @@ vi.mock("react-router", () => ({
   useSearchParams: vi.fn(),
 }));
 
+const mockPrefetchQuery = vi.fn();
 vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
+  useQueryClient: () => ({
+    prefetchQuery: mockPrefetchQuery,
+  }),
   keepPreviousData: () => undefined,
 }));
 
@@ -327,6 +331,32 @@ describe("useSearch hook", () => {
         void result.current.refetch();
       });
       expect(refetchSpy).toHaveBeenCalled();
+    });
+
+    it("should prefetch next page with prefetchNextPage", () => {
+      mockPrefetchQuery.mockClear();
+      vi.mocked(useQuery).mockReturnValue({
+        data: {
+          content: [],
+          page: { totalPages: 5, totalElements: 50 },
+        },
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as unknown as ReturnType<typeof useQuery>);
+
+      const { result } = renderHook(() =>
+        useSearch(mockEndpointBuilder, {
+          initialPage: 0,
+          initialFilters: { type: "Monster" },
+        }),
+      );
+
+      act(() => {
+        result.current.prefetchNextPage();
+      });
+
+      expect(mockPrefetchQuery).toHaveBeenCalledTimes(1);
     });
   });
 });

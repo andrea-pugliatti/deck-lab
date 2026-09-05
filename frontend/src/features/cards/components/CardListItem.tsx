@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
+import { usePrefetchCard } from "../../../hooks/usePrefetch";
 import type { Card } from "../../../types";
 
 /**
@@ -27,11 +28,14 @@ export default function CardListItem({
 }: Card) {
   const cardKind = getCardKind(type);
   const isMonster = cardKind === "monster";
+  const handlePrefetch = usePrefetchCard(id);
 
   return (
     <Link
       to={`/cards/${id}`}
       viewTransition
+      onMouseEnter={handlePrefetch}
+      onFocus={handlePrefetch}
       className="deck-card-base hover-hologram group flex items-center justify-between gap-4 p-3"
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">

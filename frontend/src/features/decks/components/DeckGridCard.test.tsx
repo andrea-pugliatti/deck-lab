@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 
+import { createTestQueryClient, renderWithClient } from "../../../test/setup";
 import type { Format } from "../../../types";
 import DeckGridCard from "./DeckGridCard";
 
@@ -130,5 +131,24 @@ describe("DeckGridCard component", () => {
 
     fireEvent.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith(42);
+  });
+
+  it("prefetches deck details on mouseEnter and focus", () => {
+    const queryClient = createTestQueryClient();
+    const prefetchSpy = vi.spyOn(queryClient, "prefetchQuery");
+
+    renderWithClient(
+      <MemoryRouter>
+        <DeckGridCard {...defaultProps} />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    const linkElement = screen.getByRole("link");
+    fireEvent.mouseEnter(linkElement);
+    expect(prefetchSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.focus(linkElement);
+    expect(prefetchSpy).toHaveBeenCalledTimes(2);
   });
 });

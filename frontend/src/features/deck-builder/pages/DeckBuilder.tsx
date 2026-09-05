@@ -91,6 +91,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
     formats,
     libraryLoading,
     libraryCards,
+    prefetchNextPage,
   } = useCatalogSearchContext();
 
   // Scroll back to top of card search catalog whenever the search page changes
@@ -278,6 +279,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
             totalPages={totalSearchPages}
             onPageChange={setSearchPage}
             variant="compact"
+            onPrefetchNext={prefetchNextPage}
           />
         </div>
 

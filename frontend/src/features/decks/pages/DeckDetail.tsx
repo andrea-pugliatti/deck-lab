@@ -17,10 +17,13 @@ import { exportYdk } from "../../../features/decks";
 import DeckGridItem from "../../../features/decks/components/DeckGridItem";
 import DeckListItem from "../../../features/decks/components/DeckListItem";
 import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
+import { useOptionalQueryClient } from "../../../hooks/usePrefetch";
 import { useViewPreference } from "../../../hooks/useViewPreference";
+import { deckKeys } from "../../../services/queryKeys";
 import { deckQueries } from "../../../services/queryOptions";
+import type { Deck, Page } from "../../../types";
 import { formatRelativeTime } from "../../../utils/date";
-import { isValidNumericId } from "../../../utils/validation";
+import { isValidNumericId, parseNumericId } from "../../../utils/validation";
 
 /**
  * DeckDetail Page Component.
@@ -34,6 +37,7 @@ import { isValidNumericId } from "../../../utils/validation";
 export default function DeckDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const isValidId = isValidNumericId(id);
+  const numericId = parseNumericId(id);
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -45,6 +49,8 @@ export default function DeckDetail(): React.JSX.Element {
     reset: resetDelete,
   } = useDeleteDeck();
 
+  const queryClient = useOptionalQueryClient();
+
   const {
     data: deck,
     isLoading: loading,
@@ -53,6 +59,37 @@ export default function DeckDetail(): React.JSX.Element {
   } = useQuery({
     ...deckQueries.detail(isValidId ? id : undefined),
     enabled: isValidId,
+    placeholderData: () => {
+      if (!numericId || !queryClient) return undefined;
+
+      // 1. Direct detail cache hit
+      const existing =
+        queryClient.getQueryData<Deck>(deckKeys.detail(numericId)) ||
+        queryClient.getQueryData<Deck>(deckKeys.detail(id));
+      if (existing) return existing;
+
+      // 2. Search cached deck list queries
+      const listQueries = queryClient.getQueriesData<Page<Deck>>({
+        queryKey: deckKeys.lists(),
+      });
+      for (const [, pageData] of listQueries) {
+        const found = pageData?.content?.find((d) => d.id === numericId);
+        if (found) return found;
+      }
+
+      // 3. Search any cached query matching entity 'decks'
+      const allDeckQueries = queryClient.getQueriesData<Page<Deck>>({
+        queryKey: deckKeys.all,
+      });
+      for (const [, pageData] of allDeckQueries) {
+        if (pageData && Array.isArray(pageData.content)) {
+          const found = pageData.content.find((d) => d.id === numericId);
+          if (found) return found;
+        }
+      }
+
+      return undefined;
+    },
   });
 
   /**

@@ -101,6 +101,7 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
     loading,
     error,
     refetch,
+    prefetchNextPage,
   } = useSearch<Page<Deck>, DeckFiltersState>(
     (query, p, f) => {
       if (skip) return undefined;
@@ -180,5 +181,6 @@ export function useDeckSearch(options: UseDeckSearchOptions = {}) {
     totalPages,
     totalElements,
     refetch,
+    prefetchNextPage,
   };
 }

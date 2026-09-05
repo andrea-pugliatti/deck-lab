@@ -9,8 +9,11 @@ import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
+import { useOptionalQueryClient } from "../../../hooks/usePrefetch";
+import { cardKeys } from "../../../services/queryKeys";
 import { cardQueries } from "../../../services/queryOptions";
-import { isValidNumericId } from "../../../utils/validation";
+import type { Card, Page } from "../../../types";
+import { isValidNumericId, parseNumericId } from "../../../utils/validation";
 
 /**
  * CardDetail Page Component.
@@ -24,8 +27,10 @@ import { isValidNumericId } from "../../../utils/validation";
 export default function CardDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   const isValidId = isValidNumericId(id);
+  const numericId = parseNumericId(id);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardArtworkRef = useRef<HTMLDivElement>(null);
+  const queryClient = useOptionalQueryClient();
 
   /**
    * Calculates and sets the 3D rotation angles (X and Y) using requestAnimationFrame
@@ -65,6 +70,37 @@ export default function CardDetail(): React.JSX.Element {
   } = useQuery({
     ...cardQueries.detail(isValidId ? id : undefined),
     enabled: isValidId,
+    placeholderData: () => {
+      if (!numericId || !queryClient) return undefined;
+
+      // 1. Direct detail cache hit
+      const existing =
+        queryClient.getQueryData<Card>(cardKeys.detail(numericId)) ||
+        queryClient.getQueryData<Card>(cardKeys.detail(id));
+      if (existing) return existing;
+
+      // 2. Search cached card list queries
+      const listQueries = queryClient.getQueriesData<Page<Card>>({
+        queryKey: cardKeys.lists(),
+      });
+      for (const [, pageData] of listQueries) {
+        const found = pageData?.content?.find((c) => c.id === numericId);
+        if (found) return found;
+      }
+
+      // 3. Search any cached query matching entity 'cards'
+      const allCardQueries = queryClient.getQueriesData<Page<Card>>({
+        queryKey: cardKeys.all,
+      });
+      for (const [, pageData] of allCardQueries) {
+        if (pageData && Array.isArray(pageData.content)) {
+          const found = pageData.content.find((c) => c.id === numericId);
+          if (found) return found;
+        }
+      }
+
+      return undefined;
+    },
   });
 
   if (!isValidId) {
