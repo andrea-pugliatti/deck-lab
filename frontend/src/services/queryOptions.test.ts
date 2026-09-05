@@ -55,6 +55,10 @@ describe("queryOptions factories", () => {
       const disabledOptions = deckQueries.detail(undefined);
       expect(disabledOptions.queryKey).toEqual(deckKeys.detail(undefined));
       expect(disabledOptions.enabled).toBe(false);
+      // @ts-expect-error - testing queryFn when id is missing
+      expect(() => disabledOptions.queryFn({ signal: new AbortController().signal })).toThrow(
+        "A valid deck ID is required",
+      );
     });
 
     it("should configure list query with parameter queryKey and queryFn", () => {
@@ -73,6 +77,10 @@ describe("queryOptions factories", () => {
       const disabledOptions = cardQueries.detail(null);
       expect(disabledOptions.queryKey).toEqual(cardKeys.detail(null));
       expect(disabledOptions.enabled).toBe(false);
+      // @ts-expect-error - testing queryFn when id is missing
+      expect(() => disabledOptions.queryFn({ signal: new AbortController().signal })).toThrow(
+        "A valid card ID is required",
+      );
     });
 
     it("should configure suggestions query with trimmed query and length threshold", () => {

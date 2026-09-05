@@ -50,4 +50,26 @@ describe("CardDetail page component", () => {
     expect(backLink).toBeInTheDocument();
     expect(backLink).toHaveAttribute("href", "/cards");
   });
+
+  it("should render invalid card ID error and link back to catalog when id is non-numeric", () => {
+    vi.mocked(useParams).mockReturnValue({ id: "invalid-id" });
+    const queryClient = createTestQueryClient();
+
+    renderWithClient(
+      <MemoryRouter>
+        <CardDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    expect(screen.getByText("Invalid Card ID")).toBeInTheDocument();
+    expect(
+      screen.getByText("The requested card ID must be a valid numeric identifier."),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Retry/i })).not.toBeInTheDocument();
+
+    const backLink = screen.getByRole("link", { name: /Back to Catalog/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/cards");
+  });
 });

@@ -91,7 +91,7 @@ describe("HandSimulator page component", () => {
     expect(detailLink).toHaveAttribute("href", "/decks/44");
   });
 
-  it("should clear deckId when Select Another Deck button is clicked", () => {
+  it("should render semantic Link to /simulator to select another deck", () => {
     const params = new URLSearchParams({ deckId: "44" });
     vi.mocked(useSearchParams).mockReturnValue([params, setSearchParamsMock]);
 
@@ -110,12 +110,8 @@ describe("HandSimulator page component", () => {
       queryClient,
     );
 
-    const changeDeckBtn = screen.getByRole("button", { name: /Select Another Deck/i });
-    fireEvent.click(changeDeckBtn);
-
-    expect(setSearchParamsMock).toHaveBeenCalled();
-    const updater = setSearchParamsMock.mock.calls[0]![0];
-    const updated = typeof updater === "function" ? updater(params) : updater;
-    expect(updated.get("deckId")).toBeNull();
+    const changeDeckLink = screen.getByRole("link", { name: /Select Another Deck/i });
+    expect(changeDeckLink).toBeInTheDocument();
+    expect(changeDeckLink).toHaveAttribute("href", "/simulator");
   });
 });

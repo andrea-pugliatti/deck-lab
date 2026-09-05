@@ -192,4 +192,27 @@ describe("DeckDetail page component", () => {
     expect(screen.getByText("Delete Deck Blueprint")).toBeInTheDocument();
     expect(navigateMock).not.toHaveBeenCalled();
   });
+
+  it("should render invalid deck ID error and not call getDeck when id is non-numeric", () => {
+    vi.mocked(useParams).mockReturnValue({ id: "invalid-deck-id" });
+    const queryClient = createTestQueryClient();
+
+    renderWithClient(
+      <MemoryRouter>
+        <DeckDetail />
+      </MemoryRouter>,
+      queryClient,
+    );
+
+    expect(screen.getByText("Invalid Deck ID")).toBeInTheDocument();
+    expect(
+      screen.getByText("The requested deck ID must be a valid numeric identifier."),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Retry/i })).not.toBeInTheDocument();
+    expect(getDeck).not.toHaveBeenCalled();
+
+    const backLink = screen.getByRole("link", { name: /Back to Decks/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute("href", "/decks");
+  });
 });

@@ -5,7 +5,7 @@ import { Link, useSearchParams } from "react-router";
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import PageHeader from "../../../components/navigation/PageHeader";
-import Button from "../../../components/ui/Button";
+import { getButtonClasses } from "../../../components/ui/Button";
 import DeckSelector from "../../../features/simulator/components/DeckSelector";
 import SimulatorWorkspace from "../../../features/simulator/components/SimulatorWorkspace";
 import { deckQueries } from "../../../services/queryOptions";
@@ -37,17 +37,6 @@ export default function HandSimulator(): React.JSX.Element {
     );
   };
 
-  const handleClearSelectedDeck = () => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete("deckId");
-        return next;
-      },
-      { preventScrollReset: true },
-    );
-  };
-
   const mainCardsCount =
     deck?.deckCards
       ?.filter((c) => c.section === "MAIN" || !c.section)
@@ -67,15 +56,17 @@ export default function HandSimulator(): React.JSX.Element {
       {deckId && deck ? (
         <div className="animate-fade-in space-y-8">
           <div className="mb-8 flex items-center justify-between">
-            <Button
-              variant="ghost"
-              onClick={handleClearSelectedDeck}
-              className="group px-2.5 py-1 font-normal text-slate-400"
-              type="button"
+            <Link
+              to="/simulator"
+              viewTransition
+              className={`${getButtonClasses({ variant: "ghost" })} group px-2.5 py-1 font-normal text-slate-400 no-underline`}
             >
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <ArrowLeft
+                className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+                aria-hidden="true"
+              />
               <span>Select Another Deck</span>
-            </Button>
+            </Link>
 
             <Link
               to={`/decks/${deck.id}`}

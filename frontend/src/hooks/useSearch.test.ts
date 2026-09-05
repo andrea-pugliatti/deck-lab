@@ -277,7 +277,7 @@ describe("useSearch hook", () => {
       expect(params.get("type")).toBe("Spell");
       expect(params.get("page")).toBeNull(); // Reset page
       const options = setSearchParamsMock.mock.calls[0]![1];
-      expect(options).toEqual({ preventScrollReset: true });
+      expect(options).toEqual({ replace: true, preventScrollReset: true });
     });
 
     it("should update searchParams on query changes with replace: true after debouncing and reset page", () => {

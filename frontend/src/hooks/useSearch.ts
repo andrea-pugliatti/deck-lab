@@ -171,7 +171,7 @@ export function useSearch<TData, TFilters>(
             params.delete("page");
             return params;
           },
-          { preventScrollReset: true },
+          { replace: true, preventScrollReset: true },
         );
       }
     }

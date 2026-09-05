@@ -53,7 +53,12 @@ export const deckQueries = {
   detail: (id?: string | number | null) =>
     queryOptions({
       queryKey: deckKeys.detail(id),
-      queryFn: ({ signal }) => getDeck(id!, signal),
+      queryFn: ({ signal }) => {
+        if (!id) {
+          throw new Error("A valid deck ID is required");
+        }
+        return getDeck(id, signal);
+      },
       enabled: !!id,
     }),
   list: (params: Record<string, string>) =>
@@ -67,7 +72,12 @@ export const cardQueries = {
   detail: (id?: string | number | null) =>
     queryOptions({
       queryKey: cardKeys.detail(id),
-      queryFn: ({ signal }) => getCard(id!, signal),
+      queryFn: ({ signal }) => {
+        if (!id) {
+          throw new Error("A valid card ID is required");
+        }
+        return getCard(id, signal);
+      },
       enabled: !!id,
     }),
   suggestions: (query: string) =>

@@ -4,11 +4,13 @@ import { useRef, type MouseEvent } from "react";
 import { Link, useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
 import { getCardTheme } from "../../../features/cards/utils/cardTheme";
 import { cardQueries } from "../../../services/queryOptions";
+import { isValidNumericId } from "../../../utils/validation";
 
 /**
  * CardDetail Page Component.
@@ -21,6 +23,7 @@ import { cardQueries } from "../../../services/queryOptions";
  */
 export default function CardDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const isValidId = isValidNumericId(id);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardArtworkRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +57,19 @@ export default function CardDetail(): React.JSX.Element {
     }
   };
 
-  const { data: card, isLoading: loading, error, refetch } = useQuery(cardQueries.detail(id));
+  const {
+    data: card,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    ...cardQueries.detail(isValidId ? id : undefined),
+    enabled: isValidId,
+  });
+
+  if (!isValidId) {
+    return <InvalidIdState resourceName="Card" backTo="/cards" backLabel="Back to Catalog" />;
+  }
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;
@@ -68,7 +83,10 @@ export default function CardDetail(): React.JSX.Element {
           viewTransition
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft
+            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            aria-hidden="true"
+          />
           <span>Back to Catalog</span>
         </Link>
         <ErrorAlert
@@ -92,7 +110,10 @@ export default function CardDetail(): React.JSX.Element {
           viewTransition
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft
+            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            aria-hidden="true"
+          />
           <span>Back to Catalog</span>
         </Link>
 

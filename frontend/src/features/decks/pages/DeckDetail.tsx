@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
+import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
@@ -19,6 +20,7 @@ import { useDeleteDeck } from "../../../features/decks/hooks/useDeleteDeck";
 import { useViewPreference } from "../../../hooks/useViewPreference";
 import { deckQueries } from "../../../services/queryOptions";
 import { formatRelativeTime } from "../../../utils/date";
+import { isValidNumericId } from "../../../utils/validation";
 
 /**
  * DeckDetail Page Component.
@@ -31,6 +33,7 @@ import { formatRelativeTime } from "../../../utils/date";
  */
 export default function DeckDetail(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const isValidId = isValidNumericId(id);
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -42,7 +45,15 @@ export default function DeckDetail(): React.JSX.Element {
     reset: resetDelete,
   } = useDeleteDeck();
 
-  const { data: deck, isLoading: loading, error, refetch } = useQuery(deckQueries.detail(id));
+  const {
+    data: deck,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    ...deckQueries.detail(isValidId ? id : undefined),
+    enabled: isValidId,
+  });
 
   /**
    * Performs the deletion of the deck by calling the {@link useDeleteDeck}
@@ -50,7 +61,7 @@ export default function DeckDetail(): React.JSX.Element {
    * during execution. On success, it closes the modal and navigates to /my-decks.
    */
   const handleDeleteModal = () => {
-    if (!id) return;
+    if (!id || !isValidId) return;
     deleteDeckMutate(id, {
       onSuccess: () => {
         setConfirmModalOpen(false);
@@ -58,6 +69,10 @@ export default function DeckDetail(): React.JSX.Element {
       },
     });
   };
+
+  if (!isValidId) {
+    return <InvalidIdState resourceName="Deck" backTo="/decks" backLabel="Back to Decks" />;
+  }
 
   if (loading) {
     return <LoadingSpinner size="lg" className="min-h-[60vh]" />;
@@ -71,7 +86,10 @@ export default function DeckDetail(): React.JSX.Element {
           viewTransition
           className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft
+            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            aria-hidden="true"
+          />
           <span>Back to Decks</span>
         </Link>
         <ErrorAlert
@@ -116,7 +134,10 @@ export default function DeckDetail(): React.JSX.Element {
           viewTransition
           className="group inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft
+            className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+            aria-hidden="true"
+          />
           <span>Back to Decks</span>
         </Link>
 
