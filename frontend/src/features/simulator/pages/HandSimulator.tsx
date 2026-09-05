@@ -27,14 +27,11 @@ export default function HandSimulator(): React.JSX.Element {
   const { data: deck, isLoading: loading, error } = useQuery(deckQueries.detail(deckId));
 
   const handleSelectDeck = (id: number) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.set("deckId", String(id));
-        return next;
-      },
-      { preventScrollReset: true },
-    );
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("deckId", String(id));
+      return next;
+    });
   };
 
   const mainCardsCount =

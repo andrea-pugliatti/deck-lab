@@ -70,7 +70,7 @@ export default function Pagination({
       params.set("page", String(targetPage));
     }
     const queryString = params.toString();
-    return queryString ? `?${queryString}` : "?";
+    return queryString ? `?${queryString}` : "";
   };
 
   const isLinkMode = Boolean(getPageUrl || !onPageChange);
@@ -89,7 +89,7 @@ export default function Pagination({
           type="button"
           aria-label="Previous page"
         >
-          <ChevronLeft className={iconSize} />
+          <ChevronLeft className={iconSize} aria-hidden="true" />
         </button>
       );
     }
@@ -101,7 +101,7 @@ export default function Pagination({
           className={`${prevClass} pointer-events-none cursor-not-allowed opacity-30`}
           aria-label="Previous page (disabled)"
         >
-          <ChevronLeft className={iconSize} />
+          <ChevronLeft className={iconSize} aria-hidden="true" />
         </span>
       );
     }
@@ -109,13 +109,12 @@ export default function Pagination({
     return (
       <Link
         to={resolvePageUrl(page - 1)}
-        preventScrollReset
         viewTransition
         className={prevClass}
         aria-label="Previous page"
         onClick={() => onPageChange?.(page - 1)}
       >
-        <ChevronLeft className={iconSize} />
+        <ChevronLeft className={iconSize} aria-hidden="true" />
       </Link>
     );
   };
@@ -130,7 +129,7 @@ export default function Pagination({
           type="button"
           aria-label="Next page"
         >
-          <ChevronRight className={iconSize} />
+          <ChevronRight className={iconSize} aria-hidden="true" />
         </button>
       );
     }
@@ -142,7 +141,7 @@ export default function Pagination({
           className={`${nextClass} pointer-events-none cursor-not-allowed opacity-30`}
           aria-label="Next page (disabled)"
         >
-          <ChevronRight className={iconSize} />
+          <ChevronRight className={iconSize} aria-hidden="true" />
         </span>
       );
     }
@@ -150,13 +149,12 @@ export default function Pagination({
     return (
       <Link
         to={resolvePageUrl(page + 1)}
-        preventScrollReset
         viewTransition
         className={nextClass}
         aria-label="Next page"
         onClick={() => onPageChange?.(page + 1)}
       >
-        <ChevronRight className={iconSize} />
+        <ChevronRight className={iconSize} aria-hidden="true" />
       </Link>
     );
   };

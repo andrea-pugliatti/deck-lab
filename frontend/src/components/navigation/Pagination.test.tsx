@@ -77,6 +77,20 @@ describe("Pagination component", () => {
       expect(prevLink).toHaveAttribute("href", "/?q=dragon");
     });
 
+    it("should return clean url with no trailing question mark when navigating to page 0 with no remaining params", () => {
+      const initialParams = new URLSearchParams({ page: "1" });
+      vi.mocked(useSearchParams).mockReturnValue([initialParams, setSearchParamsMock]);
+
+      render(
+        <MemoryRouter>
+          <Pagination page={1} totalPages={5} />
+        </MemoryRouter>,
+      );
+
+      const prevLink = screen.getByRole("link", { name: "Previous page" });
+      expect(prevLink).toHaveAttribute("href", "/");
+    });
+
     it("should render disabled next span on last page", () => {
       render(
         <MemoryRouter>

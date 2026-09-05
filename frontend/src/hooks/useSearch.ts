@@ -124,18 +124,15 @@ export function useSearch<TData, TFilters>(
   // State Setters
   const setPage = (nextPage: number) => {
     if (syncUrl) {
-      setSearchParams(
-        (prev) => {
-          const params = new URLSearchParams(prev);
-          if (nextPage <= 0) {
-            params.delete("page");
-          } else {
-            params.set("page", nextPage.toString());
-          }
-          return params;
-        },
-        { preventScrollReset: true },
-      );
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        if (nextPage <= 0) {
+          params.delete("page");
+        } else {
+          params.set("page", nextPage.toString());
+        }
+        return params;
+      });
     }
     if (controlledSetPage) {
       controlledSetPage(nextPage);
@@ -171,7 +168,7 @@ export function useSearch<TData, TFilters>(
             params.delete("page");
             return params;
           },
-          { replace: true, preventScrollReset: true },
+          { replace: true },
         );
       }
     }
@@ -198,7 +195,7 @@ export function useSearch<TData, TFilters>(
           params.delete("page"); // Reset page on query changes
           return params;
         },
-        { replace: true, preventScrollReset: true },
+        { replace: true },
       );
     }
   }, [syncUrl, debouncedQuery, urlQuery, setSearchParams]);

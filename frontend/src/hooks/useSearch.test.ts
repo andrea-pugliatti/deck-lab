@@ -219,7 +219,7 @@ describe("useSearch hook", () => {
       expect(result.current.page).toBe(0);
     });
 
-    it("should update searchParams on page change with preventScrollReset", () => {
+    it("should update searchParams on page change", () => {
       const { result } = renderHook(() =>
         useSearch(mockEndpointBuilder, {
           syncUrl: true,
@@ -235,7 +235,7 @@ describe("useSearch hook", () => {
       const params = getUpdatedParams();
       expect(params.get("page")).toBe("3");
       const options = setSearchParamsMock.mock.calls[0]![1];
-      expect(options).toEqual({ preventScrollReset: true });
+      expect(options).toBeUndefined();
     });
 
     it("should delete page parameter when page is set to 0", () => {
@@ -277,7 +277,7 @@ describe("useSearch hook", () => {
       expect(params.get("type")).toBe("Spell");
       expect(params.get("page")).toBeNull(); // Reset page
       const options = setSearchParamsMock.mock.calls[0]![1];
-      expect(options).toEqual({ replace: true, preventScrollReset: true });
+      expect(options).toEqual({ replace: true });
     });
 
     it("should update searchParams on query changes with replace: true after debouncing and reset page", () => {
@@ -299,7 +299,7 @@ describe("useSearch hook", () => {
       expect(params.get("q")).toBe("Magician");
       expect(params.get("page")).toBeNull();
       const options = setSearchParamsMock.mock.calls[0]![1];
-      expect(options).toEqual({ replace: true, preventScrollReset: true });
+      expect(options).toEqual({ replace: true });
     });
   });
 
