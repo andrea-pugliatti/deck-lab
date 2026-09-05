@@ -21,6 +21,10 @@ import { importYdk } from "../../../features/decks";
 import { useViewPreference } from "../../../hooks/useViewPreference";
 import type { AiGeneratedDeck } from "../../../types";
 
+interface DeckBuilderContentProps {
+  id?: string;
+}
+
 /**
  * DeckBuilderContent Component.
  *
@@ -31,8 +35,7 @@ import type { AiGeneratedDeck } from "../../../types";
  *
  * @returns {React.JSX.Element} The DeckBuilder workspace user interface.
  */
-function DeckBuilderContent(): React.JSX.Element {
-  const { id } = useParams<{ id: string }>();
+function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element {
   const navigate = useNavigate();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const listContainerRef = useRef<HTMLDivElement>(null);
@@ -189,7 +192,10 @@ function DeckBuilderContent(): React.JSX.Element {
             viewTransition
             className="group mb-2 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft
+              className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+              aria-hidden="true"
+            />
             <span>{isEditMode ? "Back to Deck" : "Back to Decks"}</span>
           </Link>
           <h1 className="font-display text-2xl font-black text-white md:text-3xl">
@@ -389,7 +395,7 @@ export default function DeckBuilder(): React.JSX.Element {
   const { id } = useParams<{ id: string }>();
   return (
     <CatalogSearchProvider>
-      <DeckBuilderContent key={id || "new"} />
+      <DeckBuilderContent key={id || "new"} id={id} />
     </CatalogSearchProvider>
   );
 }
