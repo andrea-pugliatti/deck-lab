@@ -88,4 +88,177 @@ describe("Header component", () => {
     fireEvent.click(toggleBtn);
     expect(screen.queryByText("Login / Register")).not.toBeInTheDocument();
   });
+
+  describe("NavLink active matching (section hubs vs exact page matches)", () => {
+    it("should highlight Home only on exact / route", () => {
+      vi.mocked(useAuth).mockReturnValue({
+        isAuthenticated: false,
+        user: undefined,
+        logout: vi.fn(),
+        login: vi.fn(),
+        register: vi.fn(),
+        loading: false,
+      });
+
+      const { unmount } = render(
+        <MemoryRouter initialEntries={["/"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      const homeLinks = screen.getAllByRole("link", { name: "Home" });
+      expect(homeLinks[0]).toHaveAttribute("aria-current", "page");
+      expect(screen.getAllByRole("link", { name: "Public Decks" })[0]).not.toHaveAttribute(
+        "aria-current",
+      );
+
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={["/cards"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Home" })[0]).not.toHaveAttribute("aria-current");
+    });
+
+    it("should highlight Card Database on both /cards hub and child /cards/:id routes", () => {
+      vi.mocked(useAuth).mockReturnValue({
+        isAuthenticated: false,
+        user: undefined,
+        logout: vi.fn(),
+        login: vi.fn(),
+        register: vi.fn(),
+        loading: false,
+      });
+
+      const { unmount } = render(
+        <MemoryRouter initialEntries={["/cards"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Card Database" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={["/cards/46986414"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Card Database" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+    });
+
+    it("should highlight Public Decks on both /decks hub and child /decks/:id routes", () => {
+      vi.mocked(useAuth).mockReturnValue({
+        isAuthenticated: false,
+        user: undefined,
+        logout: vi.fn(),
+        login: vi.fn(),
+        register: vi.fn(),
+        loading: false,
+      });
+
+      const { unmount } = render(
+        <MemoryRouter initialEntries={["/decks"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Public Decks" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={["/decks/42"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Public Decks" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+    });
+
+    it("should highlight Hand Simulator only on exact /simulator route", () => {
+      vi.mocked(useAuth).mockReturnValue({
+        isAuthenticated: false,
+        user: undefined,
+        logout: vi.fn(),
+        login: vi.fn(),
+        register: vi.fn(),
+        loading: false,
+      });
+
+      const { unmount } = render(
+        <MemoryRouter initialEntries={["/simulator"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Hand Simulator" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={["/simulator/subpath"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "Hand Simulator" })[0]).not.toHaveAttribute(
+        "aria-current",
+      );
+    });
+
+    it("should highlight My Decks only on exact /my-decks route when authenticated", () => {
+      vi.mocked(useAuth).mockReturnValue({
+        isAuthenticated: true,
+        user: { username: "duelist", email: "duelist@example.com" },
+        logout: vi.fn(),
+        login: vi.fn(),
+        register: vi.fn(),
+        loading: false,
+      });
+
+      const { unmount } = render(
+        <MemoryRouter initialEntries={["/my-decks"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "My Decks" })[0]).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+
+      unmount();
+
+      render(
+        <MemoryRouter initialEntries={["/my-decks/subpath"]}>
+          <Header />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getAllByRole("link", { name: "My Decks" })[0]).not.toHaveAttribute(
+        "aria-current",
+      );
+    });
+  });
 });

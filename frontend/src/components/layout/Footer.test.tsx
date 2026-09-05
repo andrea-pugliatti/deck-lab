@@ -13,9 +13,13 @@ describe("Footer component", () => {
     );
 
     expect(screen.getByText("DeckLab")).toBeInTheDocument();
-    expect(screen.getByText("Public Decks")).toBeInTheDocument();
-    expect(screen.getByText("Card Database")).toBeInTheDocument();
-    expect(screen.getByText("Hand Simulator")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Public Decks" })).toHaveAttribute("href", "/decks");
+    expect(screen.getByRole("link", { name: "Card Database" })).toHaveAttribute("href", "/cards");
+    expect(screen.getByRole("link", { name: "Hand Simulator" })).toHaveAttribute(
+      "href",
+      "/simulator",
+    );
     expect(screen.getByText(/unofficial fan-made simulator/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Privacy Policy" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Terms of Service" })).toBeInTheDocument();

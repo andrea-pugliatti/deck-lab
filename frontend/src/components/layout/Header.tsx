@@ -16,9 +16,9 @@ interface NavLinkItem {
 
 const NAV_LINKS: NavLinkItem[] = [
   { to: "/", label: "Home", end: true },
-  { to: "/decks", label: "Public Decks", end: true },
+  { to: "/decks", label: "Public Decks" },
   { to: "/cards", label: "Card Database" },
-  { to: "/simulator", label: "Hand Simulator" },
+  { to: "/simulator", label: "Hand Simulator", end: true },
 ];
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -79,7 +79,7 @@ export default function Header() {
         <div className="hidden items-center gap-4 md:flex">
           {isAuthenticated && user ? (
             <div className="flex items-center gap-4">
-              <NavLink to="/my-decks" className={linkClass} viewTransition>
+              <NavLink to="/my-decks" end className={linkClass} viewTransition>
                 My Decks
               </NavLink>
               <span className="bg-border-dim h-4 w-px"></span>
@@ -143,6 +143,7 @@ export default function Header() {
                   <li>
                     <NavLink
                       to="/my-decks"
+                      end
                       className={mobileLinkClass}
                       onClick={() => setIsMobileMenuOpen(false)}
                       viewTransition

@@ -1,7 +1,12 @@
 import { Link } from "react-router";
 
-const NAV_LINKS = [
-  { to: "/", label: "Home", end: true },
+interface FooterNavLink {
+  to: string;
+  label: string;
+}
+
+const NAV_LINKS: FooterNavLink[] = [
+  { to: "/", label: "Home" },
   { to: "/decks", label: "Public Decks" },
   { to: "/cards", label: "Card Database" },
   { to: "/simulator", label: "Hand Simulator" },
