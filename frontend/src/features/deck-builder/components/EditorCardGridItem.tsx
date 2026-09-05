@@ -32,7 +32,7 @@ export default function EditorCardGridItem({
           <img
             src={`${API_BASE_URL}/api/${imageUrl}`}
             alt={name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover"
           />
         ) : (
           <span className="text-4xs font-bold text-slate-600 uppercase">YuGi</span>

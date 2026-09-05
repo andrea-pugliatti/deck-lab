@@ -40,12 +40,12 @@ export default function CardGridItem({
           <img
             src={`${API_BASE_URL}/api/${imageUrlCropped}`}
             alt={name}
-            className="h-full w-full object-cover transition-transform duration-500"
+            className="h-full w-full object-cover"
           />
         ) : (
           <>
             <div className="pointer-events-none absolute inset-0 bg-radial from-slate-700/10 to-transparent"></div>
-            <span className="font-display text-xs font-bold tracking-widest text-slate-500 uppercase transition-transform duration-300 group-hover:scale-105">
+            <span className="font-display text-xs font-bold tracking-widest text-slate-500 uppercase">
               [ {archetype || race || "Artwork"} ]
             </span>
           </>

@@ -140,7 +140,7 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                   {croppedUrl ? (
                     <img
                       src={`${API_BASE_URL}/api/${croppedUrl}`}
-                      className="h-full w-full object-cover transition-transform duration-500"
+                      className="h-full w-full object-cover"
                       alt={card?.name}
                     />
                   ) : (

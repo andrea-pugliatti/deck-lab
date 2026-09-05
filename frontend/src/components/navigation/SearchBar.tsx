@@ -151,7 +151,7 @@ export default function SearchBar() {
           <Link
             key={item}
             to={`/cards?q=${encodeURIComponent(item)}`}
-            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 focus-visible:ring-cyan-accent cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:shadow-cyan-950/20 focus:outline-none focus-visible:ring-2"
+            className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent hover:text-cyan-accent hover:bg-cyan-accent/5 focus-visible:ring-cyan-accent cursor-pointer rounded-full border px-3.5 py-1.5 text-xs text-slate-300 no-underline shadow-sm backdrop-blur-sm transition-all duration-200 hover:shadow-cyan-950/20 focus:outline-none focus-visible:ring-2"
           >
             {item}
           </Link>
