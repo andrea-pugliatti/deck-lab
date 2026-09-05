@@ -11,7 +11,7 @@ import Button from "../../../components/ui/Button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import ViewToggle from "../../../components/ui/ViewToggle";
 import { useAuth } from "../../../features/auth";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
 import { exportYdk } from "../../../features/decks";
 import DeckGridItem from "../../../features/decks/components/DeckGridItem";
@@ -114,17 +114,13 @@ export default function DeckDetail(): React.JSX.Element {
   const sideCount = sideCards.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const totalCount = mainCount + extraCount + sideCount;
 
-  const mainMonsters = mainCards.filter((c) => getCardTheme(c.type).type === "monster");
-  const mainSpells = mainCards.filter((c) => getCardTheme(c.type).type === "spell");
-  const mainTraps = mainCards.filter((c) => getCardTheme(c.type).type === "trap");
+  const mainMonsters = mainCards.filter((c) => getCardKind(c.type) === "monster");
+  const mainSpells = mainCards.filter((c) => getCardKind(c.type) === "spell");
+  const mainTraps = mainCards.filter((c) => getCardKind(c.type) === "trap");
 
   const mainMonstersCount = mainMonsters.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const mainSpellsCount = mainSpells.reduce((acc, c) => acc + (c.quantity || 0), 0);
   const mainTrapsCount = mainTraps.reduce((acc, c) => acc + (c.quantity || 0), 0);
-
-  const monsterTheme = getCardTheme("monster");
-  const spellTheme = getCardTheme("spell");
-  const trapTheme = getCardTheme("trap");
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -283,49 +279,49 @@ export default function DeckDetail(): React.JSX.Element {
                 </h3>
 
                 <div className="space-y-3">
-                  <div>
+                  <div data-card-kind="monster">
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className={`size-2.5 rounded-full ${monsterTheme.barColor}`}></span>
+                        <span className="card-accent-bar size-2.5 rounded-full"></span>
                         Monsters
                       </span>
                       <span className="font-semibold text-white">{mainMonstersCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className={`h-full ${monsterTheme.barColor}`}
+                        className="card-accent-bar h-full"
                         style={{ width: `${(mainMonstersCount / mainCount) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
-                  <div>
+                  <div data-card-kind="spell">
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className={`size-2.5 rounded-full ${spellTheme.barColor}`}></span>
+                        <span className="card-accent-bar size-2.5 rounded-full"></span>
                         Spells
                       </span>
                       <span className="font-semibold text-white">{mainSpellsCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className={`h-full ${spellTheme.barColor}`}
+                        className="card-accent-bar h-full"
                         style={{ width: `${(mainSpellsCount / mainCount) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
-                  <div>
+                  <div data-card-kind="trap">
                     <div className="mb-1 flex justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1.5">
-                        <span className={`size-2.5 rounded-full ${trapTheme.barColor}`}></span>
+                        <span className="card-accent-bar size-2.5 rounded-full"></span>
                         Traps
                       </span>
                       <span className="font-semibold text-white">{mainTrapsCount}</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-950">
                       <div
-                        className={`h-full ${trapTheme.barColor}`}
+                        className="card-accent-bar h-full"
                         style={{ width: `${(mainTrapsCount / mainCount) * 100}%` }}
                       ></div>
                     </div>

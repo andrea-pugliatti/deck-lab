@@ -1,8 +1,9 @@
 import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
+import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { Card } from "../../../types";
 
 /**
@@ -24,14 +25,14 @@ export default function CardListItem({
   level,
   imageUrlCropped,
 }: Card) {
-  const isMonster = type?.toLowerCase().includes("monster");
-  const { gridBadgeColor: badgeColor } = getCardTheme(type);
+  const cardKind = getCardKind(type);
+  const isMonster = cardKind === "monster";
 
   return (
     <Link
       to={`/cards/${id}`}
       viewTransition
-      className="bg-dark-surface/40 border-border-dim/60 hover-hologram hover:border-cyan-accent/50 group hover:shadow-glow-cyan flex w-full items-center justify-between gap-4 overflow-hidden rounded-xl border p-3 text-inherit no-underline backdrop-blur-sm transition-all duration-300"
+      className="deck-card-base hover-hologram group flex items-center justify-between gap-4 p-3"
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-4/5 w-12 shrink-0 items-center justify-center overflow-hidden rounded border">
@@ -48,11 +49,9 @@ export default function CardListItem({
 
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-2">
-            <span
-              className={`text-2xs rounded border px-1.5 py-0.5 font-bold tracking-widest uppercase ${badgeColor}`}
-            >
+            <Badge variant={cardKind} className="px-1.5 py-0.5">
               {type}
-            </span>
+            </Badge>
             {attribute && (
               <span className="text-2xs rounded border border-white/10 bg-slate-900/60 px-1.5 py-0.5 font-bold text-white uppercase">
                 {attribute}

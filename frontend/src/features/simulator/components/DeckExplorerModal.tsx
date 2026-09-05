@@ -5,7 +5,7 @@ import Input from "../../../components/ui/Input";
 import Modal from "../../../components/ui/Modal";
 import ModalCloseButton from "../../../components/ui/ModalCloseButton";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
 /**
@@ -86,15 +86,14 @@ export default function DeckExplorerModal({
         {filteredDeckExplorerCards.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
             {filteredDeckExplorerCards.map((card) => {
-              const { borderColor: borderC } = getCardTheme(card.type);
-
               return (
                 <div
                   key={card.uniqId}
                   className="bg-dark-surface-elevated/20 border-border-dim/40 hover:border-cyan-accent/30 group/searchcard flex flex-col gap-2 rounded-xl border p-2 transition-all duration-200"
                 >
                   <div
-                    className={`aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950 ${borderC}`}
+                    data-card-kind={getCardKind(card.type)}
+                    className="card-frame-border aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950"
                   >
                     {card.imageUrl ? (
                       <img

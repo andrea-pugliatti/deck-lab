@@ -25,6 +25,7 @@ describe("EditorCardGridItem component", () => {
     // Badge text strips " Monster" and " Card"
     expect(screen.getByText("Normal")).toBeInTheDocument();
     expect(screen.getByText("x2")).toBeInTheDocument();
+    expect(screen.getByText("x2")).toHaveClass("shadow-xs");
 
     const img = screen.getByAltText("Blue-Eyes White Dragon") as HTMLImageElement;
     expect(img).toBeInTheDocument();

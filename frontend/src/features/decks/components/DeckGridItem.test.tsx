@@ -29,6 +29,7 @@ describe("DeckGridItem component", () => {
 
     // Verify Quantity
     expect(screen.getByText("x3")).toBeInTheDocument();
+    expect(screen.getByText("x3")).toHaveClass("shadow-xs");
 
     // Verify Badge (replacing " Monster" or " Card" from type string)
     // "Spellcaster Monster" becomes "Spellcaster"

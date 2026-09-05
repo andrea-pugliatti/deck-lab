@@ -216,6 +216,51 @@
   }
 }
 
+[data-card-kind] {
+  --card-accent: #64748b;
+  --card-glow: var(--shadow-glow-slate);
+}
+
+[data-card-kind="monster"] {
+  --card-accent: #f59e0b;
+  --card-glow: var(--shadow-glow-monster);
+}
+
+[data-card-kind="spell"] {
+  --card-accent: #10b981;
+  --card-glow: var(--shadow-glow-spell);
+}
+
+[data-card-kind="trap"] {
+  --card-accent: #f43f5e;
+  --card-glow: var(--shadow-glow-trap);
+}
+
+@utility card-sim-frame {
+  border-color: color-mix(in srgb, var(--card-accent, #64748b) 20%, transparent);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--card-accent, #64748b) 40%, transparent);
+    box-shadow: var(--card-glow, var(--shadow-glow-slate));
+  }
+}
+
+@utility card-frame-border {
+  border-color: color-mix(in srgb, var(--card-accent, #64748b) 20%, transparent);
+}
+
+@utility card-accent-bar {
+  background-color: var(--card-accent, #64748b);
+}
+
+@utility card-ambient-gradient {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--card-accent, #64748b) 5%, transparent),
+    transparent
+  );
+}
+
 @layer base {
   html,
   body {

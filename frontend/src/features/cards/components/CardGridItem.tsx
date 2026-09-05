@@ -1,8 +1,9 @@
 import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
+import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { Card } from "../../../types";
 
 /**
@@ -26,8 +27,8 @@ export default function CardGridItem({
   level,
   imageUrlCropped,
 }: Card) {
-  const isMonster = type?.toLowerCase().includes("monster");
-  const { gridBadgeColor: badgeColor } = getCardTheme(type);
+  const cardKind = getCardKind(type);
+  const isMonster = cardKind === "monster";
 
   return (
     <Link
@@ -60,11 +61,9 @@ export default function CardGridItem({
       <div className="flex flex-1 flex-col justify-between p-4">
         <div className="mb-4">
           <div className="mb-1 flex items-center justify-between gap-2">
-            <span
-              className={`text-3xs rounded border px-1.5 py-0.5 font-bold tracking-widest uppercase ${badgeColor}`}
-            >
+            <Badge variant={cardKind} className="px-1.5 py-0.5">
               {type}
-            </span>
+            </Badge>
             {isMonster && level && (
               <div className="text-gold-accent flex items-center gap-0.5">
                 <Star className="size-3.5 fill-current" aria-hidden="true" />

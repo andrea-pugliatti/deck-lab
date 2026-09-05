@@ -1,7 +1,7 @@
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { Card, CardSection, DeckCardItem } from "../../../types";
 
 /**
@@ -33,8 +33,6 @@ export default function SearchCardListItem({
   deckCards = [],
   addCard,
 }: SearchCardListItemProps) {
-  const { badgeVariant } = getCardTheme(type);
-
   const containerClass =
     "flex bg-dark-surface-elevated/40 border border-border-dim rounded-xl items-center justify-between gap-3 group p-2.5 hover:border-border-glow transition-all duration-200";
 
@@ -73,7 +71,7 @@ export default function SearchCardListItem({
           <h4 className={titleClass}>{name}</h4>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {type && (
-              <Badge variant={badgeVariant} className="text-2xs px-1.5 py-0.5 select-none">
+              <Badge variant={getCardKind(type)} className="text-2xs px-1.5 py-0.5 select-none">
                 {type.replace(" Card", "").replace(" Monster", "")}
               </Badge>
             )}

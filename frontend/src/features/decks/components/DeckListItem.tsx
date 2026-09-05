@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { DeckGridItemProps } from "./DeckGridItem";
 
 /**
@@ -20,8 +20,6 @@ export default function DeckListItem({
   imageUrl,
   quantity,
 }: DeckGridItemProps) {
-  const { badgeVariant } = getCardTheme(type);
-
   return (
     <Link
       to={`/cards/${cardId}`}
@@ -49,7 +47,7 @@ export default function DeckListItem({
           </h4>
           {type && (
             <Badge
-              variant={badgeVariant}
+              variant={getCardKind(type)}
               className="text-2xs px-1 py-0 tracking-wider uppercase select-none"
             >
               {type.replace(" Monster", "").replace(" Card", "")}

@@ -61,6 +61,7 @@ describe("SearchBar component", () => {
     expect(searchInput).not.toHaveClass("focus-visible:ring-2");
     expect(searchInput.closest("form")).toHaveClass("focus-within:border-cyan-accent");
     expect(screen.getByText("Snake-Eye")).toBeInTheDocument();
+    expect(screen.getByText("Snake-Eye")).toHaveClass("shadow-xs");
   });
 
   it("should trigger navigation on form submit", () => {

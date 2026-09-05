@@ -4,7 +4,7 @@ import { useState } from "react";
 import Badge from "../../../components/ui/Badge";
 import Modal from "../../../components/ui/Modal";
 import ModalCloseButton from "../../../components/ui/ModalCloseButton";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { calculateProbability } from "../../../features/simulator/utils/probability";
 import type { DeckCardItem } from "../../../types";
 
@@ -126,16 +126,15 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                     const prob2 = calculateProbability(totalMainCount, copies, handSize, 2);
                     const prob3 = calculateProbability(totalMainCount, copies, handSize, 3);
 
-                    const { badgeVariant, barColor } = getCardTheme(card.type);
+                    const cardKind = getCardKind(card.type);
 
                     return (
                       <div
                         key={card.cardId}
+                        data-card-kind={cardKind}
                         className="bg-dark-surface-elevated/10 hover:bg-dark-surface-elevated/20 border-border-dim/40 hover:border-cyan-accent/20 relative overflow-hidden rounded-xl border py-3 pr-4 pl-4 transition-all duration-200"
                       >
-                        <div
-                          className={`absolute top-0 bottom-0 left-0 w-1 ${barColor} shadow-[0_0_8px_rgba(255,255,255,0.2)]`}
-                        ></div>
+                        <div className="card-accent-bar absolute top-0 bottom-0 left-0 w-1 shadow-[0_0_8px_rgba(255,255,255,0.2)]"></div>
 
                         <div className="grid grid-cols-12 items-center gap-4">
                           <div className="col-span-4 flex flex-col gap-1.5">
@@ -144,7 +143,7 @@ export default function ProbabilityCalculator({ cards, onClose }: ProbabilityCal
                             </span>
                             <span className="self-start">
                               <Badge
-                                variant={badgeVariant}
+                                variant={cardKind}
                                 className="text-2xs rounded-md px-1.5 py-0.5 leading-none font-bold tracking-wider"
                               >
                                 {card.type?.replace(" Monster", "").replace(" Card", "")}

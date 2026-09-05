@@ -1,8 +1,9 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 
+import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { EditorCardListItemProps } from "./EditorCardListItem";
 
 /**
@@ -23,8 +24,6 @@ export default function EditorCardGridItem({
   updateQty,
   remove,
 }: EditorCardListItemProps) {
-  const { deckBadgeColor: badgeColor } = getCardTheme(type);
-
   return (
     <div className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent/50 group relative flex min-h-32 flex-col overflow-hidden rounded-xl border p-2 text-center backdrop-blur-sm transition-all duration-200 hover:shadow-md">
       <div className="border-border-dim/40 relative mx-auto flex aspect-4/5 w-full items-center justify-center overflow-hidden rounded bg-slate-900">
@@ -38,7 +37,7 @@ export default function EditorCardGridItem({
           <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
         )}
 
-        <span className="text-2xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-950 px-1.5 py-0.5 font-mono font-bold text-white shadow-sm select-none">
+        <span className="text-2xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-950 px-1.5 py-0.5 font-mono font-bold text-white shadow-xs select-none">
           x{quantity}
         </span>
       </div>
@@ -48,11 +47,9 @@ export default function EditorCardGridItem({
           {name}
         </h4>
         {type && (
-          <span
-            className={`text-2xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
-          >
+          <Badge variant={getCardKind(type)} className="mx-auto mt-0.5 px-1 font-semibold">
             {type.replace(" Card", "").replace(" Monster", "")}
-          </span>
+          </Badge>
         )}
       </div>
 

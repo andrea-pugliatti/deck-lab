@@ -2,7 +2,7 @@ import { Eye, Flame, Shield, Star } from "lucide-react";
 
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
 /**
@@ -52,9 +52,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
                 {inspectedCard.name}
               </h4>
               <div className="mt-2 flex flex-wrap gap-2">
-                <Badge variant={getCardTheme(inspectedCard.type).badgeVariant}>
-                  {inspectedCard.type}
-                </Badge>
+                <Badge variant={getCardKind(inspectedCard.type)}>{inspectedCard.type}</Badge>
                 {inspectedCard.attribute && (
                   <span className="border-border-dim/60 text-2xs rounded border bg-slate-900 px-1.5 py-0.5 font-bold text-white uppercase">
                     {inspectedCard.attribute}

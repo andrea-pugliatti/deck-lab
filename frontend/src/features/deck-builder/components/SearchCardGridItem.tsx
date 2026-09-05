@@ -1,7 +1,7 @@
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SearchCardListItemProps } from "./SearchCardListItem";
 
 /**
@@ -21,8 +21,6 @@ export default function SearchCardGridItem({
   deckCards = [],
   addCard,
 }: SearchCardListItemProps) {
-  const { deckBadgeColor: badgeColor } = getCardTheme(type);
-
   const isExtraDeckCardType = (cardType?: string) => {
     if (!cardType) return false;
     const t = cardType.toLowerCase();
@@ -62,11 +60,9 @@ export default function SearchCardGridItem({
           {name}
         </h4>
         {type && (
-          <span
-            className={`text-2xs mx-auto mt-0.5 rounded border px-1 font-semibold tracking-wider uppercase select-none ${badgeColor}`}
-          >
+          <Badge variant={getCardKind(type)} className="mx-auto mt-0.5 px-1 font-semibold">
             {type.replace(" Card", "").replace(" Monster", "")}
-          </span>
+          </Badge>
         )}
       </div>
 

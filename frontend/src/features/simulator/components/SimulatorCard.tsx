@@ -2,7 +2,7 @@ import { Move } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
 /**
@@ -35,8 +35,6 @@ export default function SimulatorCard({
 }: SimulatorCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const { borderColor, glowColor } = getCardTheme(card.type);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -80,7 +78,8 @@ export default function SimulatorCard({
             setIsMenuOpen(false);
           }
         }}
-        className={`focus-visible:ring-cyan-accent relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 focus-visible:ring-2 focus-visible:outline-hidden ${borderColor} ${glowColor}`}
+        data-card-kind={getCardKind(card.type)}
+        className="card-sim-frame focus-visible:ring-cyan-accent relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 focus-visible:ring-2 focus-visible:outline-hidden"
       >
         {card.imageUrl ? (
           <img

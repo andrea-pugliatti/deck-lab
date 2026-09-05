@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 
+import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 
 /**
  * Properties for the {@link DeckGridItem} component.
@@ -28,8 +29,6 @@ export default function DeckGridItem({
   imageUrl,
   quantity,
 }: DeckGridItemProps) {
-  const { deckBadgeColor: badgeColor } = getCardTheme(type);
-
   return (
     <Link
       to={`/cards/${cardId}`}
@@ -48,7 +47,7 @@ export default function DeckGridItem({
             [ {name.substring(0, 3)} ]
           </span>
         )}
-        <span className="text-2xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-900/85 px-1.5 py-0.5 font-mono font-bold text-white shadow-sm">
+        <span className="text-2xs absolute right-1 bottom-1 rounded border border-white/10 bg-slate-900/85 px-1.5 py-0.5 font-mono font-bold text-white shadow-xs">
           x{quantity}
         </span>
       </div>
@@ -58,11 +57,9 @@ export default function DeckGridItem({
           {name}
         </h4>
         {type && (
-          <span
-            className={`text-2xs self-start rounded border px-1 py-0.5 font-bold tracking-wider uppercase ${badgeColor}`}
-          >
+          <Badge variant={getCardKind(type)} className="self-start px-1 py-0.5">
             {type.replace(" Monster", "").replace(" Card", "")}
-          </span>
+          </Badge>
         )}
       </div>
     </Link>

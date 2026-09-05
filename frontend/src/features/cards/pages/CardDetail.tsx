@@ -8,7 +8,7 @@ import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
 import { API_BASE_URL } from "../../../config/env";
-import { getCardTheme } from "../../../features/cards/utils/cardTheme";
+import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { cardQueries } from "../../../services/queryOptions";
 import { isValidNumericId } from "../../../utils/validation";
 
@@ -99,11 +99,11 @@ export default function CardDetail(): React.JSX.Element {
     );
   }
 
-  const { bgGradient, badgeVariant, type: cardThemeType } = getCardTheme(card.type);
-  const isMonster = cardThemeType === "monster";
+  const cardKind = getCardKind(card.type);
+  const isMonster = cardKind === "monster";
 
   return (
-    <div className={`relative min-h-[80vh] bg-linear-to-b ${bgGradient} to-transparent`}>
+    <div data-card-kind={cardKind} className="card-ambient-gradient relative min-h-[80vh]">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <Link
           to="/cards"
@@ -150,7 +150,7 @@ export default function CardDetail(): React.JSX.Element {
           <div className="flex flex-col justify-between gap-6 md:col-span-7">
             <div>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <Badge variant={badgeVariant} className="rounded-full px-3 py-1 text-xs">
+                <Badge variant={cardKind} className="rounded-full px-3 py-1 text-xs">
                   {card.type}
                 </Badge>
 
