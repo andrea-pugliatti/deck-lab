@@ -2,7 +2,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { CardSection } from "../../../types";
 
@@ -49,15 +49,7 @@ export default function EditorCardListItem({
     <div className={containerClass}>
       <div className="flex min-w-0 items-center gap-2.5">
         <div className={imgWrapperClass}>
-          {imageUrl ? (
-            <img
-              src={`${API_BASE_URL}/api/${imageUrl}`}
-              alt={name}
-              className="size-full object-cover"
-            />
-          ) : (
-            <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
-          )}
+          <CardImage src={imageUrl} alt={name} />
         </div>
         <div className="min-w-0">
           <h4 className={titleClass}>{name}</h4>

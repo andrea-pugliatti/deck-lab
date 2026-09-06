@@ -1,6 +1,7 @@
 export { default as CardFilters } from "./components/CardFilters";
 export { default as CardGridItem } from "./components/CardGridItem";
 export { default as CardListItem } from "./components/CardListItem";
+export { default as CardImage, type CardImageProps } from "../../components/ui/CardImage";
 export { CatalogSearchProvider, useCatalogSearchContext } from "./context/CatalogSearchContext";
 export { useCatalogSearch } from "./hooks/useCatalogSearch";
 export { useCardMetadata } from "./hooks/useCardMetadata";

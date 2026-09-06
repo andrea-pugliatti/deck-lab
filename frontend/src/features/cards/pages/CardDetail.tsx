@@ -7,7 +7,7 @@ import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { useOptionalQueryClient } from "../../../hooks/usePrefetch";
 import { cardKeys } from "../../../services/queryKeys";
@@ -165,20 +165,7 @@ export default function CardDetail(): React.JSX.Element {
               ref={cardArtworkRef}
               className="bg-dark-surface-elevated border-border-dim group relative aspect-244/356 w-full max-w-sm overflow-hidden rounded-xl border shadow-2xl transition-transform duration-300 ease-out transform-3d"
             >
-              {card.imageUrl ? (
-                <img
-                  src={`${API_BASE_URL}/api/${card.imageUrl}`}
-                  alt={card.name}
-                  className="size-full object-cover"
-                />
-              ) : (
-                <div className="flex size-full flex-col items-center justify-center p-6 text-center text-slate-400">
-                  <span className="font-display mb-2 text-lg font-bold tracking-widest uppercase">
-                    [ No Artwork ]
-                  </span>
-                  <span className="text-xs text-slate-400">{card.archetype || card.race}</span>
-                </div>
-              )}
+              <CardImage src={card.imageUrl} alt={card.name} />
             </div>
           </div>
 

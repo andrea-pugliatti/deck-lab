@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { DeckGridItemProps } from "./DeckGridItem";
 
@@ -28,17 +28,7 @@ export default function DeckListItem({
     >
       <div className="flex min-w-0 items-center gap-3">
         <div className="border-border-dim/40 relative flex aspect-4/5 w-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-slate-900">
-          {imageUrl ? (
-            <img
-              src={`${API_BASE_URL}/api/${imageUrl}`}
-              alt={name}
-              className="size-full object-cover"
-            />
-          ) : (
-            <span className="text-2xs font-bold text-slate-400 uppercase">
-              {name.substring(0, 3)}
-            </span>
-          )}
+          <CardImage src={imageUrl} alt={name} />
         </div>
 
         <div className="min-w-0">

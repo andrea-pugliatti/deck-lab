@@ -28,8 +28,8 @@ describe("SimulatorCard component", () => {
     const cardWithoutImage = { ...mockCard, imageUrl: undefined };
     render(<SimulatorCard card={cardWithoutImage} currentZone="hand" onMove={vi.fn()} />);
 
-    expect(screen.getByText("Dark Magician")).toBeInTheDocument();
-    expect(screen.getByText("[ No Art ]")).toBeInTheDocument();
+    expect(screen.queryByAltText("Dark Magician")).not.toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("should open move menu and call onViewDetails when clicked", () => {

@@ -1,6 +1,6 @@
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SearchCardListItemProps } from "./SearchCardListItem";
 
@@ -35,15 +35,7 @@ export default function SearchCardGridItem({
   return (
     <div className="bg-dark-surface-elevated/40 border-border-dim/60 hover:border-cyan-accent/50 group relative flex min-h-36 flex-col overflow-hidden rounded-xl border p-2 text-center backdrop-blur-sm transition-all duration-200 hover:shadow-md">
       <div className="border-border-dim/40 relative mx-auto flex aspect-4/5 w-full items-center justify-center overflow-hidden rounded bg-slate-900">
-        {imageUrl ? (
-          <img
-            src={`${API_BASE_URL}/api/${imageUrl}`}
-            alt={name}
-            className="size-full object-cover"
-          />
-        ) : (
-          <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
-        )}
+        <CardImage src={imageUrl} alt={name} />
 
         {totalInDeck > 0 && (
           <Badge

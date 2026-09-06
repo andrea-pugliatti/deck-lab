@@ -47,10 +47,10 @@ describe("AiSuggestionItem component", () => {
     );
 
     expect(screen.queryByAltText("Dark Magician")).not.toBeInTheDocument();
-    expect(screen.getByText(":)")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
-  it("should render smiley placeholder if image fails to load", () => {
+  it("should render standardized fallback if image fails to load", () => {
     render(
       <AiSuggestionItem
         card={mockCard}
@@ -64,7 +64,7 @@ describe("AiSuggestionItem component", () => {
     fireEvent.error(img);
 
     expect(screen.queryByAltText("Dark Magician")).not.toBeInTheDocument();
-    expect(screen.getByText(":)")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("should call onAdd when plus button is clicked", () => {

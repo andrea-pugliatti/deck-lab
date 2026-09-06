@@ -2,7 +2,7 @@ import { Flame, Sparkles, Star, Zap } from "lucide-react";
 import { useRef } from "react";
 import type { MouseEvent } from "react";
 
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import type { Card } from "../../../types";
 
 /**
@@ -141,22 +141,21 @@ export default function HeroCardShowcase({ cards, loading }: HeroCardShowcasePro
                 </div>
 
                 <div className="border-border-dim/60 bg-dark-surface-elevated/40 group relative mb-1.5 flex flex-1 items-center justify-center overflow-hidden rounded border sm:mb-2">
-                  {croppedUrl ? (
-                    <img
-                      src={`${API_BASE_URL}/api/${croppedUrl}`}
-                      className="size-full object-cover"
-                      alt={card?.name}
-                    />
-                  ) : (
-                    <div
-                      className={`size-full bg-linear-to-br ${artGradient} relative flex items-center justify-center`}
-                    >
-                      <div className="absolute inset-0 opacity-30"></div>
-                      <FallbackIcon
-                        className={`size-10 sm:size-12 ${fallbackIconColor} drop-shadow-glow-white transition-transform duration-500 group-hover:scale-110`}
-                      />
-                    </div>
-                  )}
+                  <CardImage
+                    src={croppedUrl}
+                    alt={card?.name ?? "Showcase Card"}
+                    className="size-full object-cover"
+                    fallback={
+                      <div
+                        className={`size-full bg-linear-to-br ${artGradient} relative flex items-center justify-center`}
+                      >
+                        <div className="absolute inset-0 opacity-30"></div>
+                        <FallbackIcon
+                          className={`size-10 sm:size-12 ${fallbackIconColor} drop-shadow-glow-white transition-transform duration-500 group-hover:scale-110`}
+                        />
+                      </div>
+                    }
+                  />
                 </div>
 
                 <div className="bg-dark-surface/80 border-border-dim/40 mb-1 rounded border p-1 sm:mb-1.5 sm:p-1.5">

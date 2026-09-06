@@ -96,44 +96,7 @@ describe("CardGridItem component", () => {
 
     // No image tag should be rendered
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
-
-    // Check fallback text which should use archetype
-    expect(screen.getByText("[ Blue-Eyes ]")).toBeInTheDocument();
-  });
-
-  it("renders fallback text with race if archetype and imageUrlCropped are missing", () => {
-    const cardWithoutImageOrArchetype: Card = {
-      ...monsterCard,
-      imageUrlCropped: undefined,
-      archetype: undefined,
-    };
-
-    render(
-      <MemoryRouter>
-        <CardGridItem {...cardWithoutImageOrArchetype} />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText("[ Dragon ]")).toBeInTheDocument();
-  });
-
-  it("renders fallback text '[ Artwork ]' if image, archetype, and race are missing", () => {
-    const cardMinimal: Card = {
-      id: 999,
-      name: "Mystery Card",
-      type: "Normal Monster" as CardType,
-      description: "Something mysterious",
-      race: "" as CardRace,
-      attribute: "" as CardAttribute,
-    };
-
-    render(
-      <MemoryRouter>
-        <CardGridItem {...cardMinimal} />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText("[ Artwork ]")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("renders '?' for ATK or DEF if they are -1", () => {

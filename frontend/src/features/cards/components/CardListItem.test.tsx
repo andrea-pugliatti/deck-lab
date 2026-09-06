@@ -96,6 +96,6 @@ describe("CardListItem component", () => {
 
     // No image tag should be rendered
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
-    expect(screen.getByText("YuGi")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 });

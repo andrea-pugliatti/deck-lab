@@ -26,6 +26,7 @@ describe("DeckExplorerModal component", () => {
       attribute: "LIGHT",
       quantity: 1,
       section: "MAIN",
+      imageUrl: "blue_eyes.jpg",
     },
     {
       uniqId: "card-2",
@@ -35,6 +36,7 @@ describe("DeckExplorerModal component", () => {
       attribute: "DARK",
       quantity: 1,
       section: "MAIN",
+      imageUrl: "dark_magician.jpg",
     },
     {
       uniqId: "card-3",
@@ -43,6 +45,7 @@ describe("DeckExplorerModal component", () => {
       type: "Spell Card",
       quantity: 1,
       section: "MAIN",
+      imageUrl: "pot_of_greed.jpg",
     },
   ];
 
@@ -70,9 +73,9 @@ describe("DeckExplorerModal component", () => {
       />,
     );
 
-    expect(screen.getByText("Blue-Eyes White Dragon")).toBeInTheDocument();
-    expect(screen.getByText("Dark Magician")).toBeInTheDocument();
-    expect(screen.getByText("Pot of Greed")).toBeInTheDocument();
+    expect(screen.getByAltText("Blue-Eyes White Dragon")).toBeInTheDocument();
+    expect(screen.getByAltText("Dark Magician")).toBeInTheDocument();
+    expect(screen.getByAltText("Pot of Greed")).toBeInTheDocument();
   });
 
   it("should filter cards by search query", async () => {
@@ -87,9 +90,9 @@ describe("DeckExplorerModal component", () => {
     const input = screen.getByPlaceholderText("Search remaining deck cards...");
     fireEvent.change(input, { target: { value: "Dragon" } });
 
-    expect(screen.getByText("Blue-Eyes White Dragon")).toBeInTheDocument();
-    expect(screen.queryByText("Dark Magician")).not.toBeInTheDocument();
-    expect(screen.queryByText("Pot of Greed")).not.toBeInTheDocument();
+    expect(screen.getByAltText("Blue-Eyes White Dragon")).toBeInTheDocument();
+    expect(screen.queryByAltText("Dark Magician")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("Pot of Greed")).not.toBeInTheDocument();
   });
 
   it("should show empty state if search matches nothing", () => {

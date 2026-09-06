@@ -46,7 +46,7 @@ describe("EditorCardListItem component", () => {
     );
 
     expect(screen.queryByAltText("Blue-Eyes White Dragon")).not.toBeInTheDocument();
-    expect(screen.getByText("YuGi")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("should call updateQty with delta -1 when minus button is clicked", () => {

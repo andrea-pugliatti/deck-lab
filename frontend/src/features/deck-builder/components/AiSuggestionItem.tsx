@@ -1,8 +1,7 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
 
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getFormatRules } from "../../../features/deck-builder/reducers/deckReducer";
 import type { DeckCardItem, Format, Suggestion } from "../../../types";
 
@@ -30,7 +29,6 @@ export default function AiSuggestionItem({
   formatName,
   onAdd,
 }: AiSuggestionItemProps) {
-  const [imgError, setImgError] = useState(false);
   const countInDeck = deckCards
     .filter((c) => c.cardId === card.cardId)
     .reduce((sum, c) => sum + c.quantity, 0);
@@ -40,22 +38,13 @@ export default function AiSuggestionItem({
 
   return (
     <div className="bg-dark-surface-elevated/40 hover:bg-dark-surface-elevated/70 border-border-dim/40 hover:border-border-dim flex items-center gap-3 rounded-xl border p-3">
-      {card.imageUrl && !imgError ? (
-        <img
-          src={
-            card.imageUrl.startsWith("/")
-              ? `${API_BASE_URL}/api${card.imageUrl}`
-              : `${API_BASE_URL}/api/${card.imageUrl}`
-          }
+      <div className="border-border-dim/40 flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
+        <CardImage
+          src={card.imageUrl}
           alt={card.name}
-          className="border-border-dim size-10 shrink-0 rounded-lg border object-cover shadow-inner"
-          onError={() => setImgError(true)}
+          className="size-full object-cover shadow-inner"
         />
-      ) : (
-        <div className="border-border-dim/40 flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-slate-900">
-          <span className="text-2xs font-bold text-slate-400 select-none">:)</span>
-        </div>
-      )}
+      </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">

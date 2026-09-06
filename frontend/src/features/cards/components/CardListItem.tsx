@@ -2,7 +2,7 @@ import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { usePrefetchCard } from "../../../hooks/usePrefetch";
 import type { Card } from "../../../types";
@@ -40,15 +40,7 @@ export default function CardListItem({
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-4/5 w-12 shrink-0 items-center justify-center overflow-hidden rounded border">
-          {imageUrlCropped ? (
-            <img
-              src={`${API_BASE_URL}/api/${imageUrlCropped}`}
-              alt={name}
-              className="size-full object-cover"
-            />
-          ) : (
-            <span className="text-2xs font-bold text-slate-400 uppercase">YuGi</span>
-          )}
+          <CardImage src={imageUrlCropped} alt={name} />
         </div>
 
         <div className="min-w-0 flex-1">

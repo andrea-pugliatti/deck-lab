@@ -66,7 +66,7 @@ describe("CardInspector component", () => {
     expect(screen.getByText("DEF: ?")).toBeInTheDocument();
   });
 
-  it("should render '[ No Art ]' when no imageUrl is provided", () => {
+  it("should render '[ No Artwork ]' when no imageUrl is provided", () => {
     const mockCard: SimulatorCardInstance = {
       uniqId: "card-3",
       cardId: 103,
@@ -78,7 +78,7 @@ describe("CardInspector component", () => {
     };
 
     render(<CardInspector inspectedCard={mockCard} />);
-    expect(screen.getByText("[ No Art ]")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("should not render ATK/DEF/level for Spell cards", () => {

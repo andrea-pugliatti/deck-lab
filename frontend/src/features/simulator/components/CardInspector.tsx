@@ -1,7 +1,7 @@
 import { Eye, Flame, Shield, Star } from "lucide-react";
 
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
@@ -34,17 +34,7 @@ export default function CardInspector({ inspectedCard }: CardInspectorProps) {
         <div className="flex flex-1 flex-col justify-between">
           <div className="space-y-4">
             <div className="border-border-dim mx-auto aspect-244/356 w-full max-w-50 overflow-hidden rounded-lg border bg-slate-950 shadow-md">
-              {inspectedCard.imageUrl ? (
-                <img
-                  src={`${API_BASE_URL}/api/${inspectedCard.imageUrl}`}
-                  alt={inspectedCard.name}
-                  className="size-full object-cover"
-                />
-              ) : (
-                <div className="flex size-full items-center justify-center text-xs text-slate-400">
-                  [ No Art ]
-                </div>
-              )}
+              <CardImage src={inspectedCard.imageUrl} alt={inspectedCard.name} />
             </div>
 
             <div>

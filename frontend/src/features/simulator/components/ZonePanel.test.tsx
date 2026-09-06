@@ -53,7 +53,7 @@ describe("ZonePanel component", () => {
 
     // Card names (integrated check with SimulatorCard)
     expect(screen.getByRole("img", { name: "Blue-Eyes White Dragon" })).toBeInTheDocument();
-    expect(screen.getByText("Dark Magician")).toBeInTheDocument();
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
 
     // Verify click triggers callback
     const cardImg = screen.getByRole("img", { name: "Blue-Eyes White Dragon" });

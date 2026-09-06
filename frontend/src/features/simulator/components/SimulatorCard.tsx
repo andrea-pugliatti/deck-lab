@@ -1,7 +1,7 @@
 import { Move } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
@@ -62,6 +62,7 @@ export default function SimulatorCard({
       <div
         role="button"
         tabIndex={0}
+        aria-label={card.name}
         aria-haspopup="menu"
         aria-expanded={isMenuOpen}
         onClick={() => {
@@ -81,24 +82,12 @@ export default function SimulatorCard({
         data-card-kind={getCardKind(card.type)}
         className="card-sim-frame focus-visible:ring-cyan-accent relative aspect-244/356 w-full transform cursor-pointer overflow-hidden rounded-lg border bg-slate-950 transition-all duration-200 group-hover/card:-translate-y-1 focus-visible:ring-2 focus-visible:outline-hidden"
       >
-        {card.imageUrl ? (
-          <img
-            src={`${API_BASE_URL}/api/${card.imageUrl}`}
-            alt={card.name}
-            className="size-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="bg-dark-surface-elevated/40 flex size-full flex-col justify-between p-3 text-center">
-            <span className="text-2xs block font-bold tracking-wider text-slate-400 uppercase">
-              {card.type?.replace(" Card", "")}
-            </span>
-            <span className="font-display text-2xs line-clamp-3 font-bold text-white uppercase">
-              {card.name}
-            </span>
-            <span className="text-2xs block text-slate-400">[ No Art ]</span>
-          </div>
-        )}
+        <CardImage
+          src={card.imageUrl}
+          alt={card.name}
+          loading="lazy"
+          className="size-full object-cover"
+        />
       </div>
 
       {isMenuOpen && (

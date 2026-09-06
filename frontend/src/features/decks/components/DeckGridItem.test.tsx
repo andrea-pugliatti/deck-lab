@@ -51,8 +51,8 @@ describe("DeckGridItem component", () => {
     // No image tag should render
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
 
-    // Renders substring of name (first 3 chars): "Dar"
-    expect(screen.getByText("[ Dar ]")).toBeInTheDocument();
+    // Renders standardized fallback
+    expect(screen.getByText("[ No Artwork ]")).toBeInTheDocument();
   });
 
   it("handles missing type gracefully", () => {

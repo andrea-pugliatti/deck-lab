@@ -1,10 +1,10 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 
+import CardImage from "../../../components/ui/CardImage";
 import Input from "../../../components/ui/Input";
 import Modal from "../../../components/ui/Modal";
 import ModalCloseButton from "../../../components/ui/ModalCloseButton";
-import { API_BASE_URL } from "../../../config/env";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import type { SimulatorCardInstance } from "../../../types";
 
@@ -95,17 +95,7 @@ export default function DeckExplorerModal({
                     data-card-kind={getCardKind(card.type)}
                     className="card-frame-border aspect-244/356 w-full overflow-hidden rounded-lg border bg-slate-950"
                   >
-                    {card.imageUrl ? (
-                      <img
-                        src={`${API_BASE_URL}/api/${card.imageUrl}`}
-                        alt={card.name}
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      <div className="bg-dark-surface-elevated text-2xs flex size-full items-center justify-center p-2 text-center text-slate-500">
-                        {card.name}
-                      </div>
-                    )}
+                    <CardImage src={card.imageUrl} alt={card.name} />
                   </div>
 
                   {/* Search Card Actions */}

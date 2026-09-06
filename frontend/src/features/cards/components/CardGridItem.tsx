@@ -2,7 +2,7 @@ import { Flame, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
 
 import Badge from "../../../components/ui/Badge";
-import { API_BASE_URL } from "../../../config/env";
+import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
 import { usePrefetchCard } from "../../../hooks/usePrefetch";
 import type { Card } from "../../../types";
@@ -20,9 +20,7 @@ export default function CardGridItem({
   name,
   type,
   description,
-  race,
   attribute,
-  archetype,
   atk,
   def,
   level,
@@ -41,20 +39,7 @@ export default function CardGridItem({
       className="deck-card-base hover-hologram group flex flex-col justify-between"
     >
       <div className="bg-dark-surface-elevated border-border-dim relative flex aspect-video items-center justify-center overflow-hidden border-b">
-        {imageUrlCropped ? (
-          <img
-            src={`${API_BASE_URL}/api/${imageUrlCropped}`}
-            alt={name}
-            className="size-full object-cover"
-          />
-        ) : (
-          <>
-            <div className="pointer-events-none absolute inset-0 bg-radial from-slate-700/10 to-transparent"></div>
-            <span className="font-display text-xs font-bold tracking-widest text-slate-500 uppercase">
-              [ {archetype || race || "Artwork"} ]
-            </span>
-          </>
-        )}
+        <CardImage src={imageUrlCropped} alt={name} />
         {attribute && (
           <span className="text-3xs absolute top-2 right-2 rounded border border-white/10 bg-slate-900/60 px-1.5 py-0.5 font-bold text-white uppercase">
             {attribute}

@@ -113,8 +113,8 @@ describe("SimulatorWorkspace component", () => {
     expect(screen.getAllByText("1 Cards").length).toBe(2);
 
     // Cards in Hand and Field
-    expect(screen.getAllByText("Card in Hand 1").length).toBe(2);
-    expect(screen.getByText("Card on Field 1")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Card in Hand 1" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Card on Field 1" })).toBeInTheDocument();
 
     // Check zones headers
     expect(screen.getByText("HAND ZONE")).toBeInTheDocument();
@@ -216,7 +216,7 @@ describe("SimulatorWorkspace component", () => {
     expect(screen.getAllByText("Card in Hand 1").length).toBeGreaterThan(0);
 
     // Click field card "Card on Field 1"
-    const fieldCard = screen.getByText("Card on Field 1");
+    const fieldCard = screen.getByRole("button", { name: "Card on Field 1" });
     fireEvent.click(fieldCard);
 
     // CardInspector should render "Card on Field 1" details
