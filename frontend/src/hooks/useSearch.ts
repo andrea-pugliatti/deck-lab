@@ -229,11 +229,11 @@ export function useSearch<TData, TFilters>(
     placeholderData: keepPreviousData,
   });
 
-  let queryClient: ReturnType<typeof useQueryClient> | null = null;
+  let queryClient: ReturnType<typeof useQueryClient> | undefined;
   try {
     queryClient = useQueryClient();
   } catch {
-    queryClient = null;
+    queryClient = undefined;
   }
 
   const prefetchNextPage = useCallback(() => {

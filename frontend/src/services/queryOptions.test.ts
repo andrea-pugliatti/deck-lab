@@ -74,8 +74,8 @@ describe("queryOptions factories", () => {
       expect(enabledOptions.queryKey).toEqual(cardKeys.detail("100"));
       expect(enabledOptions.enabled).toBe(true);
 
-      const disabledOptions = cardQueries.detail(null);
-      expect(disabledOptions.queryKey).toEqual(cardKeys.detail(null));
+      const disabledOptions = cardQueries.detail(undefined);
+      expect(disabledOptions.queryKey).toEqual(cardKeys.detail(undefined));
       expect(disabledOptions.enabled).toBe(false);
       // @ts-expect-error - testing queryFn when id is missing
       expect(() => disabledOptions.queryFn({ signal: new AbortController().signal })).toThrow(

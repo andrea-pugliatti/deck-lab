@@ -50,7 +50,7 @@ export const deckQueries = {
       staleTime: Infinity,
       gcTime: Infinity,
     }),
-  detail: (id?: string | number | null) =>
+  detail: (id?: string | number) =>
     queryOptions({
       queryKey: deckKeys.detail(id),
       queryFn: ({ signal }) => {
@@ -69,7 +69,7 @@ export const deckQueries = {
 };
 
 export const cardQueries = {
-  detail: (id?: string | number | null) =>
+  detail: (id?: string | number) =>
     queryOptions({
       queryKey: cardKeys.detail(id),
       queryFn: ({ signal }) => {

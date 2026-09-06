@@ -16,7 +16,7 @@ export interface SimulatorState {
  * Actions that can be dispatched to mutate the Simulator State.
  */
 export type SimulatorAction =
-  | { type: "INIT"; deck: Deck | null; initialHandSize: number }
+  | { type: "INIT"; deck?: Deck; initialHandSize: number }
   | { type: "CLEAR" }
   | { type: "DRAW"; count: number }
   | { type: "SHUFFLE" }

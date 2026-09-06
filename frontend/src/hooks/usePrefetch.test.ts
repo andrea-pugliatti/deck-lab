@@ -25,9 +25,9 @@ describe("usePrefetch hooks", () => {
   };
 
   describe("useOptionalQueryClient", () => {
-    it("returns null when rendered outside of a QueryClientProvider without throwing", () => {
+    it("returns undefined when rendered outside of a QueryClientProvider without throwing", () => {
       const { result } = renderHook(() => useOptionalQueryClient());
-      expect(result.current).toBeNull();
+      expect(result.current).toBeUndefined();
     });
 
     it("returns the active queryClient when rendered inside a QueryClientProvider", () => {

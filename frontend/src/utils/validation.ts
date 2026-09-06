@@ -24,9 +24,9 @@ export function isValidNumericId(value: unknown): boolean {
  * Parses and validates a dynamic route parameter or raw value as a positive safe integer.
  *
  * @param value - The route parameter or raw value to parse.
- * @returns The parsed positive integer, or null if invalid, non-numeric, or non-positive.
+ * @returns The parsed positive integer, or undefined if invalid, non-numeric, or non-positive.
  */
-export function parseNumericId(value: unknown): number | null {
-  if (!isValidNumericId(value)) return null;
+export function parseNumericId(value: unknown): number | undefined {
+  if (!isValidNumericId(value)) return undefined;
   return typeof value === "number" ? value : Number(value);
 }

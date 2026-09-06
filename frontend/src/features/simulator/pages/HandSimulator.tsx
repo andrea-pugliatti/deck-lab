@@ -22,7 +22,7 @@ import { formatRelativeTime } from "../../../utils/date";
  */
 export default function HandSimulator(): React.JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-  const deckId = searchParams.get("deckId");
+  const deckId = searchParams.get("deckId") ?? undefined;
 
   const { data: deck, isLoading: loading, error } = useQuery(deckQueries.detail(deckId));
 

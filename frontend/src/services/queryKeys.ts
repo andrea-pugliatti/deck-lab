@@ -13,7 +13,7 @@ export const deckKeys = {
   lists: () => [...deckKeys.all, "list"] as const,
   list: (filters?: Record<string, unknown>) => [...deckKeys.lists(), filters] as const,
   details: () => [...deckKeys.all, "detail"] as const,
-  detail: (id: string | number | undefined | null) => [...deckKeys.details(), id] as const,
+  detail: (id?: string | number) => [...deckKeys.details(), id] as const,
 };
 
 export const cardKeys = {
@@ -21,7 +21,7 @@ export const cardKeys = {
   lists: () => [...cardKeys.all, "list"] as const,
   list: (filters?: Record<string, unknown>) => [...cardKeys.lists(), filters] as const,
   details: () => [...cardKeys.all, "detail"] as const,
-  detail: (id: string | number | undefined | null) => [...cardKeys.details(), id] as const,
+  detail: (id?: string | number) => [...cardKeys.details(), id] as const,
   suggestions: (query: string) => [...cardKeys.all, "suggestions", query] as const,
 };
 

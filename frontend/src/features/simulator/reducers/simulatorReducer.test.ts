@@ -73,7 +73,7 @@ describe("simulatorReducer", () => {
   it("should return initial state on INIT if deck is invalid", () => {
     const state = simulatorReducer(initialSimulatorState, {
       type: "INIT",
-      deck: null,
+      deck: undefined,
       initialHandSize: 5,
     });
     expect(state).toEqual(initialSimulatorState);

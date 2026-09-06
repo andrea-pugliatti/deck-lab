@@ -40,7 +40,7 @@ const buildDeckPayload = (
 export interface UseDeckStateReturn {
   isEditMode: boolean;
   isLoading: boolean;
-  error: Error | null;
+  error?: Error;
   name: string;
   setName: (name: string) => void;
   description: string;
@@ -75,7 +75,7 @@ export function useDeckState(
   onSaveSuccess?: (savedDeck: Deck) => void,
 ): UseDeckStateReturn {
   const isEditMode = !!id;
-  const initialLoadedIdRef = useRef<string | null>(null);
+  const initialLoadedIdRef = useRef<string | undefined>(undefined);
 
   const [state, dispatch] = useReducer(deckReducer, initialState);
   const [submitError, setSubmitError] = useState<string>();
@@ -90,7 +90,7 @@ export function useDeckState(
 
   useEffect(() => {
     if (deckData && initialLoadedIdRef.current !== id) {
-      initialLoadedIdRef.current = id ?? null;
+      initialLoadedIdRef.current = id;
       dispatch({
         type: "LOAD_DECK",
         name: deckData.name,
@@ -213,7 +213,7 @@ export function useDeckState(
   };
 
   const isLoading = isEditMode && isDeckLoading;
-  const error = isEditMode ? (deckError as Error | null) : null;
+  const error = isEditMode ? (deckError as Error | undefined) : undefined;
 
   return {
     isEditMode,

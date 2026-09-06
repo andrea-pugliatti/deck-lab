@@ -5,16 +5,16 @@ import { cardQueries, deckQueries } from "../services/queryOptions";
 
 /**
  * Safely retrieves the ambient TanStack {@link QueryClient} instance.
- * Returns `null` if called outside a `QueryClientProvider` rather than throwing,
+ * Returns `undefined` if called outside a `QueryClientProvider` rather than throwing,
  * ensuring presentational components can be rendered in isolated test harnesses.
  *
- * @returns The active {@link QueryClient} or `null`.
+ * @returns The active {@link QueryClient} or `undefined`.
  */
-export function useOptionalQueryClient(): QueryClient | null {
+export function useOptionalQueryClient(): QueryClient | undefined {
   try {
     return useQueryClient();
   } catch {
-    return null;
+    return undefined;
   }
 }
 
@@ -25,7 +25,7 @@ export function useOptionalQueryClient(): QueryClient | null {
  * @param id - The numeric or string identifier of the card to prefetch.
  * @returns A memoized callback that executes the prefetch when invoked.
  */
-export function usePrefetchCard(id?: number | string | null): () => void {
+export function usePrefetchCard(id?: number | string): () => void {
   const queryClient = useOptionalQueryClient();
 
   return useCallback(() => {
@@ -45,7 +45,7 @@ export function usePrefetchCard(id?: number | string | null): () => void {
  * @param id - The numeric or string identifier of the deck to prefetch.
  * @returns A memoized callback that executes the prefetch when invoked.
  */
-export function usePrefetchDeck(id?: number | string | null): () => void {
+export function usePrefetchDeck(id?: number | string): () => void {
   const queryClient = useOptionalQueryClient();
 
   return useCallback(() => {

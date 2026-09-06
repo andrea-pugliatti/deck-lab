@@ -11,37 +11,37 @@ describe("validation utilities", () => {
       expect(parseNumericId(42)).toBe(42);
     });
 
-    it("should return null for non-positive numbers or strings", () => {
-      expect(parseNumericId("0")).toBeNull();
-      expect(parseNumericId(0)).toBeNull();
-      expect(parseNumericId("-1")).toBeNull();
-      expect(parseNumericId(-5)).toBeNull();
+    it("should return undefined for non-positive numbers or strings", () => {
+      expect(parseNumericId("0")).toBeUndefined();
+      expect(parseNumericId(0)).toBeUndefined();
+      expect(parseNumericId("-1")).toBeUndefined();
+      expect(parseNumericId(-5)).toBeUndefined();
     });
 
-    it("should return null for decimal numbers or decimal strings", () => {
-      expect(parseNumericId("1.5")).toBeNull();
-      expect(parseNumericId(1.5)).toBeNull();
-      expect(parseNumericId("42.0")).toBeNull();
+    it("should return undefined for decimal numbers or decimal strings", () => {
+      expect(parseNumericId("1.5")).toBeUndefined();
+      expect(parseNumericId(1.5)).toBeUndefined();
+      expect(parseNumericId("42.0")).toBeUndefined();
     });
 
-    it("should return null for non-numeric strings", () => {
-      expect(parseNumericId("abc")).toBeNull();
-      expect(parseNumericId("123abc")).toBeNull();
-      expect(parseNumericId("")).toBeNull();
-      expect(parseNumericId("   ")).toBeNull();
+    it("should return undefined for non-numeric strings", () => {
+      expect(parseNumericId("abc")).toBeUndefined();
+      expect(parseNumericId("123abc")).toBeUndefined();
+      expect(parseNumericId("")).toBeUndefined();
+      expect(parseNumericId("   ")).toBeUndefined();
     });
 
-    it("should return null for null, undefined, and non-primitive values", () => {
-      expect(parseNumericId(null)).toBeNull();
-      expect(parseNumericId(undefined)).toBeNull();
-      expect(parseNumericId({})).toBeNull();
-      expect(parseNumericId([])).toBeNull();
-      expect(parseNumericId(true)).toBeNull();
+    it("should return undefined for null, undefined, and non-primitive values", () => {
+      expect(parseNumericId(null)).toBeUndefined();
+      expect(parseNumericId(undefined)).toBeUndefined();
+      expect(parseNumericId({})).toBeUndefined();
+      expect(parseNumericId([])).toBeUndefined();
+      expect(parseNumericId(true)).toBeUndefined();
     });
 
-    it("should return null for values exceeding Number.MAX_SAFE_INTEGER", () => {
-      expect(parseNumericId(Number.MAX_SAFE_INTEGER + 10)).toBeNull();
-      expect(parseNumericId(String(Number.MAX_SAFE_INTEGER) + "9")).toBeNull();
+    it("should return undefined for values exceeding Number.MAX_SAFE_INTEGER", () => {
+      expect(parseNumericId(Number.MAX_SAFE_INTEGER + 10)).toBeUndefined();
+      expect(parseNumericId(String(Number.MAX_SAFE_INTEGER) + "9")).toBeUndefined();
     });
   });
 
