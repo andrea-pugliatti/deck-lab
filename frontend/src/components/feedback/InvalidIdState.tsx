@@ -1,6 +1,4 @@
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router";
-
+import BackLink from "../navigation/BackLink";
 import ErrorAlert from "./ErrorAlert";
 
 /**
@@ -26,17 +24,7 @@ export default function InvalidIdState({
 }: InvalidIdStateProps): React.JSX.Element {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <Link
-        to={backTo}
-        viewTransition
-        className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-      >
-        <ArrowLeft
-          className="size-4 transition-transform group-hover:-translate-x-1"
-          aria-hidden="true"
-        />
-        <span>{backLabel}</span>
-      </Link>
+      <BackLink to={backTo} label={backLabel} />
       <ErrorAlert title={title} message={message} />
     </div>
   );

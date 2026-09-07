@@ -1,9 +1,10 @@
-import { ArrowLeft, RotateCcw, Sparkles, Upload } from "lucide-react";
+import { RotateCcw, Sparkles, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import BackLink from "../../../components/navigation/BackLink";
 import Pagination from "../../../components/navigation/Pagination";
 import Button from "../../../components/ui/Button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
@@ -168,17 +169,7 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
   if (isEditMode && error) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <Link
-          to="/my-decks"
-          viewTransition
-          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-        >
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-1"
-            aria-hidden="true"
-          />
-          <span>Back to Decks</span>
-        </Link>
+        <BackLink to="/my-decks" label="Back to Decks" />
         <ErrorAlert
           title="Failed to load deck for editing"
           message={error.message || "Deck not found"}
@@ -191,17 +182,11 @@ function DeckBuilderContent({ id }: DeckBuilderContentProps): React.JSX.Element 
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <Link
+          <BackLink
             to={isEditMode && id ? `/decks/${id}` : "/my-decks"}
-            viewTransition
-            className="group mb-2 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-          >
-            <ArrowLeft
-              className="size-4 transition-transform group-hover:-translate-x-1"
-              aria-hidden="true"
-            />
-            <span>{isEditMode ? "Back to Deck" : "Back to Decks"}</span>
-          </Link>
+            label={isEditMode ? "Back to Deck" : "Back to Decks"}
+            className="mb-2"
+          />
           <h1 className="font-display text-2xl font-black text-white md:text-3xl">
             {isEditMode ? "Edit Deck Build" : "Construct New Deck"}
           </h1>

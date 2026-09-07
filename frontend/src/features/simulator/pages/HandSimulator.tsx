@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Calendar, Layers } from "lucide-react";
+import { Calendar, Layers } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import BackLink from "../../../components/navigation/BackLink";
 import PageHeader from "../../../components/navigation/PageHeader";
-import { getButtonClasses } from "../../../components/ui/Button";
 import DeckSelector from "../../../features/simulator/components/DeckSelector";
 import SimulatorWorkspace from "../../../features/simulator/components/SimulatorWorkspace";
 import { deckQueries } from "../../../services/queryOptions";
@@ -53,17 +53,7 @@ export default function HandSimulator(): React.JSX.Element {
       {deckId && deck ? (
         <div className="animate-fade-in space-y-8">
           <div className="mb-8 flex items-center justify-between">
-            <Link
-              to="/simulator"
-              viewTransition
-              className={`${getButtonClasses({ variant: "ghost" })} group px-2.5 py-1 font-normal text-slate-400 no-underline`}
-            >
-              <ArrowLeft
-                className="size-4 transition-transform group-hover:-translate-x-1"
-                aria-hidden="true"
-              />
-              <span>Select Another Deck</span>
-            </Link>
+            <BackLink to="/simulator" label="Select Another Deck" className="" />
 
             <Link
               to={`/decks/${deck.id}`}

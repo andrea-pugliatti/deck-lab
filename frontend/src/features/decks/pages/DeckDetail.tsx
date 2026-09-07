@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Calendar, Download, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
+import { Calendar, Download, Edit, Eye, Layers, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import BackLink from "../../../components/navigation/BackLink";
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
@@ -118,17 +119,7 @@ export default function DeckDetail(): React.JSX.Element {
   if (error || !deck) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <Link
-          to="/decks"
-          viewTransition
-          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-        >
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-1"
-            aria-hidden="true"
-          />
-          <span>Back to Decks</span>
-        </Link>
+        <BackLink to="/decks" label="Back to Decks" />
         <ErrorAlert
           title="Failed to load deck details"
           message={error?.message || "Deck not found"}
@@ -162,17 +153,7 @@ export default function DeckDetail(): React.JSX.Element {
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
       <div className="mb-8 flex items-center justify-between">
-        <Link
-          to="/decks"
-          viewTransition
-          className="group inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-        >
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-1"
-            aria-hidden="true"
-          />
-          <span>Back to Decks</span>
-        </Link>
+        <BackLink to="/decks" label="Back to Decks" className="" />
 
         <div className="flex items-center gap-3">
           <Link

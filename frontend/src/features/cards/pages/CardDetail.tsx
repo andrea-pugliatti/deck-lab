@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Flame, Shield, Star } from "lucide-react";
+import { Flame, Shield, Star } from "lucide-react";
 import { useRef, type MouseEvent } from "react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import ErrorAlert from "../../../components/feedback/ErrorAlert";
 import InvalidIdState from "../../../components/feedback/InvalidIdState";
 import LoadingSpinner from "../../../components/feedback/LoadingSpinner";
+import BackLink from "../../../components/navigation/BackLink";
 import Badge from "../../../components/ui/Badge";
 import CardImage from "../../../components/ui/CardImage";
 import { getCardKind } from "../../../features/cards/utils/cardKind";
@@ -114,17 +115,7 @@ export default function CardDetail(): React.JSX.Element {
   if (error || !card) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <Link
-          to="/cards"
-          viewTransition
-          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-        >
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-1"
-            aria-hidden="true"
-          />
-          <span>Back to Catalog</span>
-        </Link>
+        <BackLink to="/cards" label="Back to Catalog" />
         <ErrorAlert
           title="Failed to load card details"
           message={error?.message || "Card not found"}
@@ -141,17 +132,7 @@ export default function CardDetail(): React.JSX.Element {
   return (
     <div data-card-kind={cardKind} className="card-ambient-gradient relative min-h-[80vh]">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <Link
-          to="/cards"
-          viewTransition
-          className="group mb-8 inline-flex items-center gap-2 px-2.5 py-1 text-sm font-normal text-slate-400 no-underline transition-colors hover:text-white"
-        >
-          <ArrowLeft
-            className="size-4 transition-transform group-hover:-translate-x-1"
-            aria-hidden="true"
-          />
-          <span>Back to Catalog</span>
-        </Link>
+        <BackLink to="/cards" label="Back to Catalog" />
 
         <div className="bg-dark-surface border-border-dim grid grid-cols-1 gap-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm md:grid-cols-12 md:p-10">
           {/* Card Artwork */}
