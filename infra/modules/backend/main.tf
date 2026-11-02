@@ -173,7 +173,7 @@ resource "google_cloud_run_v2_service" "backend" {
       }
       env {
         name  = "JAVA_OPTS"
-        value = "-XX:TieredStopAtLevel=1 -Xmx512m -XX:SharedArchiveFile=application.jsa"
+        value = "-XX:TieredStopAtLevel=1 -Xmx512m -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=application.jsa"
       }
 
       env {

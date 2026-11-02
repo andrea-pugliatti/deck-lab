@@ -58,15 +58,15 @@ jobs:
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/backend:${{ github.sha }}
           env_vars: |
-            POSTGRES_USER=${{ secrets.DB_USER }}
-            SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
-            ALLOWED_CORS_ORIGINS=${{ secrets.ALLOWED_CORS_ORIGINS }}
-            APP_IMAGE_BASE_URL=https://images.decklab.games
-            COOKIE_SAME_SITE=Lax
-            JAVA_OPTS=-XX:TieredStopAtLevel=1 -Xmx512m -XX:SharedArchiveFile=application.jsa
-            APP_SEED_CARDS=true
-            APP_SEED_DOWNLOAD_IMAGES=false
-            APP_SEED_USERS=false
+            POSTGRES_USER="${{ secrets.DB_USER }}"
+            SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}"
+            ALLOWED_CORS_ORIGINS="${{ secrets.ALLOWED_CORS_ORIGINS }}"
+            APP_IMAGE_BASE_URL="https://images.decklab.games"
+            COOKIE_SAME_SITE="Lax"
+            JAVA_OPTS="-XX:TieredStopAtLevel=1 -Xmx512m -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=application.jsa"
+            APP_SEED_CARDS="true"
+            APP_SEED_DOWNLOAD_IMAGES="false"
+            APP_SEED_USERS="false"
           secrets: |
             POSTGRES_PASSWORD=DECK_LAB_DB_PASSWORD:latest
             GEMINI_API_KEY=DECK_LAB_GEMINI_API_KEY:latest

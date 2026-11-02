@@ -12,9 +12,10 @@ RUN mvn test
 # Build package and extract Spring Boot layers
 FROM base AS build
 RUN mvn package -DskipTests && \
-    java -Djarmode=tools -jar target/*.jar extract --layers --destination target/extracted
+    mv target/*.jar target/app.jar && \
+    java -Djarmode=tools -jar target/app.jar extract --layers --destination target/extracted
 
-# Run stage with JVM Class Data Sharing (CDS) for fast scale-to-zero cold starts
+# Run stage with JVM Class Data Sharing (CDS)
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 RUN apt-get update && \
@@ -27,7 +28,9 @@ COPY --from=build --chown=appuser:appgroup /app/target/extracted/spring-boot-loa
 COPY --from=build --chown=appuser:appgroup /app/target/extracted/snapshot-dependencies/ ./
 COPY --from=build --chown=appuser:appgroup /app/target/extracted/application/ ./
 USER appuser
-RUN java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar app.jar --spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration || true
-ENV JAVA_OPTS="-XX:TieredStopAtLevel=1 -Xmx512m -XX:SharedArchiveFile=application.jsa"
+RUN test -f /app/app.jar && \
+    java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefresh -jar app.jar \
+      --spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration || true
+ENV JAVA_OPTS="-XX:TieredStopAtLevel=1 -Xmx512m -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=application.jsa"
 EXPOSE 8080
 ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -jar app.jar"]
