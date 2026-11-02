@@ -24,7 +24,7 @@ DeckLab is a full-stack Yu-Gi-Oh! deck builder, simulator, and AI-assisted strat
 - **Database**: PostgreSQL 18
 - **Frontend**: React 19, Lucide React, TypeScript, Vite 8, Tailwind CSS 4, React Router 8, Oxlint (linting), Oxfmt (formatting), pnpm
 - **Mobile**: Flutter 3, Dart 3, Riverpod, GoRouter, Dio, CachedNetworkImage
-- **Infrastructure & Cloud**: OpenTofu/Terraform (IaC for GCP Cloud Run, Cloud SQL, Cloud Storage, Artifact Registry), Docker Compose
+- **Infrastructure & Cloud**: OpenTofu/Terraform (IaC for GCP Cloud Run, Artifact Registry, Neon PostgreSQL, Cloudflare Pages & R2), Docker Compose
 - **Frontend Testing**: Vitest, React Testing Library
 - **Backend Testing**: JUnit, Mockito
 - **Mobile Testing**: Flutter Test
@@ -343,29 +343,23 @@ To use it:
 ## CI/CD & Deployment
 
 - **Continuous Integration (`ci.yml`)**: Triggered on pull requests and pushes to `main`, `master`, and `**/feature/**`. It runs frontend lint/format checks, Maven tests on the backend, and builds deployable artifacts.
-- **Continuous Deployment (`deploy.yml`)**: Triggered on push to `main` (or on manual dispatch). It authenticates to Google Cloud with Workload Identity Federation (WIF) and runs this pipeline:
+- **Continuous Deployment (`deploy.yml`)**: Triggered after `CI` succeeds on `main` (or on manual dispatch). It authenticates to Google Cloud with Workload Identity Federation (WIF) and runs this pipeline:
   1. Builds and pushes the backend image to Artifact Registry.
-  2. Deploys the backend to Cloud Run, mounting a Cloud Storage bucket for card artwork and connecting Cloud SQL.
-  3. Builds the frontend for production and copies static assets to a Cloud Storage bucket.
-  4. Invalidates the Cloud CDN cache.
+  2. Deploys the backend to Cloud Run (`api.decklab.games`), connected to Neon PostgreSQL and Google Secret Manager.
+  3. Builds the frontend for production (`VITE_API_URL=https://api.decklab.games`, `VITE_IMAGES_BASE_URL=https://images.decklab.games`) and deploys static assets to Cloudflare Pages (`decklab.games`).
 
-To enable the CD pipeline in your GitHub repository, configure the following secrets and variables:
+To enable the CD pipeline in your GitHub repository, configure the following secrets:
 
-| Type       | Name                           | Description                                                                                        |
-| ---------- | ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| **Secret** | `GCP_WIF_PROVIDER`             | Full identifier of the Workload Identity Provider                                                  |
-| **Secret** | `GCP_WIF_SERVICE_ACCOUNT`      | Email of the deployment Service Account in GCP                                                     |
-| **Secret** | `GCP_CLOUDSQL_CONNECTION_NAME` | Connection name of the PostgreSQL Cloud SQL instance                                               |
-| **Secret** | `DECK_LAB_DB_PASSWORD`         | Password for PostgreSQL database connection                                                        |
-| **Secret** | `DECK_LAB_GEMINI_API_KEY`      | Gemini API Key for production Spring AI                                                            |
-| **Secret** | `DECK_LAB_JWT_SECRET`          | Production signing secret for JWTs                                                                 |
-| **Secret** | `PRODUCTION_API_URL`           | Cloud Run service endpoint URL for frontend API access (not directly compiled into frontend build) |
-| **Secret** | `GCP_LOAD_BALANCER_NAME`       | Name of the GCP HTTP(S) Load Balancer url-map                                                      |
-| **Secret** | `DB_USER`                      | Production database user name                                                                      |
-| **Secret** | `ALLOWED_CORS_ORIGINS`         | Allowed client origins for production CORS                                                         |
-| **Secret** | `GCP_PROJECT_ID`               | GCP Project ID                                                                                     |
-| **Secret** | `GCP_FRONTEND_BUCKET_NAME`     | GCP Cloud Storage bucket name for frontend static hosting                                          |
-| **Secret** | `GCP_IMAGE_BUCKET_NAME`        | GCP Cloud Storage bucket name for backend card image storage                                       |
+| Type       | Name                      | Description                                                |
+| ---------- | ------------------------- | ---------------------------------------------------------- |
+| **Secret** | `GCP_PROJECT_ID`          | GCP Project ID                                             |
+| **Secret** | `GCP_WIF_PROVIDER`        | Full identifier of the Workload Identity Provider          |
+| **Secret** | `GCP_WIF_SERVICE_ACCOUNT` | Email of the deployment Service Account in GCP             |
+| **Secret** | `SPRING_DATASOURCE_URL`   | Pooled PostgreSQL JDBC connection URL                      |
+| **Secret** | `DB_USER`                 | Production database user name                              |
+| **Secret** | `ALLOWED_CORS_ORIGINS`    | Allowed client origins for production CORS                 |
+| **Secret** | `CLOUDFLARE_API_TOKEN`    | Cloudflare API token with Pages deployment permissions     |
+| **Secret** | `CLOUDFLARE_ACCOUNT_ID`   | Cloudflare Account ID                                      |
 
 ## License
 

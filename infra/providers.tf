@@ -14,6 +14,10 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5.0"
     }
+    neon = {
+      source  = "kislerdm/neon"
+      version = "~> 0.13"
+    }
   }
 }
 
@@ -29,4 +33,8 @@ provider "google-beta" {
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token == "" ? null : var.cloudflare_api_token
+}
+
+provider "neon" {
+  api_key = var.neon_api_key == "" ? null : var.neon_api_key
 }

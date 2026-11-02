@@ -1,24 +1,29 @@
 # OpenTofu Configuration Variables Template (DeckLab)
 # Copy this file to terraform.tfvars (which is gitignored) and fill in your values.
 
-project              = "deck-lab"
-region               = "europe-west8"
-environment          = "prod"
-domain               = "decklab.games"
-subdomain            = "www.decklab.games"
+project            = "deck-lab"
+region             = "us-central1"
+environment        = "prod"
+domain             = "decklab.games"
+subdomain          = "www.decklab.games"
+api_domain         = "api.decklab.games"
+images_domain      = "images.decklab.games"
+pages_project_name = "deck-lab"
 
-frontend_bucket_name = "deck-lab-frontend-prod"
-images_bucket_name   = "deck-lab-images-prod"
+images_bucket_name = "deck-lab-images-prod"
 
-db_user              = "postgres"
-db_password          = "secure-postgres-password"
-db_tier              = "db-f1-micro"
+# Neon PostgreSQL
+neon_api_key = "napi_xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+neon_org_id  = "org-cold-grass-69732618"
+neon_region  = "aws-us-east-2"
 
-jwt_secret           = "prod-jwt-secret-base64-512-bit"
-gemini_api_key       = "google-gemini-api-key"
-cors_origins         = "https://decklab.games,https://www.decklab.games,http://localhost:5173"
+# Backend Secrets & CORS
+jwt_secret     = "prod-jwt-secret-base64-512-bit"
+gemini_api_key = "google-gemini-api-key"
+cors_origins   = "https://decklab.games,https://www.decklab.games,http://localhost:5173"
 
-# Optional Cloudflare Integration
-enable_cloudflare_dns = false
+# Cloudflare Integration (Pages + R2 + DNS)
+enable_cloudflare_dns = true
+cloudflare_account_id = "cloudflare-account-id"
 cloudflare_zone_id    = "zone-id-from-dashboard"
 cloudflare_api_token  = "cloudflare-api-key"

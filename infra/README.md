@@ -1,6 +1,6 @@
 # DeckLab Infrastructure, Secrets, and DevOps Guide
 
-This directory holds DeckLab's production **Infrastructure as Code (IaC)** in [OpenTofu](https://opentofu.org/), a provider-neutral Terraform engine. It defines the cloud stack on Google Cloud (`europe-west8`): an Artifact Registry, managed PostgreSQL, a static-frontend bucket, the Cloud Run backend backed by Cloud SQL, a global HTTPS load balancer with CDN, and Cloudflare DNS. It also records the variables and secrets each environment needs.
+This directory holds DeckLab's production **Infrastructure as Code (IaC)** in [OpenTofu](https://opentofu.org/), a provider-neutral Terraform engine. It defines the cloud stack across Google Cloud (`us-central1`), Neon (`aws-us-east-2`), and Cloudflare: an Artifact Registry repository, a Cloud Run v2 backend service, a Neon PostgreSQL 18 database, a Cloudflare R2 bucket for card artwork, a Cloudflare Pages project for the static frontend, and Cloudflare DNS records.
 
 ---
 
@@ -8,26 +8,26 @@ This directory holds DeckLab's production **Infrastructure as Code (IaC)** in [O
 
 ```mermaid
 graph TD
-    subgraph Edge["DNS & Edge"]
-        CF["Cloudflare DNS (decklab.games, www.decklab.games)"]
+    subgraph Edge["Cloudflare Edge & DNS"]
+        CF_DNS["Cloudflare DNS (decklab.games)"]
+        CF_PAGES["Cloudflare Pages: Static Frontend SPA"]
+        CF_R2[("Cloudflare R2: Card Images")]
     end
 
-    subgraph GCP["Google Cloud Platform (europe-west8)"]
-        LB["HTTPS Load Balancer (:443 & :80 redirect)"]
-        CDN["Google Cloud CDN"]
-        GCS_FE["GCS Bucket: Static Frontend SPA"]
+    subgraph GCP["Google Cloud Platform (us-central1)"]
         CR["Cloud Run v2 Service (Gen2 Runtime)"]
-        CSQL[("Cloud SQL PostgreSQL 18")]
-        GCS_IMG[("GCS Bucket: Card Images")]
         SM["Google Cloud Secret Manager"]
         AR["Artifact Registry (Docker Repo)"]
     end
 
-    CF -->|A Records -> LB Static IP| LB
-    LB -->|/* Static Assets| CDN
-    CDN -->|Cache Miss| GCS_FE
-    CR -->|Cloud SQL Socket Factory| CSQL
-    CR -->|Signed URLs / Uploads| GCS_IMG
+    subgraph DB["Neon PostgreSQL (aws-us-east-2)"]
+        NEON[("PostgreSQL 18 (PgBouncer Pooler)")]
+    end
+
+    CF_DNS -->|decklab.games / www| CF_PAGES
+    CF_DNS -->|images.decklab.games| CF_R2
+    CF_DNS -->|api.decklab.games| CR
+    CR -->|SSL JDBC| NEON
     SM -->|Secret Envs| CR
 ```
 
@@ -35,14 +35,13 @@ graph TD
 
 ## Infrastructure resources
 
-| Module                   | Resources Provisioned                                                                                                                                                                                                                                                                                 | Purpose                                                                                                                                  |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `modules/registry`       | `google_artifact_registry_repository`                                                                                                                                                                                                                                                                 | Docker registry for backend container images with retention cleanup policies                                                             |
-| `modules/database`       | `google_sql_database_instance` (PostgreSQL 18), `google_sql_database`, `google_sql_user`                                                                                                                                                                                                              | Managed PostgreSQL persistence (`POSTGRES_18`, `db-f1-micro`)                                                                            |
-| `modules/storage`        | `google_storage_bucket` (frontend + images), `google_storage_bucket_iam_member`                                                                                                                                                                                                                       | Public SPA bucket (`deck-lab-frontend-prod`) and private card-images bucket (`deck-lab-images-prod`)                                     |
-| `modules/backend`        | `google_cloud_run_v2_service`, `google_service_account`, `google_secret_manager_secret` x3, IAM bindings                                                                                                                                                                                              | Gen2 backend container with Secret Manager injection, GCS image volume mount, and Cloud SQL socket                                       |
-| `modules/networking`     | `google_compute_global_address`, `google_certificate_manager_*`, `google_compute_region_network_endpoint_group`, `google_compute_backend_service`, `google_compute_backend_bucket`, `google_compute_url_map` x2, `google_compute_target_http(s)_proxy` x2, `google_compute_global_forwarding_rule` x2 | Global Load Balancer, Certificate Manager SSL, Serverless NEG routing `/api/*` to Cloud Run, Cloud CDN for SPA, and HTTP->HTTPS redirect |
-| `modules/cloudflare_dns` | `cloudflare_dns_record` (`apex`, `www`, `acme_root`, `acme_www`)                                                                                                                                                                                                                                      | Automated DNS management in Cloudflare (A records + Google Certificate Manager ACME challenge CNAMEs)                                    |
+| Module                   | Resources Provisioned                                                                                                   | Purpose                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `modules/registry`       | `google_artifact_registry_repository`                                                                                   | Docker registry for backend container images with retention cleanup policies                            |
+| `modules/database`       | `neon_project` (PostgreSQL 18), `neon_database`                                                                         | Managed PostgreSQL persistence (`deck-lab` in `aws-us-east-2`) with pooled and direct endpoints         |
+| `modules/storage`        | `cloudflare_r2_bucket`, `cloudflare_r2_custom_domain`                                                                   | Card artwork bucket (`deck-lab-images-prod`) served on `images.decklab.games`                           |
+| `modules/backend`        | `google_cloud_run_v2_service`, `google_cloud_run_domain_mapping`, `google_service_account`, `google_secret_manager_*` x3 | Gen2 backend container mapped to `api.decklab.games` with Secret Manager injection                      |
+| `modules/cloudflare_dns` | `cloudflare_pages_project`, `cloudflare_pages_domain` x2, `cloudflare_dns_record` (`apex`, `www`, `api`)                | Cloudflare Pages project (`deck-lab`), custom domain bindings, and CNAME routing for frontend and API   |
 
 ---
 
@@ -57,7 +56,7 @@ graph TD
    ```
 3. **Required GCP APIs**: Enable these APIs:
    ```bash
-   gcloud services enable run.googleapis.com sqladmin.googleapis.com secretmanager.googleapis.com storage.googleapis.com artifactregistry.googleapis.com compute.googleapis.com iam.googleapis.com
+   gcloud services enable run.googleapis.com secretmanager.googleapis.com artifactregistry.googleapis.com iam.googleapis.com
    ```
 
 ### Execution Workflow
@@ -65,8 +64,8 @@ graph TD
 ```bash
 cd infra
 
-# 1. Initialize OpenTofu (downloads google and cloudflare providers)
-tofu init
+# 1. Initialize OpenTofu (downloads google, cloudflare, and neon providers)
+tofu init -upgrade
 
 # 2. Format & Validate
 tofu fmt -recursive
@@ -74,7 +73,7 @@ tofu validate
 
 # 3. Configure Variables
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your GCP project ID and secrets (file is gitignored)
+# Edit terraform.tfvars with your project IDs and secrets (file is gitignored)
 
 # 4. Plan & Apply
 tofu plan -var-file=terraform.tfvars
@@ -120,23 +119,22 @@ In production, secrets live in Secret Manager and Cloud Run mounts them as envir
 
 The deploy workflow (`.github/workflows/deploy.yml`) needs these repository secrets set in **GitHub > Repository Settings > Secrets and variables > Actions**:
 
-| GitHub Secret Name             | Description                             | Value / Note for `deck-lab`                                                            |
-| ------------------------------ | --------------------------------------- | -------------------------------------------------------------------------------------- |
-| `GCP_PROJECT_ID`               | Google Cloud Project ID                 | `deck-lab`                                                                             |
-| `GCP_WIF_PROVIDER`             | Workload Identity Provider resource URI | `projects/123/locations/global/workloadIdentityPools/github/providers/github-provider` |
-| `GCP_WIF_SERVICE_ACCOUNT`      | GitHub Actions deployer Service Account | `github-deployer@deck-lab.iam.gserviceaccount.com`                                     |
-| `GCP_CLOUDSQL_CONNECTION_NAME` | Cloud SQL instance connection string    | `deck-lab:europe-west8:deck-lab-db`                                                    |
-| `GCP_FRONTEND_BUCKET_NAME`     | GCS frontend static assets bucket name  | `deck-lab-frontend-prod`                                                               |
-| `GCP_IMAGE_BUCKET_NAME`        | GCS card images bucket name             | `deck-lab-images-prod`                                                                 |
-| `GCP_LOAD_BALANCER_NAME`       | GCP URL map name for CDN invalidation   | `deck-lab-lb`                                                                          |
-| `DB_USER`                      | PostgreSQL application user             | `postgres`                                                                             |
-| `ALLOWED_CORS_ORIGINS`         | Comma-separated allowed CORS origins    | `https://decklab.games,https://www.decklab.games`                                      |
+| GitHub Secret Name        | Description                                                | Value / Note for `deck-lab`                                                                              |
+| ------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `GCP_PROJECT_ID`          | Google Cloud Project ID                                    | `deck-lab`                                                                                               |
+| `GCP_WIF_PROVIDER`        | Workload Identity Provider resource URI                    | `projects/123/locations/global/workloadIdentityPools/github/providers/github-provider`                   |
+| `GCP_WIF_SERVICE_ACCOUNT` | GitHub Actions deployer Service Account                    | `github-deployer@deck-lab.iam.gserviceaccount.com`                                                       |
+| `SPRING_DATASOURCE_URL`   | Pooled PostgreSQL JDBC URL (`tofu output -raw neon_jdbc_url`) | `jdbc:postgresql://<pooler-host>/deck-lab?sslmode=require&reWriteBatchedInserts=true&prepareThreshold=0` |
+| `DB_USER`                 | PostgreSQL application user (`tofu output -raw neon_db_user`) | `neondb_owner`                                                                                           |
+| `ALLOWED_CORS_ORIGINS`    | Comma-separated allowed CORS origins                       | `https://decklab.games,https://www.decklab.games`                                                        |
+| `CLOUDFLARE_API_TOKEN`    | Cloudflare API token with Pages Edit permission            | `<CLOUDFLARE_API_TOKEN>`                                                                                 |
+| `CLOUDFLARE_ACCOUNT_ID`   | Cloudflare Account ID                                      | `<CLOUDFLARE_ACCOUNT_ID>`                                                                                |
 
 ---
 
-## Cloudflare DNS Configuration
+## Cloudflare Configuration
 
-Cloudflare manages DNS for `decklab.games`.
+Cloudflare manages DNS, Pages hosting, and R2 storage for `decklab.games`.
 
 ### Option A: Automated via OpenTofu
 
@@ -144,39 +142,37 @@ Configure the following in `terraform.tfvars`:
 
 ```hcl
 enable_cloudflare_dns = true
+cloudflare_account_id = "<CLOUDFLARE_ACCOUNT_ID>"
 cloudflare_zone_id    = "<CLOUDFLARE_ZONE_ID>"
-cloudflare_api_token  = "<CLOUDFLARE_API_KEY>" # Token with Zone.DNS:Edit permissions
+cloudflare_api_token  = "<CLOUDFLARE_API_KEY>" # Token with Zone.DNS, Pages, and R2 Edit permissions
 ```
 
-OpenTofu automatically provisions and synchronizes:
+OpenTofu provisions and synchronizes:
 
-- Apex `@` `A` record $\rightarrow$ `136.69.60.226` (`proxied = true`)
-- Subdomain `www` `A` record $\rightarrow$ `136.69.60.226` (`proxied = true`)
-- Google Certificate Manager ACME challenge `CNAME` records (`_acme-challenge` and `_acme-challenge.www`) for zero-touch SSL renewal.
+- Cloudflare Pages project `deck-lab` with custom domains `decklab.games` and `www.decklab.games`
+- Cloudflare R2 bucket `deck-lab-images-prod` bound to `images.decklab.games`
+- Apex `@` and `www` `CNAME` records $\rightarrow$ `deck-lab.pages.dev` (`proxied = true`)
+- Subdomain `api` `CNAME` record $\rightarrow$ `ghs.googlehosted.com` (`proxied = false`) for Cloud Run custom domain TLS verification
 
 ### Option B: Manual via Cloudflare Dashboard
 
 If `enable_cloudflare_dns = false`:
 
-1. **Retrieve the Load Balancer IP**:
-   ```bash
-   cd infra && tofu output lb_ip_address
-   ```
-2. **Add DNS Records in Cloudflare Dashboard**:
-   - **Apex record**: Type `A`, Name `@`, Content `<lb_ip_address>`, Proxy status: `Proxied` (Orange cloud).
-   - **WWW record**: Type `A`, Name `www`, Content `<lb_ip_address>`, Proxy status: `Proxied` (Orange cloud).
-3. **SSL/TLS Setting in Cloudflare**:
-   - Set encryption mode to **Full (strict)** or **Full**.
+1. Create the Cloudflare Pages project `deck-lab` and attach `decklab.games` and `www.decklab.games`.
+2. Attach the custom domain `images.decklab.games` to the R2 bucket `deck-lab-images-prod`.
+3. Add a DNS-only `CNAME` record for `api` pointing to `ghs.googlehosted.com`.
 
 ---
 
 ## Mobile Build Configuration (`--dart-define`)
 
-When building the Flutter mobile application for release, pass the production API base URL:
+When building the Flutter mobile application for release, pass the production API and image URLs:
 
 ```bash
 cd mobile
-flutter build apk --release --dart-define=API_BASE_URL=https://decklab.games/api
+flutter build apk --release \
+  --dart-define=API_BASE_URL=https://api.decklab.games \
+  --dart-define=IMAGES_BASE_URL=https://images.decklab.games
 ```
 
 In local development, `ApiClient` automatically detects Android Emulator (`10.0.2.2:8080`) or iOS Simulator (`localhost:8080`).
@@ -198,22 +194,5 @@ In local development, `ApiClient` automatically detects Android Emulator (`10.0.
 3. Update `jwt_secret` in `infra/terraform.tfvars`.
 4. Deploy a new revision of Cloud Run to pick up the new secret version:
    ```bash
-   gcloud run services update backend-service --region=europe-west8 --project=deck-lab --update-secrets=JWT_SECRET=DECK_LAB_JWT_SECRET:latest
+   gcloud run services update backend-service --region=us-central1 --project=deck-lab --update-secrets=JWT_SECRET=DECK_LAB_JWT_SECRET:latest
    ```
-
-### Rotating Database Password
-
-1. Generate a strong password:
-   ```bash
-   NEW_DB_PASS=$(openssl rand -base64 32 | tr -d '\n')
-   ```
-2. Update database user password in Cloud SQL:
-   ```bash
-   gcloud sql users set-password postgres --instance=deck-lab-db --password="$NEW_DB_PASS" --project=deck-lab
-   ```
-3. Add new version to Secret Manager:
-   ```bash
-   echo -n "$NEW_DB_PASS" | gcloud secrets versions add DECK_LAB_DB_PASSWORD --data-file=- --project=deck-lab
-   ```
-4. Update `db_password` in `infra/terraform.tfvars`.
-5. Deploy or restart Cloud Run so it connects using the updated credentials.

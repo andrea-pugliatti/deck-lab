@@ -1,5 +1,6 @@
 package com.deck.lab.backend.mapper;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.deck.lab.backend.dto.request.CardSaveRequestDto;
@@ -12,6 +13,9 @@ import com.deck.lab.backend.model.Card;
  */
 @Component
 public class CardMapper {
+
+    @Value("${app.image-base-url:}")
+    private String imageBaseUrl = "";
 
     /**
      * Translates a {@link Card} database entity to a {@link CardResponseDto} API representation.
@@ -32,8 +36,8 @@ public class CardMapper {
         dto.setRace(card.getRace());
         dto.setAttribute(card.getAttribute());
         dto.setArchetype(card.getArchetype());
-        dto.setImageUrl(card.getImageUrl());
-        dto.setImageUrlCropped(card.getImageUrlCropped());
+        dto.setImageUrl(resolveImageUrl(card.getImageUrl()));
+        dto.setImageUrlCropped(resolveImageUrl(card.getImageUrlCropped()));
         dto.setFrameType(card.getFrameType());
         dto.setAtk(card.getAtk());
         dto.setDef(card.getDef());
@@ -41,6 +45,23 @@ public class CardMapper {
         dto.setLinkVal(card.getLinkVal());
         dto.setScale(card.getScale());
         return dto;
+    }
+
+    private String resolveImageUrl(String path) {
+        if (path == null || path.isBlank() || imageBaseUrl == null || imageBaseUrl.isBlank()) {
+            return path;
+        }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path;
+        }
+        String base = imageBaseUrl.endsWith("/")
+                ? imageBaseUrl.substring(0, imageBaseUrl.length() - 1)
+                : imageBaseUrl;
+        String relative = path.startsWith("/") ? path.substring(1) : path;
+        if (relative.startsWith("cards/images/")) {
+            relative = relative.substring("cards/images/".length());
+        }
+        return base + "/" + relative;
     }
 
     /**

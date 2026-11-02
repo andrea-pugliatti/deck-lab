@@ -6,5 +6,18 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "oxc.fmt.configPath": ".oxfmtrc.json",
-  "java.format.settings.url": ".vscode/java-formatter.xml"
+  "java.format.settings.url": ".vscode/java-formatter.xml",
+  "java.import.exclusions": [
+    "**/node_modules/**",
+    "**/.metadata/**",
+    "**/archetype-resources/**",
+    "**/META-INF/maven/**",
+    "**/.delta/**"
+  ],
+  "files.watcherExclude": {
+    "**/.delta/**": true
+  },
+  "search.exclude": {
+    "**/.delta/**": true
+  }
 }

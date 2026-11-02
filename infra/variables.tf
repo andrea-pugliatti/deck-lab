@@ -4,9 +4,9 @@ variable "project" {
 }
 
 variable "region" {
-  description = "Default Google Cloud region for regional resources (Cloud Run, Cloud SQL)."
+  description = "Default Google Cloud region for Cloud Run & Artifact Registry."
   type        = string
-  default     = "europe-west8"
+  default     = "us-central1"
 }
 
 variable "environment" {
@@ -27,28 +27,28 @@ variable "subdomain" {
   default     = "www.decklab.games"
 }
 
+variable "api_domain" {
+  description = "Custom domain mapped to the Cloud Run backend service."
+  type        = string
+  default     = "api.decklab.games"
+}
+
+variable "images_domain" {
+  description = "Custom domain attached to the Cloudflare R2 card images bucket."
+  type        = string
+  default     = "images.decklab.games"
+}
+
+variable "pages_project_name" {
+  description = "Cloudflare Pages project name for the static React SPA."
+  type        = string
+  default     = "deck-lab"
+}
+
 variable "backend_image" {
   description = "Backend container image URI. Defaults to hello container for bootstrap."
   type        = string
-  default     = "gcr.io/google-samples/cloudrun/hello"
-}
-
-variable "db_user" {
-  description = "PostgreSQL application username."
-  type        = string
-  default     = "postgres"
-}
-
-variable "db_password" {
-  description = "PostgreSQL application password. SENSITIVE."
-  type        = string
-  sensitive   = true
-}
-
-variable "db_tier" {
-  description = "Cloud SQL machine tier."
-  type        = string
-  default     = "db-f1-micro"
+  default     = "us-docker.pkg.dev/cloudrun/container/hello"
 }
 
 variable "jwt_secret" {
@@ -69,32 +69,51 @@ variable "cors_origins" {
   default     = "https://decklab.games,https://www.decklab.games"
 }
 
-variable "frontend_bucket_name" {
-  description = "Globally unique Google Cloud Storage bucket name for frontend static assets."
-  type        = string
-  default     = "deck-lab-frontend-prod"
-}
-
 variable "images_bucket_name" {
-  description = "Globally unique Google Cloud Storage bucket name for card images."
+  description = "Cloudflare R2 bucket name for card images."
   type        = string
   default     = "deck-lab-images-prod"
 }
 
+variable "neon_api_key" {
+  description = "Neon API Key for provisioning the PostgreSQL project. SENSITIVE."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "neon_org_id" {
+  description = "Neon Organization ID where the PostgreSQL project is created."
+  type        = string
+  default     = "org-cold-grass-69732618"
+}
+
+variable "neon_region" {
+  description = "Neon AWS region ID."
+  type        = string
+  default     = "aws-us-east-2"
+}
+
 variable "enable_cloudflare_dns" {
-  description = "Whether to provision DNS records via the Cloudflare OpenTofu provider."
+  description = "Whether to provision Cloudflare Pages, R2 custom domain, and DNS records via OpenTofu."
   type        = bool
   default     = false
 }
 
+variable "cloudflare_account_id" {
+  description = "Cloudflare Account ID (required for Cloudflare Pages and R2)."
+  type        = string
+  default     = ""
+}
+
 variable "cloudflare_zone_id" {
-  description = "Cloudflare Zone ID for decklab.games (if enable_cloudflare_dns is true)."
+  description = "Cloudflare Zone ID for decklab.games."
   type        = string
   default     = ""
 }
 
 variable "cloudflare_api_token" {
-  description = "Cloudflare API Token with DNS Edit permissions. SENSITIVE."
+  description = "Cloudflare API Token with Zone.DNS, Pages, and R2 Edit permissions. SENSITIVE."
   type        = string
   default     = ""
   sensitive   = true

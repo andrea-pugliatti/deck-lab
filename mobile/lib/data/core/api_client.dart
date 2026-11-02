@@ -26,7 +26,7 @@ class ApiClient {
 
   // --- Base URL configuration ---
   static const String customBaseUrl = String.fromEnvironment('API_BASE_URL');
-  static const String prodBaseUrl = 'https://decklab.games/api';
+  static const String prodBaseUrl = 'https://api.decklab.games';
   static const String localAndroidBaseUrl = 'http://10.0.2.2:8080';
   static const String localIosBaseUrl = 'http://localhost:8080';
 

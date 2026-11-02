@@ -11,7 +11,7 @@ resource "google_artifact_registry_repository" "this" {
     id     = "pol"
     action = "KEEP"
     most_recent_versions {
-      keep_count = 2
+      keep_count = 1
     }
   }
 }

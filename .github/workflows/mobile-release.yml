@@ -11,7 +11,7 @@ on:
       api_base_url:
         description: "Backend API Base URL"
         required: false
-        default: "https://decklab.games/api"
+        default: "https://api.decklab.games"
 
 permissions:
   contents: read
@@ -58,8 +58,8 @@ jobs:
       - name: Build Android Release APK
         working-directory: mobile
         run: |
-          API_URL="${{ github.event.inputs.api_base_url || 'https://decklab.games/api' }}"
-          flutter build apk --release --dart-define=API_BASE_URL="$API_URL"
+          API_URL="${{ github.event.inputs.api_base_url || 'https://api.decklab.games' }}"
+          flutter build apk --release --dart-define=API_BASE_URL="$API_URL" --dart-define=IMAGES_BASE_URL="https://images.decklab.games"
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v7

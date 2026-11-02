@@ -1,54 +1,66 @@
-variable "project" { type = string }
-variable "region" { type = string }
-variable "instance_name" { type = string }
-variable "database_name" { type = string }
-variable "db_user" { type = string }
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
-variable "tier" {
-  type    = string
-  default = "db-f1-micro"
-}
-
-resource "google_sql_database_instance" "this" {
-  name                = var.instance_name
-  database_version    = "POSTGRES_18"
-  region              = var.region
-  project             = var.project
-  deletion_protection = true
-
-  settings {
-    tier = var.tier
-    ip_configuration {
-      ipv4_enabled = true
-    }
-    backup_configuration {
-      enabled = true
+terraform {
+  required_providers {
+    neon = {
+      source  = "kislerdm/neon"
+      version = "~> 0.13"
     }
   }
 }
 
-resource "google_sql_database" "app" {
-  name     = var.database_name
-  instance = google_sql_database_instance.this.name
-  project  = var.project
+variable "project_name" {
+  type    = string
+  default = "deck-lab"
+}
+variable "database_name" {
+  type    = string
+  default = "deck-lab"
+}
+variable "org_id" {
+  type    = string
+  default = "org-cold-grass-69732618"
+}
+variable "region_id" {
+  type    = string
+  default = "aws-us-east-2"
 }
 
-resource "google_sql_user" "app" {
-  name     = var.db_user
-  instance = google_sql_database_instance.this.name
-  project  = var.project
-  password = var.db_password
+resource "neon_project" "this" {
+  name                      = var.project_name
+  org_id                    = var.org_id
+  region_id                 = var.region_id
+  pg_version                = 18
+  history_retention_seconds = 21600
 }
 
-output "connection_name" {
-  description = "Cloud SQL instance connection name."
-  value       = google_sql_database_instance.this.connection_name
+resource "neon_database" "app" {
+  project_id = neon_project.this.id
+  branch_id  = neon_project.this.default_branch_id
+  name       = var.database_name
+  owner_name = neon_project.this.database_user
 }
 
-output "instance_name" {
-  description = "Cloud SQL instance name."
-  value       = google_sql_database_instance.this.name
+output "neon_project_id" {
+  description = "Neon Project ID."
+  value       = neon_project.this.id
+}
+
+output "jdbc_url" {
+  description = "Pooled JDBC connection URL for serverless Spring Boot traffic (PgBouncer safe with prepareThreshold=0)."
+  value       = "jdbc:postgresql://${neon_project.this.database_host_pooler}/${neon_database.app.name}?sslmode=require&reWriteBatchedInserts=true&prepareThreshold=0"
+}
+
+output "direct_jdbc_url" {
+  description = "Direct (unpooled) JDBC connection URL for schema migrations and dumps."
+  value       = "jdbc:postgresql://${neon_project.this.database_host}/${neon_database.app.name}?sslmode=require&reWriteBatchedInserts=true"
+}
+
+output "db_user" {
+  description = "Neon PostgreSQL database owner username."
+  value       = neon_project.this.database_user
+}
+
+output "db_password" {
+  description = "Neon PostgreSQL database owner password."
+  value       = neon_project.this.database_password
+  sensitive   = true
 }

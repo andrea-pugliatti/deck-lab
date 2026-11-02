@@ -1,7 +1,7 @@
 import { ImageOff } from "lucide-react";
 import React, { useState } from "react";
 
-import { API_BASE_URL } from "../../config/env";
+import { API_BASE_URL, IMAGES_BASE_URL } from "../../config/env";
 
 export interface CardImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
@@ -13,6 +13,15 @@ function normalizeCardImageUrl(url?: string): string {
   const trimmed = url.trim();
   if (!trimmed) return "";
   if (/^(https?:|data:|blob:)/i.test(trimmed)) return trimmed;
+
+  const imagesBase = IMAGES_BASE_URL.replace(/\/+$/, "");
+  if (imagesBase) {
+    const cleanPath = trimmed
+      .replace(/^\/+/, "")
+      .replace(/^api\//, "")
+      .replace(/^cards\/images\//, "");
+    return `${imagesBase}/${cleanPath}`;
+  }
 
   const baseUrl = API_BASE_URL.replace(/\/+$/, "");
   if (trimmed.startsWith("/api/")) return `${baseUrl}${trimmed}`;

@@ -18,6 +18,12 @@ public class SeederProperties {
     private boolean cards = false;
 
     /**
+     * Whether card artwork images should be downloaded to local disk during seeding.
+     * Disabled in serverless production when images are served from Cloudflare R2.
+     */
+    private boolean downloadImages = true;
+
+    /**
      * Whether default demo/admin user seeding is enabled on startup.
      */
     private boolean users = false;
@@ -43,6 +49,24 @@ public class SeederProperties {
      */
     public void setCards(boolean cards) {
         this.cards = cards;
+    }
+
+    /**
+     * Returns whether local disk image downloading is enabled during seeding.
+     *
+     * @return true if image downloading is enabled, false otherwise
+     */
+    public boolean isDownloadImages() {
+        return downloadImages;
+    }
+
+    /**
+     * Sets whether local disk image downloading is enabled during seeding.
+     *
+     * @param downloadImages true to enable image downloads, false to disable
+     */
+    public void setDownloadImages(boolean downloadImages) {
+        this.downloadImages = downloadImages;
     }
 
     /**

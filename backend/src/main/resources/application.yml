@@ -25,9 +25,11 @@ spring:
 
 app:
   seed.cards: ${APP_SEED_CARDS:false}
+  seed.download-images: ${APP_SEED_DOWNLOAD_IMAGES:true}
   seed.users: ${APP_SEED_USERS:false}
   seed.password: ${APP_SEED_PASSWORD:12345678}
   upload-dir: ${IMAGE_UPLOAD_DIR:data/images}
+  image-base-url: ${APP_IMAGE_BASE_URL:}
   cors.allowed-origins: ${ALLOWED_CORS_ORIGINS:http://localhost:5173,http://localhost,http://127.0.0.1:5173}
   cookie:
     same-site: ${COOKIE_SAME_SITE:Lax}

@@ -79,6 +79,9 @@ public class CardImporter {
     @Value("${app.upload-dir:data/images}")
     private String uploadDir = "data/images";
 
+    @Value("${app.seed.download-images:true}")
+    private boolean downloadImages = true;
+
     /**
      * Constructs a new CardImporter with required repositories, executors, object mapper, REST client builder, and properties.
      *
@@ -264,7 +267,7 @@ public class CardImporter {
 
     private void triggerImageDownloads(Long apiId, String remoteImageUrl,
                                        String remoteImageUrlCropped) {
-        if (Thread.currentThread().isInterrupted()) {
+        if (!downloadImages || Thread.currentThread().isInterrupted()) {
             return;
         }
         if (remoteImageUrl != null) {
@@ -462,6 +465,10 @@ public class CardImporter {
      * </p>
      */
     private void checkAndDownloadMissingImages() {
+        if (!downloadImages) {
+            logger.info("Local image download check is disabled (app.seed.download-images=false). Skipping.");
+            return;
+        }
         List<Card> allCards = cardRepository.findAll();
         logger.info("Checking images for {} cards in database...", allCards.size());
 
