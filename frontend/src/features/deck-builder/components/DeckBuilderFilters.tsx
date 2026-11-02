@@ -3,7 +3,15 @@ import { Search } from "lucide-react";
 import Input from "../../../components/ui/Input";
 import Label from "../../../components/ui/Label";
 import Select from "../../../components/ui/Select";
-import type { CardAttribute, CardFiltersState, CardRace, CardType } from "../../../types";
+import {
+  isCardAttribute,
+  isCardRace,
+  isCardType,
+  type CardAttribute,
+  type CardFiltersState,
+  type CardRace,
+  type CardType,
+} from "../../../types";
 
 /**
  * Properties for the {@link DeckBuilderFilters} component.
@@ -13,9 +21,9 @@ export interface DeckBuilderFiltersProps {
   setSearchQuery: (query: string) => void;
   filters: CardFiltersState;
   setFilters: React.Dispatch<React.SetStateAction<CardFiltersState>>;
-  types: string[];
-  attributes: string[];
-  races: string[];
+  types: CardType[];
+  attributes: CardAttribute[];
+  races: CardRace[];
   archetypes: string[];
 }
 
@@ -70,9 +78,10 @@ export default function DeckBuilderFilters({
           <Select
             value={type}
             onChange={(e) => {
+              const val = e.target.value;
               setFilters((prev) => ({
                 ...prev,
-                type: e.target.value as CardType | "ALL",
+                type: isCardType(val) ? val : "ALL",
                 race: "ALL",
               }));
             }}
@@ -93,9 +102,10 @@ export default function DeckBuilderFilters({
             value={attribute}
             disabled={type.includes("Spell") || type.includes("Trap")}
             onChange={(e) => {
+              const val = e.target.value;
               setFilters((prev) => ({
                 ...prev,
-                attribute: e.target.value as CardAttribute | "ALL",
+                attribute: isCardAttribute(val) ? val : "ALL",
               }));
             }}
             className="py-1.5 text-xs"
@@ -114,9 +124,10 @@ export default function DeckBuilderFilters({
           <Select
             value={race}
             onChange={(e) => {
+              const val = e.target.value;
               setFilters((prev) => ({
                 ...prev,
-                race: e.target.value as CardRace | "ALL",
+                race: isCardRace(val) ? val : "ALL",
               }));
             }}
             className="py-1.5 text-xs"

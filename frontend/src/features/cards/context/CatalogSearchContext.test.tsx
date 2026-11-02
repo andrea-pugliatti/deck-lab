@@ -42,7 +42,7 @@ describe("CatalogSearchContext", () => {
     } as unknown as ReturnType<typeof useCatalogSearch>);
 
     vi.mocked(useCardMetadata).mockReturnValue({
-      types: ["Monster", "Spell"],
+      types: ["Normal Monster", "Spell Card"],
       attributes: ["DARK"],
       races: [],
       archetypes: [],
@@ -59,7 +59,7 @@ describe("CatalogSearchContext", () => {
     );
 
     expect(screen.getByTestId("formats")).toHaveTextContent("TCG,Goat");
-    expect(screen.getByTestId("types")).toHaveTextContent("Monster,Spell");
+    expect(screen.getByTestId("types")).toHaveTextContent("Normal Monster,Spell Card");
     expect(screen.getByTestId("search-query")).toHaveTextContent("Exodia");
   });
 

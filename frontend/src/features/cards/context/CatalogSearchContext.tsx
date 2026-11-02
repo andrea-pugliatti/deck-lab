@@ -4,7 +4,13 @@ import { createContext, useContext } from "react";
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import { useFormats } from "../../../features/decks/hooks/useFormats";
-import type { Card, CardFiltersState } from "../../../types";
+import type {
+  Card,
+  CardAttribute,
+  CardFiltersState,
+  CardRace,
+  CardType,
+} from "../../../types";
 
 /**
  * Properties and state values provided by the CatalogSearchContext.
@@ -17,9 +23,9 @@ interface CatalogSearchContextType {
   filters: CardFiltersState;
   setFilters: React.Dispatch<React.SetStateAction<CardFiltersState>>;
   formats: string[];
-  types: string[];
-  attributes: string[];
-  races: string[];
+  types: CardType[];
+  attributes: CardAttribute[];
+  races: CardRace[];
   archetypes: string[];
   libraryCards: Card[];
   libraryLoading: boolean;

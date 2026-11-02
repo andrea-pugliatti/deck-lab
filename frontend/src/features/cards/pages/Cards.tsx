@@ -14,7 +14,6 @@ import CardListItem from "../../../features/cards/components/CardListItem";
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import { useViewPreference } from "../../../hooks/useViewPreference";
-import type { CardAttribute, CardRace, CardType } from "../../../types";
 
 /**
  * Number of cards to display per page in the pagination grid.
@@ -60,9 +59,9 @@ export default function Cards(): React.JSX.Element {
           <CardFilters
             filters={filters}
             onChange={(newFilters) => setFilters(newFilters)}
-            types={types as CardType[]}
-            attributes={attributes as CardAttribute[]}
-            races={races as CardRace[]}
+            types={types}
+            attributes={attributes}
+            races={races}
             archetypes={archetypes}
           />
         </aside>

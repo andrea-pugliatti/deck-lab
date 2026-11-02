@@ -29,7 +29,7 @@ vi.mock("../../../features/cards/components/CardListItem", () => ({
 describe("Cards page component", () => {
   beforeEach(() => {
     vi.mocked(useCardMetadata).mockReturnValue({
-      types: ["Monster", "Spell"],
+      types: ["Normal Monster", "Spell Card"],
       attributes: ["LIGHT"],
       races: [],
       archetypes: [],
