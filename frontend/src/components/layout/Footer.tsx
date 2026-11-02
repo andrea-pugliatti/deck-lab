@@ -12,13 +12,13 @@ const NAV_LINKS: FooterNavLink[] = [
   { to: "/simulator", label: "Hand Simulator" },
 ];
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 /**
  * Footer component displayed at the bottom of pages.
  * Renders logo, navigation links, copyright info, and legal disclaimer.
  */
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-dark-surface/30 border-border-dim mt-16 border-t py-12 text-slate-400">
       <div className="mx-auto mb-8 grid max-w-7xl grid-cols-1 gap-8 px-6 md:grid-cols-4">
@@ -70,7 +70,7 @@ export default function Footer() {
       </div>
 
       <div className="border-border-dim/50 mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t px-6 pt-6 text-xs sm:flex-row">
-        <p>&copy; {currentYear} DeckLab. All rights reserved.</p>
+        <p>&copy; {CURRENT_YEAR} DeckLab. All rights reserved.</p>
         <div className="flex gap-4">
           <button
             type="button"
