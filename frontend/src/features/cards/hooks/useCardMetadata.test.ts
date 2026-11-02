@@ -74,4 +74,3 @@ describe("useCardMetadata hook", () => {
     expect(result.current.attributes).toEqual(["LIGHT", "FIRE"]);
   });
 });
-

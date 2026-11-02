@@ -4,13 +4,7 @@ import { createContext, useContext } from "react";
 import { useCardMetadata } from "../../../features/cards/hooks/useCardMetadata";
 import { useCatalogSearch } from "../../../features/cards/hooks/useCatalogSearch";
 import { useFormats } from "../../../features/decks/hooks/useFormats";
-import type {
-  Card,
-  CardAttribute,
-  CardFiltersState,
-  CardRace,
-  CardType,
-} from "../../../types";
+import type { Card, CardAttribute, CardFiltersState, CardRace, CardType } from "../../../types";
 
 /**
  * Properties and state values provided by the CatalogSearchContext.

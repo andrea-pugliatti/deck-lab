@@ -17,12 +17,7 @@ export interface CardMetadata {
   archetypes: string[];
 }
 
-const DEFAULT_TYPES: CardType[] = [
-  "Normal Monster",
-  "Effect Monster",
-  "Spell Card",
-  "Trap Card",
-];
+const DEFAULT_TYPES: CardType[] = ["Normal Monster", "Effect Monster", "Spell Card", "Trap Card"];
 
 const DEFAULT_ATTRIBUTES: CardAttribute[] = [
   "LIGHT",
@@ -58,4 +53,3 @@ export function useCardMetadata(): CardMetadata {
 
   return { types, attributes, races, archetypes };
 }
-
