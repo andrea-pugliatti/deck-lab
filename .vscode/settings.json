@@ -5,7 +5,10 @@
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.configPath": "frontend/.oxlintrc.json",
+  "oxc.fmt.configPath": "frontend/.oxfmtrc.json",
+  "oxc.path.oxlint": "./frontend/node_modules/.bin/oxlint",
+  "oxc.path.tsgolint": "./frontend/node_modules/.bin/tsgolint",
   "java.format.settings.url": ".vscode/java-formatter.xml",
   "java.import.exclusions": [
     "**/node_modules/**",
